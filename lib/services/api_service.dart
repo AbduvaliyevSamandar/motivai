@@ -4,8 +4,8 @@ import '../models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // AWS Production Server
-  static const String baseUrl = 'http://13.49.73.105:8000/api/v1';
+  // Local server for testing
+  static const String baseUrl = 'http://127.0.0.1:8000/api/v1';
   static String? _accessToken;
   static String? _refreshToken;
 
