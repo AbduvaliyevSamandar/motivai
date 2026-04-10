@@ -389,4 +389,32 @@ class ApiService {
       throw Exception('Error getting user rank: $e');
     }
   }
+
+  static Future<Map<String, dynamic>> chatWithAI({
+    required String message,
+    List<Map<String, dynamic>>? conversationHistory,
+  }) async {
+    try {
+      final body = {
+        'message': message,
+        'conversation_history': conversationHistory ?? [],
+      };
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/ai/chat'),
+        headers: _getHeaders(),
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else if (response.statusCode == 401) {
+        throw Exception('Unauthorized. Please login again.');
+      } else {
+        throw Exception('Failed to chat with AI: ${response.body}');
+      }
+    } catch (e) {
+      throw Exception('Error chatting with AI: $e');
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -74,7 +75,7 @@ class _ProfileScreenV2State extends State<ProfileScreenV2> {
                                       ),
                                     ],
                                   ),
-                                  child: _profileImage != null
+                                  child: _profileImage != null && !kIsWeb
                                       ? ClipOval(
                                           child: Image.file(
                                             _profileImage!,
