@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: motivai-backend
+    env: python
+    plan: starter  # Free tier - upgrade to standard for production
+    
+    buildCommand: pip install --upgrade pip && pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    
+    region: oregon  # Change based on your preference
+    
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: 'false'
+      - key: MONGODB_URL
+        fromDatabase:
+          name: motivai-db
+          property: connectionString
+      - key: DATABASE_NAME
+        value: motivai_prod
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 30
+      - key: CORS_ORIGINS
+        value: '["https://motivai.vercel.app", "https://motivai.app"]'
+      - key: LOG_LEVEL
+        value: info
+    
+    healthCheckPath: /health
+    healthCheckTimeout: 10
+
+  - type: pserv
+    name: motivai-db
+    plan: starter  # Free tier MongoDB - has limitations
+    
+    ipAllowList: []  # Allow all IPs
+    
+    # NOTE: Free tier has limited storage (512MB)
+    # Upgrade to Standard tier for production use

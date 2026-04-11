@@ -1,0 +1,51 @@
+student_id,name,age,faculty,year,gpa,attendance_rate,daily_study_hours,sleep_hours,stress_level,motivation_level,completed_tasks,failed_tasks,goal_type,preferred_time,social_activity,sport_activity,mood_score,streak_days,points,last_active_days_ago
+1,Alibek Karimov,20,Computer Science,2,3.2,85,4,7,6,7,45,12,career,morning,3,4,7,5,1250,1
+2,Malika Yusupova,21,Mathematics,3,3.8,92,6,8,4,9,78,5,academic,evening,2,2,9,12,3400,0
+3,Jasur Toshmatov,19,Engineering,1,2.5,70,2,6,8,4,20,18,academic,afternoon,4,5,4,0,450,3
+4,Nilufar Rahimova,22,Biology,4,3.6,88,5,7,5,8,65,8,research,morning,3,3,8,8,2800,1
+5,Sherzod Nazarov,20,Physics,2,2.9,75,3,5,7,5,30,15,career,night,5,2,5,2,780,2
+6,Dildora Hasanova,21,Chemistry,3,3.4,82,4,7,6,7,55,10,academic,morning,2,4,7,6,1900,0
+7,Bobur Mirzayev,23,IT,4,3.9,95,7,8,3,10,90,3,startup,evening,4,3,10,20,5200,0
+8,Zulfiya Ergasheva,20,Economics,2,3.1,78,3,6,6,6,38,14,career,afternoon,3,5,6,3,1100,1
+9,Umid Xolmatov,22,Law,3,3.3,80,4,7,7,7,50,11,academic,morning,2,2,7,4,1600,2
+10,Feruza Sultonova,19,Medicine,1,3.7,90,6,8,5,9,72,6,research,morning,1,3,9,10,3100,0
+11,Akbar Rустамов,21,Computer Science,3,2.7,65,2,5,9,3,15,22,career,night,5,1,3,0,320,5
+12,Sarvinoz Qosimova,20,Design,2,3.5,87,5,7,4,8,60,9,creative,afternoon,4,2,8,7,2200,1
+13,Eldor Abdullayev,22,Engineering,4,3.0,72,3,6,8,6,35,16,academic,morning,3,4,6,1,950,3
+14,Madina Tursunova,21,Psychology,3,3.6,89,5,8,4,8,68,7,research,evening,2,3,8,9,2650,0
+15,Kamol Yuldashev,23,Business,4,2.8,68,2,5,8,4,22,20,career,afternoon,5,2,4,0,580,4
+16,Hulkar Ismoilova,20,Mathematics,2,3.9,94,7,8,3,10,85,4,academic,morning,2,4,10,15,4100,0
+17,Nodir Hamidov,19,Physics,1,2.4,60,1,4,9,3,12,25,career,night,6,1,2,0,180,7
+18,Barno Azimova,22,Biology,3,3.7,91,6,8,4,9,75,7,research,morning,2,3,9,11,3350,0
+19,Sanjar Umarov,21,IT,3,3.2,81,4,7,6,7,48,12,startup,evening,4,5,7,5,1450,1
+20,Gavhar Sobirov,20,Chemistry,2,3.4,84,4,7,5,8,58,10,academic,morning,3,2,8,6,2050,0
+21,Javlon Qodirov,23,Computer Science,4,4.0,98,8,9,2,10,95,2,startup,morning,3,5,10,25,6500,0
+22,Maftuna Nurova,21,Economics,3,3.0,76,3,6,7,6,32,15,career,afternoon,4,3,6,2,900,2
+23,Oybek Raximov,20,Engineering,2,2.6,67,2,5,9,4,18,20,academic,night,5,2,4,0,380,6
+24,Shahnoza Haydarova,22,Design,4,3.8,93,6,8,3,9,80,5,creative,afternoon,4,3,9,13,3700,1
+25,Temur Normatov,21,Law,3,3.1,77,3,6,7,6,40,13,academic,morning,3,2,6,3,1200,2
+26,Lobar Qurbonova,20,Medicine,2,3.5,86,5,7,5,8,62,9,research,morning,2,4,8,7,2100,1
+27,Ilhom Hasanov,22,Business,3,2.9,71,2,5,8,5,25,19,career,afternoon,5,1,5,1,620,3
+28,Dilnoza Yusupova,21,Psychology,3,3.7,90,6,8,4,9,73,6,research,evening,2,3,9,10,3200,0
+29,Anvar Tojiboyev,23,Computer Science,4,3.5,85,5,7,5,8,65,10,startup,morning,4,4,8,8,2500,1
+30,Munira Alijonova,20,Mathematics,2,3.3,82,4,7,6,7,52,11,academic,morning,2,3,7,5,1700,1
+31,Behruz Saidov,19,Engineering,1,2.3,58,1,4,10,2,10,28,academic,night,6,1,2,0,150,9
+32,Nargiza Mirzayeva,22,Biology,4,3.9,95,7,9,3,10,88,3,research,morning,2,4,10,17,4300,0
+33,Muzaffar Tillayev,21,IT,3,3.3,83,4,7,6,7,55,10,startup,evening,4,3,7,6,1850,0
+34,Sevinch Rустамова,20,Chemistry,2,3.2,80,4,6,6,7,42,13,academic,afternoon,3,2,7,4,1350,2
+35,Laziz Holiqov,23,Physics,4,2.7,64,2,5,9,4,20,21,career,night,5,2,4,0,480,5
+36,Dilorom Nazarova,21,Design,3,3.6,88,5,7,4,8,66,8,creative,afternoon,4,3,8,8,2400,1
+37,Husan Boymurodov,22,Economics,4,3.1,75,3,6,7,6,36,14,career,morning,3,4,6,2,1050,2
+38,Oydin Ergasheva,20,Law,2,3.4,84,4,7,5,8,56,10,academic,morning,2,2,8,6,1950,1
+39,Firdavs Xoliqov,21,Medicine,3,3.8,92,6,8,4,9,78,6,research,morning,1,3,9,12,3500,0
+40,Gulnora Sodiqova,23,Business,4,2.8,66,2,5,9,4,22,22,career,afternoon,5,2,4,0,530,5
+41,Alisher Nazarov,20,Computer Science,2,3.6,87,5,7,5,9,68,9,startup,evening,4,5,8,9,2700,0
+42,Mohira Tursunova,21,Psychology,3,3.5,86,5,7,4,8,63,9,research,evening,3,2,8,7,2300,1
+43,Ortiq Yusupov,22,Engineering,4,3.2,79,3,6,7,7,45,12,academic,morning,3,4,7,4,1550,2
+44,Xurshida Qodiрова,20,Mathematics,2,3.7,91,6,8,4,9,74,7,academic,morning,2,3,9,11,3050,0
+45,Sardor Ismoilov,19,IT,1,2.8,72,3,6,8,5,28,17,startup,night,5,3,5,1,720,3
+46,Barcha Hamidova,22,Biology,3,3.4,83,4,7,5,8,57,10,research,morning,2,4,7,6,2000,1
+47,Mirzo Abdullayev,21,Physics,3,3.0,74,3,6,8,6,33,15,academic,afternoon,4,3,6,2,980,2
+48,Shahlo Muxtorov,23,Chemistry,4,3.8,93,6,8,3,9,82,5,research,morning,2,3,9,14,3800,0
+49,Doniyor Rустамов,20,Design,2,3.1,77,3,6,7,6,38,14,creative,afternoon,4,2,6,3,1150,2
+50,Kamola Haydarova,21,Economics,3,3.6,89,6,7,4,9,70,7,career,morning,3,4,8,9,2900,0
