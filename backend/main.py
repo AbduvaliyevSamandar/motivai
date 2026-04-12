@@ -1,16 +1,10 @@
-"""
-MotivAI Backend — FastAPI
-Render.com da ishlashi uchun optimallashtirilgan
-"""
 import os
 from contextlib import asynccontextmanager
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
-from config.database import connect_db, close_db
-from routers import auth_router, tasks_router, ai_router, leaderboard_router, users_router, admin_router
-
+from app.core.config import settings
+from app.db.database import connect_db, close_db
+from app.api.router import api_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,46 +12,31 @@ async def lifespan(app: FastAPI):
     yield
     await close_db()
 
-
 app = FastAPI(
     title="MotivAI API",
-    version="2.0.0",
-    description="AI-powered student motivation platform",
+    version="1.0.0",
     lifespan=lifespan,
+    docs_url="/docs",
 )
 
-# ── CORS ─────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # Production'da o'zgartiring
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ── ROUTERS ───────────────────────────────────────────────────────────────────
-PREFIX = "/api/v1"
-app.include_router(auth_router.router,        prefix=PREFIX)
-app.include_router(tasks_router.router,       prefix=PREFIX)
-app.include_router(ai_router.router,          prefix=PREFIX)
-app.include_router(leaderboard_router.router, prefix=PREFIX)
-app.include_router(users_router.router,       prefix=PREFIX)
-app.include_router(admin_router.router,       prefix=PREFIX)
-
-
-# ── HEALTH ───────────────────────────────────────────────────────────────────
-@app.get("/health")
-async def health():
-    return {"status": "ok", "version": "2.0.0"}
-
+app.include_router(api_router)
 
 @app.get("/")
 async def root():
-    return {"message": "MotivAI API v2.0 ishlayapti! /docs ga o'ting."}
+    return {"status": "running", "version": "1.0.0"}
 
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 
-# ── LOCAL RUN ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0",
-                port=int(os.getenv("PORT", 8000)), reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
