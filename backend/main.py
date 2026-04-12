@@ -1,84 +1,63 @@
-# main.py - MotivAI FastAPI Application Entry Point
-import logging
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+"""
+MotivAI Backend — FastAPI
+Render.com da ishlashi uchun optimallashtirilgan
+"""
+import os
 from contextlib import asynccontextmanager
 
-from app.core.config import settings
-from app.db.database import connect_db, close_db
-from app.api.router import api_router
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# ==============================
-# Logging
-# ==============================
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from config.database import connect_db, close_db
+from routers import auth_router, tasks_router, ai_router, leaderboard_router, users_router, admin_router
 
-# ==============================
-# App lifespan (startup / shutdown)
-# ==============================
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_db()
-    logger.info(f"🚀 {settings.APP_NAME} v{settings.APP_VERSION} started")
     yield
     await close_db()
 
-# ==============================
-# FastAPI app yaratish
-# ==============================
+
 app = FastAPI(
     title="MotivAI API",
-    description="Sun'iy intellekt yordamida talabalarning shaxsiy motivatsiya rejasini taklif qiluvchi platforma",
-    version=settings.APP_VERSION,
+    version="2.0.0",
+    description="AI-powered student motivation platform",
     lifespan=lifespan,
-    docs_url="/docs",
-    redoc_url="/redoc"
 )
 
-# ==============================
-# CORS Middleware
-# ==============================
+# ── CORS ─────────────────────────────────────────────────────────────────────
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "*"
-    ],
-    allow_credentials=False,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_origins=["*"],   # Production'da o'zgartiring
+    allow_credentials=True,
+    allow_methods=["*"],
     allow_headers=["*"],
-    max_age=600,
 )
 
-# ==============================
-# Routes
-# ==============================
-app.include_router(api_router)
+# ── ROUTERS ───────────────────────────────────────────────────────────────────
+PREFIX = "/api/v1"
+app.include_router(auth_router.router,        prefix=PREFIX)
+app.include_router(tasks_router.router,       prefix=PREFIX)
+app.include_router(ai_router.router,          prefix=PREFIX)
+app.include_router(leaderboard_router.router, prefix=PREFIX)
+app.include_router(users_router.router,       prefix=PREFIX)
+app.include_router(admin_router.router,       prefix=PREFIX)
 
-# ==============================
-# Root va Health check
-# ==============================
-@app.get("/")
-async def root():
-    return {
-        "app": settings.APP_NAME,
-        "version": settings.APP_VERSION,
-        "status": "running",
-        "docs": "/docs"
-    }
 
+# ── HEALTH ───────────────────────────────────────────────────────────────────
 @app.get("/health")
 async def health():
-    return {"status": "healthy", "app": settings.APP_NAME}
+    return {"status": "ok", "version": "2.0.0"}
 
-# ==============================
-# Uvicorn orqali ishga tushirish
-# ==============================
+
+@app.get("/")
+async def root():
+    return {"message": "MotivAI API v2.0 ishlayapti! /docs ga o'ting."}
+
+
+# ── LOCAL RUN ─────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(
-        "main:app",
-        host=settings.HOST,
-        port=settings.PORT,
-        reload=settings.DEBUG
-    )
+    uvicorn.run("main:app", host="0.0.0.0",
+                port=int(os.getenv("PORT", 8000)), reload=True)

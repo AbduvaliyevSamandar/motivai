@@ -1,136 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'dart:async';
+import '../config/theme.dart';
 
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
-
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _animationController;
-  late Animation<double> _fadeAnimation;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    // Animation setup
-    _animationController = AnimationController(
-      duration: const Duration(milliseconds: 2000),
-      vsync: this,
-    );
-
-    _fadeAnimation =
-        Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
-    _scaleAnimation =
-        Tween<double>(begin: 0.5, end: 1.0).animate(_animationController);
-
-    _animationController.forward();
-
-    // Navigate after delay
-    Timer(const Duration(seconds: 3), () {
-      if (mounted) {
-        context.go('/login');
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF2563EB), // Primary Blue
-              Color(0xFF8B5CF6), // Purple
-            ],
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo with fade and scale animation
-              ScaleTransition(
-                scale: _scaleAnimation,
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Container(
-                    width: 120,
-                    height: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        '🚀',
-                        style: TextStyle(fontSize: 60),
-                      ),
-                    ),
+      backgroundColor: C.bg,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 96, height: 96,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: C.gradPrimary,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: C.primary.withOpacity(0.4),
+                    blurRadius: 24, spreadRadius: 2,
                   ),
-                ),
+                ],
               ),
-              SizedBox(height: 40),
-              // App Name
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: Column(
-                  children: [
-                    Text(
-                      'MotivAI',
-                      style: TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    SizedBox(height: 12),
-                    Text(
-                      'Sizning Motivatsiyangiz - Bizning Missiyamiz',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withOpacity(0.8),
-                        fontStyle: FontStyle.italic,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
+              child: const Center(
+                child: Text('🚀', style: TextStyle(fontSize: 44)),
               ),
-              SizedBox(height: 80),
-              // Loading indicator
-              FadeTransition(
-                opacity: _fadeAnimation,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  strokeWidth: 3,
-                ),
+            ),
+            const SizedBox(height: 20),
+            const Text('MotivAI',
+                style: TextStyle(
+                  color: C.txt, fontSize: 30,
+                  fontWeight: FontWeight.bold, letterSpacing: 1,
+                )),
+            const SizedBox(height: 6),
+            const Text('Yuklanmoqda...',
+                style: TextStyle(color: C.sub, fontSize: 14)),
+            const SizedBox(height: 40),
+            SizedBox(
+              width: 36, height: 36,
+              child: CircularProgressIndicator(
+                color: C.primary.withOpacity(0.8),
+                strokeWidth: 2.5,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
