@@ -224,7 +224,7 @@ class _WeeklyChart extends StatelessWidget {
           child: BarChart(BarChartData(
             barTouchData: BarTouchData(
               touchTooltipData: BarTouchTooltipData(
-                getTooltipColor: (_) => C.surface,
+                tooltipBgColor: C.surface,
                 getTooltipItem: (g, _, rod, __) =>
                     BarTooltipItem(
                         '${rod.toY.toInt()} ball',

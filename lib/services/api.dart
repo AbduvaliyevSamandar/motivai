@@ -12,7 +12,7 @@ class ApiError implements Exception {
 }
 
 class AuthError extends ApiError {
-  AuthError(super.msg) : super(401);
+  AuthError(String msg) : super(msg, 401);
 }
 
 class Api {
@@ -47,27 +47,25 @@ class Api {
   }
 
   // ── POST ─────────────────────────────────────────────
-  Future<dynamic> post(
-    String ep,
-    Map<String, dynamic> body, {
-    bool auth = true,
-    Duration? timeout,
-  }) async {
-    final uri = Uri.parse('${K.base}$ep');
-    try {
-      final res = await http
-          .post(uri,
-              headers: await _headers(auth: auth),
-              body: jsonEncode(body))
-          .timeout(timeout ?? K.timeout);
-      return _parse(res);
-    } on ApiError {
-      rethrow;
-    } catch (e) {
-      throw ApiError('Tarmoq xatosi: $e');
-    }
+  Future<dynamic> post(String ep, Map<String, dynamic> body,
+    {bool auth = true, Duration? timeout}) async {
+  final uri = Uri.parse('${K.base}$ep');
+  try {
+    // ← BU QATORNI QO'SHING
+    print('POST $ep body: ${jsonEncode(body)}');
+    
+    final res = await http
+        .post(uri,
+            headers: await _headers(auth: auth),
+            body: jsonEncode(body))
+        .timeout(timeout ?? K.timeout);
+    return _parse(res);
+  } on ApiError {
+    rethrow;
+  } catch (e) {
+    throw ApiError('Tarmoq xatosi: $e');
   }
-
+}
   // ── PUT ──────────────────────────────────────────────
   Future<dynamic> put(String ep, Map<String, dynamic> body) async {
     final uri = Uri.parse('${K.base}$ep');

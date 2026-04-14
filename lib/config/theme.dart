@@ -58,12 +58,12 @@ class AppTheme {
       foregroundColor: C.txt,
       centerTitle: false,
     ),
-    cardTheme: CardTheme(
-      color: C.card,
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16)),
-    ),
+  cardTheme: CardThemeData(
+  color: C.card,
+  elevation: 0,
+  shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16)),
+),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor: C.surface,

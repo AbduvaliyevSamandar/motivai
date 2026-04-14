@@ -1,171 +1,178 @@
 import 'package:flutter/material.dart';
-import '../models/models.dart';
-import '../services/api_service.dart';
+import '../services/api.dart';
+import '../services/storage.dart';
+import '../config/constants.dart';
 
 class AuthProvider extends ChangeNotifier {
-  User? _user;
-  String? _accessToken;
-  bool _isLoading = false;
-  bool _isAuthenticated = false;
+  final _api   = Api();
+  final _store = Storage();
+
+  Map<String, dynamic>? _user;
+  String? _token;
+  bool    _loading = true;
   String? _error;
 
-  User? get user => _user;
-  String? get accessToken => _accessToken;
-  bool get isLoading => _isLoading;
-  bool get isAuthenticated => _isAuthenticated;
-  String? get error => _error;
+  bool    get isLoggedIn  => _token != null && _user != null;
+  bool    get isLoading   => _loading;
+  String? get token       => _token;
+  String? get error       => _error;
+  Map<String, dynamic>? get user => _user;
 
-  AuthProvider() {
-    _initializeAuth();
+  String get name       => _user?['full_name'] ?? _user?['username'] ?? '';
+  String get email      => _user?['email']     ?? '';
+  int    get points     => (_user?['points']   ?? 0) as int;
+  int    get level      => (_user?['level']    ?? 1) as int;
+  int    get streak     => (_user?['streak']   ?? 0) as int;
+  int    get totalTasks => (_user?['total_tasks_completed'] ?? 0) as int;
+  String get role       => _user?['role']      ?? 'student';
+  bool   get isAdmin    => role == 'admin';
+  List   get achiev     => (_user?['achievements'] as List?) ?? [];
+  String get userId     => _user?['id']?.toString() ?? _user?['_id']?.toString() ?? '';
+
+  String get levelEmoji {
+    if (level >= 15) return '💎';
+    if (level >= 10) return '🔥';
+    if (level >= 7)  return '⭐';
+    if (level >= 4)  return '🚀';
+    if (level >= 2)  return '📚';
+    return '🌱';
   }
 
-  Future<void> _initializeAuth() async {
+  AuthProvider() { _init(); }
+
+  Future<void> _init() async {
+    _loading = true;
+    notifyListeners();
     try {
-      final tokenExists = await ApiService.loadTokens();
-      
-      // Only try to fetch user if we have a token
-      if (tokenExists) {
-        try {
-          _user = await ApiService.getCurrentUser();
-          _isAuthenticated = true;
-        } catch (e) {
-          // Token might be expired, clear it
-          print('Failed to fetch user profile: $e');
-          _isAuthenticated = false;
-          _user = null;
-        }
-      } else {
-        // No token saved, user needs to login
-        _isAuthenticated = false;
-        _user = null;
+      final tok = await _store.getToken();
+      if (tok != null) {
+        _token = tok;
+        final cached = await _store.getUser();
+        if (cached != null) _user = cached;
+        _refreshProfile().catchError((_) {});
       }
-      notifyListeners();
-    } catch (e) {
-      print('Auth initialization error: $e');
-      _isAuthenticated = false;
-      _user = null;
+    } catch (_) {
+      await _store.clearAll();
+      _token = null;
+      _user  = null;
+    } finally {
+      _loading = false;
       notifyListeners();
     }
   }
 
-  Future<bool> register({
-    required String email,
-    required String username,
-    required String fullName,
-    required String password,
-  }) async {
-    try {
-      _isLoading = true;
-      _error = null;
+  Future<void> _refreshProfile() async {
+  try {
+    final res = await _api.get(K.me);
+    // Backend: {"success":true, "data": {"user":...}}
+    final data = res['data'] as Map?;
+    final userMap = data?['user'] as Map?;
+    if (userMap != null) {
+      _user = userMap.cast<String, dynamic>();
+      await _store.saveUser(_user!);
       notifyListeners();
-
-      await ApiService.register(
-        email: email,
-        username: username,
-        fullName: fullName,
-        password: password,
-      );
-
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
-      return false;
     }
+  } on AuthError {
+    await _store.clearAll();
+    _token = null;
+    _user  = null;
+    notifyListeners();
   }
+}
+  // ── LOGIN ─────────────────────────────────────────────
+  // ── LOGIN ─────────────────────────────────────────────
+Future<bool> login(String email, String password) async {
+  _error   = null;
+  _loading = true;
+  notifyListeners();
+  try {
+    final res = await _api.post(
+      K.login,
+      {'email': email, 'password': password},
+      auth: false,
+    );
+    // Backend: {"success":true, "data": {"token":..., "user":...}}
+    final data = res['data'] as Map;
+    _token = data['token']?.toString();
+    if (_token == null) throw ApiError('Token olinmadi');
 
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
-    try {
-      _isLoading = true;
-      _error = null;
-      notifyListeners();
+    final userMap = data['user'] as Map?;
+    _user = userMap?.cast<String, dynamic>();
 
-      final result = await ApiService.login(
-        email: email,
-        password: password,
-      );
-
-      // Handle backend response structure: {success, message, data: {token, user}}
-      print('Login response: $result');
-      
-      final data = result['data'] ?? result;
-      
-      if (data['token'] == null && data['access_token'] == null) {
-        throw Exception('No access token in response');
-      }
-
-      if (data['user'] == null) {
-        throw Exception('No user data in response: $data');
-      }
-
-      // Get token from either 'token' or 'access_token' field
-      _accessToken = data['token'] ?? data['access_token'];
-      
-      try {
-        _user = User.fromJson(data['user']);
-        print('User parsed successfully: ${_user?.email}');
-      } catch (e) {
-        print('Error parsing user data: $e');
-        print('User data: ${data['user']}');
-        throw Exception('Invalid user data format: $e');
-      }
-      _isAuthenticated = true;
-
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = 'Login failed: ${e.toString()}';
-      print('Login error: $e');
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    }
+    await _store.saveToken(_token!);
+    if (_user != null) await _store.saveUser(_user!);
+    _loading = false;
+    notifyListeners();
+    return true;
+  } catch (e) {
+    _error   = e.toString();
+    _loading = false;
+    notifyListeners();
+    return false;
   }
+}
 
+// ── REGISTER ──────────────────────────────────────────
+Future<bool> register({
+  required String fullName,
+  required String username,
+  required String email,
+  required String password,
+  List<String> subjects  = const [],
+  String difficulty      = 'medium',
+}) async {
+  _error   = null;
+  _loading = true;
+  notifyListeners();
+  try {
+    // Backend faqat: name, email, password, language, country
+    final res = await _api.post(
+  K.register,
+  {
+    'name':     fullName,
+    'email':    email,
+    'password': password,
+    'language': 'uz',
+    'country':  'UZ',
+  },
+  auth: false,
+);
+    // Backend: {"success":true, "data": {"token":..., "user":...}}
+    final data = res['data'] as Map;
+    _token = data['token']?.toString();
+    if (_token == null) throw ApiError('Token olinmadi');
+
+    final userMap = data['user'] as Map?;
+    _user = userMap?.cast<String, dynamic>();
+
+    await _store.saveToken(_token!);
+    if (_user != null) await _store.saveUser(_user!);
+    _loading = false;
+    notifyListeners();
+    return true;
+  } catch (e) {
+    _error   = e.toString();
+    _loading = false;
+    notifyListeners();
+    return false;
+  }
+}
+
+  // ── LOGOUT ────────────────────────────────────────────
   Future<void> logout() async {
-    try {
-      await ApiService.logout();
-      _user = null;
-      _accessToken = null;
-      _isAuthenticated = false;
-      _error = null;
-      notifyListeners();
-    } catch (e) {
-      _error = e.toString();
-      notifyListeners();
-    }
+    try { await _api.post(K.logout, {}); } catch (_) {}
+    await _store.clearAll();
+    _token = null;
+    _user  = null;
+    notifyListeners();
   }
 
-  Future<void> updateProfile({
-    required String fullName,
-    String? bio,
-    String? avatarUrl,
-  }) async {
-    try {
-      _isLoading = true;
-      notifyListeners();
+  Future<void> refresh() async => _refreshProfile();
 
-      await ApiService.updateProfile(
-        fullName: fullName,
-        bio: bio,
-        avatarUrl: avatarUrl,
-      );
-
-      _user = await ApiService.getCurrentUser();
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
-    }
+  void updateLocal(Map<String, dynamic> patch) {
+    _user = {...?_user, ...patch};
+    _store.saveUser(_user!);
+    notifyListeners();
   }
 
   void clearError() {
