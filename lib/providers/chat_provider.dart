@@ -8,94 +8,117 @@ class ChatProvider extends ChangeNotifier {
   final _api   = Api();
   final _store = Storage();
 
-  List<ChatMsg>       _msgs   = [];
-  bool                _typing = false;
-  String?             _error;
-  List<TaskSuggestion>_pending= [];
+  List<ChatMsg>        _msgs   = [];
+  bool                 _typing = false;
+  String?              _error;
+  List<TaskSuggestion> _pending = [];
 
-  List<ChatMsg>        get msgs    => _msgs;
+  List<ChatMsg>        get msgs    => List.unmodifiable(_msgs);
   bool                 get isTyping=> _typing;
   String?              get error   => _error;
   List<TaskSuggestion> get pending => _pending;
 
   void updateToken(String? _) {}
 
-  static const _welcome = ChatMsg(
-    id: 'w0', role: 'assistant',
-    content: '👋 Salom! Men **MotivAI** — sizning shaxsiy sun\'iy intellekt motivatsion assistentingizman! 🚀\n\n'
-        'Menda quyidagilarni so\'rashingiz mumkin:\n'
-        '• 📋 Bugunlik motivatsiya rejasi\n'
-        '• 🎯 Maqsadlaringizga mos vazifalar\n'
-        '• 💪 Qiynalayotgan soha bo\'yicha maslahat\n'
-        '• 🔥 Streak uzilmasligi uchun strategiya\n\n'
-        'Nima haqida gaplashmoqchisiz?',
-    timestamp: Duration.zero, // placeholder, real vaqt ishlatiladi
-    isError: false,
-  );
-
+  // ── INIT ──────────────────────────────────────────────
   Future<void> init() async {
     final saved = await _store.loadChat();
     if (saved.isEmpty) {
-      _msgs = [_realWelcome()];
+      _msgs = [_welcome()];
     } else {
       _msgs = saved.map(ChatMsg.fromJson).toList();
+      // Eski suhbat bo'lsa yangi welcome qo'shmaymiz
     }
     notifyListeners();
   }
 
-  ChatMsg _realWelcome() => ChatMsg(
-    id: 'welcome',
-    role: 'assistant',
-    content: '👋 Salom! Men **MotivAI** — sizning shaxsiy AI motivatsion assistentingizman! 🚀\n\n'
+  ChatMsg _welcome() => ChatMsg(
+    id:        'welcome_${DateTime.now().millisecondsSinceEpoch}',
+    role:      'assistant',
+    content:
+        '👋 Salom! Men **MotivAI** — sizning AI motivatsion assistentingizman!\n\n'
         'Quyidagilarni so\'rashingiz mumkin:\n'
-        '• 📋 Bugunlik motivatsiya rejasi\n'
-        '• 🎯 Maqsadlaringizga mos vazifalar\n'
+        '• 📋 Bugunlik yoki haftalik motivatsiya rejasi\n'
+        '• 🎯 Qiziqishlaringizga mos vazifalar\n'
         '• 💪 Qiynalayotgan soha bo\'yicha maslahat\n'
-        '• 🔥 Streak uzilmasligi uchun strategiya\n\n'
+        '• 🔥 Streak saqlash strategiyasi\n\n'
         'Nima haqida gaplashmoqchisiz?',
     timestamp: DateTime.now(),
   );
 
   // ── SEND ──────────────────────────────────────────────
-  Future<void> send(String text, {Map<String, dynamic>? ctx}) async {
+  Future<void> send(String text,
+      {Map<String, dynamic>? ctx}) async {
     if (text.trim().isEmpty) return;
 
     final userMsg = ChatMsg(
-      id: _uid(), role: 'user', content: text, timestamp: DateTime.now(),
+      id:        '${DateTime.now().microsecondsSinceEpoch}',
+      role:      'user',
+      content:   text.trim(),
+      timestamp: DateTime.now(),
     );
+
     _msgs.add(userMsg);
-    _typing = true; _error = null; _pending = [];
+    _typing  = true;
+    _error   = null;
+    _pending = [];
     notifyListeners();
 
     try {
       // Oxirgi 8 xabar tarixi
       final history = _msgs
           .where((m) => m.id != userMsg.id)
-          .toList().reversed.take(8).toList().reversed
+          .toList()
+          .reversed
+          .take(8)
+          .toList()
+          .reversed
           .map((m) => {'role': m.role, 'content': m.content})
           .toList();
 
-      final res = await _api.post(K.aiChat, {
-        'message': text,
-        'history': history,
-        'user_context': ctx ?? {},
-      }, timeout: K.aiTimeout);
+      final res = await _api.post(
+        K.aiChat,
+        {
+          'message':      text.trim(),
+          'history':      history,
+          'user_context': ctx ?? {},
+        },
+        timeout: K.aiTimeout,
+      );
+
+      final content = res['response']?.toString() ??
+          res['message']?.toString() ??
+          'Javob olishda xato yuz berdi.';
+
+      final rawTasks = res['suggested_tasks'];
+      List<TaskSuggestion>? tasks;
+      if (rawTasks is List && rawTasks.isNotEmpty) {
+        tasks = rawTasks
+            .map((t) => TaskSuggestion.fromJson(
+                t as Map<String, dynamic>))
+            .toList();
+      }
 
       final aiMsg = ChatMsg(
-        id: _uid(), role: 'assistant',
-        content: (res['response'] ?? res['message'] ?? 'Javob olishda xato').toString(),
+        id:        '${DateTime.now().microsecondsSinceEpoch}',
+        role:      'assistant',
+        content:   content,
         timestamp: DateTime.now(),
-        tasks: _parseTasks(res['suggested_tasks']),
+        tasks:     tasks,
       );
+
       _msgs.add(aiMsg);
-      _pending = aiMsg.tasks ?? [];
+      _pending = tasks ?? [];
     } catch (e) {
       _error = e.toString();
       _msgs.add(ChatMsg(
-        id: _uid(), role: 'assistant',
-        content: '❌ Xato: ${e.toString()}\n\nQayta urinib ko\'ring.',
+        id:        'err_${DateTime.now().millisecondsSinceEpoch}',
+        role:      'assistant',
+        content:
+            '❌ Xato yuz berdi: ${e.toString()}\n\n'
+            'Qayta urinib ko\'ring yoki internet aloqasini tekshiring.',
         timestamp: DateTime.now(),
-        isError: true,
+        isError:   true,
       ));
     }
 
@@ -104,18 +127,24 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── ADD SUGGESTED TASKS ───────────────────────────────
+  // ── ADD TASKS TO DAILY LIST ────────────────────────────
   Future<bool> addToDaily(List<TaskSuggestion> selected) async {
+    if (selected.isEmpty) return false;
     try {
       await _api.post(K.fromChat, {
         'tasks': selected.map((t) => t.toJson()).toList(),
       });
-      _msgs.add(ChatMsg(
-        id: _uid(), role: 'assistant',
-        content: '✅ ${selected.length} ta vazifa kunlik ro\'yxatingizga qo\'shildi!\n'
-            'Ularni bajarganingizdan keyin belgilang va ball to\'plang! 💪',
+
+      final confirmMsg = ChatMsg(
+        id:        'confirm_${DateTime.now().millisecondsSinceEpoch}',
+        role:      'assistant',
+        content:
+            '✅ Ajoyib! **${selected.length} ta vazifa** '
+            'kunlik ro\'yxatingizga qo\'shildi!\n\n'
+            'Ularni bajarib ball to\'plang va reytingda yuqorilang! 💪🏆',
         timestamp: DateTime.now(),
-      ));
+      );
+      _msgs.add(confirmMsg);
       _pending = [];
       await _store.saveChat(_msgs.map((m) => m.toJson()).toList());
       notifyListeners();
@@ -127,16 +156,16 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
+  // ── CLEAR ─────────────────────────────────────────────
   void clearHistory() {
-    _msgs = [_realWelcome()];
+    _msgs    = [_welcome()];
+    _pending = [];
     _store.clearChat();
     notifyListeners();
   }
 
-  List<TaskSuggestion>? _parseTasks(dynamic raw) {
-    if (raw is! List) return null;
-    return raw.map((t) => TaskSuggestion.fromJson(t as Map<String, dynamic>)).toList();
+  void clearError() {
+    _error = null;
+    notifyListeners();
   }
-
-  String _uid() => DateTime.now().microsecondsSinceEpoch.toString();
 }

@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class C {
-  static const primary     = Color(0xFF6C63FF);
-  static const primaryDark = Color(0xFF4A42CC);
-  static const accent      = Color(0xFFFF6584);
-  static const gold        = Color(0xFFFFD700);
-  static const success     = Color(0xFF43E97B);
-  static const teal        = Color(0xFF38F9D7);
-  static const warning     = Color(0xFFFFA726);
-  static const error       = Color(0xFFEF5350);
+  // Brand colors
+  static const primary      = Color(0xFF6C63FF);
+  static const primaryLight = Color(0xFF9B94FF);
+  static const accent       = Color(0xFFFF6584);
+  static const gold         = Color(0xFFFFD700);
+  static const success      = Color(0xFF43E97B);
+  static const teal         = Color(0xFF38F9D7);
+  static const warning      = Color(0xFFFFA726);
+  static const error        = Color(0xFFEF5350);
 
+  // Dark theme
   static const bg      = Color(0xFF0F0E17);
   static const surface = Color(0xFF1A1929);
   static const card    = Color(0xFF242338);
@@ -18,12 +20,14 @@ class C {
   static const txt     = Color(0xFFF5F5F5);
   static const sub     = Color(0xFF9D9BBE);
 
+  // Gradients
   static const List<Color> gradPrimary = [Color(0xFF6C63FF), Color(0xFF9B94FF)];
   static const List<Color> gradAccent  = [Color(0xFFFF6584), Color(0xFFFF8E53)];
   static const List<Color> gradGreen   = [Color(0xFF43E97B), Color(0xFF38F9D7)];
   static const List<Color> gradGold    = [Color(0xFFFFD700), Color(0xFFFFA726)];
 
-  static const catColors = <String, Color>{
+  // Category colors
+  static const Map<String, Color> cat = {
     'study':       Color(0xFF6C63FF),
     'exercise':    Color(0xFF43E97B),
     'reading':     Color(0xFFFF6584),
@@ -37,6 +41,7 @@ class C {
 
 class AppTheme {
   static ThemeData get dark => ThemeData(
+    useMaterial3: true,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: C.bg,
     primaryColor: C.primary,
@@ -48,15 +53,20 @@ class AppTheme {
     ),
     textTheme: GoogleFonts.soraTextTheme(ThemeData.dark().textTheme),
     appBarTheme: const AppBarTheme(
-      backgroundColor: Colors.transparent, elevation: 0,
-      foregroundColor: C.txt, centerTitle: false,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      foregroundColor: C.txt,
+      centerTitle: false,
     ),
     cardTheme: CardTheme(
-      color: C.card, elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: C.card,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16)),
     ),
     inputDecorationTheme: InputDecorationTheme(
-      filled: true, fillColor: C.surface,
+      filled: true,
+      fillColor: C.surface,
       border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: C.border)),
@@ -68,13 +78,18 @@ class AppTheme {
           borderSide: const BorderSide(color: C.primary, width: 2)),
       labelStyle: const TextStyle(color: C.sub),
       hintStyle: const TextStyle(color: C.sub),
+      prefixIconColor: C.sub,
+      suffixIconColor: C.sub,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: C.primary, foregroundColor: Colors.white,
+        backgroundColor: C.primary,
+        foregroundColor: Colors.white,
         minimumSize: const Size(double.infinity, 52),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        textStyle: GoogleFonts.sora(fontSize: 16, fontWeight: FontWeight.w600),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12)),
+        textStyle: GoogleFonts.sora(
+            fontSize: 16, fontWeight: FontWeight.w600),
       ),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -84,6 +99,11 @@ class AppTheme {
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       elevation: 0,
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ),
   );
 }

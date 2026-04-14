@@ -16,21 +16,18 @@ dependencies:
   # HTTP
   http: ^1.2.0
 
-  # Secure token storage — ilovadan chiqsa ham saqlaydi
+  # Token xavfsiz saqlash (ilovadan chiqsa ham qoladi)
   flutter_secure_storage: ^9.0.0
   shared_preferences: ^2.2.2
 
-  # UI
+  # UI Components
   fl_chart: ^0.66.2
   percent_indicator: ^4.2.3
   shimmer: ^3.0.0
   google_fonts: ^6.1.0
-  lottie: ^3.0.0
 
   # Utils
   intl: ^0.19.0
-  connectivity_plus: ^5.0.2
-  package_info_plus: ^5.0.1
 
   cupertino_icons: ^1.0.6
 

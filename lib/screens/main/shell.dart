@@ -11,16 +11,16 @@ import '../chat/chat_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
-  @override State<MainShell> createState() => _State();
+  @override State<MainShell> createState() => _ShellState();
 }
 
-class _State extends State<MainShell> {
-  int  _idx   = 0;
-  bool _inited= false;
+class _ShellState extends State<MainShell> {
+  int  _idx    = 0;
+  bool _inited = false;
 
   static const _screens = [
     DashboardScreen(),
-    ChatScreen(),         // AI Chat — 2-chi tab
+    ChatScreen(),
     LeaderboardScreen(),
     ProgressScreen(),
     AchievementsScreen(),
@@ -29,7 +29,8 @@ class _State extends State<MainShell> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _init());
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _init());
   }
 
   Future<void> _init() async {
@@ -44,7 +45,8 @@ class _State extends State<MainShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(index: _idx, children: _screens),
+      body: IndexedStack(
+          index: _idx, children: _screens),
       bottomNavigationBar: _buildNav(),
     );
   }
@@ -53,7 +55,8 @@ class _State extends State<MainShell> {
     return Container(
       decoration: const BoxDecoration(
         color: C.surface,
-        border: Border(top: BorderSide(color: C.border, width: 0.8)),
+        border: Border(
+            top: BorderSide(color: C.border, width: 0.8)),
       ),
       child: BottomNavigationBar(
         currentIndex: _idx,
@@ -64,24 +67,31 @@ class _State extends State<MainShell> {
         selectedItemColor: C.primary,
         unselectedItemColor: C.sub,
         showUnselectedLabels: true,
-        selectedLabelStyle: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600),
-        unselectedLabelStyle: const TextStyle(fontSize: 10),
+        selectedLabelStyle: const TextStyle(
+            fontSize: 10, fontWeight: FontWeight.w600),
+        unselectedLabelStyle:
+            const TextStyle(fontSize: 10),
         items: [
           const BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home),
-            label: 'Bosh sahifa'),
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Bosh sahifa'),
           BottomNavigationBarItem(
-            icon: _aiIcon(false), activeIcon: _aiIcon(true),
-            label: 'AI Chat'),
+              icon: _aiIcon(false),
+              activeIcon: _aiIcon(true),
+              label: 'AI Chat'),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.leaderboard_outlined), activeIcon: Icon(Icons.leaderboard),
-            label: 'Reyting'),
+              icon: Icon(Icons.leaderboard_outlined),
+              activeIcon: Icon(Icons.leaderboard),
+              label: 'Reyting'),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart_outlined), activeIcon: Icon(Icons.bar_chart),
-            label: 'Tahlil'),
+              icon: Icon(Icons.bar_chart_outlined),
+              activeIcon: Icon(Icons.bar_chart),
+              label: 'Tahlil'),
           const BottomNavigationBarItem(
-            icon: Icon(Icons.emoji_events_outlined), activeIcon: Icon(Icons.emoji_events),
-            label: 'Yutuqlar'),
+              icon: Icon(Icons.emoji_events_outlined),
+              activeIcon: Icon(Icons.emoji_events),
+              label: 'Yutuqlar'),
         ],
       ),
     );
@@ -92,10 +102,12 @@ class _State extends State<MainShell> {
     padding: const EdgeInsets.all(6),
     decoration: active
         ? BoxDecoration(
-            gradient: const LinearGradient(colors: C.gradPrimary),
+            gradient: const LinearGradient(
+                colors: C.gradPrimary),
             borderRadius: BorderRadius.circular(10))
         : null,
     child: Icon(Icons.smart_toy_outlined,
-        color: active ? Colors.white : C.sub, size: 22),
+        color: active ? Colors.white : C.sub,
+        size: 22),
   );
 }

@@ -5,13 +5,14 @@ import 'config/theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/task_provider.dart';
 import 'providers/chat_provider.dart';
+import 'screens/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/main/shell.dart';
-import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
@@ -28,15 +29,15 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProxyProvider<AuthProvider, TaskProvider>(
-          create: (_) => TaskProvider(),
-          update: (_, auth, prev) {
+          create:  (_) => TaskProvider(),
+          update:  (_, auth, prev) {
             prev?.updateToken(auth.token);
             return prev ?? TaskProvider();
           },
         ),
         ChangeNotifierProxyProvider<AuthProvider, ChatProvider>(
-          create: (_) => ChatProvider(),
-          update: (_, auth, prev) {
+          create:  (_) => ChatProvider(),
+          update:  (_, auth, prev) {
             prev?.updateToken(auth.token);
             return prev ?? ChatProvider();
           },
@@ -47,10 +48,10 @@ class App extends StatelessWidget {
           title: 'MotivAI',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.dark,
-          // ─── ROUTING ────────────────────────────────────
-          // isLoading=true → Splash (token tekshirilmoqda)
-          // isLoggedIn=true → MainShell
-          // isLoggedIn=false → LoginScreen
+          // ── ROUTING ─────────────────────────────────
+          // isLoading → Splash (token tekshirilmoqda)
+          // isLoggedIn → MainShell
+          // !isLoggedIn → LoginScreen
           home: auth.isLoading
               ? const SplashScreen()
               : auth.isLoggedIn

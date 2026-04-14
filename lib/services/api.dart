@@ -3,13 +3,14 @@ import 'package:http/http.dart' as http;
 import '../config/constants.dart';
 import 'storage.dart';
 
-// Xato turlari
 class ApiError implements Exception {
   final String message;
-  final int?   statusCode;
-  ApiError(this.message, [this.statusCode]);
-  @override String toString() => message;
+  final int?   code;
+  ApiError(this.message, [this.code]);
+  @override
+  String toString() => message;
 }
+
 class AuthError extends ApiError {
   AuthError(super.msg) : super(401);
 }
@@ -32,35 +33,56 @@ class Api {
 
   // ── GET ───────────────────────────────────────────────
   Future<dynamic> get(String ep) async {
-    final res = await http
-        .get(Uri.parse('${K.baseUrl}$ep'), headers: await _headers())
-        .timeout(K.connectTimeout);
-    return _parse(res);
+    final uri = Uri.parse('${K.base}$ep');
+    try {
+      final res = await http
+          .get(uri, headers: await _headers())
+          .timeout(K.timeout);
+      return _parse(res);
+    } on ApiError {
+      rethrow;
+    } catch (e) {
+      throw ApiError('Tarmoq xatosi: $e');
+    }
   }
 
-  // ── POST ──────────────────────────────────────────────
-  Future<dynamic> post(String ep, Map<String, dynamic> body,
-      {bool auth = true, Duration? timeout}) async {
-    final res = await http
-        .post(
-          Uri.parse('${K.baseUrl}$ep'),
-          headers: await _headers(auth: auth),
-          body: jsonEncode(body),
-        )
-        .timeout(timeout ?? K.connectTimeout);
-    return _parse(res);
+  // ── POST ─────────────────────────────────────────────
+  Future<dynamic> post(
+    String ep,
+    Map<String, dynamic> body, {
+    bool auth = true,
+    Duration? timeout,
+  }) async {
+    final uri = Uri.parse('${K.base}$ep');
+    try {
+      final res = await http
+          .post(uri,
+              headers: await _headers(auth: auth),
+              body: jsonEncode(body))
+          .timeout(timeout ?? K.timeout);
+      return _parse(res);
+    } on ApiError {
+      rethrow;
+    } catch (e) {
+      throw ApiError('Tarmoq xatosi: $e');
+    }
   }
 
-  // ── PUT ───────────────────────────────────────────────
+  // ── PUT ──────────────────────────────────────────────
   Future<dynamic> put(String ep, Map<String, dynamic> body) async {
-    final res = await http
-        .put(
-          Uri.parse('${K.baseUrl}$ep'),
-          headers: await _headers(),
-          body: jsonEncode(body),
-        )
-        .timeout(K.connectTimeout);
-    return _parse(res);
+    final uri = Uri.parse('${K.base}$ep');
+    try {
+      final res = await http
+          .put(uri,
+              headers: await _headers(),
+              body: jsonEncode(body))
+          .timeout(K.timeout);
+      return _parse(res);
+    } on ApiError {
+      rethrow;
+    } catch (e) {
+      throw ApiError('Tarmoq xatosi: $e');
+    }
   }
 
   // ── PARSE ─────────────────────────────────────────────
@@ -68,11 +90,14 @@ class Api {
     final body = jsonDecode(utf8.decode(res.bodyBytes));
     if (res.statusCode >= 200 && res.statusCode < 300) return body;
     if (res.statusCode == 401) {
-      throw AuthError(body['detail']?.toString() ?? 'Token muddati tugagan');
+      throw AuthError(
+          _msg(body) ?? 'Avtorizatsiya xatosi. Qayta kiring.');
     }
     throw ApiError(
-      body['detail']?.toString() ?? body['message']?.toString() ?? 'Xato yuz berdi',
-      res.statusCode,
-    );
+        _msg(body) ?? 'Server xatosi (${res.statusCode})',
+        res.statusCode);
   }
+
+  String? _msg(dynamic b) =>
+      b is Map ? (b['detail'] ?? b['message'])?.toString() : null;
 }

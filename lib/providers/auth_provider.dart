@@ -9,26 +9,26 @@ class AuthProvider extends ChangeNotifier {
 
   Map<String, dynamic>? _user;
   String? _token;
-  bool    _loading = true; // true = splash screen ko'rsatiladi
+  bool    _loading = true; // splash uchun
   String? _error;
 
-  // ── GETTERS ───────────────────────────────────────────
-  bool   get isLoggedIn => _token != null && _user != null;
-  bool   get isLoading  => _loading;
-  String? get token     => _token;
-  String? get error     => _error;
+  // ── Getters ───────────────────────────────────────────
+  bool    get isLoggedIn => _token != null && _user != null;
+  bool    get isLoading  => _loading;
+  String? get token      => _token;
+  String? get error      => _error;
   Map<String, dynamic>? get user => _user;
 
-  String get name    => _user?['full_name'] ?? _user?['username'] ?? 'Foydalanuvchi';
-  String get email   => _user?['email'] ?? '';
-  int    get points  => (_user?['points'] ?? 0) as int;
-  int    get level   => (_user?['level']  ?? 1) as int;
-  int    get streak  => (_user?['streak'] ?? 0) as int;
-  String get role    => _user?['role'] ?? 'student';
+  String get name    => _user?['full_name'] ?? _user?['username'] ?? '';
+  String get email   => _user?['email']     ?? '';
+  int    get points  => (_user?['points']   ?? 0)  as int;
+  int    get level   => (_user?['level']    ?? 1)  as int;
+  int    get streak  => (_user?['streak']   ?? 0)  as int;
+  int    get totalTasks => (_user?['total_tasks_completed'] ?? 0) as int;
+  String get role    => _user?['role']      ?? 'student';
   bool   get isAdmin => role == 'admin';
-  List   get achiev  => _user?['achievements'] ?? [];
+  List   get achiev  => (_user?['achievements'] as List?) ?? [];
 
-  // Daraja emojisi
   String get levelEmoji {
     if (level >= 15) return '💎';
     if (level >= 10) return '🔥';
@@ -38,21 +38,23 @@ class AuthProvider extends ChangeNotifier {
     return '🌱';
   }
 
-  // ── INIT — app ochilganda token tekshiradi ─────────────
-  AuthProvider() { _init(); }
+  // ── INIT — app ochilganda token tekshiradi ────────────
+  AuthProvider() {
+    _init();
+  }
 
   Future<void> _init() async {
     _loading = true;
     notifyListeners();
     try {
-      final savedToken = await _store.getToken();
-      if (savedToken != null) {
-        _token = savedToken;
-        // Keshdan foydalanuvchini yuklaymiz (tez)
+      final tok = await _store.getToken();
+      if (tok != null) {
+        _token = tok;
+        // Keshdan tez yuklash
         final cached = await _store.getUser();
         if (cached != null) _user = cached;
-        // Serverdan yangilaymiz (background)
-        _refreshProfile().catchError((_) {});
+        // Backgroundda serverdan yangilash
+        _refresh().catchError((_) {});
       }
     } catch (_) {
       await _store.clearAll();
@@ -64,10 +66,10 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _refreshProfile() async {
+  Future<void> _refresh() async {
     try {
       final data = await _api.get(K.me);
-      _user = data as Map<String, dynamic>;
+      _user = (data as Map).cast<String, dynamic>();
       await _store.saveUser(_user!);
       notifyListeners();
     } on AuthError {
@@ -81,32 +83,36 @@ class AuthProvider extends ChangeNotifier {
 
   // ── LOGIN ─────────────────────────────────────────────
   Future<bool> login(String email, String password) async {
-    _setLoading(true);
     _error = null;
+    _loading = true;
+    notifyListeners();
     try {
       final data = await _api.post(
         K.login,
         {'email': email, 'password': password},
         auth: false,
       );
-
-      _token = data['access_token'] as String;
+      _token = data['access_token']?.toString();
       _user  = (data['user'] as Map?)?.cast<String, dynamic>();
 
-      // Profil alohida endpoint bo'lsa
+      if (_token == null) throw ApiError('Token olinmadi');
+
+      // Profil alohida bo'lsa
       if (_user == null) {
-        final old = _token;
-        await _store.saveToken(old!);
-        _user = await _api.get(K.me) as Map<String, dynamic>;
+        await _store.saveToken(_token!);
+        final d = await _api.get(K.me);
+        _user = (d as Map).cast<String, dynamic>();
       }
 
       await _store.saveToken(_token!);
       await _store.saveUser(_user!);
-      _setLoading(false);
+      _loading = false;
+      notifyListeners();
       return true;
     } catch (e) {
       _error = e.toString();
-      _setLoading(false);
+      _loading = false;
+      notifyListeners();
       return false;
     }
   }
@@ -120,49 +126,60 @@ class AuthProvider extends ChangeNotifier {
     List<String> subjects = const [],
     String difficulty = 'medium',
   }) async {
-    _setLoading(true);
     _error = null;
+    _loading = true;
+    notifyListeners();
     try {
-      final data = await _api.post(K.register, {
-        'full_name':       fullName,
-        'username':        username,
-        'email':           email,
-        'password':        password,
-        'subjects':        subjects,
-        'difficulty_pref': difficulty,
-      }, auth: false);
-
-      _token = data['access_token'] as String;
+      final data = await _api.post(
+        K.register,
+        {
+          'full_name':       fullName,
+          'username':        username,
+          'email':           email,
+          'password':        password,
+          'subjects':        subjects,
+          'difficulty_pref': difficulty,
+        },
+        auth: false,
+      );
+      _token = data['access_token']?.toString();
       _user  = (data['user'] as Map?)?.cast<String, dynamic>();
-      if (_user == null && _token != null) {
+
+      if (_token == null) throw ApiError('Token olinmadi');
+
+      if (_user == null) {
         await _store.saveToken(_token!);
-        _user = await _api.get(K.me) as Map<String, dynamic>;
+        final d = await _api.get(K.me);
+        _user = (d as Map).cast<String, dynamic>();
       }
 
       await _store.saveToken(_token!);
       await _store.saveUser(_user!);
-      _setLoading(false);
+      _loading = false;
+      notifyListeners();
       return true;
     } catch (e) {
       _error = e.toString();
-      _setLoading(false);
+      _loading = false;
+      notifyListeners();
       return false;
     }
   }
 
   // ── LOGOUT ────────────────────────────────────────────
-  /// Bu yerda Navigator ishlatilmaydi — Consumer<AuthProvider>
-  /// LoginScreen ga avtomatik yo'naltiradi
+  // Consumer<AuthProvider> avtomatik LoginScreen ko'rsatadi
   Future<void> logout() async {
-    try { await _api.post(K.logout, {}); } catch (_) {}
+    try {
+      await _api.post(K.logout, {});
+    } catch (_) {}
     await _store.clearAll();
     _token = null;
     _user  = null;
-    notifyListeners(); // → main.dart Consumer LoginScreen ko'rsatadi
+    notifyListeners();
   }
 
   // ── REFRESH ───────────────────────────────────────────
-  Future<void> refresh() async => _refreshProfile();
+  Future<void> refresh() async => _refresh();
 
   void updateLocal(Map<String, dynamic> patch) {
     _user = {...?_user, ...patch};
@@ -170,7 +187,8 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearError() { _error = null; notifyListeners(); }
-
-  void _setLoading(bool v) { _loading = v; notifyListeners(); }
+  void clearError() {
+    _error = null;
+    notifyListeners();
+  }
 }
