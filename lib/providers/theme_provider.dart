@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/colors.dart';
 import '../config/theme.dart';
 import '../config/strings.dart';
 
@@ -20,6 +21,7 @@ class ThemeProvider extends ChangeNotifier {
     final p = await SharedPreferences.getInstance();
     _isDark = p.getBool(_themeKey) ?? true;
     _lang   = p.getString(_langKey) ?? 'uz';
+    AppColors.setDark(_isDark);
     C.setDark(_isDark);
     S.setLang(_lang);
     notifyListeners();
@@ -27,6 +29,7 @@ class ThemeProvider extends ChangeNotifier {
 
   Future<void> toggle() async {
     _isDark = !_isDark;
+    AppColors.setDark(_isDark);
     C.setDark(_isDark);
     final p = await SharedPreferences.getInstance();
     await p.setBool(_themeKey, _isDark);
@@ -36,6 +39,7 @@ class ThemeProvider extends ChangeNotifier {
   Future<void> setDark(bool v) async {
     if (_isDark == v) return;
     _isDark = v;
+    AppColors.setDark(v);
     C.setDark(v);
     final p = await SharedPreferences.getInstance();
     await p.setBool(_themeKey, v);

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../../config/theme.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/auth_provider.dart';
@@ -73,11 +74,13 @@ class _ChatState extends State<ChatScreen> {
   void _snack(String msg, {bool err = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg),
-        backgroundColor: err ? C.error : C.success,
+        content: Text(msg, style: GoogleFonts.poppins()),
+        backgroundColor: err ? AppColors.danger : AppColors.success,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(D.radiusMd),
+        ),
+        margin: const EdgeInsets.all(D.sp12),
       ),
     );
   }
@@ -85,7 +88,7 @@ class _ChatState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: AppColors.bg,
       appBar: _buildAppBar(),
       body: Column(children: [
         Expanded(child: _buildMessageList()),
@@ -94,12 +97,12 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // ── App Bar ───────────────────────────────────────────
+  // -- App Bar -----------------------------------------------
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      backgroundColor: C.surface,
+      backgroundColor: AppColors.surface,
       elevation: 0,
-      titleSpacing: 16,
+      titleSpacing: D.sp16,
       title: Row(children: [
         // AI Avatar
         Container(
@@ -107,36 +110,39 @@ class _ChatState extends State<ChatScreen> {
           height: 40,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: C.gradPrimary,
+              colors: AppColors.gradPrimary,
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(D.radiusMd),
             boxShadow: [
               BoxShadow(
-                color: C.primary.withValues(alpha: 0.25),
+                color: AppColors.primary.withValues(alpha: 0.25),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: const Center(
-            child: Text('AI', style: TextStyle(
-              color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w800,
-            )),
+          child: Center(
+            child: Text(
+              'AI',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: D.sp12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'MotivAI Chat',
-                style: TextStyle(
-                  color: C.txt,
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -149,7 +155,9 @@ class _ChatState extends State<ChatScreen> {
                       width: 7,
                       height: 7,
                       decoration: BoxDecoration(
-                        color: chat.isTyping ? C.warning : C.success,
+                        color: chat.isTyping
+                            ? AppColors.accent
+                            : AppColors.success,
                         shape: BoxShape.circle,
                       ),
                     ),
@@ -157,9 +165,11 @@ class _ChatState extends State<ChatScreen> {
                     Text(
                       chat.isTyping
                           ? S.get('ai_typing')
-                          : S.get('done'),
-                      style: TextStyle(
-                        color: chat.isTyping ? C.warning : C.success,
+                          : 'Online',
+                      style: GoogleFonts.poppins(
+                        color: chat.isTyping
+                            ? AppColors.accent
+                            : AppColors.success,
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                       ),
@@ -173,14 +183,15 @@ class _ChatState extends State<ChatScreen> {
       ]),
       actions: [
         Container(
-          margin: const EdgeInsets.only(right: 8),
+          margin: const EdgeInsets.only(right: D.sp8),
           decoration: BoxDecoration(
-            color: C.card,
+            color: AppColors.card,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: C.border),
+            border: Border.all(color: AppColors.border),
           ),
           child: IconButton(
-            icon: Icon(Icons.delete_sweep_outlined, color: C.sub, size: 20),
+            icon: Icon(Icons.delete_sweep_outlined,
+                color: AppColors.sub, size: D.iconMd),
             onPressed: _clearConfirm,
             tooltip: S.get('clear_chat'),
           ),
@@ -189,14 +200,14 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // ── Message List ──────────────────────────────────────
+  // -- Message List ------------------------------------------
   Widget _buildMessageList() {
     return Consumer<ChatProvider>(
       builder: (_, chat, __) {
         _toBottom();
         return ListView.builder(
           controller: _scroll,
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          padding: const EdgeInsets.fromLTRB(D.sp16, D.sp16, D.sp16, D.sp8),
           physics: const BouncingScrollPhysics(),
           itemCount: chat.msgs.length + (chat.isTyping ? 1 : 0),
           itemBuilder: (_, i) {
@@ -219,15 +230,16 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // ── Input Bar ─────────────────────────────────────────
+  // -- Input Bar ---------------------------------------------
   Widget _buildInputBar() {
     return Consumer<ChatProvider>(
       builder: (_, chat, __) {
         final busy = chat.isTyping;
         return Container(
           decoration: BoxDecoration(
-            color: C.surface,
-            border: Border(top: BorderSide(color: C.border, width: 0.5)),
+            color: AppColors.surface,
+            border: Border(
+                top: BorderSide(color: AppColors.border, width: 0.5)),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.04),
@@ -255,9 +267,9 @@ class _ChatState extends State<ChatScreen> {
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        color: C.card,
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: C.border),
+                        color: AppColors.card,
+                        borderRadius: BorderRadius.circular(D.sp24),
+                        border: Border.all(color: AppColors.border),
                       ),
                       child: TextField(
                         controller: _ctrl,
@@ -267,18 +279,21 @@ class _ChatState extends State<ChatScreen> {
                         minLines: 1,
                         textInputAction: TextInputAction.send,
                         onSubmitted: (_) => _send(),
-                        style: TextStyle(color: C.txt, fontSize: 14),
+                        style: GoogleFonts.poppins(
+                          color: AppColors.txt,
+                          fontSize: 14,
+                        ),
                         decoration: InputDecoration(
                           hintText: busy
                               ? S.get('ai_typing')
                               : S.get('type_message'),
-                          hintStyle: TextStyle(
-                            color: C.sub.withValues(alpha: 0.6),
+                          hintStyle: GoogleFonts.poppins(
+                            color: AppColors.sub.withValues(alpha: 0.6),
                             fontSize: 13,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
                             horizontal: 18,
-                            vertical: 12,
+                            vertical: D.sp12,
                           ),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -295,13 +310,13 @@ class _ChatState extends State<ChatScreen> {
                     onTap: busy ? null : _send,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 250),
-                      width: 48,
-                      height: 48,
+                      width: D.sp48,
+                      height: D.sp48,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: busy
-                              ? [C.border, C.border]
-                              : C.gradPrimary,
+                              ? [AppColors.border, AppColors.border]
+                              : AppColors.gradPrimary,
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -310,7 +325,8 @@ class _ChatState extends State<ChatScreen> {
                             ? null
                             : [
                                 BoxShadow(
-                                  color: C.primary.withValues(alpha: 0.35),
+                                  color: AppColors.primary
+                                      .withValues(alpha: 0.35),
                                   blurRadius: 12,
                                   offset: const Offset(0, 4),
                                 ),
@@ -319,9 +335,9 @@ class _ChatState extends State<ChatScreen> {
                       child: Icon(
                         Icons.send_rounded,
                         color: busy
-                            ? C.sub.withValues(alpha: 0.5)
+                            ? AppColors.sub.withValues(alpha: 0.5)
                             : Colors.white,
-                        size: 20,
+                        size: D.iconMd,
                       ),
                     ),
                   ),
@@ -334,7 +350,7 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // ── Quick Prompts ─────────────────────────────────────
+  // -- Quick Prompts -----------------------------------------
   Widget _buildQuickPrompts() {
     final prompts = [
       ('🎯', S.get('ai_suggest')),
@@ -347,7 +363,7 @@ class _ChatState extends State<ChatScreen> {
       height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: D.sp4),
         itemCount: prompts.length,
         itemBuilder: (_, i) {
           final p = prompts[i];
@@ -357,20 +373,21 @@ class _ChatState extends State<ChatScreen> {
               _send();
             },
             child: Container(
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              margin: const EdgeInsets.only(right: D.sp8),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 14, vertical: D.sp8),
               decoration: BoxDecoration(
-                color: C.card,
+                color: AppColors.card,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: C.border),
+                border: Border.all(color: AppColors.border),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Text(p.$1, style: const TextStyle(fontSize: 14)),
                 const SizedBox(width: 6),
                 Text(
                   p.$2,
-                  style: TextStyle(
-                    color: C.txt,
+                  style: GoogleFonts.poppins(
+                    color: AppColors.txt,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -383,27 +400,31 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // ── Clear Confirmation ────────────────────────────────
+  // -- Clear Confirmation ------------------------------------
   void _clearConfirm() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: C.card,
+        backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(D.radiusXl),
         ),
         title: Text(
           S.get('clear_chat'),
-          style: TextStyle(color: C.txt, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+            color: AppColors.txt,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: Text(
           S.get('clear_chat'),
-          style: TextStyle(color: C.sub),
+          style: GoogleFonts.poppins(color: AppColors.sub),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(S.get('cancel'), style: TextStyle(color: C.sub)),
+            child: Text(S.get('cancel'),
+                style: GoogleFonts.poppins(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -412,13 +433,13 @@ class _ChatState extends State<ChatScreen> {
               _snack(S.get('chat_cleared'));
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: C.error,
+              backgroundColor: AppColors.danger,
               minimumSize: const Size(80, 40),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Text(S.get('delete')),
+            child: Text(S.get('delete'), style: GoogleFonts.poppins()),
           ),
         ],
       ),
@@ -426,9 +447,9 @@ class _ChatState extends State<ChatScreen> {
   }
 }
 
-// ═══════════════════════════════════════════════════════
+// ============================================================
 //  CHAT BUBBLE
-// ═══════════════════════════════════════════════════════
+// ============================================================
 class _ChatBubble extends StatelessWidget {
   final ChatMsg msg;
   const _ChatBubble({required this.msg});
@@ -449,12 +470,12 @@ class _ChatBubble extends StatelessWidget {
           children: [
             // Bubble
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: D.sp16, vertical: D.sp12),
               decoration: BoxDecoration(
                 gradient: isUser
                     ? const LinearGradient(
-                        colors: C.gradPrimary,
+                        colors: AppColors.gradPrimary,
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       )
@@ -462,25 +483,25 @@ class _ChatBubble extends StatelessWidget {
                 color: isUser
                     ? null
                     : msg.isError
-                        ? C.error.withValues(alpha: 0.1)
-                        : C.card,
+                        ? AppColors.danger.withValues(alpha: 0.1)
+                        : AppColors.card,
                 borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(20),
-                  topRight: const Radius.circular(20),
-                  bottomLeft: Radius.circular(isUser ? 20 : 4),
-                  bottomRight: Radius.circular(isUser ? 4 : 20),
+                  topLeft: const Radius.circular(18),
+                  topRight: const Radius.circular(18),
+                  bottomLeft: Radius.circular(isUser ? 18 : 4),
+                  bottomRight: Radius.circular(isUser ? 4 : 18),
                 ),
                 border: isUser
                     ? null
                     : Border.all(
                         color: msg.isError
-                            ? C.error.withValues(alpha: 0.3)
-                            : C.border,
+                            ? AppColors.danger.withValues(alpha: 0.3)
+                            : AppColors.border,
                       ),
                 boxShadow: [
                   BoxShadow(
                     color: isUser
-                        ? C.primary.withValues(alpha: 0.15)
+                        ? AppColors.primary.withValues(alpha: 0.15)
                         : Colors.black.withValues(alpha: 0.04),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
@@ -489,8 +510,8 @@ class _ChatBubble extends StatelessWidget {
               ),
               child: Text(
                 msg.content,
-                style: TextStyle(
-                  color: isUser ? Colors.white : C.txt,
+                style: GoogleFonts.poppins(
+                  color: isUser ? Colors.white : AppColors.txt,
                   fontSize: 14,
                   height: 1.5,
                 ),
@@ -499,11 +520,11 @@ class _ChatBubble extends StatelessWidget {
 
             // Timestamp
             Padding(
-              padding: const EdgeInsets.only(top: 4, left: 6, right: 6),
+              padding: const EdgeInsets.only(top: D.sp4, left: 6, right: 6),
               child: Text(
                 _formatTime(msg.timestamp),
-                style: TextStyle(
-                  color: C.sub.withValues(alpha: 0.5),
+                style: GoogleFonts.poppins(
+                  color: AppColors.sub.withValues(alpha: 0.5),
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
                 ),
@@ -520,9 +541,9 @@ class _ChatBubble extends StatelessWidget {
       '${d.minute.toString().padLeft(2, '0')}';
 }
 
-// ═══════════════════════════════════════════════════════
+// ============================================================
 //  TASK SUGGESTION PANEL
-// ═══════════════════════════════════════════════════════
+// ============================================================
 class _TaskSuggestionPanel extends StatefulWidget {
   final List<TaskSuggestion> tasks;
   final void Function(List<TaskSuggestion>) onAdd;
@@ -546,19 +567,19 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
     if (_done) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14, left: 4),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 14, left: D.sp4),
+      padding: const EdgeInsets.all(D.sp16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            C.primary.withValues(alpha: 0.06),
-            C.primary.withValues(alpha: 0.02),
+            AppColors.primary.withValues(alpha: 0.06),
+            AppColors.primary.withValues(alpha: 0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: C.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -569,34 +590,33 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: C.gradPrimary),
-                borderRadius: BorderRadius.circular(8),
+                gradient: const LinearGradient(colors: AppColors.gradPrimary),
+                borderRadius: BorderRadius.circular(D.radiusSm),
               ),
               child: const Icon(Icons.task_alt_rounded,
-                  color: Colors.white, size: 16),
+                  color: Colors.white, size: D.iconSm),
             ),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 S.get('ai_suggest'),
-                style: TextStyle(
-                  color: C.txt,
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
                   fontWeight: FontWeight.w700,
                   fontSize: 14,
                 ),
               ),
             ),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: 3),
               decoration: BoxDecoration(
-                color: C.primary.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(8),
+                color: AppColors.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(D.radiusSm),
               ),
               child: Text(
                 '${widget.tasks.length}',
-                style: TextStyle(
-                  color: C.primary,
+                style: GoogleFonts.poppins(
+                  color: AppColors.primary,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                 ),
@@ -604,7 +624,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
             ),
           ]),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: D.sp12),
 
           // Task items
           ...widget.tasks.map((t) => _SuggestTaskItem(
@@ -624,27 +644,27 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                   widget.onDecline();
                 },
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: C.sub,
-                  side: BorderSide(color: C.border),
+                  foregroundColor: AppColors.sub,
+                  side: BorderSide(color: AppColors.border),
                   minimumSize: const Size(0, 44),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(D.radiusMd),
                   ),
                 ),
-                child: Text(S.get('cancel')),
+                child: Text(S.get('cancel'), style: GoogleFonts.poppins()),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: D.sp12),
             Expanded(
               flex: 2,
               child: Container(
                 height: 44,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: C.gradPrimary),
-                  borderRadius: BorderRadius.circular(12),
+                  gradient: const LinearGradient(colors: AppColors.gradPrimary),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
                   boxShadow: [
                     BoxShadow(
-                      color: C.primary.withValues(alpha: 0.3),
+                      color: AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 3),
                     ),
@@ -658,14 +678,14 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                   icon: const Icon(Icons.add_task_rounded, size: 18),
                   label: Text(
                     S.get('add_task'),
-                    style: const TextStyle(fontWeight: FontWeight.w700),
+                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
                     shadowColor: Colors.transparent,
                     minimumSize: const Size(0, 44),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(D.radiusMd),
                     ),
                   ),
                 ),
@@ -678,7 +698,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
   }
 }
 
-// ── Suggest Task Item ───────────────────────────────────
+// -- Suggest Task Item ---------------------------------------
 class _SuggestTaskItem extends StatelessWidget {
   final TaskSuggestion task;
   final VoidCallback onToggle;
@@ -691,17 +711,17 @@ class _SuggestTaskItem extends StatelessWidget {
       onTap: onToggle,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.only(bottom: D.sp8),
+        padding: const EdgeInsets.all(D.sp12),
         decoration: BoxDecoration(
           color: task.isSelected
-              ? C.primary.withValues(alpha: 0.08)
-              : C.card,
-          borderRadius: BorderRadius.circular(12),
+              ? AppColors.primary.withValues(alpha: 0.08)
+              : AppColors.card,
+          borderRadius: BorderRadius.circular(D.radiusMd),
           border: Border.all(
             color: task.isSelected
-                ? C.primary.withValues(alpha: 0.4)
-                : C.border,
+                ? AppColors.primary.withValues(alpha: 0.4)
+                : AppColors.border,
             width: task.isSelected ? 1.5 : 1,
           ),
         ),
@@ -713,39 +733,41 @@ class _SuggestTaskItem extends StatelessWidget {
                   ? Icons.check_circle_rounded
                   : Icons.radio_button_unchecked_rounded,
               key: ValueKey(task.isSelected),
-              color: task.isSelected ? C.primary : C.sub,
+              color: task.isSelected ? AppColors.primary : AppColors.sub,
               size: 22,
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: D.sp12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   task.title,
-                  style: TextStyle(
-                    color: C.txt,
+                  style: GoogleFonts.poppins(
+                    color: AppColors.txt,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: D.sp4),
                 Row(children: [
                   Icon(Icons.schedule_rounded,
-                      color: C.sub, size: 12),
-                  const SizedBox(width: 4),
+                      color: AppColors.sub, size: 12),
+                  const SizedBox(width: D.sp4),
                   Text(
                     '${task.durationMinutes} min',
-                    style: TextStyle(color: C.sub, fontSize: 11),
+                    style: GoogleFonts.poppins(
+                        color: AppColors.sub, fontSize: 11),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: D.sp12),
                   Icon(Icons.star_rounded,
-                      color: C.gold, size: 12),
-                  const SizedBox(width: 4),
+                      color: AppColors.accent, size: 12),
+                  const SizedBox(width: D.sp4),
                   Text(
                     '~${task.estimatedPoints} ${S.get('points')}',
-                    style: TextStyle(color: C.sub, fontSize: 11),
+                    style: GoogleFonts.poppins(
+                        color: AppColors.sub, fontSize: 11),
                   ),
                 ]),
               ],
@@ -757,9 +779,9 @@ class _SuggestTaskItem extends StatelessWidget {
   }
 }
 
-// ═══════════════════════════════════════════════════════
+// ============================================================
 //  TYPING INDICATOR
-// ═══════════════════════════════════════════════════════
+// ============================================================
 class _TypingIndicator extends StatefulWidget {
   const _TypingIndicator();
   @override
@@ -793,14 +815,14 @@ class _TypingIndicatorState extends State<_TypingIndicator>
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
         decoration: BoxDecoration(
-          color: C.card,
+          color: AppColors.card,
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(20),
             topRight: Radius.circular(20),
             bottomLeft: Radius.circular(4),
             bottomRight: Radius.circular(20),
           ),
-          border: Border.all(color: C.border),
+          border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -814,12 +836,12 @@ class _TypingIndicatorState extends State<_TypingIndicator>
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: C.gradPrimary),
+              gradient: const LinearGradient(colors: AppColors.gradPrimary),
               borderRadius: BorderRadius.circular(7),
             ),
-            child: const Center(
+            child: Center(
               child: Text('AI',
-                  style: TextStyle(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
@@ -838,10 +860,9 @@ class _TypingIndicatorState extends State<_TypingIndicator>
                   width: 8,
                   height: 8,
                   decoration: BoxDecoration(
-                    color: C.primary.withValues(
+                    color: AppColors.primary.withValues(
                       alpha: 0.25 +
-                          0.75 *
-                              (((_ctrl.value + i * 0.3) % 1.0)),
+                          0.75 * (((_ctrl.value + i * 0.3) % 1.0)),
                     ),
                     shape: BoxShape.circle,
                   ),
@@ -849,11 +870,11 @@ class _TypingIndicatorState extends State<_TypingIndicator>
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: D.sp8),
           Text(
             S.get('ai_typing'),
-            style: TextStyle(
-              color: C.sub,
+            style: GoogleFonts.poppins(
+              color: AppColors.sub,
               fontSize: 11,
               fontWeight: FontWeight.w500,
             ),

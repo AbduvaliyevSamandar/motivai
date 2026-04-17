@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../config/theme.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/auth_provider.dart';
@@ -30,27 +32,34 @@ class _LbState extends State<LeaderboardScreen>
 
   @override
   Widget build(BuildContext context) {
-    final auth  = context.watch<AuthProvider>();
+    final auth = context.watch<AuthProvider>();
     final tasks = context.watch<TaskProvider>();
-    final rank  = tasks.myRank;
+    final rank = tasks.myRank;
 
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: AppColors.bg,
       body: NestedScrollView(
         headerSliverBuilder: (_, __) => [
           SliverAppBar(
-            backgroundColor: C.surface,
+            backgroundColor: AppColors.surface,
             pinned: true,
             expandedHeight: 170,
             flexibleSpace: FlexibleSpaceBar(
-              background: _MyRankCard(
-                  rank: rank, auth: auth),
+              background: _MyRankCard(rank: rank, auth: auth),
             ),
             bottom: TabBar(
               controller: _tab,
-              indicatorColor: C.primary,
-              labelColor: C.primary,
-              unselectedLabelColor: C.sub,
+              indicatorColor: AppColors.primary,
+              labelColor: AppColors.primary,
+              unselectedLabelColor: AppColors.sub,
+              labelStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
+              unselectedLabelStyle: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
               tabs: [
                 Tab(text: '🌍 ${S.get("all_time")}'),
                 Tab(text: '📅 ${S.get("this_week")}'),
@@ -58,31 +67,27 @@ class _LbState extends State<LeaderboardScreen>
             ),
             actions: [
               IconButton(
-                icon: Icon(Icons.refresh,
-                    color: C.sub),
-                onPressed: () =>
-                    tasks.refreshLeaderboard()),
+                icon: Icon(Icons.refresh, color: AppColors.sub),
+                onPressed: () => tasks.refreshLeaderboard(),
+              ),
             ],
           ),
         ],
         body: tasks.isLoading
             ? const Center(
-                child: CircularProgressIndicator(
-                    color: C.primary))
+                child: CircularProgressIndicator(color: AppColors.primary))
             : TabBarView(
                 controller: _tab,
                 children: [
                   _LbList(
                     entries: tasks.globalLb,
-                    myId:
-                        auth.user?['_id']?.toString() ??
+                    myId: auth.user?['_id']?.toString() ??
                         auth.user?['id']?.toString() ??
                         '',
                   ),
                   _LbList(
                     entries: tasks.weeklyLb,
-                    myId:
-                        auth.user?['_id']?.toString() ??
+                    myId: auth.user?['_id']?.toString() ??
                         auth.user?['id']?.toString() ??
                         '',
                   ),
@@ -96,21 +101,19 @@ class _LbState extends State<LeaderboardScreen>
 class _MyRankCard extends StatelessWidget {
   final Map<String, dynamic>? rank;
   final AuthProvider auth;
-  const _MyRankCard(
-      {required this.rank, required this.auth});
+  const _MyRankCard({required this.rank, required this.auth});
 
   @override
   Widget build(BuildContext context) {
-    final r   = rank?['rank']        ?? '—';
-    final pct = rank?['percentile']  ?? 0;
+    final r = rank?['rank'] ?? '—';
+    final pct = rank?['percentile'] ?? 0;
     final tot = rank?['total_users'] ?? 0;
 
     return Container(
-      padding:
-          const EdgeInsets.fromLTRB(20, 52, 20, 16),
+      padding: const EdgeInsets.fromLTRB(D.sp20, 52, D.sp20, D.sp16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [C.surface, C.bg],
+          colors: [AppColors.surface, AppColors.bg],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -118,63 +121,70 @@ class _MyRankCard extends StatelessWidget {
       child: Row(children: [
         // Avatar
         Container(
-          width: 54, height: 54,
+          width: 54,
+          height: 54,
           decoration: const BoxDecoration(
-            gradient:
-                LinearGradient(colors: C.gradPrimary),
-            shape: BoxShape.circle),
+            gradient: LinearGradient(colors: AppColors.gradPrimary),
+            shape: BoxShape.circle,
+          ),
           child: Center(
             child: Text(
-              auth.name.isNotEmpty
-                  ? auth.name[0].toUpperCase()
-                  : 'U',
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold)),
+              auth.name.isNotEmpty ? auth.name[0].toUpperCase() : 'U',
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
-        SizedBox(width: 14),
-        Expanded(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(auth.name,
-                style: TextStyle(
-                    color: C.txt,
+        const SizedBox(width: 14),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(auth.name,
+                  style: GoogleFonts.poppins(
+                    color: AppColors.txt,
                     fontSize: 16,
-                    fontWeight: FontWeight.bold)),
-            SizedBox(height: 4),
-            Text(
-              '${auth.levelEmoji} ${S.get("level")} ${auth.level}'
-              '  •  ⭐ ${auth.points} ball',
-              style: TextStyle(
-                  color: C.sub, fontSize: 12)),
-          ],
-        )),
+                    fontWeight: FontWeight.bold,
+                  )),
+              const SizedBox(height: D.sp4),
+              Text(
+                '${auth.levelEmoji} ${S.get("level")} ${auth.level}'
+                '  •  ⭐ ${auth.points} ball',
+                style: GoogleFonts.poppins(
+                    color: AppColors.sub, fontSize: 12),
+              ),
+            ],
+          ),
+        ),
         // Rank badge
         Column(children: [
           Container(
             padding: const EdgeInsets.symmetric(
-                horizontal: 14, vertical: 8),
+                horizontal: 14, vertical: D.sp8),
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                  colors: C.gradPrimary),
-              borderRadius: BorderRadius.circular(14)),
+              gradient: const LinearGradient(colors: AppColors.gradPrimary),
+              borderRadius: BorderRadius.circular(14),
+            ),
             child: Text('#$r',
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: D.sp4),
           Text(
             'Top ${(100 - (pct as num).toDouble()).toStringAsFixed(0)}%',
-            style: TextStyle(
-                color: C.sub, fontSize: 11)),
+            style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 11),
+          ),
           if (tot > 0)
             Text('$tot ${S.get("students")}',
-                style: TextStyle(
-                    color: C.sub, fontSize: 10)),
+                style: GoogleFonts.poppins(
+                    color: AppColors.sub, fontSize: 10)),
         ]),
       ]),
     );
@@ -184,32 +194,34 @@ class _MyRankCard extends StatelessWidget {
 class _LbList extends StatelessWidget {
   final List<LbEntry> entries;
   final String myId;
-  const _LbList(
-      {required this.entries, required this.myId});
+  const _LbList({required this.entries, required this.myId});
 
   @override
   Widget build(BuildContext context) {
     if (entries.isEmpty) {
-      return Center(child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('🏆', style: TextStyle(fontSize: 48)),
-          SizedBox(height: 12),
-          Text('${S.get("empty_board")}',
-              style: TextStyle(color: C.sub, fontSize: 16)),
-          SizedBox(height: 6),
-          Text('${S.get("tasks_label")}!',
-              style: TextStyle(
-                  color: C.primary, fontSize: 13)),
-        ],
-      ));
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('🏆', style: TextStyle(fontSize: 48)),
+            const SizedBox(height: D.sp12),
+            Text(S.get('empty_board'),
+                style: GoogleFonts.poppins(
+                    color: AppColors.sub, fontSize: 16)),
+            const SizedBox(height: 6),
+            Text('${S.get("tasks_label")}!',
+                style: GoogleFonts.poppins(
+                    color: AppColors.primary, fontSize: 13)),
+          ],
+        ),
+      );
     }
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 80),
+      padding: const EdgeInsets.fromLTRB(D.sp16, D.sp12, D.sp16, 80),
       itemCount: entries.length,
       itemBuilder: (_, i) => _LbTile(
         entry: entries[i],
-        isMe:  entries[i].id == myId,
+        isMe: entries[i].id == myId,
       ),
     );
   }
@@ -217,22 +229,23 @@ class _LbList extends StatelessWidget {
 
 class _LbTile extends StatelessWidget {
   final LbEntry entry;
-  final bool    isMe;
+  final bool isMe;
   const _LbTile({required this.entry, required this.isMe});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.only(bottom: D.sp8),
+      padding: const EdgeInsets.all(D.sp12),
       decoration: BoxDecoration(
-        color:
-            isMe ? C.primary.withOpacity(0.1) : C.card,
+        color: isMe
+            ? AppColors.primary.withValues(alpha: 0.1)
+            : AppColors.card,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isMe
-              ? C.primary.withOpacity(0.5)
-              : C.border,
+              ? AppColors.primary.withValues(alpha: 0.5)
+              : AppColors.border,
           width: isMe ? 1.5 : 1,
         ),
       ),
@@ -243,90 +256,105 @@ class _LbTile extends StatelessWidget {
           child: Center(
             child: entry.rank <= 3
                 ? Text(entry.rankBadge,
-                    style: const TextStyle(
-                        fontSize: 22))
+                    style: const TextStyle(fontSize: 22))
                 : Text('#${entry.rank}',
-                    style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: isMe ? C.primary : C.sub)),
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: isMe ? AppColors.primary : AppColors.sub,
+                    )),
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: D.sp8),
         // Avatar
         Container(
-          width: 40, height: 40,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: isMe
-                  ? C.gradPrimary
-                  : [C.surface, C.card]),
-            shape: BoxShape.circle),
+                  ? AppColors.gradPrimary
+                  : [AppColors.surface, AppColors.card],
+            ),
+            shape: BoxShape.circle,
+          ),
           child: Center(
             child: Text(
               entry.fullName.isNotEmpty
                   ? entry.fullName[0].toUpperCase()
                   : 'U',
-              style: TextStyle(
-                color: isMe ? Colors.white : C.sub,
+              style: GoogleFonts.poppins(
+                color: isMe ? Colors.white : AppColors.sub,
                 fontSize: 16,
-                fontWeight: FontWeight.bold))),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: D.sp12),
         // Name + info
-        Expanded(child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              Flexible(
-                child: Text(entry.fullName,
-                    style: TextStyle(
-                      color: isMe ? C.primary : C.txt,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis)),
-              if (isMe) ...[
-                const SizedBox(width: 6),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: C.primary,
-                    borderRadius:
-                        BorderRadius.circular(6)),
-                  child: const Text('SIZ',
-                      style: TextStyle(
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                Flexible(
+                  child: Text(entry.fullName,
+                      style: GoogleFonts.poppins(
+                        color: isMe ? AppColors.primary : AppColors.txt,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis),
+                ),
+                if (isMe) ...[
+                  const SizedBox(width: 6),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text('SIZ',
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 9,
-                          fontWeight:
-                              FontWeight.bold))),
-              ],
-            ]),
-            SizedBox(height: 4),
-            Row(children: [
-              Text('${entry.levelEmoji} ${S.get("level")} ${entry.level}',
-                  style: TextStyle(
-                      color: C.sub, fontSize: 11)),
-              SizedBox(width: 10),
-              Text('🔥 ${entry.streak} kun',
-                  style: TextStyle(
-                      color: C.sub, fontSize: 11)),
-            ]),
-          ],
-        )),
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
+                ],
+              ]),
+              const SizedBox(height: D.sp4),
+              Row(children: [
+                Text(
+                    '${entry.levelEmoji} ${S.get("level")} ${entry.level}',
+                    style: GoogleFonts.poppins(
+                        color: AppColors.sub, fontSize: 11)),
+                const SizedBox(width: 10),
+                Text('🔥 ${entry.streak} kun',
+                    style: GoogleFonts.poppins(
+                        color: AppColors.sub, fontSize: 11)),
+              ]),
+            ],
+          ),
+        ),
         // Points
-        Column(crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-          Text(_fmt(entry.points),
-              style: const TextStyle(
-                  color: C.gold,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(_fmt(entry.points),
+                style: GoogleFonts.poppins(
+                  color: AppColors.accent,
                   fontSize: 16,
-                  fontWeight: FontWeight.bold)),
-          Text(S.get('points'),
-              style: TextStyle(
-                  color: C.sub, fontSize: 11)),
-        ]),
+                  fontWeight: FontWeight.bold,
+                )),
+            Text(S.get('points'),
+                style: GoogleFonts.poppins(
+                    color: AppColors.sub, fontSize: 11)),
+          ],
+        ),
       ]),
     );
   }

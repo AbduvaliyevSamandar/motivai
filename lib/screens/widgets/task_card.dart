@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../config/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../models/models.dart';
 
@@ -48,12 +50,12 @@ class _TaskCardState extends State<TaskCard>
         duration: const Duration(milliseconds: 300),
         opacity: done ? 0.5 : 1.0,
         child: Container(
-          margin: const EdgeInsets.only(bottom: 12),
+          margin: const EdgeInsets.only(bottom: D.sp12),
           decoration: BoxDecoration(
-            color: C.card,
-            borderRadius: BorderRadius.circular(18),
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(D.radiusLg),
             border: Border.all(
-              color: done ? C.border : t.color.withOpacity(0.3),
+              color: done ? AppColors.border : t.color.withOpacity(0.3),
               width: done ? 1 : 1.5,
             ),
             boxShadow: done
@@ -66,120 +68,98 @@ class _TaskCardState extends State<TaskCard>
                     ),
                   ],
           ),
-          child: IntrinsicHeight(
-            child: Row(
-              children: [
-                // ── Left color strip ──────────────────
-                Container(
-                  width: 5,
-                  decoration: BoxDecoration(
-                    color: done ? C.border : t.color,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(18),
-                      bottomLeft: Radius.circular(18),
-                    ),
+          child: Column(
+            children: [
+              // ── Top color strip ──────────────────
+              Container(
+                height: 4,
+                decoration: BoxDecoration(
+                  color: done ? AppColors.border : t.color,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(D.radiusLg),
+                    topRight: Radius.circular(D.radiusLg),
                   ),
                 ),
-                // ── Content ──────────────────────────
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
+              ),
+              // ── Content ──────────────────────────
+              Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Top row: emoji + title + complete button
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Emoji container
-                            Container(
-                              width: 46,
-                              height: 46,
-                              decoration: BoxDecoration(
-                                color: t.color.withOpacity(0.12),
-                                borderRadius: BorderRadius.circular(13),
+                        // Emoji container
+                        Container(
+                          width: 44,
+                          height: 44,
+                          decoration: BoxDecoration(
+                            color: t.color.withOpacity(0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(
+                            child: Text(t.emoji,
+                                style: const TextStyle(fontSize: 24)),
+                          ),
+                        ),
+                        const SizedBox(width: D.sp12),
+                        // Title
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                t.title,
+                                style: GoogleFonts.poppins(
+                                  color: done ? AppColors.sub : AppColors.txt,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  decoration: done
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              child: Center(
-                                child: Text(t.emoji,
-                                    style:
-                                        const TextStyle(fontSize: 24)),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            // Title + description
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                              const SizedBox(height: 6),
+                              // Tag chips row
+                              Wrap(
+                                spacing: 6,
+                                runSpacing: 6,
                                 children: [
-                                  Text(
-                                    t.title,
-                                    style: TextStyle(
-                                      color: done ? C.sub : C.txt,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      decoration: done
-                                          ? TextDecoration.lineThrough
-                                          : null,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                                  _InfoTag(
+                                    text: '\u23F1 ${t.durationMinutes}m',
+                                    color: AppColors.sub,
                                   ),
-                                  if (t.description.isNotEmpty) ...[
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      t.description,
-                                      style: TextStyle(
-                                          color: C.sub, fontSize: 12),
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
+                                  _DifficultyBadge(difficulty: t.difficulty),
+                                  _InfoTag(
+                                    text: '\u2B50 ${t.points}',
+                                    color: AppColors.accent,
+                                  ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            // Complete button
-                            _CompleteButton(
-                              done: done,
-                              ctrl: _ctrl,
-                              onComplete: widget.onComplete,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-
-                        const SizedBox(height: 12),
-
-                        // Bottom row: tags
-                        Wrap(
-                          spacing: 6,
-                          runSpacing: 6,
-                          children: [
-                            // Duration
-                            _InfoTag(
-                              icon: Icons.schedule_rounded,
-                              text: '${t.durationMinutes}m',
-                              color: C.sub,
-                            ),
-                            // Difficulty badge
-                            _DifficultyBadge(difficulty: t.difficulty),
-                            // Points
-                            _InfoTag(
-                              icon: Icons.star_rounded,
-                              text: '${t.points} ${S.get('points')}',
-                              color: C.gold,
-                            ),
-                            // AI badge
-                            if (t.isFromChat)
-                              _AiBadge(),
-                          ],
+                        const SizedBox(width: D.sp8),
+                        // Complete button
+                        _CompleteButton(
+                          done: done,
+                          ctrl: _ctrl,
+                          onComplete: widget.onComplete,
                         ),
                       ],
                     ),
-                  ),
+                    // AI badge
+                    if (t.isFromChat) ...[
+                      const SizedBox(height: D.sp8),
+                      _AiBadge(),
+                    ],
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -212,27 +192,27 @@ class _CompleteButton extends StatelessWidget {
       onTapCancel: () => ctrl.reverse(),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
-        width: 42,
-        height: 42,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           gradient: done
               ? null
-              : const LinearGradient(colors: C.gradPrimary),
-          color: done ? C.success.withOpacity(0.15) : null,
+              : const LinearGradient(colors: AppColors.gradPrimary),
+          color: done ? AppColors.success.withOpacity(0.15) : null,
           shape: BoxShape.circle,
           boxShadow: done
               ? null
               : [
                   BoxShadow(
-                    color: C.primary.withOpacity(0.35),
+                    color: AppColors.primary.withOpacity(0.35),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
                 ],
         ),
         child: Icon(
-          done ? Icons.check_rounded : Icons.check_rounded,
-          color: done ? C.success : Colors.white,
+          Icons.check_rounded,
+          color: done ? AppColors.success : Colors.white,
           size: 22,
         ),
       ),
@@ -254,10 +234,10 @@ class _DifficultyBadge extends StatelessWidget {
     final label = _diffLabel(difficulty);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(D.radiusSm),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
@@ -274,7 +254,7 @@ class _DifficultyBadge extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: TextStyle(
+            style: GoogleFonts.poppins(
                 color: color,
                 fontSize: 11,
                 fontWeight: FontWeight.w600),
@@ -290,7 +270,7 @@ class _DifficultyBadge extends StatelessWidget {
         'hard': const Color(0xFFFFA726),
         'expert': const Color(0xFFEF5350),
       }[d] ??
-      C.sub;
+      AppColors.sub;
 
   String _diffLabel(String d) => {
         'easy': S.get('easy'),
@@ -305,12 +285,10 @@ class _DifficultyBadge extends StatelessWidget {
 //  INFO TAG
 // ═══════════════════════════════════════════════════════════
 class _InfoTag extends StatelessWidget {
-  final IconData icon;
   final String text;
   final Color color;
 
   const _InfoTag({
-    required this.icon,
     required this.text,
     required this.color,
   });
@@ -318,23 +296,16 @@ class _InfoTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(D.radiusSm),
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 13, color: color),
-          const SizedBox(width: 4),
-          Text(text,
-              style: TextStyle(
-                  color: color,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500)),
-        ],
-      ),
+      child: Text(text,
+          style: GoogleFonts.poppins(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w500)),
     );
   }
 }
@@ -346,26 +317,26 @@ class _AiBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            C.primary.withOpacity(0.15),
-            C.accent.withOpacity(0.1),
+            AppColors.primary.withOpacity(0.15),
+            AppColors.accent.withOpacity(0.1),
           ],
         ),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: C.primary.withOpacity(0.25)),
+        borderRadius: BorderRadius.circular(D.radiusSm),
+        border: Border.all(color: AppColors.primary.withOpacity(0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.auto_awesome, size: 12, color: C.primary),
-          const SizedBox(width: 4),
+          const Icon(Icons.auto_awesome, size: 12, color: AppColors.primary),
+          const SizedBox(width: D.sp4),
           Text(
             'AI',
-            style: TextStyle(
-                color: C.primary,
+            style: GoogleFonts.poppins(
+                color: AppColors.primary,
                 fontSize: 11,
                 fontWeight: FontWeight.w600),
           ),

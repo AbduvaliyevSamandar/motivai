@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../../config/theme.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/chat_provider.dart';
@@ -64,13 +65,13 @@ class _ShellState extends State<MainShell> {
       SnackBar(
         content: Text(
           S.get('back_exit'),
-          style: const TextStyle(fontWeight: FontWeight.w500),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
         ),
         duration: const Duration(seconds: 2),
-        backgroundColor: C.surface,
+        backgroundColor: AppColors.surface,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(D.radiusMd),
         ),
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
       ),
@@ -93,9 +94,9 @@ class _ShellState extends State<MainShell> {
   Widget _buildNavBar() {
     return Container(
       decoration: BoxDecoration(
-        color: C.surface,
+        color: AppColors.surface,
         border: Border(
-          top: BorderSide(color: C.border, width: 0.5),
+          top: BorderSide(color: AppColors.border, width: 0.5),
         ),
         boxShadow: [
           BoxShadow(
@@ -108,7 +109,7 @@ class _ShellState extends State<MainShell> {
       child: SafeArea(
         top: false,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: 6),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -119,8 +120,8 @@ class _ShellState extends State<MainShell> {
                   isAI: true),
               _navItem(2, Icons.leaderboard_outlined,
                   Icons.leaderboard_rounded, S.get('rating')),
-              _navItem(3, Icons.bar_chart_outlined,
-                  Icons.bar_chart_rounded, S.get('analytics')),
+              _navItem(3, Icons.bar_chart_outlined, Icons.bar_chart_rounded,
+                  S.get('analytics')),
               _navItem(4, Icons.person_outline_rounded,
                   Icons.person_rounded, S.get('profile')),
             ],
@@ -140,7 +141,7 @@ class _ShellState extends State<MainShell> {
         behavior: HitTestBehavior.opaque,
         onTap: () => setState(() => _idx = index),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: D.sp4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -152,14 +153,14 @@ class _ShellState extends State<MainShell> {
                   height: 42,
                   decoration: BoxDecoration(
                     gradient: active
-                        ? const LinearGradient(colors: C.gradPrimary)
+                        ? const LinearGradient(colors: AppColors.gradPrimary)
                         : null,
                     color: active ? null : Colors.transparent,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(D.radiusMd),
                     boxShadow: active
                         ? [
                             BoxShadow(
-                              color: C.primary.withValues(alpha: 0.3),
+                              color: AppColors.primary.withValues(alpha: 0.3),
                               blurRadius: 10,
                               offset: const Offset(0, 3),
                             ),
@@ -168,7 +169,7 @@ class _ShellState extends State<MainShell> {
                   ),
                   child: Icon(
                     active ? activeIcon : icon,
-                    color: active ? Colors.white : C.sub,
+                    color: active ? Colors.white : AppColors.hint,
                     size: 22,
                   ),
                 )
@@ -178,15 +179,15 @@ class _ShellState extends State<MainShell> {
                   child: Icon(
                     active ? activeIcon : icon,
                     key: ValueKey(active),
-                    color: active ? C.primary : C.sub,
-                    size: 24,
+                    color: active ? AppColors.primary : AppColors.hint,
+                    size: D.iconLg,
                   ),
                 ),
-              const SizedBox(height: 4),
+              const SizedBox(height: D.sp4),
               Text(
                 label,
-                style: TextStyle(
-                  color: active ? (isAI ? C.primary : C.primary) : C.sub,
+                style: GoogleFonts.poppins(
+                  color: active ? AppColors.primary : AppColors.hint,
                   fontSize: 10,
                   fontWeight: active ? FontWeight.w700 : FontWeight.w500,
                 ),
@@ -200,7 +201,7 @@ class _ShellState extends State<MainShell> {
                 height: 3,
                 decoration: BoxDecoration(
                   gradient: active
-                      ? const LinearGradient(colors: C.gradPrimary)
+                      ? const LinearGradient(colors: AppColors.gradPrimary)
                       : null,
                   borderRadius: BorderRadius.circular(2),
                 ),

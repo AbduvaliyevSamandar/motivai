@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../config/theme.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../services/api.dart';
 import '../../config/constants.dart';
@@ -45,14 +47,14 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   ];
 
   static const _categoryEmojis = {
-    'study': '📚',
-    'exercise': '💪',
-    'reading': '📖',
-    'meditation': '🧘',
-    'social': '👥',
-    'creative': '🎨',
-    'productivity': '⚡',
-    'challenge': '🏆',
+    'study': '\u{1F4DA}',
+    'exercise': '\u{1F4AA}',
+    'reading': '\u{1F4D6}',
+    'meditation': '\u{1F9D8}',
+    'social': '\u{1F465}',
+    'creative': '\u{1F3A8}',
+    'productivity': '\u26A1',
+    'challenge': '\u{1F3C6}',
   };
 
   static const _priorities = ['low', 'medium', 'high', 'urgent'];
@@ -75,7 +77,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         maxHeight: MediaQuery.of(context).size.height * 0.88,
       ),
       decoration: BoxDecoration(
-        color: C.bg,
+        color: AppColors.bg,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(28),
           topRight: Radius.circular(28),
@@ -91,7 +93,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       child: Padding(
         padding: EdgeInsets.only(bottom: bottomInset),
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+          padding: const EdgeInsets.fromLTRB(D.sp24, D.sp12, D.sp24, D.sp24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -101,12 +103,12 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   width: 44,
                   height: 5,
                   decoration: BoxDecoration(
-                    color: C.border,
+                    color: AppColors.border,
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: D.sp20),
 
               // ── Title ───────────────────────────────
               Row(
@@ -115,27 +117,27 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                          colors: C.gradPrimary),
-                      borderRadius: BorderRadius.circular(12),
+                          colors: AppColors.gradPrimary),
+                      borderRadius: BorderRadius.circular(D.radiusMd),
                     ),
                     child: const Icon(Icons.add_task_rounded,
                         color: Colors.white, size: 22),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: D.sp12),
                   Text(
                     S.get('add_task'),
-                    style: TextStyle(
-                        color: C.txt,
+                    style: GoogleFonts.poppins(
+                        color: AppColors.txt,
                         fontSize: 22,
                         fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: D.sp24),
 
               // ── Task Title Field ────────────────────
               _buildLabel(S.get('task_title')),
-              const SizedBox(height: 8),
+              const SizedBox(height: D.sp8),
               _buildTextField(
                 controller: _titleCtrl,
                 hint: S.get('task_title'),
@@ -145,7 +147,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
 
               // ── Task Description Field ──────────────
               _buildLabel(S.get('task_desc')),
-              const SizedBox(height: 8),
+              const SizedBox(height: D.sp8),
               _buildTextField(
                 controller: _descCtrl,
                 hint: S.get('task_desc'),
@@ -156,34 +158,34 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
 
               // ── Category Dropdown ───────────────────
               _buildLabel(S.get('category')),
-              const SizedBox(height: 8),
+              const SizedBox(height: D.sp8),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 14),
                 decoration: BoxDecoration(
-                  color: C.surface,
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: C.border),
+                  border: Border.all(color: AppColors.border),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: _category,
                     isExpanded: true,
-                    dropdownColor: C.card,
+                    dropdownColor: AppColors.card,
                     icon: Icon(Icons.keyboard_arrow_down_rounded,
-                        color: C.sub),
-                    style: TextStyle(color: C.txt, fontSize: 14),
+                        color: AppColors.sub),
+                    style: GoogleFonts.poppins(
+                        color: AppColors.txt, fontSize: 14),
                     items: _categories.map((c) {
                       return DropdownMenuItem(
                         value: c,
                         child: Row(
                           children: [
-                            Text(_categoryEmojis[c] ?? '📌',
-                                style:
-                                    const TextStyle(fontSize: 18)),
+                            Text(_categoryEmojis[c] ?? '\u{1F4CC}',
+                                style: const TextStyle(fontSize: 18)),
                             const SizedBox(width: 10),
                             Text(c[0].toUpperCase() + c.substring(1),
-                                style: TextStyle(
-                                    color: C.txt, fontSize: 14)),
+                                style: GoogleFonts.poppins(
+                                    color: AppColors.txt, fontSize: 14)),
                           ],
                         ),
                       );
@@ -198,15 +200,15 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
 
               // ── Priority Selector ───────────────────
               _buildLabel(S.get('priority')),
-              const SizedBox(height: 8),
+              const SizedBox(height: D.sp8),
               _buildChipSelector(
                 items: _priorities,
                 selected: _priority,
                 colors: {
-                  'low': C.success,
-                  'medium': C.gold,
-                  'high': C.warning,
-                  'urgent': C.error,
+                  'low': AppColors.success,
+                  'medium': AppColors.accent,
+                  'high': const Color(0xFFFFA726),
+                  'urgent': AppColors.danger,
                 },
                 labels: {
                   'low': S.get('low'),
@@ -219,14 +221,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               const SizedBox(height: 18),
 
               // ── Difficulty Selector ─────────────────
-              _buildLabel(S.get('easy') +
-                  ' / ' +
-                  S.get('medium') +
-                  ' / ' +
-                  S.get('hard') +
-                  ' / ' +
-                  S.get('expert')),
-              const SizedBox(height: 8),
+              _buildLabel('${S.get('easy')} / ${S.get('medium')} / ${S.get('hard')} / ${S.get('expert')}'),
+              const SizedBox(height: D.sp8),
               _buildChipSelector(
                 items: _difficulties,
                 selected: _difficulty,
@@ -248,7 +244,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
 
               // ── Duration Field ──────────────────────
               _buildLabel(S.get('duration')),
-              const SizedBox(height: 8),
+              const SizedBox(height: D.sp8),
               _buildTextField(
                 controller: _durationCtrl,
                 hint: '30',
@@ -265,11 +261,11 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   height: 54,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                        colors: C.gradPrimary),
-                    borderRadius: BorderRadius.circular(16),
+                        colors: AppColors.gradPrimary),
+                    borderRadius: BorderRadius.circular(D.radiusLg),
                     boxShadow: [
                       BoxShadow(
-                        color: C.primary.withOpacity(0.4),
+                        color: AppColors.primary.withOpacity(0.4),
                         blurRadius: 16,
                         offset: const Offset(0, 6),
                       ),
@@ -288,10 +284,10 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                             children: [
                               const Icon(Icons.add_rounded,
                                   color: Colors.white, size: 22),
-                              const SizedBox(width: 8),
+                              const SizedBox(width: D.sp8),
                               Text(
                                 S.get('add_task'),
-                                style: const TextStyle(
+                                style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600),
@@ -301,7 +297,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: D.sp12),
             ],
           ),
         ),
@@ -314,8 +310,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   Widget _buildLabel(String text) {
     return Text(
       text,
-      style: TextStyle(
-          color: C.sub, fontSize: 13, fontWeight: FontWeight.w600),
+      style: GoogleFonts.poppins(
+          color: AppColors.sub, fontSize: 13, fontWeight: FontWeight.w600),
     );
   }
 
@@ -328,19 +324,20 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: C.surface,
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: C.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: TextField(
         controller: controller,
         maxLines: maxLines,
         keyboardType: keyboardType,
-        style: TextStyle(color: C.txt, fontSize: 14),
+        style: GoogleFonts.poppins(color: AppColors.txt, fontSize: 14),
         decoration: InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(color: C.sub.withOpacity(0.6)),
-          prefixIcon: Icon(icon, color: C.sub, size: 20),
+          hintStyle: GoogleFonts.poppins(
+              color: AppColors.hint.withOpacity(0.6)),
+          prefixIcon: Icon(icon, color: AppColors.sub, size: D.iconMd),
           border: InputBorder.none,
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
@@ -359,7 +356,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
     return Row(
       children: items.map((item) {
         final isActive = item == selected;
-        final color = colors[item] ?? C.sub;
+        final color = colors[item] ?? AppColors.sub;
 
         return Expanded(
           child: GestureDetector(
@@ -367,25 +364,25 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               margin: EdgeInsets.only(
-                  right: item != items.last ? 8 : 0),
-              padding: const EdgeInsets.symmetric(vertical: 12),
+                  right: item != items.last ? D.sp8 : 0),
+              padding: const EdgeInsets.symmetric(vertical: D.sp12),
               decoration: BoxDecoration(
                 color: isActive
                     ? color.withOpacity(0.15)
-                    : C.surface,
-                borderRadius: BorderRadius.circular(12),
+                    : AppColors.surface,
+                borderRadius: BorderRadius.circular(D.radiusMd),
                 border: Border.all(
                   color: isActive
                       ? color.withOpacity(0.5)
-                      : C.border,
+                      : AppColors.border,
                   width: isActive ? 1.5 : 1,
                 ),
               ),
               child: Center(
                 child: Text(
                   labels[item] ?? item,
-                  style: TextStyle(
-                    color: isActive ? color : C.sub,
+                  style: GoogleFonts.poppins(
+                    color: isActive ? color : AppColors.sub,
                     fontSize: 12,
                     fontWeight:
                         isActive ? FontWeight.w600 : FontWeight.normal,
@@ -404,7 +401,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
     if (title.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(S.get('task_title')),
-        backgroundColor: C.error,
+        backgroundColor: AppColors.danger,
       ));
       return;
     }
@@ -437,28 +434,27 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       });
 
       if (!mounted) return;
-      // Vazifalar ro'yxatini yangilash
       context.read<TaskProvider>().loadAll();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(
           children: [
             const Icon(Icons.check_circle_rounded,
-                color: Colors.white, size: 20),
-            const SizedBox(width: 8),
+                color: Colors.white, size: D.iconMd),
+            const SizedBox(width: D.sp8),
             Text(S.get('task_added')),
           ],
         ),
-        backgroundColor: C.success,
+        backgroundColor: AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12)),
+            borderRadius: BorderRadius.circular(D.radiusMd)),
       ));
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(e.toString()),
-        backgroundColor: C.error,
+        backgroundColor: AppColors.danger,
       ));
     } finally {
       if (mounted) setState(() => _loading = false);

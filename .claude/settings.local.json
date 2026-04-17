@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze:*)",
+      "Bash(flutter devices:*)",
+      "Bash(flutter run:*)",
+      "Bash(flutter pub:*)",
+      "Bash(python:*)",
+      "Bash(dart analyze:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(curl -s -X POST https://motivai-20s9.onrender.com/api/v1/plans -H \"Content-Type: application/json\" -H \"Authorization: Bearer test\" -d '{\"title\":\"test\",\"goal\":\"test\",\"category\":\"academic\",\"duration_days\":1,\"tasks\":[],\"milestones\":[]}')",
+      "Bash(curl -sv -X POST https://motivai-20s9.onrender.com/api/v1/plans -H \"Content-Type: application/json\" -H \"Authorization: Bearer test\" -d '{\"title\":\"test\",\"goal\":\"test\",\"category\":\"academic\",\"duration_days\":1,\"tasks\":[],\"milestones\":[]}')",
+      "Bash(curl -sv -X POST \"https://motivai-20s9.onrender.com/api/v1/plans/\" -H \"Content-Type: application/json\" -H \"Authorization: Bearer test\" -d '{\"title\":\"test\",\"goal\":\"test\",\"category\":\"academic\",\"duration_days\":1,\"tasks\":[],\"milestones\":[]}')",
+      "Bash(curl:*)",
+      "Bash(git rm:*)",
+      "Bash(ls /c/Users/Samandar/Desktop/motivai/android/app/src/main/res/mipmap-*/)",
+      "Bash(dart run:*)",
+      "Bash(cp \"/c/Users/Samandar/Desktop/Motivai for students.png\" /c/Users/Samandar/Desktop/motivai/assets/icon/icon.png)",
+      "Bash(cp \"/c/Users/Samandar/Desktop/Motivai for students.png\" /c/Users/Samandar/Desktop/motivai/assets/images/logo.png)",
+      "Bash(git reset:*)"
+    ]
+  }
+}

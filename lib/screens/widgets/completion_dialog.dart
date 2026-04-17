@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../config/theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 
 class CompletionDialog extends StatefulWidget {
@@ -49,7 +51,8 @@ class _CompletionDialogState extends State<CompletionDialog>
     final streak = r['current_streak'] ?? r['streak'] ?? 0;
     final planProgress = r['plan_progress'];
     final planCompleted = r['plan_completed'] == true;
-    final newBadges = (r['new_badges'] ?? r['new_achievements'] as List?) ?? [];
+    final newBadges =
+        (r['new_badges'] ?? r['new_achievements'] as List?) ?? [];
 
     return FadeTransition(
       opacity: _fade,
@@ -61,17 +64,18 @@ class _CompletionDialogState extends State<CompletionDialog>
             constraints: const BoxConstraints(maxWidth: 360),
             padding: const EdgeInsets.all(28),
             decoration: BoxDecoration(
-              color: C.card,
-              borderRadius: BorderRadius.circular(28),
+              color: AppColors.card,
+              borderRadius: BorderRadius.circular(D.sp24),
               border: Border.all(
                 color: levelUp
-                    ? C.gold.withOpacity(0.5)
-                    : C.primary.withOpacity(0.3),
+                    ? AppColors.accent.withValues(alpha: 0.5)
+                    : AppColors.primary.withValues(alpha: 0.4),
                 width: 2,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: (levelUp ? C.gold : C.primary).withOpacity(0.2),
+                  color: (levelUp ? AppColors.accent : AppColors.primary)
+                      .withValues(alpha: 0.2),
                   blurRadius: 40,
                   spreadRadius: 2,
                 ),
@@ -80,19 +84,21 @@ class _CompletionDialogState extends State<CompletionDialog>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // ── Big Emoji ──────────────────────────
+                // -- Big Emoji --
                 Container(
                   width: 80,
                   height: 80,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: levelUp ? C.gradGold : C.gradGreen,
+                      colors:
+                          levelUp ? AppColors.gradGold : AppColors.gradSuccess,
                     ),
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: (levelUp ? C.gold : C.success)
-                            .withOpacity(0.3),
+                        color:
+                            (levelUp ? AppColors.accent : AppColors.success)
+                                .withValues(alpha: 0.3),
                         blurRadius: 20,
                       ),
                     ],
@@ -104,49 +110,52 @@ class _CompletionDialogState extends State<CompletionDialog>
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: D.sp16),
 
-                // ── Title ──────────────────────────────
+                // -- Title --
                 if (levelUp) ...[
                   ShaderMask(
                     shaderCallback: (r) =>
-                        const LinearGradient(colors: C.gradGold)
+                        const LinearGradient(colors: AppColors.gradGold)
                             .createShader(r),
                     child: Text(
                       '${S.get('level_up')} $newLevel',
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold),
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ] else
                   Text(
                     S.get('task_done'),
-                    style: TextStyle(
-                        color: C.txt,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold),
+                    style: GoogleFonts.poppins(
+                      color: AppColors.txt,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
 
                 const SizedBox(height: 6),
                 Text(
                   widget.taskTitle,
-                  style: TextStyle(color: C.sub, fontSize: 13),
+                  style: GoogleFonts.poppins(
+                      color: AppColors.sub, fontSize: 13),
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: D.sp24),
 
-                // ── Stats Row ──────────────────────────
+                // -- Stats Row --
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 16, horizontal: 12),
+                      vertical: D.sp16, horizontal: D.sp12),
                   decoration: BoxDecoration(
-                    color: C.surface,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: C.border),
+                    color: AppColors.surface,
+                    borderRadius: BorderRadius.circular(D.radiusLg),
+                    border: Border.all(color: AppColors.border),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -155,14 +164,14 @@ class _CompletionDialogState extends State<CompletionDialog>
                         emoji: '⭐',
                         value: '+$xpEarned',
                         label: S.get('points'),
-                        color: C.gold,
+                        color: AppColors.accent,
                       ),
                       _Divider(),
                       _StatColumn(
                         emoji: '🔥',
                         value: '$streak',
                         label: S.get('streak'),
-                        color: C.accent,
+                        color: const Color(0xFFFF6584),
                       ),
                       if (newLevel != null) ...[
                         _Divider(),
@@ -170,22 +179,22 @@ class _CompletionDialogState extends State<CompletionDialog>
                           emoji: '🎯',
                           value: '$newLevel',
                           label: S.get('level'),
-                          color: C.primary,
+                          color: AppColors.primary,
                         ),
                       ],
                     ],
                   ),
                 ),
 
-                // ── Plan Progress ──────────────────────
+                // -- Plan Progress --
                 if (planProgress != null) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: D.sp16),
                   Container(
                     width: double.infinity,
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(D.sp12),
                     decoration: BoxDecoration(
-                      color: C.primary.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppColors.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(D.radiusMd),
                     ),
                     child: Column(
                       children: [
@@ -197,31 +206,35 @@ class _CompletionDialogState extends State<CompletionDialog>
                               planCompleted
                                   ? S.get('all_done')
                                   : S.get('today_goal'),
-                              style: TextStyle(
-                                  color: C.txt,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500),
+                              style: GoogleFonts.poppins(
+                                color: AppColors.txt,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                             Text(
                               '${((planProgress is num ? planProgress : 0) * 100).toInt()}%',
-                              style: TextStyle(
-                                  color: C.primary,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold),
+                              style: GoogleFonts.poppins(
+                                color: AppColors.primary,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: D.sp8),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(D.sp4),
                           child: LinearProgressIndicator(
                             value: (planProgress is num
                                     ? planProgress.toDouble()
                                     : 0.0)
                                 .clamp(0.0, 1.0),
-                            backgroundColor: C.border,
+                            backgroundColor: AppColors.border,
                             valueColor: AlwaysStoppedAnimation(
-                                planCompleted ? C.success : C.primary),
+                                planCompleted
+                                    ? AppColors.success
+                                    : AppColors.primary),
                             minHeight: 6,
                           ),
                         ),
@@ -230,22 +243,22 @@ class _CompletionDialogState extends State<CompletionDialog>
                   ),
                 ],
 
-                // ── New Achievements ───────────────────
+                // -- New Achievements --
                 if (newBadges.isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  const SizedBox(height: D.sp16),
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          C.gold.withOpacity(0.12),
-                          C.gold.withOpacity(0.05),
+                          AppColors.accent.withValues(alpha: 0.12),
+                          AppColors.accent.withValues(alpha: 0.05),
                         ],
                       ),
                       borderRadius: BorderRadius.circular(14),
-                      border:
-                          Border.all(color: C.gold.withOpacity(0.3)),
+                      border: Border.all(
+                          color: AppColors.accent.withValues(alpha: 0.3)),
                     ),
                     child: Column(
                       children: [
@@ -257,16 +270,18 @@ class _CompletionDialogState extends State<CompletionDialog>
                             const SizedBox(width: 6),
                             Text(
                               S.get('achievements'),
-                              style: TextStyle(
-                                  color: C.gold,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold),
+                              style: GoogleFonts.poppins(
+                                color: AppColors.accent,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 10),
                         ...newBadges.map((a) => Padding(
-                              padding: const EdgeInsets.only(bottom: 4),
+                              padding:
+                                  const EdgeInsets.only(bottom: D.sp4),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.center,
@@ -276,20 +291,21 @@ class _CompletionDialogState extends State<CompletionDialog>
                                             ? a['emoji']
                                             : null) ??
                                         '🎖',
-                                    style: const TextStyle(
-                                        fontSize: 18),
+                                    style:
+                                        const TextStyle(fontSize: 18),
                                   ),
-                                  const SizedBox(width: 8),
+                                  const SizedBox(width: D.sp8),
                                   Flexible(
                                     child: Text(
                                       (a is Map
                                               ? a['name']
                                               : a?.toString()) ??
                                           '',
-                                      style: TextStyle(
-                                          color: C.txt,
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w500),
+                                      style: GoogleFonts.poppins(
+                                        color: AppColors.txt,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -300,9 +316,9 @@ class _CompletionDialogState extends State<CompletionDialog>
                   ),
                 ],
 
-                const SizedBox(height: 24),
+                const SizedBox(height: D.sp24),
 
-                // ── Continue Button ────────────────────
+                // -- Continue Button --
                 GestureDetector(
                   onTap: () => Navigator.pop(context),
                   child: Container(
@@ -310,13 +326,17 @@ class _CompletionDialogState extends State<CompletionDialog>
                     height: 52,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: levelUp ? C.gradGold : C.gradPrimary,
+                        colors: levelUp
+                            ? AppColors.gradGold
+                            : AppColors.gradPrimary,
                       ),
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: (levelUp ? C.gold : C.primary)
-                              .withOpacity(0.35),
+                          color: (levelUp
+                                  ? AppColors.accent
+                                  : AppColors.primary)
+                              .withValues(alpha: 0.35),
                           blurRadius: 12,
                           offset: const Offset(0, 5),
                         ),
@@ -325,10 +345,11 @@ class _CompletionDialogState extends State<CompletionDialog>
                     child: Center(
                       child: Text(
                         S.get('continue_btn'),
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16),
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
@@ -342,9 +363,9 @@ class _CompletionDialogState extends State<CompletionDialog>
   }
 }
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 //  STAT COLUMN
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 class _StatColumn extends StatelessWidget {
   final String emoji, value, label;
   final Color color;
@@ -361,29 +382,32 @@ class _StatColumn extends StatelessWidget {
     return Column(
       children: [
         Text(emoji, style: const TextStyle(fontSize: 26)),
-        const SizedBox(height: 4),
+        const SizedBox(height: D.sp4),
         Text(value,
-            style: TextStyle(
-                color: C.txt,
-                fontSize: 20,
-                fontWeight: FontWeight.bold)),
+            style: GoogleFonts.poppins(
+              color: AppColors.txt,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            )),
         const SizedBox(height: 2),
-        Text(label, style: TextStyle(color: C.sub, fontSize: 11)),
+        Text(label,
+            style: GoogleFonts.poppins(
+                color: AppColors.sub, fontSize: 11)),
       ],
     );
   }
 }
 
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 //  DIVIDER
-// ═══════════════════════════════════════════════════════════
+// ============================================================
 class _Divider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 1,
       height: 40,
-      color: C.border,
+      color: AppColors.border,
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../config/theme.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
@@ -14,9 +16,9 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth  = context.watch<AuthProvider>();
+    final auth = context.watch<AuthProvider>();
     final tasks = context.watch<TaskProvider>();
-    final h     = DateTime.now().hour;
+    final h = DateTime.now().hour;
     final greet = h < 12
         ? S.get('good_morning')
         : h < 18
@@ -24,10 +26,10 @@ class DashboardScreen extends StatelessWidget {
             : S.get('good_evening');
 
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: AppColors.bg,
       floatingActionButton: _buildFAB(context),
       body: RefreshIndicator(
-        color: C.primary,
+        color: AppColors.primary,
         onRefresh: () async {
           await tasks.loadAll();
           await auth.refresh();
@@ -75,10 +77,12 @@ class DashboardScreen extends StatelessWidget {
                   child: Center(
                     child: Column(
                       children: [
-                        CircularProgressIndicator(color: C.primary),
-                        const SizedBox(height: 16),
+                        const CircularProgressIndicator(
+                            color: AppColors.primary),
+                        const SizedBox(height: D.sp16),
                         Text(S.get('loading'),
-                            style: TextStyle(color: C.sub, fontSize: 13)),
+                            style: GoogleFonts.poppins(
+                                color: AppColors.sub, fontSize: 13)),
                       ],
                     ),
                   ),
@@ -87,22 +91,22 @@ class DashboardScreen extends StatelessWidget {
             else ...[
               // ── Today Tasks Section Header ─────────────
               SliverPadding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
+                padding: const EdgeInsets.fromLTRB(D.sp20, D.sp8, D.sp20, D.sp8),
                 sliver: SliverToBoxAdapter(
                   child: Row(children: [
                     Container(
-                      padding: const EdgeInsets.all(8),
+                      padding: const EdgeInsets.all(D.sp8),
                       decoration: BoxDecoration(
-                        color: C.primary.withOpacity(0.12),
+                        color: AppColors.primary.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: const Icon(Icons.today_rounded,
-                          color: C.primary, size: 20),
+                          color: AppColors.primary, size: D.iconMd),
                     ),
                     const SizedBox(width: 10),
                     Text(S.get('today_tasks'),
-                        style: TextStyle(
-                            color: C.txt,
+                        style: GoogleFonts.poppins(
+                            color: AppColors.txt,
                             fontSize: 18,
                             fontWeight: FontWeight.bold)),
                     const Spacer(),
@@ -112,14 +116,14 @@ class DashboardScreen extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: tasks.dailyProgress >= 1.0
-                              ? C.gradGreen
-                              : C.gradPrimary,
+                              ? AppColors.gradSuccess
+                              : AppColors.gradPrimary,
                         ),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(D.radiusMd),
                       ),
                       child: Text(
                         '${tasks.completedToday}/${tasks.totalToday}',
-                        style: const TextStyle(
+                        style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 13,
                             fontWeight: FontWeight.w600),
@@ -134,7 +138,7 @@ class DashboardScreen extends StatelessWidget {
                 SliverToBoxAdapter(child: _EmptyState())
               else
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: D.sp16),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (_, i) => TaskCard(
@@ -150,30 +154,30 @@ class DashboardScreen extends StatelessWidget {
               // ── AI Suggestions Section ─────────────────
               if (tasks.recommended.isNotEmpty) ...[
                 SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 8),
+                  padding: const EdgeInsets.fromLTRB(D.sp20, D.sp24, D.sp20, D.sp8),
                   sliver: SliverToBoxAdapter(
                     child: Row(children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(D.sp8),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                              colors: C.gradAccent),
+                              colors: AppColors.gradAccent),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(Icons.auto_awesome_rounded,
-                            color: Colors.white, size: 20),
+                            color: Colors.white, size: D.iconMd),
                       ),
                       const SizedBox(width: 10),
                       Text(S.get('ai_suggest'),
-                          style: TextStyle(
-                              color: C.txt,
+                          style: GoogleFonts.poppins(
+                              color: AppColors.txt,
                               fontSize: 18,
                               fontWeight: FontWeight.bold)),
                     ]),
                   ),
                 ),
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: D.sp16),
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (_, i) => TaskCard(
@@ -198,11 +202,11 @@ class DashboardScreen extends StatelessWidget {
   Widget _buildFAB(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: C.gradPrimary),
-        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(colors: AppColors.gradPrimary),
+        borderRadius: BorderRadius.circular(D.radiusLg),
         boxShadow: [
           BoxShadow(
-            color: C.primary.withOpacity(0.4),
+            color: AppColors.primary.withOpacity(0.4),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -215,7 +219,7 @@ class DashboardScreen extends StatelessWidget {
         highlightElevation: 0,
         icon: const Icon(Icons.add_rounded, color: Colors.white),
         label: Text(S.get('add_task'),
-            style: const TextStyle(
+            style: GoogleFonts.poppins(
                 color: Colors.white, fontWeight: FontWeight.w600)),
       ),
     );
@@ -238,7 +242,7 @@ class DashboardScreen extends StatelessWidget {
     } else if (tasks.error != null) {
       ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
         content: Text(tasks.error!),
-        backgroundColor: C.error,
+        backgroundColor: AppColors.danger,
       ));
     }
   }
@@ -267,9 +271,9 @@ class _GradientHeader extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            C.primary.withOpacity(0.15),
-            C.accent.withOpacity(0.08),
-            C.bg,
+            AppColors.primary.withOpacity(0.15),
+            AppColors.accent.withOpacity(0.08),
+            AppColors.bg,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -278,11 +282,10 @@ class _GradientHeader extends StatelessWidget {
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+          padding: const EdgeInsets.fromLTRB(D.sp20, D.sp16, D.sp20, D.sp20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top row: greeting + streak badge
               Row(
                 children: [
                   Expanded(
@@ -290,49 +293,45 @@ class _GradientHeader extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(greet,
-                            style: TextStyle(
-                                color: C.sub,
+                            style: GoogleFonts.poppins(
+                                color: AppColors.sub,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500)),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: D.sp4),
                         Row(
                           children: [
                             Flexible(
                               child: Text(
                                 name.isNotEmpty ? name : 'User',
-                                style: TextStyle(
-                                    color: C.txt,
+                                style: GoogleFonts.poppins(
+                                    color: AppColors.txt,
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            // Level badge
+                            const SizedBox(width: D.sp8),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                                  horizontal: 10, vertical: D.sp4),
                               decoration: BoxDecoration(
                                 gradient: const LinearGradient(
-                                    colors: C.gradPrimary),
-                                borderRadius:
-                                    BorderRadius.circular(20),
+                                    colors: AppColors.gradPrimary),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(emoji,
-                                      style: const TextStyle(
-                                          fontSize: 14)),
-                                  const SizedBox(width: 4),
+                                      style: const TextStyle(fontSize: 14)),
+                                  const SizedBox(width: D.sp4),
                                   Text(
                                     '${S.get('level')} $level',
-                                    style: const TextStyle(
+                                    style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontSize: 12,
-                                        fontWeight:
-                                            FontWeight.w600),
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ],
                               ),
@@ -342,18 +341,17 @@ class _GradientHeader extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  // Streak fire badge
+                  const SizedBox(width: D.sp12),
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
-                      gradient:
-                          const LinearGradient(colors: C.gradAccent),
-                      borderRadius: BorderRadius.circular(16),
+                      gradient: const LinearGradient(
+                          colors: AppColors.gradAccent),
+                      borderRadius: BorderRadius.circular(D.radiusLg),
                       boxShadow: [
                         BoxShadow(
-                          color: C.accent.withOpacity(0.3),
+                          color: AppColors.accent.withOpacity(0.3),
                           blurRadius: 12,
                           offset: const Offset(0, 4),
                         ),
@@ -361,16 +359,16 @@ class _GradientHeader extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        const Text('🔥',
+                        const Text('\u{1F525}',
                             style: TextStyle(fontSize: 22)),
                         const SizedBox(height: 2),
                         Text('$streak',
-                            style: const TextStyle(
+                            style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold)),
                         Text(S.get('day'),
-                            style: TextStyle(
+                            style: GoogleFonts.poppins(
                                 color: Colors.white.withOpacity(0.8),
                                 fontSize: 10)),
                       ],
@@ -402,39 +400,39 @@ class _StatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: D.sp16),
       child: Row(
         children: [
           _StatItem(
             icon: Icons.star_rounded,
-            iconColor: C.gold,
+            iconColor: AppColors.accent,
             value: '$points',
             label: S.get('points'),
-            gradColors: C.gradGold,
+            gradColors: AppColors.gradGold,
           ),
           const SizedBox(width: 10),
           _StatItem(
             icon: Icons.trending_up_rounded,
-            iconColor: C.primary,
+            iconColor: AppColors.primary,
             value: '$level',
             label: S.get('level'),
-            gradColors: C.gradPrimary,
+            gradColors: AppColors.gradPrimary,
           ),
           const SizedBox(width: 10),
           _StatItem(
             icon: Icons.local_fire_department_rounded,
-            iconColor: C.accent,
+            iconColor: AppColors.accent,
             value: '$streak',
             label: S.get('streak'),
-            gradColors: C.gradAccent,
+            gradColors: AppColors.gradAccent,
           ),
           const SizedBox(width: 10),
           _StatItem(
             icon: Icons.check_circle_rounded,
-            iconColor: C.success,
+            iconColor: AppColors.success,
             value: '$tasksDone',
             label: S.get('tasks_label'),
-            gradColors: C.gradGreen,
+            gradColors: AppColors.gradSuccess,
           ),
         ],
       ),
@@ -462,9 +460,9 @@ class _StatItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          color: C.card,
+          color: AppColors.card,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: C.border),
+          border: Border.all(color: AppColors.border),
         ),
         child: Column(
           children: [
@@ -475,13 +473,14 @@ class _StatItem extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(value,
-                style: TextStyle(
-                    color: C.txt,
+                style: GoogleFonts.poppins(
+                    color: AppColors.txt,
                     fontSize: 18,
                     fontWeight: FontWeight.bold)),
             const SizedBox(height: 2),
             Text(label,
-                style: TextStyle(color: C.sub, fontSize: 11)),
+                style: GoogleFonts.poppins(
+                    color: AppColors.sub, fontSize: 11)),
           ],
         ),
       ),
@@ -508,21 +507,21 @@ class _ProgressCard extends StatelessWidget {
     final allDone = done == total && total > 0;
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(D.sp16),
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: C.card,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: allDone
-              ? C.success.withOpacity(0.4)
-              : C.border,
+              ? AppColors.success.withOpacity(0.4)
+              : AppColors.border,
           width: allDone ? 1.5 : 1,
         ),
         boxShadow: allDone
             ? [
                 BoxShadow(
-                  color: C.success.withOpacity(0.1),
+                  color: AppColors.success.withOpacity(0.1),
                   blurRadius: 20,
                 ),
               ]
@@ -540,30 +539,30 @@ class _ProgressCard extends StatelessWidget {
                     allDone
                         ? Icons.celebration_rounded
                         : Icons.flag_rounded,
-                    color: allDone ? C.success : C.primary,
-                    size: 20,
+                    color: allDone ? AppColors.success : AppColors.primary,
+                    size: D.iconMd,
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: D.sp8),
                   Text(S.get('today_goal'),
-                      style: TextStyle(
-                          color: C.txt,
+                      style: GoogleFonts.poppins(
+                          color: AppColors.txt,
                           fontSize: 15,
                           fontWeight: FontWeight.w600)),
                 ],
               ),
               Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
+                    horizontal: 10, vertical: D.sp4),
                 decoration: BoxDecoration(
                   color: allDone
-                      ? C.success.withOpacity(0.15)
-                      : C.primary.withOpacity(0.1),
+                      ? AppColors.success.withOpacity(0.15)
+                      : AppColors.primary.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   '$done / $total',
-                  style: TextStyle(
-                    color: allDone ? C.success : C.primary,
+                  style: GoogleFonts.poppins(
+                    color: allDone ? AppColors.success : AppColors.primary,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -572,13 +571,12 @@ class _ProgressCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          // Progress bar
           Stack(
             children: [
               Container(
                 height: 10,
                 decoration: BoxDecoration(
-                  color: C.border,
+                  color: AppColors.border,
                   borderRadius: BorderRadius.circular(5),
                 ),
               ),
@@ -588,12 +586,13 @@ class _ProgressCard extends StatelessWidget {
                   height: 10,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: allDone ? C.gradGreen : C.gradPrimary,
+                      colors:
+                          allDone ? AppColors.gradSuccess : AppColors.gradPrimary,
                     ),
                     borderRadius: BorderRadius.circular(5),
                     boxShadow: [
                       BoxShadow(
-                        color: (allDone ? C.success : C.primary)
+                        color: (allDone ? AppColors.success : AppColors.primary)
                             .withOpacity(0.4),
                         blurRadius: 6,
                         offset: const Offset(0, 2),
@@ -609,8 +608,8 @@ class _ProgressCard extends StatelessWidget {
             allDone
                 ? S.get('all_done')
                 : '$pct% ${S.get('completed')}',
-            style: TextStyle(
-              color: allDone ? C.success : C.sub,
+            style: GoogleFonts.poppins(
+              color: allDone ? AppColors.success : AppColors.sub,
               fontSize: 12,
               fontWeight: allDone ? FontWeight.w600 : FontWeight.normal,
             ),
@@ -628,12 +627,12 @@ class _EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: D.sp16, vertical: D.sp8),
+      padding: const EdgeInsets.symmetric(vertical: D.sp48, horizontal: D.sp24),
       decoration: BoxDecoration(
-        color: C.card,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: C.border),
+        color: AppColors.card,
+        borderRadius: BorderRadius.circular(D.sp20),
+        border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [
@@ -643,32 +642,32 @@ class _EmptyState extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  C.primary.withOpacity(0.15),
-                  C.accent.withOpacity(0.1),
+                  AppColors.primary.withOpacity(0.15),
+                  AppColors.accent.withOpacity(0.1),
                 ],
               ),
               shape: BoxShape.circle,
             ),
             child: const Center(
-              child: Text('🚀', style: TextStyle(fontSize: 36)),
+              child: Text('\u{1F680}', style: TextStyle(fontSize: 36)),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: D.sp16),
           Text(S.get('no_tasks'),
-              style: TextStyle(
-                  color: C.txt,
+              style: GoogleFonts.poppins(
+                  color: AppColors.txt,
                   fontSize: 17,
                   fontWeight: FontWeight.w600)),
-          const SizedBox(height: 8),
+          const SizedBox(height: D.sp8),
           Text(
             S.get('pull_refresh'),
-            style: TextStyle(color: C.sub, fontSize: 13),
+            style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: D.sp20),
           Text(S.get('motto'),
-              style: TextStyle(
-                  color: C.primary,
+              style: GoogleFonts.poppins(
+                  color: AppColors.primary,
                   fontSize: 13,
                   fontStyle: FontStyle.italic),
               textAlign: TextAlign.center),

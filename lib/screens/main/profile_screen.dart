@@ -1,11 +1,12 @@
-import 'dart:io' show File, Platform;
+import 'dart:io' show File;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../../config/theme.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
@@ -61,15 +62,14 @@ class _ProfileState extends State<ProfileScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(S.get('done')),
-              backgroundColor: C.success,
+              content: Text(S.get('done'), style: GoogleFonts.poppins()),
+              backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
             ),
           );
         }
       }
     } catch (e) {
-      // Rasm yuklanmasa xato ko'rsatmaslik - shunchaki ignore qilamiz
       debugPrint('Image picker error: $e');
     }
   }
@@ -81,21 +81,26 @@ class _ProfileState extends State<ProfileScreen>
     final mq = MediaQuery.of(context);
 
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: AppColors.bg,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
-          // ── Gradient Header ──
-          SliverToBoxAdapter(
-            child: _buildHeader(auth, mq),
+          // -- Gradient Header --
+          SliverAppBar(
+            backgroundColor: Colors.transparent,
+            expandedHeight: 260,
+            pinned: false,
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildHeader(auth, mq),
+            ),
           ),
 
-          // ── Content ──
+          // -- Content --
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: D.sp20),
               child: Column(children: [
-                const SizedBox(height: 24),
+                const SizedBox(height: D.sp24),
 
                 // Stats Grid
                 _buildStatsGrid(auth),
@@ -103,7 +108,7 @@ class _ProfileState extends State<ProfileScreen>
 
                 // Settings section
                 _buildSectionHeader(S.get('settings')),
-                const SizedBox(height: 12),
+                const SizedBox(height: D.sp12),
 
                 // Theme toggle
                 _buildSettingTile(
@@ -115,8 +120,9 @@ class _ProfileState extends State<ProfileScreen>
                       : S.get('light_mode'),
                   trailing: Switch.adaptive(
                     value: theme.isDark,
-                    activeColor: C.primary,
-                    activeTrackColor: C.primary.withValues(alpha: 0.3),
+                    activeColor: AppColors.primary,
+                    activeTrackColor:
+                        AppColors.primary.withValues(alpha: 0.3),
                     onChanged: (_) => theme.toggle(),
                   ),
                 ),
@@ -148,7 +154,7 @@ class _ProfileState extends State<ProfileScreen>
 
                 // Account section
                 _buildSectionHeader(S.get('account')),
-                const SizedBox(height: 12),
+                const SizedBox(height: D.sp12),
 
                 // Clear cache
                 _buildSettingTile(
@@ -161,15 +167,15 @@ class _ProfileState extends State<ProfileScreen>
                 _buildSettingTile(
                   icon: Icons.logout_rounded,
                   title: S.get('logout'),
-                  color: C.error,
+                  color: AppColors.danger,
                   onTap: () => _confirmLogout(auth),
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: D.sp32),
                 Text(
                   'MotivAI v2.1.0',
-                  style: TextStyle(
-                    color: C.sub.withValues(alpha: 0.5),
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub.withValues(alpha: 0.5),
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
                   ),
@@ -183,16 +189,16 @@ class _ProfileState extends State<ProfileScreen>
     );
   }
 
-  // ── Header with gradient ──────────────────────────────
+  // -- Header with gradient ----------------------------------
   Widget _buildHeader(AuthProvider auth, MediaQueryData mq) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            C.primary.withValues(alpha: 0.25),
-            C.primary.withValues(alpha: 0.08),
-            C.bg,
+            AppColors.primary.withValues(alpha: 0.3),
+            AppColors.primary.withValues(alpha: 0.08),
+            AppColors.bg,
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -202,9 +208,9 @@ class _ProfileState extends State<ProfileScreen>
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+          padding: const EdgeInsets.fromLTRB(D.sp20, D.sp16, D.sp20, D.sp24),
           child: Column(children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: D.sp8),
 
             // Avatar
             GestureDetector(
@@ -221,7 +227,7 @@ class _ProfileState extends State<ProfileScreen>
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: C.primary.withValues(
+                            color: AppColors.primary.withValues(
                                 alpha: 0.2 + 0.2 * _shimmer.value),
                             blurRadius: 24,
                             spreadRadius: 2,
@@ -241,12 +247,14 @@ class _ProfileState extends State<ProfileScreen>
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(colors: C.gradPrimary),
+                        gradient: const LinearGradient(
+                            colors: AppColors.gradPrimary),
                         shape: BoxShape.circle,
-                        border: Border.all(color: C.bg, width: 3),
+                        border: Border.all(color: AppColors.bg, width: 3),
                         boxShadow: [
                           BoxShadow(
-                            color: C.primary.withValues(alpha: 0.3),
+                            color: AppColors.primary
+                                .withValues(alpha: 0.3),
                             blurRadius: 8,
                           ),
                         ],
@@ -262,26 +270,26 @@ class _ProfileState extends State<ProfileScreen>
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: D.sp16),
 
             // Name
             Text(
               auth.name,
-              style: TextStyle(
-                color: C.txt,
+              style: GoogleFonts.poppins(
+                color: AppColors.txt,
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
                 letterSpacing: -0.3,
               ),
             ),
 
-            const SizedBox(height: 4),
+            const SizedBox(height: D.sp4),
 
             // Email
             Text(
               auth.email,
-              style: TextStyle(
-                color: C.sub,
+              style: GoogleFonts.poppins(
+                color: AppColors.sub,
                 fontSize: 13,
                 fontWeight: FontWeight.w400,
               ),
@@ -291,13 +299,15 @@ class _ProfileState extends State<ProfileScreen>
 
             // Level badge
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: D.sp16, vertical: D.sp8),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: C.gradPrimary),
-                borderRadius: BorderRadius.circular(24),
+                gradient: const LinearGradient(
+                    colors: AppColors.gradPrimary),
+                borderRadius: BorderRadius.circular(D.sp24),
                 boxShadow: [
                   BoxShadow(
-                    color: C.primary.withValues(alpha: 0.3),
+                    color: AppColors.primary.withValues(alpha: 0.3),
                     blurRadius: 12,
                     offset: const Offset(0, 4),
                   ),
@@ -311,14 +321,14 @@ class _ProfileState extends State<ProfileScreen>
                   const SizedBox(width: 6),
                   Text(
                     '${S.get('level')} ${auth.level}',
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    margin: const EdgeInsets.symmetric(horizontal: D.sp8),
                     width: 4,
                     height: 4,
                     decoration: BoxDecoration(
@@ -328,7 +338,7 @@ class _ProfileState extends State<ProfileScreen>
                   ),
                   Text(
                     '${auth.points} XP',
-                    style: TextStyle(
+                    style: GoogleFonts.poppins(
                       color: Colors.white.withValues(alpha: 0.9),
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -343,15 +353,15 @@ class _ProfileState extends State<ProfileScreen>
     );
   }
 
-  // ── Avatar widget ─────────────────────────────────────
+  // -- Avatar widget -----------------------------------------
   Widget _buildAvatar(AuthProvider auth) {
     final hasLocal = _localAvatar != null && _localAvatar!.isNotEmpty;
-    final hasNetwork = auth.avatarUrl != null && auth.avatarUrl!.startsWith('http');
+    final hasNetwork =
+        auth.avatarUrl != null && auth.avatarUrl!.startsWith('http');
 
     Widget avatarImage;
     if (hasLocal) {
       if (!kIsWeb) {
-        // Telefon: File dan yuklash
         final file = File(_localAvatar!);
         if (file.existsSync()) {
           avatarImage = ClipOval(
@@ -367,7 +377,6 @@ class _ProfileState extends State<ProfileScreen>
           avatarImage = _initialLetter(auth);
         }
       } else {
-        // Web: network URL
         avatarImage = ClipOval(
           child: Image.network(
             _localAvatar!,
@@ -397,9 +406,11 @@ class _ProfileState extends State<ProfileScreen>
       height: 100,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: (hasLocal || hasNetwork) ? null : const LinearGradient(colors: C.gradPrimary),
+        gradient: (hasLocal || hasNetwork)
+            ? null
+            : const LinearGradient(colors: AppColors.gradPrimary),
         border: Border.all(
-          color: C.primary.withValues(alpha: 0.3),
+          color: AppColors.primary.withValues(alpha: 0.3),
           width: 3,
         ),
       ),
@@ -413,7 +424,7 @@ class _ProfileState extends State<ProfileScreen>
     return Center(
       child: Text(
         letter,
-        style: const TextStyle(
+        style: GoogleFonts.poppins(
           color: Colors.white,
           fontSize: 38,
           fontWeight: FontWeight.bold,
@@ -422,18 +433,15 @@ class _ProfileState extends State<ProfileScreen>
     );
   }
 
-  // ── Stats Grid ────────────────────────────────────────
+  // -- Stats Grid --------------------------------------------
   Widget _buildStatsGrid(AuthProvider auth) {
     final stats = [
-      _StatData(Icons.star_rounded, C.gradGold, '${auth.points}', 'XP'),
-      _StatData(
-          Icons.local_fire_department_rounded,
-          C.gradAccent,
-          '${auth.streak}',
-          S.get('streak')),
-      _StatData(Icons.check_circle_rounded, C.gradGreen,
+      _StatData(Icons.star_rounded, AppColors.gradGold, '${auth.points}', 'XP'),
+      _StatData(Icons.local_fire_department_rounded, AppColors.gradAccent,
+          '${auth.streak}', S.get('streak')),
+      _StatData(Icons.check_circle_rounded, AppColors.gradSuccess,
           '${auth.totalTasks}', S.get('tasks_label')),
-      _StatData(Icons.emoji_events_rounded, C.gradPrimary,
+      _StatData(Icons.emoji_events_rounded, AppColors.gradPrimary,
           '${auth.achiev.length}', S.get('achievements')),
     ];
 
@@ -441,12 +449,12 @@ class _ProfileState extends State<ProfileScreen>
       children: stats
           .map((s) => Expanded(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  margin: const EdgeInsets.symmetric(horizontal: D.sp4),
+                  padding: const EdgeInsets.symmetric(vertical: D.sp16),
                   decoration: BoxDecoration(
-                    color: C.card,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: C.border),
+                    color: AppColors.card,
+                    borderRadius: BorderRadius.circular(D.radiusLg),
+                    border: Border.all(color: AppColors.border),
                   ),
                   child: Column(children: [
                     Container(
@@ -461,8 +469,8 @@ class _ProfileState extends State<ProfileScreen>
                     const SizedBox(height: 10),
                     Text(
                       s.value,
-                      style: TextStyle(
-                        color: C.txt,
+                      style: GoogleFonts.poppins(
+                        color: AppColors.txt,
                         fontSize: 17,
                         fontWeight: FontWeight.bold,
                       ),
@@ -470,8 +478,8 @@ class _ProfileState extends State<ProfileScreen>
                     const SizedBox(height: 2),
                     Text(
                       s.label,
-                      style: TextStyle(
-                        color: C.sub,
+                      style: GoogleFonts.poppins(
+                        color: AppColors.sub,
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                       ),
@@ -485,14 +493,14 @@ class _ProfileState extends State<ProfileScreen>
     );
   }
 
-  // ── Section header ────────────────────────────────────
+  // -- Section header ----------------------------------------
   Widget _buildSectionHeader(String title) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Text(
         title.toUpperCase(),
-        style: TextStyle(
-          color: C.sub,
+        style: GoogleFonts.poppins(
+          color: AppColors.sub,
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.2,
@@ -501,7 +509,7 @@ class _ProfileState extends State<ProfileScreen>
     );
   }
 
-  // ── Setting tile ──────────────────────────────────────
+  // -- Setting tile ------------------------------------------
   Widget _buildSettingTile({
     required IconData icon,
     required String title,
@@ -511,11 +519,11 @@ class _ProfileState extends State<ProfileScreen>
     Color? color,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: D.sp8),
       decoration: BoxDecoration(
-        color: C.card,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: C.border),
+        border: Border.all(color: AppColors.border),
       ),
       child: Material(
         color: Colors.transparent,
@@ -524,17 +532,19 @@ class _ProfileState extends State<ProfileScreen>
           borderRadius: BorderRadius.circular(14),
           onTap: onTap,
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            padding: const EdgeInsets.symmetric(
+                horizontal: D.sp16, vertical: 14),
             child: Row(children: [
               Container(
                 width: 38,
                 height: 38,
                 decoration: BoxDecoration(
-                  color: (color ?? C.primary).withValues(alpha: 0.1),
+                  color: (color ?? AppColors.primary)
+                      .withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: color ?? C.primary, size: 20),
+                child: Icon(icon,
+                    color: color ?? AppColors.primary, size: D.iconMd),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -543,8 +553,8 @@ class _ProfileState extends State<ProfileScreen>
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        color: color ?? C.txt,
+                      style: GoogleFonts.poppins(
+                        color: color ?? AppColors.txt,
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -553,7 +563,8 @@ class _ProfileState extends State<ProfileScreen>
                       const SizedBox(height: 2),
                       Text(
                         subtitle,
-                        style: TextStyle(color: C.sub, fontSize: 11),
+                        style: GoogleFonts.poppins(
+                            color: AppColors.sub, fontSize: 11),
                       ),
                     ],
                   ],
@@ -563,7 +574,8 @@ class _ProfileState extends State<ProfileScreen>
                 trailing!
               else if (onTap != null)
                 Icon(Icons.chevron_right_rounded,
-                    color: C.sub.withValues(alpha: 0.5), size: 22),
+                    color: AppColors.sub.withValues(alpha: 0.5),
+                    size: 22),
             ]),
           ),
         ),
@@ -571,7 +583,7 @@ class _ProfileState extends State<ProfileScreen>
     );
   }
 
-  // ── Change password bottom sheet ──────────────────────
+  // -- Change password bottom sheet --------------------------
   void _showChangePassword() {
     final current = TextEditingController();
     final newPass = TextEditingController();
@@ -585,35 +597,35 @@ class _ProfileState extends State<ProfileScreen>
       builder: (ctx) => StatefulBuilder(
         builder: (ctx, setS) => Container(
           decoration: BoxDecoration(
-            color: C.card,
+            color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(24)),
+                const BorderRadius.vertical(top: Radius.circular(D.sp24)),
           ),
           padding: EdgeInsets.only(
-            left: 24,
-            right: 24,
-            top: 16,
-            bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+            left: D.sp24,
+            right: D.sp24,
+            top: D.sp16,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + D.sp24,
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
             Container(
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: C.border,
+                color: AppColors.border,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
             Text(
               S.get('change_pass'),
-              style: TextStyle(
-                color: C.txt,
+              style: GoogleFonts.poppins(
+                color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
             _passField(current, S.get('current_pass'), obs1,
                 () => setS(() => obs1 = !obs1)),
             const SizedBox(height: 14),
@@ -622,17 +634,19 @@ class _ProfileState extends State<ProfileScreen>
             const SizedBox(height: 14),
             _passField(confirm, S.get('confirm_pass'), obs3,
                 () => setS(() => obs3 = !obs3)),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
             SizedBox(
               width: double.infinity,
               height: 50,
               child: DecoratedBox(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: C.gradPrimary),
+                  gradient: const LinearGradient(
+                      colors: AppColors.gradPrimary),
                   borderRadius: BorderRadius.circular(14),
                   boxShadow: [
                     BoxShadow(
-                      color: C.primary.withValues(alpha: 0.3),
+                      color:
+                          AppColors.primary.withValues(alpha: 0.3),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
@@ -643,8 +657,9 @@ class _ProfileState extends State<ProfileScreen>
                     if (newPass.text.length < 6) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(S.get('min_6')),
-                          backgroundColor: C.error,
+                          content: Text(S.get('min_6'),
+                              style: GoogleFonts.poppins()),
+                          backgroundColor: AppColors.danger,
                         ),
                       );
                       return;
@@ -652,8 +667,9 @@ class _ProfileState extends State<ProfileScreen>
                     if (newPass.text != confirm.text) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text(S.get('pass_mismatch')),
-                          backgroundColor: C.error,
+                          content: Text(S.get('pass_mismatch'),
+                              style: GoogleFonts.poppins()),
+                          backgroundColor: AppColors.danger,
                         ),
                       );
                       return;
@@ -667,10 +683,14 @@ class _ProfileState extends State<ProfileScreen>
                     Navigator.pop(ctx);
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(ok
-                            ? S.get('pass_changed')
-                            : auth.error ?? S.get('error')),
-                        backgroundColor: ok ? C.success : C.error,
+                        content: Text(
+                          ok
+                              ? S.get('pass_changed')
+                              : auth.error ?? S.get('error'),
+                          style: GoogleFonts.poppins(),
+                        ),
+                        backgroundColor:
+                            ok ? AppColors.success : AppColors.danger,
                       ),
                     );
                   },
@@ -683,7 +703,7 @@ class _ProfileState extends State<ProfileScreen>
                   ),
                   child: Text(
                     S.get('save'),
-                    style: const TextStyle(
+                    style: GoogleFonts.poppins(
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
                     ),
@@ -691,7 +711,7 @@ class _ProfileState extends State<ProfileScreen>
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: D.sp12),
           ]),
         ),
       ),
@@ -703,16 +723,17 @@ class _ProfileState extends State<ProfileScreen>
     return TextField(
       controller: ctrl,
       obscureText: obscure,
-      style: TextStyle(color: C.txt),
+      style: GoogleFonts.poppins(color: AppColors.txt),
       decoration: InputDecoration(
         labelText: label,
-        prefixIcon: Icon(Icons.lock_outline_rounded, color: C.sub),
+        prefixIcon:
+            Icon(Icons.lock_outline_rounded, color: AppColors.sub),
         suffixIcon: IconButton(
           icon: Icon(
             obscure
                 ? Icons.visibility_off_outlined
                 : Icons.visibility_outlined,
-            color: C.sub,
+            color: AppColors.sub,
           ),
           onPressed: toggle,
         ),
@@ -720,18 +741,19 @@ class _ProfileState extends State<ProfileScreen>
     );
   }
 
-  // ── Language dialog ───────────────────────────────────
+  // -- Language dialog ---------------------------------------
   void _showLanguageDialog() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: C.card,
+        backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(D.radiusXl),
         ),
         title: Text(
           S.get('select_lang'),
-          style: TextStyle(color: C.txt, fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(
+              color: AppColors.txt, fontWeight: FontWeight.bold),
         ),
         content: Column(mainAxisSize: MainAxisSize.min, children: [
           _langTile("O'zbek", 'uz', '🇺🇿'),
@@ -749,7 +771,7 @@ class _ProfileState extends State<ProfileScreen>
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(D.radiusMd),
         onTap: () async {
           await context.read<ThemeProvider>().setLang(code);
           if (mounted) {
@@ -758,14 +780,15 @@ class _ProfileState extends State<ProfileScreen>
           }
         },
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding: const EdgeInsets.symmetric(
+              horizontal: D.sp16, vertical: 14),
           decoration: BoxDecoration(
             color: isActive
-                ? C.primary.withValues(alpha: 0.1)
+                ? AppColors.primary.withValues(alpha: 0.1)
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(D.radiusMd),
             border: Border.all(
-              color: isActive ? C.primary : C.border,
+              color: isActive ? AppColors.primary : AppColors.border,
               width: isActive ? 1.5 : 1,
             ),
           ),
@@ -775,15 +798,17 @@ class _ProfileState extends State<ProfileScreen>
             Expanded(
               child: Text(
                 name,
-                style: TextStyle(
-                  color: C.txt,
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
                   fontSize: 15,
-                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                  fontWeight:
+                      isActive ? FontWeight.w700 : FontWeight.w500,
                 ),
               ),
             ),
             if (isActive)
-              Icon(Icons.check_circle_rounded, color: C.primary, size: 22),
+              Icon(Icons.check_circle_rounded,
+                  color: AppColors.primary, size: 22),
           ]),
         ),
       ),
@@ -799,69 +824,75 @@ class _ProfileState extends State<ProfileScreen>
         code;
   }
 
-  // ── Clear cache ───────────────────────────────────────
+  // -- Clear cache -------------------------------------------
   void _clearCache(AuthProvider auth) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: C.card,
+        backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(D.radiusXl),
         ),
         title: Text(S.get('clear_cache'),
-            style: TextStyle(color: C.txt, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.poppins(
+                color: AppColors.txt, fontWeight: FontWeight.bold)),
         content: Text(
           S.get('clear_cache'),
-          style: TextStyle(color: C.sub),
+          style: GoogleFonts.poppins(color: AppColors.sub),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(S.get('cancel'), style: TextStyle(color: C.sub)),
+            child: Text(S.get('cancel'),
+                style: GoogleFonts.poppins(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () {
               Navigator.pop(context);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(S.get('done')),
-                  backgroundColor: C.success,
+                  content:
+                      Text(S.get('done'), style: GoogleFonts.poppins()),
+                  backgroundColor: AppColors.success,
                 ),
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: C.warning,
+              backgroundColor: AppColors.accent,
               minimumSize: const Size(80, 40),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Text(S.get('clear_cache')),
+            child: Text(S.get('clear_cache'),
+                style: GoogleFonts.poppins()),
           ),
         ],
       ),
     );
   }
 
-  // ── Logout confirmation ───────────────────────────────
+  // -- Logout confirmation -----------------------------------
   void _confirmLogout(AuthProvider auth) {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        backgroundColor: C.card,
+        backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(D.radiusXl),
         ),
         title: Text(S.get('logout'),
-            style: TextStyle(color: C.txt, fontWeight: FontWeight.bold)),
+            style: GoogleFonts.poppins(
+                color: AppColors.txt, fontWeight: FontWeight.bold)),
         content: Text(
           S.get('logout_confirm'),
-          style: TextStyle(color: C.sub, fontSize: 14),
+          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 14),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text(S.get('cancel'), style: TextStyle(color: C.sub)),
+            child: Text(S.get('cancel'),
+                style: GoogleFonts.poppins(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -869,13 +900,14 @@ class _ProfileState extends State<ProfileScreen>
               auth.logout();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: C.error,
+              backgroundColor: AppColors.danger,
               minimumSize: const Size(80, 40),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Text(S.get('logout')),
+            child:
+                Text(S.get('logout'), style: GoogleFonts.poppins()),
           ),
         ],
       ),

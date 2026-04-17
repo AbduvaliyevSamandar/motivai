@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../../config/theme.dart';
+import '../../config/colors.dart';
+import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import 'register_screen.dart';
@@ -55,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen>
     if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(auth.error ?? S.get('error')),
-        backgroundColor: C.error,
+        backgroundColor: AppColors.danger,
       ));
     }
   }
@@ -63,7 +64,7 @@ class _LoginScreenState extends State<LoginScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: C.bg,
+      backgroundColor: AppColors.bg,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fade,
@@ -71,35 +72,31 @@ class _LoginScreenState extends State<LoginScreen>
             position: _slideUp,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: 24),
+              padding: const EdgeInsets.symmetric(horizontal: D.sp24),
               child: Form(
                 key: _form,
                 child: Column(
                   children: [
-                    const SizedBox(height: 24),
+                    const SizedBox(height: D.sp24),
 
-                    // -- Illustration --
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Image.asset(
-                        'assets/images/logo.png',
-                        height: 180,
-                        fit: BoxFit.contain,
-                      ),
+                    // -- Logo --
+                    Image.asset(
+                      'assets/images/logo.png',
+                      height: 120,
+                      fit: BoxFit.contain,
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: D.sp20),
 
-                    // -- App name --
+                    // -- App name with gradient --
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
-                        colors: C.gradPrimary,
+                        colors: AppColors.gradPrimary,
                       ).createShader(bounds),
                       blendMode: BlendMode.srcIn,
                       child: Text(
-                        S.get('app_name'),
-                        style: const TextStyle(
+                        'MotivAI',
+                        style: GoogleFonts.poppins(
                           fontSize: 32,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 1.5,
@@ -110,65 +107,201 @@ class _LoginScreenState extends State<LoginScreen>
                     const SizedBox(height: 6),
                     Text(
                       S.get('motto'),
-                      style: TextStyle(color: C.sub, fontSize: 14, height: 1.4),
+                      style: GoogleFonts.poppins(
+                        color: AppColors.sub,
+                        fontSize: 14,
+                        height: 1.4,
+                      ),
                       textAlign: TextAlign.center,
                     ),
 
-                    const SizedBox(height: 36),
+                    const SizedBox(height: D.sp32),
 
                     // -- Email field --
-                    _buildInputField(
-                      controller: _email,
-                      label: S.get('email'),
-                      icon: Icons.email_outlined,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (v) {
-                        if (v == null || v.isEmpty) return S.get('enter_email');
-                        if (!v.contains('@')) return S.get('valid_email');
-                        return null;
-                      },
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(D.radiusMd),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.04),
+                            blurRadius: 20,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: TextFormField(
+                        controller: _email,
+                        keyboardType: TextInputType.emailAddress,
+                        style: GoogleFonts.poppins(
+                          color: AppColors.txt,
+                          fontSize: 15,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: S.get('email'),
+                          prefixIcon: Container(
+                            margin: const EdgeInsets.only(left: 12, right: 8),
+                            child: const Icon(Icons.email_outlined, size: D.iconMd),
+                          ),
+                          prefixIconConstraints: const BoxConstraints(
+                            minWidth: 44,
+                            minHeight: 44,
+                          ),
+                          filled: true,
+                          fillColor: AppColors.surface,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: D.sp20,
+                            vertical: 18,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: const BorderSide(
+                              color: AppColors.primary,
+                              width: 2,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: const BorderSide(
+                              color: AppColors.danger,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: const BorderSide(
+                              color: AppColors.danger,
+                              width: 2,
+                            ),
+                          ),
+                          labelStyle: GoogleFonts.poppins(
+                            color: AppColors.sub,
+                            fontSize: 14,
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.isEmpty) return S.get('enter_email');
+                          if (!v.contains('@')) return S.get('valid_email');
+                          return null;
+                        },
+                      ),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: D.sp16),
 
                     // -- Password field --
-                    _buildInputField(
-                      controller: _pass,
-                      label: S.get('password'),
-                      icon: Icons.lock_outline_rounded,
-                      obscure: _obscure,
-                      suffix: IconButton(
-                        icon: Icon(
-                          _obscure
-                              ? Icons.visibility_off_rounded
-                              : Icons.visibility_rounded,
-                          color: C.sub,
-                          size: 20,
-                        ),
-                        onPressed: () => setState(() => _obscure = !_obscure),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(D.radiusMd),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.04),
+                            blurRadius: 20,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                      validator: (v) {
-                        if (v == null || v.length < 6) return S.get('min_6');
-                        return null;
-                      },
-                      onSubmit: (_) => _login(),
+                      child: TextFormField(
+                        controller: _pass,
+                        obscureText: _obscure,
+                        style: GoogleFonts.poppins(
+                          color: AppColors.txt,
+                          fontSize: 15,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: S.get('password'),
+                          prefixIcon: Container(
+                            margin: const EdgeInsets.only(left: 12, right: 8),
+                            child: const Icon(
+                              Icons.lock_outline_rounded,
+                              size: D.iconMd,
+                            ),
+                          ),
+                          prefixIconConstraints: const BoxConstraints(
+                            minWidth: 44,
+                            minHeight: 44,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscure
+                                  ? Icons.visibility_off_rounded
+                                  : Icons.visibility_rounded,
+                              color: AppColors.sub,
+                              size: D.iconMd,
+                            ),
+                            onPressed: () =>
+                                setState(() => _obscure = !_obscure),
+                          ),
+                          filled: true,
+                          fillColor: AppColors.surface,
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: D.sp20,
+                            vertical: 18,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: BorderSide(color: AppColors.border),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: const BorderSide(
+                              color: AppColors.primary,
+                              width: 2,
+                            ),
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: const BorderSide(
+                              color: AppColors.danger,
+                              width: 1.5,
+                            ),
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            borderSide: const BorderSide(
+                              color: AppColors.danger,
+                              width: 2,
+                            ),
+                          ),
+                          labelStyle: GoogleFonts.poppins(
+                            color: AppColors.sub,
+                            fontSize: 14,
+                          ),
+                        ),
+                        validator: (v) {
+                          if (v == null || v.length < 6) return S.get('min_6');
+                          return null;
+                        },
+                        onFieldSubmitted: (_) => _login(),
+                      ),
                     ),
 
                     // -- Forgot password --
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
-                        onPressed: _showForgotPassword,
+                        onPressed: _forgotPassword,
                         style: TextButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 4,
-                            vertical: 8,
+                            horizontal: D.sp4,
+                            vertical: D.sp8,
                           ),
                         ),
                         child: Text(
                           S.get('forgot_pass'),
-                          style: TextStyle(
-                            color: C.primary.withValues(alpha: 0.9),
+                          style: GoogleFonts.poppins(
+                            color: AppColors.primary.withValues(alpha: 0.9),
                             fontSize: 13,
                             fontWeight: FontWeight.w500,
                           ),
@@ -176,42 +309,65 @@ class _LoginScreenState extends State<LoginScreen>
                       ),
                     ),
 
-                    const SizedBox(height: 8),
+                    const SizedBox(height: D.sp24),
 
                     // -- Login button --
                     Consumer<AuthProvider>(
-                      builder: (_, auth, __) => auth.isLoading
-                          ? Container(
-                              height: 56,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    C.primary.withValues(alpha: 0.5),
-                                    C.primaryLight.withValues(alpha: 0.5),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: const Center(
-                                child: SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2.5,
-                                  ),
-                                ),
-                              ),
-                            )
-                          : _GradientButton(
-                              label: S.get('login'),
-                              onTap: _login,
+                      builder: (_, auth, __) => GestureDetector(
+                        onTap: auth.isLoading ? null : _login,
+                        child: Container(
+                          width: double.infinity,
+                          height: 52,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: auth.isLoading
+                                  ? [
+                                      AppColors.primary.withValues(alpha: 0.5),
+                                      AppColors.secondary.withValues(alpha: 0.5),
+                                    ]
+                                  : AppColors.gradPrimary,
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
                             ),
+                            borderRadius: BorderRadius.circular(D.radiusMd),
+                            boxShadow: auth.isLoading
+                                ? null
+                                : [
+                                    BoxShadow(
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.35),
+                                      blurRadius: 20,
+                                      offset: const Offset(0, 8),
+                                    ),
+                                  ],
+                          ),
+                          child: Center(
+                            child: auth.isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : Text(
+                                    S.get('login'),
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ),
                     ),
 
-                    const SizedBox(height: 28),
+                    const SizedBox(height: D.sp20),
 
-                    // -- Divider --
+                    // -- Divider row --
                     Row(
                       children: [
                         Expanded(
@@ -221,31 +377,21 @@ class _LoginScreenState extends State<LoginScreen>
                               gradient: LinearGradient(
                                 colors: [
                                   Colors.transparent,
-                                  C.border,
+                                  AppColors.border,
                                 ],
                               ),
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: C.surface,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: C.border),
-                            ),
-                            child: Text(
-                              S.get('or'),
-                              style: TextStyle(
-                                color: C.sub,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: D.sp16),
+                          child: Text(
+                            S.get('or'),
+                            style: GoogleFonts.poppins(
+                              color: AppColors.sub,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -255,7 +401,7 @@ class _LoginScreenState extends State<LoginScreen>
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
                                 colors: [
-                                  C.border,
+                                  AppColors.border,
                                   Colors.transparent,
                                 ],
                               ),
@@ -265,34 +411,61 @@ class _LoginScreenState extends State<LoginScreen>
                       ],
                     ),
 
-                    const SizedBox(height: 24),
+                    const SizedBox(height: D.sp16),
 
                     // -- Google button --
-                    _SocialButton(
-                      icon: Icons.g_mobiledata_rounded,
-                      iconColor: const Color(0xFF4285F4),
+                    _buildSocialButton(
+                      icon: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF4285F4).withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            'G',
+                            style: GoogleFonts.poppins(
+                              color: const Color(0xFF4285F4),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                      ),
                       label: S.get('login_google'),
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(S.get('coming_soon')),
-                            backgroundColor: C.warning,
+                            backgroundColor: AppColors.accent,
                           ),
                         );
                       },
                     ),
 
-                    const SizedBox(height: 12),
+                    const SizedBox(height: D.sp12),
 
                     // -- Phone button --
-                    _SocialButton(
-                      icon: Icons.phone_android_rounded,
-                      iconColor: C.success,
+                    _buildSocialButton(
+                      icon: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: AppColors.success.withValues(alpha: 0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.phone_android_rounded,
+                          color: AppColors.success,
+                          size: 18,
+                        ),
+                      ),
                       label: S.get('login_phone'),
-                      onTap: _showPhoneAuth,
+                      onTap: _phoneAuth,
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: D.sp24),
 
                     // -- Register link --
                     Row(
@@ -300,9 +473,12 @@ class _LoginScreenState extends State<LoginScreen>
                       children: [
                         Text(
                           S.get('no_account'),
-                          style: TextStyle(color: C.sub, fontSize: 14),
+                          style: GoogleFonts.poppins(
+                            color: AppColors.sub,
+                            fontSize: 14,
+                          ),
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: D.sp4),
                         GestureDetector(
                           onTap: () => Navigator.push(
                             context,
@@ -327,8 +503,8 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                           child: Text(
                             S.get('register'),
-                            style: const TextStyle(
-                              color: C.primary,
+                            style: GoogleFonts.poppins(
+                              color: AppColors.primary,
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
                             ),
@@ -337,7 +513,7 @@ class _LoginScreenState extends State<LoginScreen>
                       ],
                     ),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: D.sp32),
                   ],
                 ),
               ),
@@ -348,79 +524,48 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildInputField({
-    required TextEditingController controller,
+  // -- Social button builder --
+  Widget _buildSocialButton({
+    required Widget icon,
     required String label,
-    required IconData icon,
-    TextInputType? keyboardType,
-    bool obscure = false,
-    Widget? suffix,
-    String? Function(String?)? validator,
-    void Function(String)? onSubmit,
+    required VoidCallback onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: C.primary.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(D.radiusMd),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(D.radiusMd),
+        child: Ink(
+          width: double.infinity,
+          height: 52,
+          decoration: BoxDecoration(
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(D.radiusMd),
+            border: Border.all(color: AppColors.border, width: 1.5),
           ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscure,
-        style: TextStyle(color: C.txt, fontSize: 15),
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Container(
-            margin: const EdgeInsets.only(left: 12, right: 8),
-            child: Icon(icon, size: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              icon,
+              const SizedBox(width: D.sp12),
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
-          prefixIconConstraints: const BoxConstraints(
-            minWidth: 44,
-            minHeight: 44,
-          ),
-          suffixIcon: suffix,
-          filled: true,
-          fillColor: C.surface,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 18,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: C.border),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: BorderSide(color: C.border),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: C.primary, width: 2),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: C.error, width: 1.5),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: C.error, width: 2),
-          ),
-          labelStyle: TextStyle(color: C.sub, fontSize: 14),
         ),
-        validator: validator,
-        onFieldSubmitted: onSubmit,
       ),
     );
   }
 
-  // ── Forgot password bottom sheet ──
-  void _showForgotPassword() {
+  // -- Forgot password bottom sheet --
+  void _forgotPassword() {
     final emailCtrl = TextEditingController(text: _email.text);
     showModalBottomSheet(
       context: context,
@@ -428,7 +573,7 @@ class _LoginScreenState extends State<LoginScreen>
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
-          color: C.card,
+          color: AppColors.card,
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(28),
           ),
@@ -441,10 +586,10 @@ class _LoginScreenState extends State<LoginScreen>
           ],
         ),
         padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 16,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          left: D.sp24,
+          right: D.sp24,
+          top: D.sp16,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + D.sp24,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -454,11 +599,11 @@ class _LoginScreenState extends State<LoginScreen>
               width: 48,
               height: 5,
               decoration: BoxDecoration(
-                color: C.border,
+                color: AppColors.border,
                 borderRadius: BorderRadius.circular(3),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
 
             // Icon
             Container(
@@ -467,84 +612,117 @@ class _LoginScreenState extends State<LoginScreen>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    C.primary.withValues(alpha: 0.15),
-                    C.primary.withValues(alpha: 0.05),
+                    AppColors.primary.withValues(alpha: 0.15),
+                    AppColors.primary.withValues(alpha: 0.05),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(D.sp20),
               ),
               child: const Icon(
                 Icons.lock_reset_rounded,
-                color: C.primary,
+                color: AppColors.primary,
                 size: 30,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: D.sp20),
 
             Text(
               S.get('reset_pass'),
-              style: TextStyle(
-                color: C.txt,
+              style: GoogleFonts.poppins(
+                color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: D.sp8),
             Text(
               S.get('enter_email'),
-              style: TextStyle(color: C.sub, fontSize: 13, height: 1.4),
+              style: GoogleFonts.poppins(
+                color: AppColors.sub,
+                fontSize: 13,
+                height: 1.4,
+              ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
 
             TextFormField(
               controller: emailCtrl,
               keyboardType: TextInputType.emailAddress,
-              style: TextStyle(color: C.txt),
+              style: GoogleFonts.poppins(color: AppColors.txt),
               decoration: InputDecoration(
                 labelText: S.get('email'),
                 prefixIcon: const Icon(Icons.email_outlined),
                 filled: true,
-                fillColor: C.surface,
+                fillColor: AppColors.surface,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: C.border),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  borderSide: BorderSide(color: AppColors.border),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: C.border),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  borderSide: BorderSide(color: AppColors.border),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: C.primary, width: 2),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  borderSide: const BorderSide(
+                    color: AppColors.primary,
+                    width: 2,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
 
-            _GradientButton(
-              label: S.get('send_sms'),
+            GestureDetector(
               onTap: () {
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(S.get('reset_sent')),
-                    backgroundColor: C.success,
+                    backgroundColor: AppColors.success,
                   ),
                 );
               },
+              child: Container(
+                width: double.infinity,
+                height: 52,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: AppColors.gradPrimary,
+                  ),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Text(
+                    S.get('send_sms'),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: D.sp8),
           ],
         ),
       ),
     );
   }
 
-  // ── Phone auth bottom sheet ──
-  void _showPhoneAuth() {
+  // -- Phone auth bottom sheet --
+  void _phoneAuth() {
     final phoneCtrl = TextEditingController(text: '+998');
     showModalBottomSheet(
       context: context,
@@ -552,7 +730,7 @@ class _LoginScreenState extends State<LoginScreen>
       backgroundColor: Colors.transparent,
       builder: (ctx) => Container(
         decoration: BoxDecoration(
-          color: C.card,
+          color: AppColors.card,
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(28),
           ),
@@ -565,10 +743,10 @@ class _LoginScreenState extends State<LoginScreen>
           ],
         ),
         padding: EdgeInsets.only(
-          left: 24,
-          right: 24,
-          top: 16,
-          bottom: MediaQuery.of(ctx).viewInsets.bottom + 24,
+          left: D.sp24,
+          right: D.sp24,
+          top: D.sp16,
+          bottom: MediaQuery.of(ctx).viewInsets.bottom + D.sp24,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -578,11 +756,11 @@ class _LoginScreenState extends State<LoginScreen>
               width: 48,
               height: 5,
               decoration: BoxDecoration(
-                color: C.border,
+                color: AppColors.border,
                 borderRadius: BorderRadius.circular(3),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
 
             // Icon
             Container(
@@ -591,193 +769,111 @@ class _LoginScreenState extends State<LoginScreen>
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    C.success.withValues(alpha: 0.15),
-                    C.success.withValues(alpha: 0.05),
+                    AppColors.success.withValues(alpha: 0.15),
+                    AppColors.success.withValues(alpha: 0.05),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(D.sp20),
               ),
               child: const Icon(
                 Icons.phone_android_rounded,
-                color: C.success,
+                color: AppColors.success,
                 size: 30,
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: D.sp20),
 
             Text(
               S.get('login_phone'),
-              style: TextStyle(
-                color: C.txt,
+              style: GoogleFonts.poppins(
+                color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: D.sp8),
             Text(
               S.get('phone_number'),
-              style: TextStyle(color: C.sub, fontSize: 13, height: 1.4),
+              style: GoogleFonts.poppins(
+                color: AppColors.sub,
+                fontSize: 13,
+                height: 1.4,
+              ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
 
             TextFormField(
               controller: phoneCtrl,
               keyboardType: TextInputType.phone,
-              style: TextStyle(color: C.txt),
+              style: GoogleFonts.poppins(color: AppColors.txt),
               decoration: InputDecoration(
                 labelText: S.get('phone_number'),
                 hintText: '+998 90 123 45 67',
                 prefixIcon: const Icon(Icons.phone_outlined),
                 filled: true,
-                fillColor: C.surface,
+                fillColor: AppColors.surface,
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: C.border),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  borderSide: BorderSide(color: AppColors.border),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: BorderSide(color: C.border),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  borderSide: BorderSide(color: AppColors.border),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
-                  borderSide: const BorderSide(color: C.primary, width: 2),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  borderSide: const BorderSide(
+                    color: AppColors.primary,
+                    width: 2,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: D.sp24),
 
-            _GradientButton(
-              label: S.get('send_sms'),
+            GestureDetector(
               onTap: () {
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(S.get('coming_soon')),
-                    backgroundColor: C.warning,
+                    backgroundColor: AppColors.accent,
                   ),
                 );
               },
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Premium gradient button ──
-class _GradientButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _GradientButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Ink(
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: C.gradPrimary,
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: C.primary.withValues(alpha: 0.35),
-                blurRadius: 20,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-// ── Social auth button ──
-class _SocialButton extends StatelessWidget {
-  final IconData icon;
-  final Color iconColor;
-  final String label;
-  final VoidCallback onTap;
-
-  const _SocialButton({
-    required this.icon,
-    required this.iconColor,
-    required this.label,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(16),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Ink(
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            color: C.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: C.border, width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 10,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
+              child: Container(
+                width: double.infinity,
+                height: 52,
                 decoration: BoxDecoration(
-                  color: iconColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  gradient: const LinearGradient(
+                    colors: AppColors.gradPrimary,
+                  ),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.35),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
-                child: Icon(icon, color: iconColor, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Text(
-                label,
-                style: TextStyle(
-                  color: C.txt,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                child: Center(
+                  child: Text(
+                    S.get('send_sms'),
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: D.sp8),
+          ],
         ),
       ),
     );
