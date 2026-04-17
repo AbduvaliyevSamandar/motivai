@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
+import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/models.dart';
@@ -50,9 +51,9 @@ class _LbState extends State<LeaderboardScreen>
               indicatorColor: C.primary,
               labelColor: C.primary,
               unselectedLabelColor: C.sub,
-              tabs: const [
-                Tab(text: '🌍 Barcha vaqt'),
-                Tab(text: '📅 Bu hafta'),
+              tabs: [
+                Tab(text: '🌍 ${S.get("all_time")}'),
+                Tab(text: '📅 ${S.get("this_week")}'),
               ],
             ),
             actions: [
@@ -144,7 +145,7 @@ class _MyRankCard extends StatelessWidget {
                     fontWeight: FontWeight.bold)),
             SizedBox(height: 4),
             Text(
-              '${auth.levelEmoji} Daraja ${auth.level}'
+              '${auth.levelEmoji} ${S.get("level")} ${auth.level}'
               '  •  ⭐ ${auth.points} ball',
               style: TextStyle(
                   color: C.sub, fontSize: 12)),
@@ -171,7 +172,7 @@ class _MyRankCard extends StatelessWidget {
             style: TextStyle(
                 color: C.sub, fontSize: 11)),
           if (tot > 0)
-            Text('$tot talaba',
+            Text('$tot ${S.get("students")}',
                 style: TextStyle(
                     color: C.sub, fontSize: 10)),
         ]),
@@ -194,10 +195,10 @@ class _LbList extends StatelessWidget {
         children: [
           Text('🏆', style: TextStyle(fontSize: 48)),
           SizedBox(height: 12),
-          Text('Reyting hali bo\'sh',
+          Text('${S.get("empty_board")}',
               style: TextStyle(color: C.sub, fontSize: 16)),
           SizedBox(height: 6),
-          Text('Vazifalar bajaring va birinchi bo\'ling!',
+          Text('${S.get("tasks_label")}!',
               style: TextStyle(
                   color: C.primary, fontSize: 13)),
         ],
@@ -304,7 +305,7 @@ class _LbTile extends StatelessWidget {
             ]),
             SizedBox(height: 4),
             Row(children: [
-              Text('${entry.levelEmoji} Daraja ${entry.level}',
+              Text('${entry.levelEmoji} ${S.get("level")} ${entry.level}',
                   style: TextStyle(
                       color: C.sub, fontSize: 11)),
               SizedBox(width: 10),
@@ -322,7 +323,7 @@ class _LbTile extends StatelessWidget {
                   color: C.gold,
                   fontSize: 16,
                   fontWeight: FontWeight.bold)),
-          Text('ball',
+          Text(S.get('points'),
               style: TextStyle(
                   color: C.sub, fontSize: 11)),
         ]),

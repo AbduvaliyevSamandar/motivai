@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../config/theme.dart';
+import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
 
@@ -34,7 +35,7 @@ class _ProgState extends State<ProgressScreen> {
     return Scaffold(
       backgroundColor: C.bg,
       appBar: AppBar(
-        title: Text('📊 Tahlil',
+        title: Text('📊 ${S.get("analytics")}',
             style: TextStyle(
                 color: C.txt,
                 fontWeight: FontWeight.bold)),
@@ -92,10 +93,10 @@ class _StatsGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 1.6,
       children: [
-        _SC('⭐', 'Jami ball', '${auth.points}', C.gold),
-        _SC('🎯', 'Daraja', '${auth.level}', C.primary),
-        _SC('🔥', 'Streak', '${auth.streak} kun', C.accent),
-        _SC('✅', 'Vazifalar', '${auth.totalTasks}', C.success),
+        _SC('⭐', S.get('total_points'), '${auth.points}', C.gold),
+        _SC('🎯', S.get('level'), '${auth.level}', C.primary),
+        _SC('🔥', S.get('streak'), '${auth.streak} ${S.get("day")}', C.accent),
+        _SC('✅', S.get('tasks_label'), '${auth.totalTasks}', C.success),
       ],
     );
   }
@@ -164,11 +165,11 @@ class _LevelCard extends StatelessWidget {
           Expanded(child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-            Text('Daraja $lvl',
+            Text('${S.get("level")} $lvl',
                 style: TextStyle(
                     color: C.txt, fontSize: 18,
                     fontWeight: FontWeight.bold)),
-            Text('Keyingi darajaga: $ptsNext ball',
+            Text('${S.get("next_level")}: $ptsNext ${S.get("points")}',
                 style: TextStyle(
                     color: C.sub, fontSize: 12)),
           ])),
@@ -214,7 +215,7 @@ class _WeeklyChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        Text('📈 Haftalik ballar',
+        Text('📈 ${S.get("weekly_points")}',
             style: TextStyle(
                 color: C.txt, fontSize: 16,
                 fontWeight: FontWeight.bold)),
@@ -319,7 +320,7 @@ class _CatCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        Text('🗂 Kategoriya taqsimoti',
+        Text('🗂 ${S.get("cat_breakdown")}',
             style: TextStyle(
                 color: C.txt, fontSize: 16,
                 fontWeight: FontWeight.bold)),

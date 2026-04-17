@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/theme.dart';
+import '../config/strings.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  static const _key = 'motivai_theme_dark';
-  bool _isDark = true;
+  static const _themeKey = 'motivai_theme_dark';
+  static const _langKey  = 'motivai_lang';
 
-  bool get isDark => _isDark;
+  bool _isDark = true;
+  String _lang = 'uz';
+
+  bool   get isDark => _isDark;
+  String get lang   => _lang;
   ThemeData get theme => _isDark ? AppTheme.dark : AppTheme.light;
 
   ThemeProvider() { _load(); }
 
   Future<void> _load() async {
     final p = await SharedPreferences.getInstance();
-    _isDark = p.getBool(_key) ?? true;
+    _isDark = p.getBool(_themeKey) ?? true;
+    _lang   = p.getString(_langKey) ?? 'uz';
     C.setDark(_isDark);
+    S.setLang(_lang);
     notifyListeners();
   }
 
@@ -22,7 +29,7 @@ class ThemeProvider extends ChangeNotifier {
     _isDark = !_isDark;
     C.setDark(_isDark);
     final p = await SharedPreferences.getInstance();
-    await p.setBool(_key, _isDark);
+    await p.setBool(_themeKey, _isDark);
     notifyListeners();
   }
 
@@ -31,7 +38,16 @@ class ThemeProvider extends ChangeNotifier {
     _isDark = v;
     C.setDark(v);
     final p = await SharedPreferences.getInstance();
-    await p.setBool(_key, v);
+    await p.setBool(_themeKey, v);
+    notifyListeners();
+  }
+
+  Future<void> setLang(String lang) async {
+    if (_lang == lang) return;
+    _lang = lang;
+    S.setLang(lang);
+    final p = await SharedPreferences.getInstance();
+    await p.setString(_langKey, lang);
     notifyListeners();
   }
 }

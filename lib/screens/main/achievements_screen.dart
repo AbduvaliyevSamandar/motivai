@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../config/theme.dart';
+import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../models/models.dart';
 
@@ -34,7 +35,7 @@ class _AchState extends State<AchievementsScreen> {
       backgroundColor: C.bg,
       appBar: AppBar(
         title: Row(children: [
-          Text('🏆 Yutuqlar',
+          Text('🏆 ${S.get("achievements")}',
               style: TextStyle(
                   color: C.txt,
                   fontWeight: FontWeight.bold)),
@@ -235,10 +236,10 @@ class _Empty extends StatelessWidget {
       children: [
         Text('🏆', style: TextStyle(fontSize: 64)),
         SizedBox(height: 16),
-        Text('Yutuqlar yuklanmadi',
+        Text(S.get('achievements'),
             style: TextStyle(color: C.sub, fontSize: 16)),
         SizedBox(height: 8),
-        Text('Vazifalar bajaring va yutuqlar oling!',
+        Text('${S.get("tasks_label")}!',
             style: TextStyle(
                 color: C.primary, fontSize: 13)),
       ],

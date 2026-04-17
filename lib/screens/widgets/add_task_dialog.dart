@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../config/theme.dart';
 import '../../config/strings.dart';
 import '../../services/api.dart';
 import '../../config/constants.dart';
+import '../../providers/task_provider.dart';
 
 /// Show the add-task modal bottom sheet
 void showAddTaskDialog(BuildContext context) {
@@ -435,6 +437,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       });
 
       if (!mounted) return;
+      // Vazifalar ro'yxatini yangilash
+      context.read<TaskProvider>().loadAll();
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Row(

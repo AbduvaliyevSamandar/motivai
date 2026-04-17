@@ -345,24 +345,24 @@ class _ProfileState extends State<ProfileScreen>
   // ── Avatar widget ─────────────────────────────────────
   Widget _buildAvatar(AuthProvider auth) {
     final hasLocal = _localAvatar != null && _localAvatar!.isNotEmpty;
+    final hasNetwork = auth.avatarUrl != null && auth.avatarUrl!.startsWith('http');
 
     Widget avatarImage;
-    if (hasLocal && !kIsWeb) {
-      // Mobile: fayl tizimidan
+    if (hasLocal) {
+      // XFile.path dan rasm olish
       avatarImage = ClipOval(
-        child: Image(
-          image: _fileImageSafe(_localAvatar!),
+        child: Image.network(
+          _localAvatar!,
           width: 100,
           height: 100,
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => _initialLetter(auth),
         ),
       );
-    } else if (hasLocal && kIsWeb) {
-      // Web: network yoki xotira orqali
+    } else if (hasNetwork) {
       avatarImage = ClipOval(
         child: Image.network(
-          _localAvatar!,
+          auth.avatarUrl!,
           width: 100,
           height: 100,
           fit: BoxFit.cover,
@@ -378,7 +378,7 @@ class _ProfileState extends State<ProfileScreen>
       height: 100,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: hasLocal ? null : const LinearGradient(colors: C.gradPrimary),
+        gradient: (hasLocal || hasNetwork) ? null : const LinearGradient(colors: C.gradPrimary),
         border: Border.all(
           color: C.primary.withValues(alpha: 0.3),
           width: 3,
@@ -386,19 +386,6 @@ class _ProfileState extends State<ProfileScreen>
       ),
       child: avatarImage,
     );
-  }
-
-  ImageProvider _fileImageSafe(String path) {
-    try {
-      // Dynamic import to avoid dart:io on web
-      return ResizeImage(
-        NetworkImage(path),
-        width: 200,
-        height: 200,
-      );
-    } catch (_) {
-      return const AssetImage('assets/images/avatar_placeholder.svg');
-    }
   }
 
   Widget _initialLetter(AuthProvider auth) {
@@ -745,9 +732,7 @@ class _ProfileState extends State<ProfileScreen>
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () async {
-          S.setLang(code);
-          final p = await SharedPreferences.getInstance();
-          await p.setString('motivai_lang', code);
+          await context.read<ThemeProvider>().setLang(code);
           if (mounted) {
             Navigator.pop(context);
             setState(() {});
