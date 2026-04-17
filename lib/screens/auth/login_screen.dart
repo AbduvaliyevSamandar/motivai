@@ -82,9 +82,10 @@ class _LoginScreenState extends State<LoginScreen>
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: SvgPicture.asset(
-                        'assets/images/onboarding_study.svg',
+                      child: Image.asset(
+                        'assets/images/logo.png',
                         height: 180,
+                        fit: BoxFit.contain,
                       ),
                     ),
 
