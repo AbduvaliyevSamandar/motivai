@@ -79,14 +79,15 @@ class ChatProvider extends ChangeNotifier {
       final res = await _api.post(
         K.aiChat,
         {
-          'message':      text.trim(),
-          'history':      history,
-          'user_context': ctx ?? {},
+          'message':                text.trim(),
+          'conversation_history':   history,
         },
         timeout: K.aiTimeout,
       );
 
-      final content = res['response']?.toString() ??
+      // Backend: {"success":true, "data": {"message":"...", "session_id":"...", ...}}
+      final resData = res['data'] as Map<String, dynamic>? ?? res;
+      final content = resData['message']?.toString() ??
           res['message']?.toString() ??
           'Javob olishda xato yuz berdi.';
 

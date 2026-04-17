@@ -57,7 +57,7 @@ class _LbState extends State<LeaderboardScreen>
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.refresh,
+                icon: Icon(Icons.refresh,
                     color: C.sub),
                 onPressed: () =>
                     tasks.refreshLeaderboard()),
@@ -133,20 +133,20 @@ class _MyRankCard extends StatelessWidget {
                   fontWeight: FontWeight.bold)),
           ),
         ),
-        const SizedBox(width: 14),
+        SizedBox(width: 14),
         Expanded(child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(auth.name,
-                style: const TextStyle(
+                style: TextStyle(
                     color: C.txt,
                     fontSize: 16,
                     fontWeight: FontWeight.bold)),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(
               '${auth.levelEmoji} Daraja ${auth.level}'
               '  •  ⭐ ${auth.points} ball',
-              style: const TextStyle(
+              style: TextStyle(
                   color: C.sub, fontSize: 12)),
           ],
         )),
@@ -165,14 +165,14 @@ class _MyRankCard extends StatelessWidget {
                     fontSize: 20,
                     fontWeight: FontWeight.bold)),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4),
           Text(
             'Top ${(100 - (pct as num).toDouble()).toStringAsFixed(0)}%',
-            style: const TextStyle(
+            style: TextStyle(
                 color: C.sub, fontSize: 11)),
           if (tot > 0)
             Text('$tot talaba',
-                style: const TextStyle(
+                style: TextStyle(
                     color: C.sub, fontSize: 10)),
         ]),
       ]),
@@ -189,7 +189,7 @@ class _LbList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (entries.isEmpty) {
-      return const Center(child: Column(
+      return Center(child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text('🏆', style: TextStyle(fontSize: 48)),
@@ -302,14 +302,14 @@ class _LbTile extends StatelessWidget {
                               FontWeight.bold))),
               ],
             ]),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Row(children: [
               Text('${entry.levelEmoji} Daraja ${entry.level}',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: C.sub, fontSize: 11)),
-              const SizedBox(width: 10),
+              SizedBox(width: 10),
               Text('🔥 ${entry.streak} kun',
-                  style: const TextStyle(
+                  style: TextStyle(
                       color: C.sub, fontSize: 11)),
             ]),
           ],
@@ -322,7 +322,7 @@ class _LbTile extends StatelessWidget {
                   color: C.gold,
                   fontSize: 16,
                   fontWeight: FontWeight.bold)),
-          const Text('ball',
+          Text('ball',
               style: TextStyle(
                   color: C.sub, fontSize: 11)),
         ]),

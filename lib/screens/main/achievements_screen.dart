@@ -34,7 +34,7 @@ class _AchState extends State<AchievementsScreen> {
       backgroundColor: C.bg,
       appBar: AppBar(
         title: Row(children: [
-          const Text('🏆 Yutuqlar',
+          Text('🏆 Yutuqlar',
               style: TextStyle(
                   color: C.txt,
                   fontWeight: FontWeight.bold)),
@@ -55,7 +55,7 @@ class _AchState extends State<AchievementsScreen> {
         backgroundColor: C.surface,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: C.sub),
+            icon: Icon(Icons.refresh, color: C.sub),
             onPressed: () =>
                 tasks.loadAchievements()),
         ],
@@ -93,7 +93,7 @@ class _AchState extends State<AchievementsScreen> {
                           children: [
                           Text(
                             '$done ta yutuq qo\'lga kiritildi',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 color: C.txt,
                                 fontWeight:
                                     FontWeight.w600)),
@@ -195,7 +195,7 @@ class _AchCard extends StatelessWidget {
                       color: a.rarityColor,
                       fontSize: 9,
                       fontWeight: FontWeight.bold))),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             Text(a.name,
                 style: TextStyle(
                     color: a.isUnlocked ? C.txt : C.sub,
@@ -204,9 +204,9 @@ class _AchCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis),
-            const SizedBox(height: 4),
+            SizedBox(height: 4),
             Text(a.description,
-                style: const TextStyle(
+                style: TextStyle(
                     color: C.sub, fontSize: 10),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -229,7 +229,7 @@ class _AchCard extends StatelessWidget {
 class _Empty extends StatelessWidget {
   const _Empty();
   @override
-  Widget build(BuildContext context) => const Center(
+  Widget build(BuildContext context) => Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

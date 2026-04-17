@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../config/theme.dart';
+import '../../config/strings.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
@@ -13,9 +15,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatState extends State<ChatScreen> {
-  final _ctrl   = TextEditingController();
+  final _ctrl = TextEditingController();
   final _scroll = ScrollController();
-  final _focus  = FocusNode();
+  final _focus = FocusNode();
 
   @override
   void dispose() {
@@ -44,30 +46,27 @@ class _ChatState extends State<ChatScreen> {
     final chat = context.read<ChatProvider>();
     _ctrl.clear();
     await chat.send(text, ctx: {
-      'name':   auth.name,
-      'level':  auth.level,
+      'name': auth.name,
+      'level': auth.level,
       'streak': auth.streak,
       'points': auth.points,
     });
     _toBottom();
   }
 
-  Future<void> _addToTasks(
-      List<TaskSuggestion> suggestions) async {
-    final sel =
-        suggestions.where((s) => s.isSelected).toList();
+  Future<void> _addToTasks(List<TaskSuggestion> suggestions) async {
+    final sel = suggestions.where((s) => s.isSelected).toList();
     if (sel.isEmpty) {
-      _snack('Hech narsa tanlanmagan', err: true);
+      _snack(S.get('error'), err: true);
       return;
     }
-    final ok =
-        await context.read<ChatProvider>().addToDaily(sel);
+    final ok = await context.read<ChatProvider>().addToDaily(sel);
     if (ok && mounted) {
       await context.read<TaskProvider>().loadAll();
       _toBottom();
-      _snack('✅ ${sel.length} ta vazifa qo\'shildi!');
+      _snack('${sel.length} ${S.get('task_added')}');
     } else {
-      _snack('Xato yuz berdi', err: true);
+      _snack(S.get('error'), err: true);
     }
   }
 
@@ -76,6 +75,8 @@ class _ChatState extends State<ChatScreen> {
       SnackBar(
         content: Text(msg),
         backgroundColor: err ? C.error : C.success,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(12),
       ),
     );
@@ -85,75 +86,131 @@ class _ChatState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: C.bg,
-      appBar: _appBar(),
+      appBar: _buildAppBar(),
       body: Column(children: [
-        Expanded(child: _msgList()),
-        _inputBar(),
+        Expanded(child: _buildMessageList()),
+        _buildInputBar(),
       ]),
     );
   }
 
-  AppBar _appBar() => AppBar(
-    backgroundColor: C.surface,
-    title: Row(children: [
-      Container(
-        width: 36, height: 36,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-              colors: C.gradPrimary),
-          borderRadius: BorderRadius.circular(10)),
-        child: const Center(
-            child:
-                Text('🤖', style: TextStyle(fontSize: 18))),
-      ),
-      const SizedBox(width: 10),
-      Column(crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-        const Text('MotivAI Chat',
-            style: TextStyle(
-                color: C.txt,
-                fontSize: 15,
-                fontWeight: FontWeight.bold)),
-        Consumer<ChatProvider>(
-          builder: (_, chat, __) => Text(
-            chat.isTyping ? '✍️ Yozmoqda...' : '🟢 Tayyor',
-            style: const TextStyle(
-                color: C.success, fontSize: 11)),
+  // ── App Bar ───────────────────────────────────────────
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: C.surface,
+      elevation: 0,
+      titleSpacing: 16,
+      title: Row(children: [
+        // AI Avatar
+        Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: C.gradPrimary,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: C.primary.withValues(alpha: 0.25),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: const Center(
+            child: Text('AI', style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+            )),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'MotivAI Chat',
+                style: TextStyle(
+                  color: C.txt,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Consumer<ChatProvider>(
+                builder: (_, chat, __) => Row(
+                  children: [
+                    Container(
+                      width: 7,
+                      height: 7,
+                      decoration: BoxDecoration(
+                        color: chat.isTyping ? C.warning : C.success,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      chat.isTyping
+                          ? S.get('ai_typing')
+                          : S.get('done'),
+                      style: TextStyle(
+                        color: chat.isTyping ? C.warning : C.success,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ]),
-    ]),
-    actions: [
-      IconButton(
-        icon: const Icon(Icons.delete_sweep_outlined,
-            color: C.sub),
-        onPressed: _clearConfirm,
-      ),
-    ],
-  );
+      actions: [
+        Container(
+          margin: const EdgeInsets.only(right: 8),
+          decoration: BoxDecoration(
+            color: C.card,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: C.border),
+          ),
+          child: IconButton(
+            icon: Icon(Icons.delete_sweep_outlined, color: C.sub, size: 20),
+            onPressed: _clearConfirm,
+            tooltip: S.get('clear_chat'),
+          ),
+        ),
+      ],
+    );
+  }
 
-  Widget _msgList() {
+  // ── Message List ──────────────────────────────────────
+  Widget _buildMessageList() {
     return Consumer<ChatProvider>(
       builder: (_, chat, __) {
         _toBottom();
         return ListView.builder(
           controller: _scroll,
-          padding:
-              const EdgeInsets.fromLTRB(16, 12, 16, 8),
-          itemCount:
-              chat.msgs.length + (chat.isTyping ? 1 : 0),
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          physics: const BouncingScrollPhysics(),
+          itemCount: chat.msgs.length + (chat.isTyping ? 1 : 0),
           itemBuilder: (_, i) {
             if (i == chat.msgs.length) {
               return const _TypingIndicator();
             }
             final m = chat.msgs[i];
             return Column(children: [
-              _Bubble(msg: m),
+              _ChatBubble(msg: m),
               if (m.isAssistant && m.hasTasks)
-                _TaskPanel(
+                _TaskSuggestionPanel(
                   tasks: m.tasks!,
-                  onAdd:    _addToTasks,
-                  onDecline: () =>
-                      _snack('Vazifalar qo\'shilmadi'),
+                  onAdd: _addToTasks,
+                  onDecline: () => _snack(S.get('cancel')),
                 ),
             ]);
           },
@@ -162,94 +219,114 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  Widget _inputBar() {
+  // ── Input Bar ─────────────────────────────────────────
+  Widget _buildInputBar() {
     return Consumer<ChatProvider>(
       builder: (_, chat, __) {
         final busy = chat.isTyping;
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: C.surface,
-            border: Border(
-                top: BorderSide(
-                    color: C.border, width: 0.8)),
+            border: Border(top: BorderSide(color: C.border, width: 0.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.04),
+                blurRadius: 8,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
-          child: Column(children: [
-            if (chat.msgs.length <= 1)
-              _QuickPrompts(onTap: (p) {
-                _ctrl.text = p;
-                _send();
-              }),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            // Quick prompts for first messages
+            if (chat.msgs.length <= 1) _buildQuickPrompts(),
+
+            // Input row
             Padding(
               padding: EdgeInsets.only(
-                left:   12,
-                right:  12,
-                top:    8,
-                bottom: MediaQuery.of(context)
-                        .viewInsets
-                        .bottom +
-                    12,
+                left: 14,
+                right: 14,
+                top: 10,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 14,
               ),
-              child: Row(children: [
-                Expanded(
-                  child: TextField(
-                    controller: _ctrl,
-                    focusNode: _focus,
-                    enabled: !busy,
-                    maxLines: null,
-                    textInputAction:
-                        TextInputAction.send,
-                    onSubmitted: (_) => _send(),
-                    style: const TextStyle(
-                        color: C.txt, fontSize: 14),
-                    decoration: InputDecoration(
-                      hintText: busy
-                          ? 'AI yozmoqda...'
-                          : 'Maqsadingizni yozing...',
-                      hintStyle: const TextStyle(
-                          color: C.sub, fontSize: 13),
-                      filled:     true,
-                      fillColor:  C.card,
-                      contentPadding:
-                          const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical:   10),
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(24),
-                        borderSide: BorderSide.none),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                GestureDetector(
-                  onTap: busy ? null : _send,
-                  child: AnimatedContainer(
-                    duration:
-                        const Duration(milliseconds: 200),
-                    width: 46, height: 46,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: busy
-                            ? [C.border, C.border]
-                            : C.gradPrimary,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Text field
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: C.card,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(color: C.border),
                       ),
-                      shape: BoxShape.circle,
-                      boxShadow: busy
-                          ? null
-                          : [BoxShadow(
-                              color: C.primary
-                                  .withOpacity(0.4),
-                              blurRadius: 10,
-                              offset:
-                                  const Offset(0, 3))],
+                      child: TextField(
+                        controller: _ctrl,
+                        focusNode: _focus,
+                        enabled: !busy,
+                        maxLines: 4,
+                        minLines: 1,
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (_) => _send(),
+                        style: TextStyle(color: C.txt, fontSize: 14),
+                        decoration: InputDecoration(
+                          hintText: busy
+                              ? S.get('ai_typing')
+                              : S.get('type_message'),
+                          hintStyle: TextStyle(
+                            color: C.sub.withValues(alpha: 0.6),
+                            fontSize: 13,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 18,
+                            vertical: 12,
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                        ),
+                      ),
                     ),
-                    child: const Icon(
-                        Icons.send_rounded,
-                        color: Colors.white,
-                        size: 20),
                   ),
-                ),
-              ]),
+
+                  const SizedBox(width: 10),
+
+                  // Send button
+                  GestureDetector(
+                    onTap: busy ? null : _send,
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 250),
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: busy
+                              ? [C.border, C.border]
+                              : C.gradPrimary,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: busy
+                            ? null
+                            : [
+                                BoxShadow(
+                                  color: C.primary.withValues(alpha: 0.35),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                      ),
+                      child: Icon(
+                        Icons.send_rounded,
+                        color: busy
+                            ? C.sub.withValues(alpha: 0.5)
+                            : Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ]),
         );
@@ -257,101 +334,180 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
+  // ── Quick Prompts ─────────────────────────────────────
+  Widget _buildQuickPrompts() {
+    final prompts = [
+      ('🎯', S.get('ai_suggest')),
+      ('💪', S.get('streak')),
+      ('📚', S.get('tasks_label')),
+      ('🔥', S.get('today_goal')),
+    ];
+
+    return SizedBox(
+      height: 50,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+        itemCount: prompts.length,
+        itemBuilder: (_, i) {
+          final p = prompts[i];
+          return GestureDetector(
+            onTap: () {
+              _ctrl.text = p.$2;
+              _send();
+            },
+            child: Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              decoration: BoxDecoration(
+                color: C.card,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: C.border),
+              ),
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                Text(p.$1, style: const TextStyle(fontSize: 14)),
+                const SizedBox(width: 6),
+                Text(
+                  p.$2,
+                  style: TextStyle(
+                    color: C.txt,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // ── Clear Confirmation ────────────────────────────────
   void _clearConfirm() {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
         backgroundColor: C.card,
-        title: const Text('Tarixni tozalash',
-            style: TextStyle(color: C.txt)),
-        content: const Text(
-            'Barcha suhbat o\'chib ketadi.',
-            style: TextStyle(color: C.sub)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        title: Text(
+          S.get('clear_chat'),
+          style: TextStyle(color: C.txt, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          S.get('clear_chat'),
+          style: TextStyle(color: C.sub),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Bekor',
-                style: TextStyle(color: C.sub))),
+            child: Text(S.get('cancel'), style: TextStyle(color: C.sub)),
+          ),
           ElevatedButton(
             onPressed: () {
               context.read<ChatProvider>().clearHistory();
               Navigator.pop(context);
+              _snack(S.get('chat_cleared'));
             },
             style: ElevatedButton.styleFrom(
-                backgroundColor: C.error,
-                minimumSize: const Size(80, 36)),
-            child: const Text("O'chirish")),
+              backgroundColor: C.error,
+              minimumSize: const Size(80, 40),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(S.get('delete')),
+          ),
         ],
       ),
     );
   }
 }
 
-// ── Message Bubble ─────────────────────────────────────
-class _Bubble extends StatelessWidget {
+// ═══════════════════════════════════════════════════════
+//  CHAT BUBBLE
+// ═══════════════════════════════════════════════════════
+class _ChatBubble extends StatelessWidget {
   final ChatMsg msg;
-  const _Bubble({required this.msg});
+  const _ChatBubble({required this.msg});
 
   @override
   Widget build(BuildContext context) {
     final isUser = msg.isUser;
+    final maxW = MediaQuery.of(context).size.width * 0.8;
+
     return Align(
-      alignment: isUser
-          ? Alignment.centerRight
-          : Alignment.centerLeft,
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        constraints: BoxConstraints(
-            maxWidth:
-                MediaQuery.of(context).size.width * 0.82),
-        margin: const EdgeInsets.only(bottom: 8),
+        constraints: BoxConstraints(maxWidth: maxW),
+        margin: const EdgeInsets.only(bottom: 10),
         child: Column(
-          crossAxisAlignment: isUser
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
+          crossAxisAlignment:
+              isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
+            // Bubble
             Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 14, vertical: 10),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 gradient: isUser
                     ? const LinearGradient(
                         colors: C.gradPrimary,
                         begin: Alignment.topLeft,
-                        end: Alignment.bottomRight)
+                        end: Alignment.bottomRight,
+                      )
                     : null,
                 color: isUser
                     ? null
                     : msg.isError
-                        ? C.error.withOpacity(0.15)
+                        ? C.error.withValues(alpha: 0.1)
                         : C.card,
                 borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(18),
-                  topRight: const Radius.circular(18),
-                  bottomLeft:
-                      Radius.circular(isUser ? 18 : 4),
-                  bottomRight:
-                      Radius.circular(isUser ? 4 : 18),
+                  topLeft: const Radius.circular(20),
+                  topRight: const Radius.circular(20),
+                  bottomLeft: Radius.circular(isUser ? 20 : 4),
+                  bottomRight: Radius.circular(isUser ? 4 : 20),
                 ),
-                border: !isUser
-                    ? Border.all(color: C.border)
-                    : null,
+                border: isUser
+                    ? null
+                    : Border.all(
+                        color: msg.isError
+                            ? C.error.withValues(alpha: 0.3)
+                            : C.border,
+                      ),
+                boxShadow: [
+                  BoxShadow(
+                    color: isUser
+                        ? C.primary.withValues(alpha: 0.15)
+                        : Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
               ),
               child: Text(
                 msg.content,
                 style: TextStyle(
-                    color: isUser
-                        ? Colors.white
-                        : C.txt,
-                    fontSize: 14,
-                    height: 1.5),
+                  color: isUser ? Colors.white : C.txt,
+                  fontSize: 14,
+                  height: 1.5,
+                ),
               ),
             ),
+
+            // Timestamp
             Padding(
-              padding: const EdgeInsets.only(
-                  top: 3, left: 4, right: 4),
-              child: Text(_fmt(msg.timestamp),
-                  style: const TextStyle(
-                      color: C.sub, fontSize: 10)),
+              padding: const EdgeInsets.only(top: 4, left: 6, right: 6),
+              child: Text(
+                _formatTime(msg.timestamp),
+                style: TextStyle(
+                  color: C.sub.withValues(alpha: 0.5),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
           ],
         ),
@@ -359,211 +515,240 @@ class _Bubble extends StatelessWidget {
     );
   }
 
-  String _fmt(DateTime d) =>
+  String _formatTime(DateTime d) =>
       '${d.hour.toString().padLeft(2, '0')}:'
       '${d.minute.toString().padLeft(2, '0')}';
 }
 
-// ── Task Suggestion Panel ──────────────────────────────
-class _TaskPanel extends StatefulWidget {
+// ═══════════════════════════════════════════════════════
+//  TASK SUGGESTION PANEL
+// ═══════════════════════════════════════════════════════
+class _TaskSuggestionPanel extends StatefulWidget {
   final List<TaskSuggestion> tasks;
   final void Function(List<TaskSuggestion>) onAdd;
   final VoidCallback onDecline;
-  const _TaskPanel(
-      {required this.tasks,
-      required this.onAdd,
-      required this.onDecline});
+
+  const _TaskSuggestionPanel({
+    required this.tasks,
+    required this.onAdd,
+    required this.onDecline,
+  });
+
   @override
-  State<_TaskPanel> createState() => _TaskPanelState();
+  State<_TaskSuggestionPanel> createState() => _TaskSuggestionPanelState();
 }
 
-class _TaskPanelState extends State<_TaskPanel> {
+class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
   bool _done = false;
 
   @override
   Widget build(BuildContext context) {
     if (_done) return const SizedBox.shrink();
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(14),
+      margin: const EdgeInsets.only(bottom: 14, left: 4),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: C.primary.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(16),
-        border:
-            Border.all(color: C.primary.withOpacity(0.3)),
+        gradient: LinearGradient(
+          colors: [
+            C.primary.withValues(alpha: 0.06),
+            C.primary.withValues(alpha: 0.02),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: C.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-        Row(children: [
-          const Text('📋 ',
-              style: TextStyle(fontSize: 16)),
-          const Text('Tavsiya etilgan vazifalar',
-              style: TextStyle(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(children: [
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(colors: C.gradPrimary),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.task_alt_rounded,
+                  color: Colors.white, size: 16),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                S.get('ai_suggest'),
+                style: TextStyle(
                   color: C.txt,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14)),
-          const Spacer(),
-          Text('${widget.tasks.length} ta',
-              style: const TextStyle(
-                  color: C.sub, fontSize: 12)),
-        ]),
-        const SizedBox(height: 10),
-
-        ...widget.tasks.map((t) => _SuggestRow(
-              task: t,
-              onToggle: () =>
-                  setState(() => t.isSelected = !t.isSelected),
-            )),
-
-        const SizedBox(height: 12),
-        Row(children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () {
-                setState(() => _done = true);
-                widget.onDecline();
-              },
-              style: OutlinedButton.styleFrom(
-                foregroundColor: C.sub,
-                side: const BorderSide(color: C.border),
-                minimumSize: const Size(0, 40),
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(10)),
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                ),
               ),
-              child: const Text("Kerak emas")),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            flex: 2,
-            child: ElevatedButton(
-              onPressed: () {
-                widget.onAdd(widget.tasks);
-                setState(() => _done = true);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: C.primary,
-                minimumSize: const Size(0, 40),
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(10)),
+            ),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: C.primary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text('✅ Kunlikka qo\'sh',
-                  style: TextStyle(
-                      fontWeight: FontWeight.w600))),
-          ),
-        ]),
-      ]),
+              child: Text(
+                '${widget.tasks.length}',
+                style: TextStyle(
+                  color: C.primary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ]),
+
+          const SizedBox(height: 12),
+
+          // Task items
+          ...widget.tasks.map((t) => _SuggestTaskItem(
+                task: t,
+                onToggle: () =>
+                    setState(() => t.isSelected = !t.isSelected),
+              )),
+
+          const SizedBox(height: 14),
+
+          // Action buttons
+          Row(children: [
+            Expanded(
+              child: OutlinedButton(
+                onPressed: () {
+                  setState(() => _done = true);
+                  widget.onDecline();
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: C.sub,
+                  side: BorderSide(color: C.border),
+                  minimumSize: const Size(0, 44),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(S.get('cancel')),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              flex: 2,
+              child: Container(
+                height: 44,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(colors: C.gradPrimary),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: C.primary.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    widget.onAdd(widget.tasks);
+                    setState(() => _done = true);
+                  },
+                  icon: const Icon(Icons.add_task_rounded, size: 18),
+                  label: Text(
+                    S.get('add_task'),
+                    style: const TextStyle(fontWeight: FontWeight.w700),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    minimumSize: const Size(0, 44),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ]),
+        ],
+      ),
     );
   }
 }
 
-class _SuggestRow extends StatelessWidget {
+// ── Suggest Task Item ───────────────────────────────────
+class _SuggestTaskItem extends StatelessWidget {
   final TaskSuggestion task;
   final VoidCallback onToggle;
-  const _SuggestRow(
-      {required this.task, required this.onToggle});
+
+  const _SuggestTaskItem({required this.task, required this.onToggle});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onToggle,
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: task.isSelected
-              ? C.primary.withOpacity(0.1)
+              ? C.primary.withValues(alpha: 0.08)
               : C.card,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: task.isSelected
-                ? C.primary.withOpacity(0.4)
+                ? C.primary.withValues(alpha: 0.4)
                 : C.border,
+            width: task.isSelected ? 1.5 : 1,
           ),
         ),
         child: Row(children: [
-          Icon(
-            task.isSelected
-                ? Icons.check_box
-                : Icons.check_box_outline_blank,
-            color: task.isSelected ? C.primary : C.sub,
-            size: 20),
-          const SizedBox(width: 10),
-          Expanded(child: Column(
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 200),
+            child: Icon(
+              task.isSelected
+                  ? Icons.check_circle_rounded
+                  : Icons.radio_button_unchecked_rounded,
+              key: ValueKey(task.isSelected),
+              color: task.isSelected ? C.primary : C.sub,
+              size: 22,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-            Text(task.title,
-                style: const TextStyle(
+                Text(
+                  task.title,
+                  style: TextStyle(
                     color: C.txt,
                     fontSize: 13,
-                    fontWeight: FontWeight.w500)),
-            const SizedBox(height: 3),
-            Row(children: [
-              Text('⏱ ${task.durationMinutes} daq  ',
-                  style: const TextStyle(
-                      color: C.sub, fontSize: 11)),
-              Text('⭐ ~${task.estimatedPoints} ball',
-                  style: const TextStyle(
-                      color: C.sub, fontSize: 11)),
-            ]),
-          ])),
-        ]),
-      ),
-    );
-  }
-}
-
-// ── Typing Indicator ───────────────────────────────────
-class _TypingIndicator extends StatefulWidget {
-  const _TypingIndicator();
-  @override
-  State<_TypingIndicator> createState() =>
-      _TypingState();
-}
-
-class _TypingState extends State<_TypingIndicator>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _ctrl;
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-        vsync: this,
-        duration: const Duration(milliseconds: 600))
-      ..repeat(reverse: true);
-  }
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(
-            horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: C.card,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: C.border)),
-        child: Row(mainAxisSize: MainAxisSize.min,
-            children: [
-          const Text('🤖 ',
-              style: TextStyle(fontSize: 14)),
-          AnimatedBuilder(
-            animation: _ctrl,
-            builder: (_, __) => Row(
-              children: List.generate(3, (i) => Container(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 2),
-                width: 7, height: 7,
-                decoration: BoxDecoration(
-                  color: C.primary.withOpacity(
-                      0.3 + 0.7 * _ctrl.value),
-                  shape: BoxShape.circle))),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(children: [
+                  Icon(Icons.schedule_rounded,
+                      color: C.sub, size: 12),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${task.durationMinutes} min',
+                    style: TextStyle(color: C.sub, fontSize: 11),
+                  ),
+                  const SizedBox(width: 12),
+                  Icon(Icons.star_rounded,
+                      color: C.gold, size: 12),
+                  const SizedBox(width: 4),
+                  Text(
+                    '~${task.estimatedPoints} ${S.get('points')}',
+                    style: TextStyle(color: C.sub, fontSize: 11),
+                  ),
+                ]),
+              ],
             ),
           ),
         ]),
@@ -572,54 +757,108 @@ class _TypingState extends State<_TypingIndicator>
   }
 }
 
-// ── Quick Prompts ──────────────────────────────────────
-class _QuickPrompts extends StatelessWidget {
-  final void Function(String) onTap;
-  const _QuickPrompts({required this.onTap});
+// ═══════════════════════════════════════════════════════
+//  TYPING INDICATOR
+// ═══════════════════════════════════════════════════════
+class _TypingIndicator extends StatefulWidget {
+  const _TypingIndicator();
+  @override
+  State<_TypingIndicator> createState() => _TypingIndicatorState();
+}
 
-  static const _items = [
-    ('🎯', 'Bugunlik motivatsiya rejasi ber'),
-    ('💪', 'Qanday qilib streak saqlaman?'),
-    ('📚', 'O\'qish uchun vazifalar ber'),
-    ('🔥', 'Meni ilhomlantirib yubor!'),
-  ];
+class _TypingIndicatorState extends State<_TypingIndicator>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 48,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding:
-            const EdgeInsets.symmetric(horizontal: 12),
-        children: _items
-            .map((p) => GestureDetector(
-                  onTap: () => onTap(p.$2),
-                  child: Container(
-                    margin:
-                        const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: C.card,
-                      borderRadius:
-                          BorderRadius.circular(20),
-                      border: Border.all(color: C.border)),
-                    child: Row(children: [
-                      Text(p.$1,
-                          style: const TextStyle(
-                              fontSize: 14)),
-                      const SizedBox(width: 6),
-                      Text(p.$2,
-                          style: const TextStyle(
-                              color: C.txt,
-                              fontSize: 12,
-                              fontWeight:
-                                  FontWeight.w500)),
-                    ]),
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+        decoration: BoxDecoration(
+          color: C.card,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+            bottomLeft: Radius.circular(4),
+            bottomRight: Radius.circular(20),
+          ),
+          border: Border.all(color: C.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Container(
+            width: 24,
+            height: 24,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(colors: C.gradPrimary),
+              borderRadius: BorderRadius.circular(7),
+            ),
+            child: const Center(
+              child: Text('AI',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w800,
+                  )),
+            ),
+          ),
+          const SizedBox(width: 10),
+          AnimatedBuilder(
+            animation: _ctrl,
+            builder: (_, __) => Row(
+              children: List.generate(
+                3,
+                (i) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.symmetric(horizontal: 2),
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: C.primary.withValues(
+                      alpha: 0.25 +
+                          0.75 *
+                              (((_ctrl.value + i * 0.3) % 1.0)),
+                    ),
+                    shape: BoxShape.circle,
                   ),
-                ))
-            .toList(),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            S.get('ai_typing'),
+            style: TextStyle(
+              color: C.sub,
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ]),
       ),
     );
   }

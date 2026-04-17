@@ -1,36 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../config/theme.dart';
+import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/chat_provider.dart';
 import 'dashboard_screen.dart';
 import 'leaderboard_screen.dart';
 import 'progress_screen.dart';
-import 'achievements_screen.dart';
+import 'profile_screen.dart';
 import '../chat/chat_screen.dart';
 
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
-  @override State<MainShell> createState() => _ShellState();
+  @override
+  State<MainShell> createState() => _ShellState();
 }
 
 class _ShellState extends State<MainShell> {
-  int  _idx    = 0;
+  int _idx = 0;
   bool _inited = false;
+  DateTime? _lastBack;
 
-  static const _screens = [
+  final _screens = const [
     DashboardScreen(),
     ChatScreen(),
     LeaderboardScreen(),
     ProgressScreen(),
-    AchievementsScreen(),
+    ProfileScreen(),
   ];
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => _init());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _init());
   }
 
   Future<void> _init() async {
@@ -42,72 +46,169 @@ class _ShellState extends State<MainShell> {
     ]);
   }
 
+  Future<bool> _onWillPop() async {
+    if (_idx != 0) {
+      setState(() => _idx = 0);
+      return false;
+    }
+
+    final now = DateTime.now();
+    if (_lastBack != null &&
+        now.difference(_lastBack!) < const Duration(seconds: 2)) {
+      SystemNavigator.pop();
+      return true;
+    }
+
+    _lastBack = now;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          S.get('back_exit'),
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        ),
+        duration: const Duration(seconds: 2),
+        backgroundColor: C.surface,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+      ),
+    );
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-          index: _idx, children: _screens),
-      bottomNavigationBar: _buildNav(),
+    // ignore: deprecated_member_use
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: IndexedStack(index: _idx, children: _screens),
+        bottomNavigationBar: _buildNavBar(),
+      ),
     );
   }
 
-  Widget _buildNav() {
+  Widget _buildNavBar() {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         color: C.surface,
         border: Border(
-            top: BorderSide(color: C.border, width: 0.8)),
-      ),
-      child: BottomNavigationBar(
-        currentIndex: _idx,
-        onTap: (i) => setState(() => _idx = i),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: C.primary,
-        unselectedItemColor: C.sub,
-        showUnselectedLabels: true,
-        selectedLabelStyle: const TextStyle(
-            fontSize: 10, fontWeight: FontWeight.w600),
-        unselectedLabelStyle:
-            const TextStyle(fontSize: 10),
-        items: [
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Bosh sahifa'),
-          BottomNavigationBarItem(
-              icon: _aiIcon(false),
-              activeIcon: _aiIcon(true),
-              label: 'AI Chat'),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.leaderboard_outlined),
-              activeIcon: Icon(Icons.leaderboard),
-              label: 'Reyting'),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart_outlined),
-              activeIcon: Icon(Icons.bar_chart),
-              label: 'Tahlil'),
-          const BottomNavigationBarItem(
-              icon: Icon(Icons.emoji_events_outlined),
-              activeIcon: Icon(Icons.emoji_events),
-              label: 'Yutuqlar'),
+          top: BorderSide(color: C.border, width: 0.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
+          ),
         ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _navItem(0, Icons.home_outlined, Icons.home_rounded,
+                  S.get('home')),
+              _navItem(1, Icons.smart_toy_outlined, Icons.smart_toy_rounded,
+                  S.get('chat'),
+                  isAI: true),
+              _navItem(2, Icons.leaderboard_outlined,
+                  Icons.leaderboard_rounded, S.get('rating')),
+              _navItem(3, Icons.bar_chart_outlined,
+                  Icons.bar_chart_rounded, S.get('analytics')),
+              _navItem(4, Icons.person_outline_rounded,
+                  Icons.person_rounded, S.get('profile')),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget _aiIcon(bool active) => AnimatedContainer(
-    duration: const Duration(milliseconds: 200),
-    padding: const EdgeInsets.all(6),
-    decoration: active
-        ? BoxDecoration(
-            gradient: const LinearGradient(
-                colors: C.gradPrimary),
-            borderRadius: BorderRadius.circular(10))
-        : null,
-    child: Icon(Icons.smart_toy_outlined,
-        color: active ? Colors.white : C.sub,
-        size: 22),
-  );
+  Widget _navItem(
+      int index, IconData icon, IconData activeIcon, String label,
+      {bool isAI = false}) {
+    final active = _idx == index;
+
+    return Expanded(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => _idx = index),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (isAI)
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 250),
+                  curve: Curves.easeInOut,
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    gradient: active
+                        ? const LinearGradient(colors: C.gradPrimary)
+                        : null,
+                    color: active ? null : Colors.transparent,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: active
+                        ? [
+                            BoxShadow(
+                              color: C.primary.withValues(alpha: 0.3),
+                              blurRadius: 10,
+                              offset: const Offset(0, 3),
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Icon(
+                    active ? activeIcon : icon,
+                    color: active ? Colors.white : C.sub,
+                    size: 22,
+                  ),
+                )
+              else
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: Icon(
+                    active ? activeIcon : icon,
+                    key: ValueKey(active),
+                    color: active ? C.primary : C.sub,
+                    size: 24,
+                  ),
+                ),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: active ? (isAI ? C.primary : C.primary) : C.sub,
+                  fontSize: 10,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(height: 2),
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                width: active ? 16 : 0,
+                height: 3,
+                decoration: BoxDecoration(
+                  gradient: active
+                      ? const LinearGradient(colors: C.gradPrimary)
+                      : null,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

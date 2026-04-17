@@ -6,28 +6,29 @@ class K {
   static const register = '/auth/register';
   static const me       = '/auth/me';
   static const logout   = '/auth/logout';
+  static const profile  = '/auth/profile';
 
-  // Tasks
-  static const daily       = '/tasks/daily';
-  static const recommended = '/tasks/recommended';
-  static const complete    = '/tasks/complete';
-  static const fromChat    = '/ai/add-tasks';
+  // Plans (backend task tizimi plans orqali ishlaydi)
+  static const plans        = '/plans';
+  static const planStats    = '/plans/stats/summary';
 
   // AI
-  static const aiChat      = '/ai/chat';
-  static const aiPlan      = '/ai/motivation-plan';
-  static const aiQuote     = '/ai/motivation-quote';
-  static const insights    = '/ai/daily-insight';
-  static const achievements= '/ai/achievements';
+  static const aiChat       = '/ai/chat';
+  static const fromChat     = '/ai/add-tasks'; // Backendda yo'q, lekin chat provider ishlatadi
+  static const insights     = '/ai/daily-insight';
+  static const quickMotivate = '/ai/quick-motivate';
+  static const analyzeProgress = '/ai/analyze-progress';
+  static const dailyTip     = '/ai/daily-tip';
+  static const aiHistory    = '/ai/history';
+  static const aiSessions   = '/ai/sessions';
 
-  // Leaderboard — ANIQ endpoint nomlari
-  static const globalLb = '/leaderboard/global';
-  static const weeklyLb = '/leaderboard/global';   // weekly yo'q, global ishlatamiz
-  static const myRank   = '/leaderboard/user-rank'; // my-rank EMAS!
+  // Leaderboard
+  static const leaderboard = '/leaderboard';
+  static const myRank      = '/leaderboard/my-rank';
 
-  // Users
-  static const profile  = '/users/me';
-  static const progress = '/users/me/progress';
+  // Progress
+  static const progress    = '/progress';
+  static const heatmap     = '/progress/heatmap';
 
   // Storage
   static const tokenKey = 'motivai_auth_token';

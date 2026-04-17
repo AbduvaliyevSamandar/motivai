@@ -51,9 +51,6 @@ class Api {
     {bool auth = true, Duration? timeout}) async {
   final uri = Uri.parse('${K.base}$ep');
   try {
-    // ← BU QATORNI QO'SHING
-    print('POST $ep body: ${jsonEncode(body)}');
-    
     final res = await http
         .post(uri,
             headers: await _headers(auth: auth),

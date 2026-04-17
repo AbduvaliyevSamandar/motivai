@@ -34,14 +34,14 @@ class _ProgState extends State<ProgressScreen> {
     return Scaffold(
       backgroundColor: C.bg,
       appBar: AppBar(
-        title: const Text('📊 Tahlil',
+        title: Text('📊 Tahlil',
             style: TextStyle(
                 color: C.txt,
                 fontWeight: FontWeight.bold)),
         backgroundColor: C.surface,
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh, color: C.sub),
+            icon: Icon(Icons.refresh, color: C.sub),
             onPressed: () {
               tasks.loadInsights();
               auth.refresh();
@@ -120,8 +120,8 @@ class _SC extends StatelessWidget {
         children: [
           Row(children: [
             Text(e, style: const TextStyle(fontSize: 20)),
-            const SizedBox(width: 8),
-            Text(l, style: const TextStyle(
+            SizedBox(width: 8),
+            Text(l, style: TextStyle(
                 color: C.sub, fontSize: 12)),
           ]),
           const SizedBox(height: 6),
@@ -160,20 +160,20 @@ class _LevelCard extends StatelessWidget {
         Row(children: [
           Text(auth.levelEmoji,
               style: const TextStyle(fontSize: 32)),
-          const SizedBox(width: 12),
+          SizedBox(width: 12),
           Expanded(child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
             Text('Daraja $lvl',
-                style: const TextStyle(
+                style: TextStyle(
                     color: C.txt, fontSize: 18,
                     fontWeight: FontWeight.bold)),
             Text('Keyingi darajaga: $ptsNext ball',
-                style: const TextStyle(
+                style: TextStyle(
                     color: C.sub, fontSize: 12)),
           ])),
         ]),
-        const SizedBox(height: 14),
+        SizedBox(height: 14),
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: LinearProgressIndicator(
@@ -182,10 +182,10 @@ class _LevelCard extends StatelessWidget {
             valueColor:
                 const AlwaysStoppedAnimation(C.primary),
             minHeight: 10)),
-        const SizedBox(height: 6),
+        SizedBox(height: 6),
         Text('${(progress * 100).toStringAsFixed(0)}% '
             '• ${auth.points} ball to\'plangan',
-            style: const TextStyle(
+            style: TextStyle(
                 color: C.sub, fontSize: 12)),
       ]),
     );
@@ -214,11 +214,11 @@ class _WeeklyChart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        const Text('📈 Haftalik ballar',
+        Text('📈 Haftalik ballar',
             style: TextStyle(
                 color: C.txt, fontSize: 16,
                 fontWeight: FontWeight.bold)),
-        const SizedBox(height: 20),
+        SizedBox(height: 20),
         SizedBox(
           height: 150,
           child: BarChart(BarChartData(
@@ -228,7 +228,7 @@ class _WeeklyChart extends StatelessWidget {
                 getTooltipItem: (g, _, rod, __) =>
                     BarTooltipItem(
                         '${rod.toY.toInt()} ball',
-                        const TextStyle(
+                        TextStyle(
                             color: C.txt,
                             fontSize: 12)),
               ),
@@ -239,7 +239,7 @@ class _WeeklyChart extends StatelessWidget {
                   showTitles: true,
                   getTitlesWidget: (v, _) => Text(
                     days[v.toInt() % 7],
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: C.sub, fontSize: 11)),
                 ),
               ),
@@ -254,7 +254,7 @@ class _WeeklyChart extends StatelessWidget {
             gridData: FlGridData(
               drawVerticalLine: false,
               getDrawingHorizontalLine: (_) =>
-                  const FlLine(
+                  FlLine(
                       color: C.border, strokeWidth: 1)),
             barGroups: List.generate(7, (i) {
               final isToday = i == today;
@@ -307,7 +307,7 @@ class _CatCard extends StatelessWidget {
     final raw  = ins['category_breakdown'];
     if (raw == null) return const SizedBox.shrink();
     final cats = (raw as Map).cast<String, int>();
-    if (cats.isEmpty) return const SizedBox.shrink();
+    if (cats.isEmpty) return SizedBox.shrink();
     final total = cats.values.fold(0, (a, b) => a + b);
 
     return Container(
@@ -319,7 +319,7 @@ class _CatCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        const Text('🗂 Kategoriya taqsimoti',
+        Text('🗂 Kategoriya taqsimoti',
             style: TextStyle(
                 color: C.txt, fontSize: 16,
                 fontWeight: FontWeight.bold)),
@@ -334,13 +334,13 @@ class _CatCard extends StatelessWidget {
               Row(children: [
                 Text(info?.$1 ?? '📌',
                     style: const TextStyle(fontSize: 14)),
-                const SizedBox(width: 8),
+                SizedBox(width: 8),
                 Expanded(child: Text(info?.$2 ?? e.key,
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: C.txt, fontSize: 13))),
                 Text('${e.value} ta  '
                     '${(pct*100).toStringAsFixed(0)}%',
-                    style: const TextStyle(
+                    style: TextStyle(
                         color: C.sub, fontSize: 12)),
               ]),
               const SizedBox(height: 6),

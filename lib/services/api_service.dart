@@ -4,15 +4,12 @@ import '../models/models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  // Local server for testing
-  static const String baseUrl = 'http://127.0.0.1:8000/api/v1';
+  static const String baseUrl = 'https://motivai-20s9.onrender.com/api/v1';
   static String? _accessToken;
-  static String? _refreshToken;
 
-  // Auth Endpoints
+  // ── Auth ──────────────────────────────────────────────
   static Future<Map<String, dynamic>> register({
     required String email,
-    required String username,
     required String fullName,
     required String password,
   }) async {
@@ -29,8 +26,15 @@ class ApiService {
         }),
       );
 
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        final tokenData = data['data'] ?? data;
+        _accessToken = tokenData['token']?.toString();
+        if (_accessToken != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('access_token', _accessToken!);
+        }
+        return data;
       } else {
         throw Exception('Registration failed: ${response.body}');
       }
@@ -55,21 +59,15 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        // Handle nested data structure: {success, message, data: {token, user}}
+        // Backend: {"success":true, "data": {"token":"...", "user":{...}}}
         final tokenData = data['data'] ?? data;
-        
-        _accessToken = tokenData['token'] ?? tokenData['access_token'];
-        _refreshToken = tokenData['refresh_token']; // Might be null
-        
-        // Store tokens
+        _accessToken = tokenData['token']?.toString();
+
         final prefs = await SharedPreferences.getInstance();
         if (_accessToken != null) {
           await prefs.setString('access_token', _accessToken!);
         }
-        if (_refreshToken != null) {
-          await prefs.setString('refresh_token', _refreshToken!);
-        }
-        
+
         return data;
       } else {
         throw Exception('Login failed: ${response.body}');
@@ -83,9 +81,7 @@ class ApiService {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('access_token');
-      await prefs.remove('refresh_token');
       _accessToken = null;
-      _refreshToken = null;
     } catch (e) {
       throw Exception('Logout error: $e');
     }
@@ -95,10 +91,8 @@ class ApiService {
     try {
       final prefs = await SharedPreferences.getInstance();
       _accessToken = prefs.getString('access_token');
-      _refreshToken = prefs.getString('refresh_token');
-      return _accessToken != null; // Return true if token exists
+      return _accessToken != null;
     } catch (e) {
-      print('Error loading tokens: $e');
       return false;
     }
   }
@@ -110,16 +104,19 @@ class ApiService {
     };
   }
 
-  // User Endpoints
-  static Future<User> getCurrentUser() async {
+  // ── User ──────────────────────────────────────────────
+  static Future<Map<String, dynamic>> getCurrentUser() async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/users/me'),
+        Uri.parse('$baseUrl/auth/me'),
         headers: _getHeaders(),
       );
 
       if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body));
+        final data = jsonDecode(response.body);
+        // Backend: {"success":true, "data": {"user":{...}}}
+        final userData = data['data']?['user'] ?? data;
+        return userData;
       } else {
         throw Exception('Failed to get user: ${response.body}');
       }
@@ -130,17 +127,17 @@ class ApiService {
 
   static Future<void> updateProfile({
     required String fullName,
-    String? bio,
-    String? avatarUrl,
+    String? avatar,
+    String? language,
   }) async {
     try {
       final response = await http.put(
-        Uri.parse('$baseUrl/users/me'),
+        Uri.parse('$baseUrl/auth/profile'),
         headers: _getHeaders(),
         body: jsonEncode({
-          'full_name': fullName,
-          'bio': bio,
-          'avatar_url': avatarUrl,
+          'name': fullName,
+          if (avatar != null) 'avatar': avatar,
+          if (language != null) 'language': language,
         }),
       );
 
@@ -152,15 +149,16 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> getUserStats() async {
+  static Future<Map<String, dynamic>> getPlanStats() async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/users/stats/me'),
+        Uri.parse('$baseUrl/plans/stats/summary'),
         headers: _getHeaders(),
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        return data['data'] ?? data;
       } else {
         throw Exception('Failed to get stats: ${response.body}');
       }
@@ -169,17 +167,14 @@ class ApiService {
     }
   }
 
-  // Task Endpoints
-  static Future<List<Task>> getTasks({
-    String? category,
-    String? difficulty,
-    int skip = 0,
-    int limit = 20,
-  }) async {
+  // ── Plans ─────────────────────────────────────────────
+  static Future<List<Map<String, dynamic>>> getPlans({bool? isActive, String? category}) async {
     try {
-      String url = '$baseUrl/tasks?skip=$skip&limit=$limit';
-      if (category != null) url += '&category=$category';
-      if (difficulty != null) url += '&difficulty=$difficulty';
+      String url = '$baseUrl/plans';
+      final params = <String>[];
+      if (isActive != null) params.add('is_active=$isActive');
+      if (category != null) params.add('category=$category');
+      if (params.isNotEmpty) url += '?${params.join('&')}';
 
       final response = await http.get(
         Uri.parse(url),
@@ -188,67 +183,30 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final tasks = (data['tasks'] as List)
-            .map((task) => Task.fromJson(task))
-            .toList();
-        return tasks;
+        final plans = data['data']?['plans'] ?? data['plans'] ?? [];
+        return List<Map<String, dynamic>>.from(plans);
       } else {
-        throw Exception('Failed to get tasks: ${response.body}');
+        throw Exception('Failed to get plans: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Error getting tasks: $e');
+      throw Exception('Error getting plans: $e');
     }
   }
 
-  static Future<Task> getTask(String taskId) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/tasks/$taskId'),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 200) {
-        return Task.fromJson(jsonDecode(response.body));
-      } else {
-        throw Exception('Failed to get task: ${response.body}');
-      }
-    } catch (e) {
-      throw Exception('Error getting task: $e');
-    }
-  }
-
-  // Progress Endpoints
-  static Future<Map<String, dynamic>> startTask(String taskId) async {
+  static Future<Map<String, dynamic>> completeTask(String planId, String taskId, {int? studyMinutes}) async {
     try {
       final response = await http.post(
-        Uri.parse('$baseUrl/progress/start'),
-        headers: _getHeaders(),
-        body: jsonEncode({'task_id': taskId}),
-      );
-
-      if (response.statusCode == 200) {
-        return jsonDecode(response.body);
-      } else {
-        throw Exception('Failed to start task: ${response.body}');
-      }
-    } catch (e) {
-      throw Exception('Error starting task: $e');
-    }
-  }
-
-  static Future<Map<String, dynamic>> completeTask(String taskId, {String? notes}) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl/progress/complete'),
+        Uri.parse('$baseUrl/plans/$planId/complete-task'),
         headers: _getHeaders(),
         body: jsonEncode({
           'task_id': taskId,
-          'notes': notes,
+          if (studyMinutes != null) 'study_minutes': studyMinutes,
         }),
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        return data['data'] ?? data;
       } else {
         throw Exception('Failed to complete task: ${response.body}');
       }
@@ -257,19 +215,17 @@ class ApiService {
     }
   }
 
-  static Future<List<Progress>> getUserProgress() async {
+  // ── Progress ──────────────────────────────────────────
+  static Future<Map<String, dynamic>> getProgress({int days = 7}) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/progress/user/me'),
+        Uri.parse('$baseUrl/progress?days=$days'),
         headers: _getHeaders(),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final progress = (data['progress'] as List)
-            .map((p) => Progress.fromJson(p))
-            .toList();
-        return progress;
+        return data['data'] ?? data;
       } else {
         throw Exception('Failed to get progress: ${response.body}');
       }
@@ -278,41 +234,25 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> getWeeklyStats() async {
+  static Future<Map<String, dynamic>> getHeatmap() async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/progress/stats/weekly'),
+        Uri.parse('$baseUrl/progress/heatmap'),
         headers: _getHeaders(),
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        return data['data'] ?? data;
       } else {
-        throw Exception('Failed to get weekly stats: ${response.body}');
+        throw Exception('Failed to get heatmap: ${response.body}');
       }
     } catch (e) {
-      throw Exception('Error getting weekly stats: $e');
+      throw Exception('Error getting heatmap: $e');
     }
   }
 
-  // AI Endpoints
-  static Future<MotivationPlan> getMotivationPlan() async {
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/ai/motivation-plan'),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 200) {
-        return MotivationPlan.fromJson(jsonDecode(response.body));
-      } else {
-        throw Exception('Failed to get motivation plan: ${response.body}');
-      }
-    } catch (e) {
-      throw Exception('Error getting motivation plan: $e');
-    }
-  }
-
+  // ── AI ────────────────────────────────────────────────
   static Future<Map<String, dynamic>> getDailyInsight() async {
     try {
       final response = await http.get(
@@ -321,7 +261,8 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final data = jsonDecode(response.body);
+        return data['data'] ?? data;
       } else {
         throw Exception('Failed to get daily insight: ${response.body}');
       }
@@ -330,39 +271,19 @@ class ApiService {
     }
   }
 
-  static Future<List<MotivationPlan>> getRecommendations({int count = 5}) async {
+  // ── Leaderboard ───────────────────────────────────────
+  static Future<List<LbEntry>> getLeaderboard({String period = 'weekly', int limit = 50}) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/ai/recommendations?count=$count'),
+        Uri.parse('$baseUrl/leaderboard?period=$period&limit=$limit'),
         headers: _getHeaders(),
       );
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final plans = (data['recommendations'] as List)
-            .map((p) => MotivationPlan.fromJson(p))
-            .toList();
-        return plans;
-      } else {
-        throw Exception('Failed to get recommendations: ${response.body}');
-      }
-    } catch (e) {
-      throw Exception('Error getting recommendations: $e');
-    }
-  }
-
-  // Leaderboard Endpoints
-  static Future<List<LeaderboardEntry>> getGlobalLeaderboard({int limit = 100}) async {
-    try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/leaderboard/global?limit=$limit'),
-        headers: _getHeaders(),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final entries = (data['leaderboard'] as List)
-            .map((entry) => LeaderboardEntry.fromJson(entry))
+        final lbData = data['data'] ?? data;
+        final entries = (lbData['leaderboard'] as List)
+            .map((entry) => LbEntry.fromJson(entry))
             .toList();
         return entries;
       } else {
@@ -373,15 +294,16 @@ class ApiService {
     }
   }
 
-  static Future<LeaderboardEntry> getUserRank() async {
+  static Future<Map<String, dynamic>> getMyRank() async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/leaderboard/user-rank'),
+        Uri.parse('$baseUrl/leaderboard/my-rank'),
         headers: _getHeaders(),
       );
 
       if (response.statusCode == 200) {
-        return LeaderboardEntry.fromJson(jsonDecode(response.body));
+        final data = jsonDecode(response.body);
+        return data['data'] ?? data;
       } else {
         throw Exception('Failed to get user rank: ${response.body}');
       }

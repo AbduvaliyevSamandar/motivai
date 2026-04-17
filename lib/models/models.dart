@@ -17,6 +17,8 @@ class Task {
   final bool   isGlobalChallenge;
   final bool   isFromChat;
   final DateTime? completedAt;
+  final String? planId;
+  final String? planTitle;
 
   const Task({
     required this.id,
@@ -31,6 +33,8 @@ class Task {
     this.isGlobalChallenge = false,
     this.isFromChat        = false,
     this.completedAt,
+    this.planId,
+    this.planTitle,
   });
 
   String get emoji => _emojis[category] ?? '📌';
@@ -59,7 +63,7 @@ class Task {
     description:       j['description']       ?? '',
     category:          j['category']          ?? 'study',
     difficulty:        j['difficulty']        ?? 'easy',
-    points:            (j['points_reward']    ?? j['points'] ?? 10) as int,
+    points:            (j['xp_reward'] ?? j['points_reward'] ?? j['points'] ?? 10) as int,
     durationMinutes:   (j['duration_minutes'] ?? 30) as int,
     tags:              List<String>.from(j['tags'] ?? []),
     isCompleted:       j['is_completed']      ?? false,
@@ -68,6 +72,8 @@ class Task {
     completedAt: j['completed_at'] != null
         ? DateTime.tryParse(j['completed_at'].toString())
         : null,
+    planId:    j['plan_id']?.toString(),
+    planTitle: j['plan_title']?.toString(),
   );
 
   Task copyWith({bool? isCompleted, DateTime? completedAt}) => Task(
@@ -78,6 +84,7 @@ class Task {
     isFromChat: isFromChat,
     isCompleted:  isCompleted  ?? this.isCompleted,
     completedAt:  completedAt  ?? this.completedAt,
+    planId: planId, planTitle: planTitle,
   );
 }
 
@@ -112,11 +119,11 @@ class LbEntry {
   String get rankBadge => {1: '🥇', 2: '🥈', 3: '🥉'}[rank] ?? '#$rank';
 
   factory LbEntry.fromJson(Map<String, dynamic> j) => LbEntry(
-    id:       j['user_id'] ?? j['_id']  ?? '',
-    fullName: j['full_name']             ?? j['username'] ?? '',
-    username: j['username']              ?? '',
+    id:       j['_id']?.toString() ?? j['user_id']?.toString() ?? '',
+    fullName: j['name'] ?? j['full_name'] ?? j['username'] ?? '',
+    username: j['username'] ?? j['name'] ?? '',
     rank:     (j['rank']   ?? 0)  as int,
-    points:   (j['points'] ?? 0)  as int,
+    points:   (j['xp'] ?? j['points'] ?? 0) as int,
     level:    (j['level']  ?? 1)  as int,
     streak:   (j['streak'] ?? 0)  as int,
   );
