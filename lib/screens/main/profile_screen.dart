@@ -1,3 +1,4 @@
+import 'dart:io' show File, Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -349,16 +350,34 @@ class _ProfileState extends State<ProfileScreen>
 
     Widget avatarImage;
     if (hasLocal) {
-      // XFile.path dan rasm olish
-      avatarImage = ClipOval(
-        child: Image.network(
-          _localAvatar!,
-          width: 100,
-          height: 100,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => _initialLetter(auth),
-        ),
-      );
+      if (!kIsWeb) {
+        // Telefon: File dan yuklash
+        final file = File(_localAvatar!);
+        if (file.existsSync()) {
+          avatarImage = ClipOval(
+            child: Image.file(
+              file,
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
+              errorBuilder: (_, __, ___) => _initialLetter(auth),
+            ),
+          );
+        } else {
+          avatarImage = _initialLetter(auth);
+        }
+      } else {
+        // Web: network URL
+        avatarImage = ClipOval(
+          child: Image.network(
+            _localAvatar!,
+            width: 100,
+            height: 100,
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) => _initialLetter(auth),
+          ),
+        );
+      }
     } else if (hasNetwork) {
       avatarImage = ClipOval(
         child: Image.network(
