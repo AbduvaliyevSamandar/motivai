@@ -139,48 +139,63 @@ class _ShellState extends State<MainShell> {
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => setState(() => _idx = index),
+        onTap: () {
+          if (_idx == index) return;
+          HapticFeedback.selectionClick();
+          setState(() => _idx = index);
+        },
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: D.sp4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               if (isAI)
-                AnimatedContainer(
+                AnimatedScale(
+                  scale: active ? 1.08 : 1.0,
                   duration: const Duration(milliseconds: 250),
-                  curve: Curves.easeInOut,
-                  width: 42,
-                  height: 42,
-                  decoration: BoxDecoration(
-                    gradient: active
-                        ? const LinearGradient(colors: AppColors.gradPrimary)
-                        : null,
-                    color: active ? null : Colors.transparent,
-                    borderRadius: BorderRadius.circular(D.radiusMd),
-                    boxShadow: active
-                        ? [
-                            BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.3),
-                              blurRadius: 10,
-                              offset: const Offset(0, 3),
-                            ),
-                          ]
-                        : null,
-                  ),
-                  child: Icon(
-                    active ? activeIcon : icon,
-                    color: active ? Colors.white : AppColors.hint,
-                    size: 22,
+                  curve: Curves.easeOutBack,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
+                    curve: Curves.easeInOut,
+                    width: 42,
+                    height: 42,
+                    decoration: BoxDecoration(
+                      gradient: active
+                          ? const LinearGradient(
+                              colors: AppColors.gradPrimary)
+                          : null,
+                      color: active ? null : Colors.transparent,
+                      borderRadius: BorderRadius.circular(D.radiusMd),
+                      boxShadow: active
+                          ? [
+                              BoxShadow(
+                                color: AppColors.primary.withOpacity(0.35),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ]
+                          : null,
+                    ),
+                    child: Icon(
+                      active ? activeIcon : icon,
+                      color: active ? Colors.white : AppColors.hint,
+                      size: 22,
+                    ),
                   ),
                 )
               else
-                AnimatedSwitcher(
+                AnimatedScale(
+                  scale: active ? 1.12 : 1.0,
                   duration: const Duration(milliseconds: 200),
-                  child: Icon(
-                    active ? activeIcon : icon,
-                    key: ValueKey(active),
-                    color: active ? AppColors.primary : AppColors.hint,
-                    size: D.iconLg,
+                  curve: Curves.easeOut,
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: Icon(
+                      active ? activeIcon : icon,
+                      key: ValueKey(active),
+                      color: active ? AppColors.primary : AppColors.hint,
+                      size: D.iconLg,
+                    ),
                   ),
                 ),
               const SizedBox(height: D.sp4),

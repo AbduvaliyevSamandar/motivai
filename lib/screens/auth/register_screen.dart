@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
+import '../../widgets/custom_text_field.dart';
+import '../../widgets/gradient_button.dart';
+import '../../widgets/custom_chip.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,14 +17,17 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final _form     = GlobalKey<FormState>();
-  final _name     = TextEditingController();
+  final _form = GlobalKey<FormState>();
+  final _name = TextEditingController();
   final _username = TextEditingController();
-  final _email    = TextEditingController();
-  final _pass     = TextEditingController();
-  bool  _obscure  = true;
-  String _diff    = 'medium';
+  final _email = TextEditingController();
+  final _pass = TextEditingController();
+  bool _obscure = true;
+  String _diff = 'medium';
   final _selected = <String>[];
+  double _strength = 0.0;
+  String _strengthLabel = '';
+  Color _strengthColor = AppColors.border;
 
   static const _subjects = [
     'Matematika',
@@ -59,9 +66,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  void _onPasswordChange(String v) {
+    double s = 0;
+    if (v.length >= 6) s += 0.25;
+    if (v.length >= 10) s += 0.25;
+    if (RegExp(r'[A-Z]').hasMatch(v)) s += 0.15;
+    if (RegExp(r'[0-9]').hasMatch(v)) s += 0.2;
+    if (RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]').hasMatch(v)) s += 0.15;
+    s = s.clamp(0.0, 1.0);
+
+    String label;
+    Color color;
+    if (s < 0.3) {
+      label = 'Zaif';
+      color = AppColors.danger;
+    } else if (s < 0.6) {
+      label = 'O\'rtacha';
+      color = AppColors.accent;
+    } else if (s < 0.85) {
+      label = 'Yaxshi';
+      color = AppColors.info;
+    } else {
+      label = 'Kuchli';
+      color = AppColors.success;
+    }
+    setState(() {
+      _strength = s;
+      _strengthLabel = label;
+      _strengthColor = color;
+    });
+  }
+
   Future<void> _register() async {
     if (!_form.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
+    HapticFeedback.lightImpact();
     final auth = context.read<AuthProvider>();
     final ok = await auth.register(
       fullName: _name.text.trim(),
@@ -71,8 +110,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
     if (!ok && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(auth.error ?? S.get('error')),
+        content: Row(
+          children: [
+            const Icon(Icons.error_outline, color: Colors.white, size: 20),
+            const SizedBox(width: D.sp8),
+            Expanded(child: Text(auth.error ?? S.get('error'))),
+          ],
+        ),
         backgroundColor: AppColors.danger,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(D.radiusMd),
+        ),
       ));
     }
   }
@@ -111,42 +160,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
             children: [
               const SizedBox(height: D.sp8),
 
-              // -- Full name --
-              _buildField(
+              CustomTextField(
                 controller: _name,
                 label: S.get('full_name'),
-                icon: Icons.person_outline_rounded,
-                validator: (v) => v!.length < 2 ? S.get('min_6') : null,
+                prefixIcon: Icons.person_outline_rounded,
+                textInputAction: TextInputAction.next,
+                validator: (v) =>
+                    (v == null || v.trim().length < 2) ? S.get('min_6') : null,
               ),
               const SizedBox(height: D.sp16),
 
-              // -- Username --
-              _buildField(
+              CustomTextField(
                 controller: _username,
                 label: S.get('username'),
-                icon: Icons.alternate_email_rounded,
-                validator: (v) => v!.length < 3 ? S.get('min_6') : null,
+                prefixIcon: Icons.alternate_email_rounded,
+                textInputAction: TextInputAction.next,
+                validator: (v) =>
+                    (v == null || v.trim().length < 3) ? S.get('min_6') : null,
               ),
               const SizedBox(height: D.sp16),
 
-              // -- Email --
-              _buildField(
+              CustomTextField(
                 controller: _email,
                 label: S.get('email'),
-                icon: Icons.email_outlined,
+                prefixIcon: Icons.email_outlined,
                 keyboardType: TextInputType.emailAddress,
-                validator: (v) =>
-                    !v!.contains('@') ? S.get('valid_email') : null,
+                textInputAction: TextInputAction.next,
+                validator: (v) => (v == null || !v.contains('@'))
+                    ? S.get('valid_email')
+                    : null,
               ),
               const SizedBox(height: D.sp16),
 
-              // -- Password --
-              _buildField(
+              CustomTextField(
                 controller: _pass,
                 label: S.get('password'),
-                icon: Icons.lock_outline_rounded,
-                obscure: _obscure,
-                suffix: IconButton(
+                prefixIcon: Icons.lock_outline_rounded,
+                obscureText: _obscure,
+                textInputAction: TextInputAction.done,
+                onChanged: _onPasswordChange,
+                suffixIcon: IconButton(
                   icon: Icon(
                     _obscure
                         ? Icons.visibility_off_rounded
@@ -156,13 +209,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   onPressed: () => setState(() => _obscure = !_obscure),
                 ),
-                validator: (v) => v!.length < 6 ? S.get('min_6') : null,
+                validator: (v) =>
+                    (v == null || v.length < 6) ? S.get('min_6') : null,
               ),
+
+              if (_pass.text.isNotEmpty) ...[
+                const SizedBox(height: D.sp12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(4),
+                        child: LinearProgressIndicator(
+                          value: _strength,
+                          minHeight: 5,
+                          backgroundColor: AppColors.border.withOpacity(0.4),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(_strengthColor),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: D.sp12),
+                    Text(
+                      _strengthLabel,
+                      style: GoogleFonts.poppins(
+                        color: _strengthColor,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
 
               const SizedBox(height: D.sp32),
 
-              // -- Difficulty section --
-              _buildSectionTitle(S.get('priority')),
+              _SectionTitle(title: S.get('priority')),
               const SizedBox(height: D.sp12),
               Row(
                 children: _diffs.map((d) {
@@ -173,14 +255,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         right: d.$1 != 'expert' ? D.sp8 : 0,
                       ),
                       child: GestureDetector(
-                        onTap: () => setState(() => _diff = d.$1),
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          setState(() => _diff = d.$1);
+                        },
                         child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
+                          duration: const Duration(milliseconds: 220),
                           curve: Curves.easeOut,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          padding:
+                              const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
                             color: isActive
-                                ? d.$3.withValues(alpha: 0.15)
+                                ? d.$3.withOpacity(0.15)
                                 : AppColors.surface,
                             borderRadius: BorderRadius.circular(D.radiusMd),
                             border: Border.all(
@@ -190,7 +276,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             boxShadow: isActive
                                 ? [
                                     BoxShadow(
-                                      color: d.$3.withValues(alpha: 0.2),
+                                      color: d.$3.withOpacity(0.25),
                                       blurRadius: 12,
                                       offset: const Offset(0, 4),
                                     ),
@@ -207,7 +293,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   shape: BoxShape.circle,
                                   boxShadow: [
                                     BoxShadow(
-                                      color: d.$3.withValues(alpha: 0.4),
+                                      color: d.$3.withOpacity(0.5),
                                       blurRadius: 6,
                                     ),
                                   ],
@@ -235,135 +321,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
               const SizedBox(height: D.sp32),
 
-              // -- Subjects / interests --
-              _buildSectionTitle(S.get('category')),
+              _SectionTitle(title: S.get('category')),
               const SizedBox(height: D.sp12),
               Wrap(
                 spacing: 10,
                 runSpacing: 10,
-                children: List.generate(
-                  _subjects.length,
-                  (i) {
-                    final s = _subjects[i];
-                    final sel = _selected.contains(s);
-                    return GestureDetector(
-                      onTap: () => setState(
-                        () => sel ? _selected.remove(s) : _selected.add(s),
-                      ),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 250),
-                        curve: Curves.easeOut,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          gradient: sel
-                              ? const LinearGradient(
-                                  colors: AppColors.gradPrimary,
-                                )
-                              : null,
-                          color: sel ? null : AppColors.surface,
-                          borderRadius: BorderRadius.circular(D.radiusXl),
-                          border: sel
-                              ? null
-                              : Border.all(color: AppColors.border),
-                          boxShadow: sel
-                              ? [
-                                  BoxShadow(
-                                    color: AppColors.primary
-                                        .withValues(alpha: 0.3),
-                                    blurRadius: 10,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ]
-                              : null,
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              _subjectIcons[i],
-                              size: D.iconSm,
-                              color: sel ? Colors.white : AppColors.sub,
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              s,
-                              style: GoogleFonts.poppins(
-                                color: sel ? Colors.white : AppColors.txt,
-                                fontSize: 13,
-                                fontWeight:
-                                    sel ? FontWeight.w600 : FontWeight.w400,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                children: List.generate(_subjects.length, (i) {
+                  final s = _subjects[i];
+                  final sel = _selected.contains(s);
+                  return CustomChip(
+                    label: s,
+                    icon: _subjectIcons[i],
+                    selected: sel,
+                    onTap: () => setState(
+                      () => sel ? _selected.remove(s) : _selected.add(s),
+                    ),
+                  );
+                }),
               ),
 
               const SizedBox(height: 40),
 
-              // -- Register button --
               Consumer<AuthProvider>(
-                builder: (_, auth, __) => GestureDetector(
-                  onTap: auth.isLoading ? null : _register,
-                  child: Container(
-                    width: double.infinity,
-                    height: 52,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: auth.isLoading
-                            ? [
-                                AppColors.primary.withValues(alpha: 0.5),
-                                AppColors.secondary.withValues(alpha: 0.5),
-                              ]
-                            : AppColors.gradPrimary,
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(D.radiusMd),
-                      boxShadow: auth.isLoading
-                          ? null
-                          : [
-                              BoxShadow(
-                                color: AppColors.primary
-                                    .withValues(alpha: 0.35),
-                                blurRadius: 20,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                    ),
-                    child: Center(
-                      child: auth.isLoading
-                          ? const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
-                              ),
-                            )
-                          : Text(
-                              S.get('register'),
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                letterSpacing: 0.5,
-                              ),
-                            ),
-                    ),
-                  ),
+                builder: (_, auth, __) => GradientButton(
+                  label: S.get('register'),
+                  onTap: _register,
+                  loading: auth.isLoading,
+                  icon: Icons.check_circle_outline_rounded,
                 ),
               ),
 
               const SizedBox(height: D.sp24),
 
-              // -- Login link --
               Center(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -398,92 +387,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
     );
   }
+}
 
-  Widget _buildField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    TextInputType? keyboardType,
-    bool obscure = false,
-    Widget? suffix,
-    String? Function(String?)? validator,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(D.radiusMd),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.03),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscure,
-        style: GoogleFonts.poppins(
-          color: AppColors.txt,
-          fontSize: 15,
-        ),
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Container(
-            margin: const EdgeInsets.only(left: 12, right: 8),
-            child: Icon(icon, size: D.iconMd),
-          ),
-          prefixIconConstraints: const BoxConstraints(
-            minWidth: 44,
-            minHeight: 44,
-          ),
-          suffixIcon: suffix,
-          filled: true,
-          fillColor: AppColors.surface,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: D.sp20,
-            vertical: 18,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(D.radiusMd),
-            borderSide: BorderSide(color: AppColors.border),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(D.radiusMd),
-            borderSide: BorderSide(color: AppColors.border),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(D.radiusMd),
-            borderSide: const BorderSide(
-              color: AppColors.primary,
-              width: 2,
-            ),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(D.radiusMd),
-            borderSide: const BorderSide(
-              color: AppColors.danger,
-              width: 1.5,
-            ),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(D.radiusMd),
-            borderSide: const BorderSide(
-              color: AppColors.danger,
-              width: 2,
-            ),
-          ),
-          labelStyle: GoogleFonts.poppins(
-            color: AppColors.sub,
-            fontSize: 14,
-          ),
-        ),
-        validator: validator,
-      ),
-    );
-  }
+class _SectionTitle extends StatelessWidget {
+  final String title;
+  const _SectionTitle({required this.title});
 
-  Widget _buildSectionTitle(String title) {
+  @override
+  Widget build(BuildContext context) {
     return Row(
       children: [
         Container(

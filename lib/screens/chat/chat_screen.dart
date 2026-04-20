@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
@@ -43,6 +44,7 @@ class _ChatState extends State<ChatScreen> {
   Future<void> _send() async {
     final text = _ctrl.text.trim();
     if (text.isEmpty) return;
+    HapticFeedback.lightImpact();
     final auth = context.read<AuthProvider>();
     final chat = context.read<ChatProvider>();
     _ctrl.clear();
@@ -97,114 +99,103 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // -- App Bar -----------------------------------------------
   PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      backgroundColor: AppColors.surface,
-      elevation: 0,
-      titleSpacing: D.sp16,
-      title: Row(children: [
-        // AI Avatar
-        Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: AppColors.gradPrimary,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(D.radiusMd),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withValues(alpha: 0.25),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(72),
+      child: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: AppColors.gradPrimary,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          child: Center(
-            child: Text(
-              'AI',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(20),
           ),
         ),
-        const SizedBox(width: D.sp12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'MotivAI Chat',
-                style: GoogleFonts.poppins(
-                  color: AppColors.txt,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+        child: SafeArea(
+          bottom: false,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(D.sp16, D.sp8, D.sp12, D.sp12),
+            child: Row(children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.22),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(
+                      color: Colors.white.withOpacity(0.35), width: 1),
+                ),
+                child: const Center(
+                  child: Icon(Icons.auto_awesome_rounded,
+                      color: Colors.white, size: 22),
                 ),
               ),
-              const SizedBox(height: 2),
-              Consumer<ChatProvider>(
-                builder: (_, chat, __) => Row(
+              const SizedBox(width: D.sp12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      width: 7,
-                      height: 7,
-                      decoration: BoxDecoration(
-                        color: chat.isTyping
-                            ? AppColors.accent
-                            : AppColors.success,
-                        shape: BoxShape.circle,
+                    Text(
+                      'MotivAI Chat',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    const SizedBox(width: 5),
-                    Text(
-                      chat.isTyping
-                          ? S.get('ai_typing')
-                          : 'Online',
-                      style: GoogleFonts.poppins(
-                        color: chat.isTyping
-                            ? AppColors.accent
-                            : AppColors.success,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
+                    const SizedBox(height: 2),
+                    Consumer<ChatProvider>(
+                      builder: (_, chat, __) => Row(
+                        children: [
+                          _PulseDot(active: chat.isTyping),
+                          const SizedBox(width: 6),
+                          Text(
+                            chat.isTyping ? S.get('ai_typing') : 'Online',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white.withOpacity(0.9),
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-            ],
+              IconButton(
+                icon: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.18),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.delete_sweep_outlined,
+                      color: Colors.white, size: 18),
+                ),
+                onPressed: _clearConfirm,
+                tooltip: S.get('clear_chat'),
+              ),
+            ]),
           ),
         ),
-      ]),
-      actions: [
-        Container(
-          margin: const EdgeInsets.only(right: D.sp8),
-          decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: IconButton(
-            icon: Icon(Icons.delete_sweep_outlined,
-                color: AppColors.sub, size: D.iconMd),
-            onPressed: _clearConfirm,
-            tooltip: S.get('clear_chat'),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
-  // -- Message List ------------------------------------------
   Widget _buildMessageList() {
     return Consumer<ChatProvider>(
       builder: (_, chat, __) {
         _toBottom();
+        if (chat.msgs.isEmpty && !chat.isTyping) {
+          return _EmptyChat(onPromptTap: (p) {
+            _ctrl.text = p;
+            _send();
+          });
+        }
         return ListView.builder(
           controller: _scroll,
           padding: const EdgeInsets.fromLTRB(D.sp16, D.sp16, D.sp16, D.sp8),
@@ -216,7 +207,10 @@ class _ChatState extends State<ChatScreen> {
             }
             final m = chat.msgs[i];
             return Column(children: [
-              _ChatBubble(msg: m),
+              _ChatBubble(
+                msg: m,
+                onDelete: () => chat.clearHistory(),
+              ),
               if (m.isAssistant && m.hasTasks)
                 _TaskSuggestionPanel(
                   tasks: m.tasks!,
@@ -230,7 +224,6 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // -- Input Bar ---------------------------------------------
   Widget _buildInputBar() {
     return Consumer<ChatProvider>(
       builder: (_, chat, __) {
@@ -242,17 +235,14 @@ class _ChatState extends State<ChatScreen> {
                 top: BorderSide(color: AppColors.border, width: 0.5)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: Colors.black.withOpacity(0.04),
                 blurRadius: 8,
                 offset: const Offset(0, -2),
               ),
             ],
           ),
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            // Quick prompts for first messages
             if (chat.msgs.length <= 1) _buildQuickPrompts(),
-
-            // Input row
             Padding(
               padding: EdgeInsets.only(
                 left: 14,
@@ -263,7 +253,6 @@ class _ChatState extends State<ChatScreen> {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // Text field
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -288,7 +277,7 @@ class _ChatState extends State<ChatScreen> {
                               ? S.get('ai_typing')
                               : S.get('type_message'),
                           hintStyle: GoogleFonts.poppins(
-                            color: AppColors.sub.withValues(alpha: 0.6),
+                            color: AppColors.sub.withOpacity(0.6),
                             fontSize: 13,
                           ),
                           contentPadding: const EdgeInsets.symmetric(
@@ -302,10 +291,7 @@ class _ChatState extends State<ChatScreen> {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 10),
-
-                  // Send button
                   GestureDetector(
                     onTap: busy ? null : _send,
                     child: AnimatedContainer(
@@ -325,9 +311,9 @@ class _ChatState extends State<ChatScreen> {
                             ? null
                             : [
                                 BoxShadow(
-                                  color: AppColors.primary
-                                      .withValues(alpha: 0.35),
-                                  blurRadius: 12,
+                                  color:
+                                      AppColors.primary.withOpacity(0.4),
+                                  blurRadius: 14,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
@@ -335,7 +321,7 @@ class _ChatState extends State<ChatScreen> {
                       child: Icon(
                         Icons.send_rounded,
                         color: busy
-                            ? AppColors.sub.withValues(alpha: 0.5)
+                            ? AppColors.sub.withOpacity(0.5)
                             : Colors.white,
                         size: D.iconMd,
                       ),
@@ -350,25 +336,26 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // -- Quick Prompts -----------------------------------------
   Widget _buildQuickPrompts() {
     final prompts = [
-      ('🎯', S.get('ai_suggest')),
-      ('💪', S.get('streak')),
-      ('📚', S.get('tasks_label')),
-      ('🔥', S.get('today_goal')),
+      ('\u{1F3AF}', S.get('ai_suggest')),
+      ('\u{1F4AA}', S.get('streak')),
+      ('\u{1F4DA}', S.get('tasks_label')),
+      ('\u{1F525}', S.get('today_goal')),
     ];
 
     return SizedBox(
       height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: D.sp4),
+        padding:
+            const EdgeInsets.symmetric(horizontal: 14, vertical: D.sp4),
         itemCount: prompts.length,
         itemBuilder: (_, i) {
           final p = prompts[i];
           return GestureDetector(
             onTap: () {
+              HapticFeedback.selectionClick();
               _ctrl.text = p.$2;
               _send();
             },
@@ -377,9 +364,15 @@ class _ChatState extends State<ChatScreen> {
               padding: const EdgeInsets.symmetric(
                   horizontal: 14, vertical: D.sp8),
               decoration: BoxDecoration(
-                color: AppColors.card,
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primary.withOpacity(0.08),
+                    AppColors.secondary.withOpacity(0.04),
+                  ],
+                ),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.border),
+                border: Border.all(
+                    color: AppColors.primary.withOpacity(0.25)),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
                 Text(p.$1, style: const TextStyle(fontSize: 14)),
@@ -400,7 +393,6 @@ class _ChatState extends State<ChatScreen> {
     );
   }
 
-  // -- Clear Confirmation ------------------------------------
   void _clearConfirm() {
     showDialog(
       context: context,
@@ -447,12 +439,171 @@ class _ChatState extends State<ChatScreen> {
   }
 }
 
+class _PulseDot extends StatefulWidget {
+  final bool active;
+  const _PulseDot({required this.active});
+
+  @override
+  State<_PulseDot> createState() => _PulseDotState();
+}
+
+class _PulseDotState extends State<_PulseDot>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (_, __) {
+        return Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: widget.active
+                ? const Color(0xFFFCD34D)
+                : const Color(0xFF10B981),
+            shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: (widget.active
+                        ? const Color(0xFFFCD34D)
+                        : const Color(0xFF10B981))
+                    .withOpacity(0.5 + 0.5 * _ctrl.value),
+                blurRadius: 6 + 4 * _ctrl.value,
+                spreadRadius: _ctrl.value,
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _EmptyChat extends StatelessWidget {
+  final void Function(String) onPromptTap;
+  const _EmptyChat({required this.onPromptTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final prompts = [
+      ('\u{1F3AF}', 'Bugun nima qilsam yaxshi?'),
+      ('\u{1F4AA}', 'Meni motivatsiya qil'),
+      ('\u{1F4DA}', 'Matematika bo\'yicha vazifa ber'),
+    ];
+    return ListView(
+      padding: const EdgeInsets.all(D.sp24),
+      children: [
+        const SizedBox(height: 40),
+        Center(
+          child: Container(
+            width: 100,
+            height: 100,
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: AppColors.gradPrimary,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.primary.withOpacity(0.35),
+                  blurRadius: 24,
+                  spreadRadius: 4,
+                ),
+              ],
+            ),
+            child: const Icon(Icons.auto_awesome_rounded,
+                color: Colors.white, size: 48),
+          ),
+        ),
+        const SizedBox(height: D.sp20),
+        Text(
+          'Salom! Men MotivAI',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.poppins(
+            color: AppColors.txt,
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        const SizedBox(height: D.sp8),
+        Text(
+          'Sizga qanday yordam bera olaman?',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.poppins(
+            color: AppColors.sub,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: D.sp32),
+        ...prompts.map((p) => Padding(
+              padding: const EdgeInsets.only(bottom: D.sp12),
+              child: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(D.radiusMd),
+                child: InkWell(
+                  onTap: () => onPromptTap(p.$2),
+                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  child: Container(
+                    padding: const EdgeInsets.all(D.sp16),
+                    decoration: BoxDecoration(
+                      color: AppColors.card,
+                      borderRadius: BorderRadius.circular(D.radiusMd),
+                      border: Border.all(color: AppColors.border),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(p.$1,
+                            style: const TextStyle(fontSize: 22)),
+                        const SizedBox(width: D.sp12),
+                        Expanded(
+                          child: Text(
+                            p.$2,
+                            style: GoogleFonts.poppins(
+                              color: AppColors.txt,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                        Icon(Icons.arrow_forward_ios_rounded,
+                            color: AppColors.sub, size: 14),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )),
+      ],
+    );
+  }
+}
+
 // ============================================================
 //  CHAT BUBBLE
 // ============================================================
 class _ChatBubble extends StatelessWidget {
   final ChatMsg msg;
-  const _ChatBubble({required this.msg});
+  final VoidCallback onDelete;
+  const _ChatBubble({required this.msg, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -468,63 +619,94 @@ class _ChatBubble extends StatelessWidget {
           crossAxisAlignment:
               isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
           children: [
-            // Bubble
-            Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: D.sp16, vertical: D.sp12),
-              decoration: BoxDecoration(
-                gradient: isUser
-                    ? const LinearGradient(
-                        colors: AppColors.gradPrimary,
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      )
-                    : null,
-                color: isUser
-                    ? null
-                    : msg.isError
-                        ? AppColors.danger.withValues(alpha: 0.1)
-                        : AppColors.card,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(18),
-                  topRight: const Radius.circular(18),
-                  bottomLeft: Radius.circular(isUser ? 18 : 4),
-                  bottomRight: Radius.circular(isUser ? 4 : 18),
-                ),
-                border: isUser
-                    ? null
-                    : Border.all(
-                        color: msg.isError
-                            ? AppColors.danger.withValues(alpha: 0.3)
-                            : AppColors.border,
+            if (!isUser && !msg.isError)
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: D.sp4, bottom: 4),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 22,
+                      height: 22,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: AppColors.gradPrimary,
+                        ),
+                        borderRadius: BorderRadius.circular(7),
                       ),
-                boxShadow: [
-                  BoxShadow(
-                    color: isUser
-                        ? AppColors.primary.withValues(alpha: 0.15)
-                        : Colors.black.withValues(alpha: 0.04),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
+                      child: const Icon(
+                        Icons.auto_awesome_rounded,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      'MotivAI',
+                      style: GoogleFonts.poppins(
+                        color: AppColors.sub,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Text(
-                msg.content,
-                style: GoogleFonts.poppins(
+            GestureDetector(
+              onLongPress: () => _showOptions(context),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: D.sp16, vertical: D.sp12),
+                decoration: BoxDecoration(
+                  gradient: isUser
+                      ? const LinearGradient(
+                          colors: AppColors.gradPrimary,
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        )
+                      : null,
+                  color: isUser
+                      ? null
+                      : msg.isError
+                          ? AppColors.danger.withOpacity(0.1)
+                          : AppColors.card,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(isUser ? 18 : 4),
+                    topRight: Radius.circular(isUser ? 4 : 18),
+                    bottomLeft: const Radius.circular(18),
+                    bottomRight: const Radius.circular(18),
+                  ),
+                  border: isUser
+                      ? null
+                      : Border.all(
+                          color: msg.isError
+                              ? AppColors.danger.withOpacity(0.3)
+                              : AppColors.border,
+                        ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isUser
+                          ? AppColors.primary.withOpacity(0.18)
+                          : Colors.black.withOpacity(0.04),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: _RichBubbleText(
+                  text: msg.content,
                   color: isUser ? Colors.white : AppColors.txt,
-                  fontSize: 14,
-                  height: 1.5,
                 ),
               ),
             ),
-
-            // Timestamp
             Padding(
-              padding: const EdgeInsets.only(top: D.sp4, left: 6, right: 6),
+              padding: const EdgeInsets.only(
+                  top: D.sp4, left: 6, right: 6),
               child: Text(
                 _formatTime(msg.timestamp),
                 style: GoogleFonts.poppins(
-                  color: AppColors.sub.withValues(alpha: 0.5),
+                  color: AppColors.sub.withOpacity(0.55),
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
                 ),
@@ -536,9 +718,122 @@ class _ChatBubble extends StatelessWidget {
     );
   }
 
+  void _showOptions(BuildContext context) {
+    HapticFeedback.mediumImpact();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.card,
+      shape: const RoundedRectangleBorder(
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 10),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: D.sp16),
+            ListTile(
+              leading: const Icon(Icons.copy_rounded,
+                  color: AppColors.primary),
+              title: Text('Nusxa olish',
+                  style: GoogleFonts.poppins(
+                      color: AppColors.txt,
+                      fontWeight: FontWeight.w500)),
+              onTap: () {
+                Clipboard.setData(ClipboardData(text: msg.content));
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('Nusxa olindi'),
+                    backgroundColor: AppColors.success,
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading:
+                  const Icon(Icons.delete_outline, color: AppColors.danger),
+              title: Text(
+                S.get('delete'),
+                style: GoogleFonts.poppins(
+                  color: AppColors.danger,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(ctx);
+                onDelete();
+              },
+            ),
+            const SizedBox(height: D.sp8),
+          ],
+        ),
+      ),
+    );
+  }
+
   String _formatTime(DateTime d) =>
       '${d.hour.toString().padLeft(2, '0')}:'
       '${d.minute.toString().padLeft(2, '0')}';
+}
+
+// Simple markdown-ish renderer: **bold** and `code`
+class _RichBubbleText extends StatelessWidget {
+  final String text;
+  final Color color;
+  const _RichBubbleText({required this.text, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final spans = <TextSpan>[];
+    final pattern = RegExp(r'(\*\*[^*]+\*\*|`[^`]+`)');
+    int last = 0;
+    for (final m in pattern.allMatches(text)) {
+      if (m.start > last) {
+        spans.add(TextSpan(text: text.substring(last, m.start)));
+      }
+      final raw = m.group(0)!;
+      if (raw.startsWith('**')) {
+        spans.add(TextSpan(
+          text: raw.substring(2, raw.length - 2),
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ));
+      } else {
+        spans.add(TextSpan(
+          text: raw.substring(1, raw.length - 1),
+          style: GoogleFonts.firaCode(
+            fontSize: 13,
+            backgroundColor: color.withOpacity(0.08),
+          ),
+        ));
+      }
+      last = m.end;
+    }
+    if (last < text.length) {
+      spans.add(TextSpan(text: text.substring(last)));
+    }
+    return RichText(
+      text: TextSpan(
+        style: GoogleFonts.poppins(
+          color: color,
+          fontSize: 14,
+          height: 1.5,
+        ),
+        children: spans,
+      ),
+    );
+  }
 }
 
 // ============================================================
@@ -572,25 +867,25 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.primary.withValues(alpha: 0.06),
-            AppColors.primary.withValues(alpha: 0.02),
+            AppColors.primary.withOpacity(0.06),
+            AppColors.primary.withOpacity(0.02),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           Row(children: [
             Container(
               width: 28,
               height: 28,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: AppColors.gradPrimary),
+                gradient:
+                    const LinearGradient(colors: AppColors.gradPrimary),
                 borderRadius: BorderRadius.circular(D.radiusSm),
               ),
               child: const Icon(Icons.task_alt_rounded,
@@ -608,9 +903,10 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: 3),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: D.sp8, vertical: 3),
               decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.15),
+                color: AppColors.primary.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(D.radiusSm),
               ),
               child: Text(
@@ -623,19 +919,13 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
               ),
             ),
           ]),
-
           const SizedBox(height: D.sp12),
-
-          // Task items
           ...widget.tasks.map((t) => _SuggestTaskItem(
                 task: t,
                 onToggle: () =>
                     setState(() => t.isSelected = !t.isSelected),
               )),
-
           const SizedBox(height: 14),
-
-          // Action buttons
           Row(children: [
             Expanded(
               child: OutlinedButton(
@@ -660,12 +950,13 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
               child: Container(
                 height: 44,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: AppColors.gradPrimary),
+                  gradient:
+                      const LinearGradient(colors: AppColors.gradPrimary),
                   borderRadius: BorderRadius.circular(D.radiusMd),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withValues(alpha: 0.3),
-                      blurRadius: 8,
+                      color: AppColors.primary.withOpacity(0.35),
+                      blurRadius: 10,
                       offset: const Offset(0, 3),
                     ),
                   ],
@@ -678,7 +969,8 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                   icon: const Icon(Icons.add_task_rounded, size: 18),
                   label: Text(
                     S.get('add_task'),
-                    style: GoogleFonts.poppins(fontWeight: FontWeight.w700),
+                    style:
+                        GoogleFonts.poppins(fontWeight: FontWeight.w700),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.transparent,
@@ -698,11 +990,9 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
   }
 }
 
-// -- Suggest Task Item ---------------------------------------
 class _SuggestTaskItem extends StatelessWidget {
   final TaskSuggestion task;
   final VoidCallback onToggle;
-
   const _SuggestTaskItem({required this.task, required this.onToggle});
 
   @override
@@ -715,12 +1005,12 @@ class _SuggestTaskItem extends StatelessWidget {
         padding: const EdgeInsets.all(D.sp12),
         decoration: BoxDecoration(
           color: task.isSelected
-              ? AppColors.primary.withValues(alpha: 0.08)
+              ? AppColors.primary.withOpacity(0.08)
               : AppColors.card,
           borderRadius: BorderRadius.circular(D.radiusMd),
           border: Border.all(
             color: task.isSelected
-                ? AppColors.primary.withValues(alpha: 0.4)
+                ? AppColors.primary.withOpacity(0.4)
                 : AppColors.border,
             width: task.isSelected ? 1.5 : 1,
           ),
@@ -733,7 +1023,8 @@ class _SuggestTaskItem extends StatelessWidget {
                   ? Icons.check_circle_rounded
                   : Icons.radio_button_unchecked_rounded,
               key: ValueKey(task.isSelected),
-              color: task.isSelected ? AppColors.primary : AppColors.sub,
+              color:
+                  task.isSelected ? AppColors.primary : AppColors.sub,
               size: 22,
             ),
           ),
@@ -780,7 +1071,7 @@ class _SuggestTaskItem extends StatelessWidget {
 }
 
 // ============================================================
-//  TYPING INDICATOR
+//  TYPING INDICATOR - 3 dot pulse
 // ============================================================
 class _TypingIndicator extends StatefulWidget {
   const _TypingIndicator();
@@ -797,8 +1088,8 @@ class _TypingIndicatorState extends State<_TypingIndicator>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
-    )..repeat(reverse: true);
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
   }
 
   @override
@@ -817,15 +1108,15 @@ class _TypingIndicatorState extends State<_TypingIndicator>
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
+            topLeft: Radius.circular(4),
             topRight: Radius.circular(20),
-            bottomLeft: Radius.circular(4),
+            bottomLeft: Radius.circular(20),
             bottomRight: Radius.circular(20),
           ),
           border: Border.all(color: AppColors.border),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
+              color: Colors.black.withOpacity(0.04),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -836,38 +1127,36 @@ class _TypingIndicatorState extends State<_TypingIndicator>
             width: 24,
             height: 24,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: AppColors.gradPrimary),
+              gradient:
+                  const LinearGradient(colors: AppColors.gradPrimary),
               borderRadius: BorderRadius.circular(7),
             ),
-            child: Center(
-              child: Text('AI',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 9,
-                    fontWeight: FontWeight.w800,
-                  )),
-            ),
+            child: const Icon(Icons.auto_awesome_rounded,
+                color: Colors.white, size: 14),
           ),
           const SizedBox(width: 10),
           AnimatedBuilder(
             animation: _ctrl,
             builder: (_, __) => Row(
-              children: List.generate(
-                3,
-                (i) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  margin: const EdgeInsets.symmetric(horizontal: 2),
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(
-                      alpha: 0.25 +
-                          0.75 * (((_ctrl.value + i * 0.3) % 1.0)),
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(3, (i) {
+                final t = (_ctrl.value + i * 0.22) % 1.0;
+                final scale = 0.6 + 0.4 * (1 - (t - 0.5).abs() * 2).clamp(0.0, 1.0);
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Transform.scale(
+                    scale: scale,
+                    child: Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.3 + 0.7 * scale),
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                    shape: BoxShape.circle,
                   ),
-                ),
-              ),
+                );
+              }),
             ),
           ),
           const SizedBox(width: D.sp8),
