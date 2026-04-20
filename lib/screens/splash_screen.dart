@@ -71,11 +71,25 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Splash stays dark regardless of theme — brand presentation.
     return Scaffold(
+      backgroundColor: const Color(0xFF08091A),
       body: Stack(
         children: [
-          const AuroraBackground(),
-          const ParticleField(count: 40),
+          Container(
+            decoration: const BoxDecoration(
+              gradient: RadialGradient(
+                center: Alignment(-0.3, -0.6),
+                radius: 1.4,
+                colors: [
+                  Color(0xFF1A1340),
+                  Color(0xFF08091A),
+                ],
+              ),
+            ),
+          ),
+          const ParticleField(
+              count: 40, color: Color(0x66FFFFFF)),
           SafeArea(
             child: Column(
               children: [

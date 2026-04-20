@@ -9,6 +9,7 @@ import '../../services/api.dart';
 import '../../config/constants.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/notification_provider.dart';
+import '../../services/local_schedules.dart';
 import '../../widgets/nebula/nebula.dart';
 
 void showAddTaskDialog(BuildContext context) {
@@ -189,8 +190,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   ),
                   const SizedBox(width: 12),
                   ShaderMask(
-                    shaderCallback: (b) => const LinearGradient(
-                      colors: [Color(0xFFFFFFFF), Color(0xFFE0D4FB)],
+                    shaderCallback: (b) => LinearGradient(
+                      colors: AppColors.titleGradient,
                     ).createShader(b),
                     blendMode: BlendMode.srcIn,
                     child: Text(
@@ -463,7 +464,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   Future<void> _submit() async {
     final title = _titleCtrl.text.trim();
     if (title.isEmpty) {
-      _toast(S.get('task_title'), err: true);
+      _toast('Vazifa nomini kiriting', err: true);
       return;
     }
     setState(() => _loading = true);
@@ -471,47 +472,70 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       final duration = int.tryParse(_durationCtrl.text.trim()) ?? 30;
       final points = _diffPoints(_difficulty);
 
+      // Backend uses `duration` (minutes) on TaskCreate and `duration` (days) on PlanCreate.
       final taskBody = <String, dynamic>{
         'title': title,
         'description': _descCtrl.text.trim(),
         'category': _category,
         'difficulty': _difficulty,
-        'duration_minutes': duration,
+        'duration': duration,
         'xp_reward': points,
-        'reminder_minutes': _reminderMinutes,
       };
       if (_scheduledAt != null) {
-        taskBody['scheduled_at'] = _scheduledAt!.toUtc().toIso8601String();
+        final hh = _scheduledAt!.hour.toString().padLeft(2, '0');
+        final mm = _scheduledAt!.minute.toString().padLeft(2, '0');
+        taskBody['scheduled_time'] = '$hh:$mm';
       }
 
-      final res = await Api().post(K.plans, {
+      final planBody = <String, dynamic>{
         'title': title,
         'description': _descCtrl.text.trim(),
         'goal': title,
         'category': _category,
-        'duration_days': 1,
+        'duration': 1,
         'tasks': [taskBody],
         'milestones': [],
         'reminder_enabled': _reminderMinutes > 0,
         'visibility': 'private',
-      });
+      };
 
+      // Save schedule LOCALLY first (before network) so UI can show it
+      // even if the reload picks up task with wrong id mapping.
+      if (_scheduledAt != null) {
+        await LocalSchedules.savePending(
+          title: title,
+          scheduledAt: _scheduledAt!,
+          reminderMinutes: _reminderMinutes,
+        );
+      }
+
+      final res = await Api().post(K.plans, planBody);
       if (!mounted) return;
-      // Extract new task id if backend returned it
+
+      // Try to extract task id for better tracking
       String? taskId;
       try {
-        final data = res['data'] as Map?;
-        final plans = data?['plan'] ?? data?['plans'];
-        if (plans is Map) {
-          final tasks = plans['tasks'] as List?;
+        final data = res is Map ? res['data'] as Map? : null;
+        final plan = data?['plan'];
+        if (plan is Map) {
+          final tasks = plan['tasks'] as List?;
           if (tasks != null && tasks.isNotEmpty) {
             taskId = (tasks.first['id'] ?? tasks.first['_id'])?.toString();
           }
         }
       } catch (_) {}
 
-      // Schedule local reminder immediately if we have a time
+      if (_scheduledAt != null && taskId != null && taskId.isNotEmpty) {
+        await LocalSchedules.saveById(
+          taskId: taskId,
+          scheduledAt: _scheduledAt!,
+          reminderMinutes: _reminderMinutes,
+        );
+      }
+
+      // Schedule local notification
       if (_scheduledAt != null && _reminderMinutes > 0) {
+        if (!mounted) return;
         final notifs = context.read<NotificationProvider>();
         await notifs.scheduleTaskReminder(
           taskId: taskId ?? 'new_${DateTime.now().millisecondsSinceEpoch}',
@@ -521,16 +545,19 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         );
       }
 
+      if (!mounted) return;
+      // Reload — this merges local schedule back into tasks
       await context.read<TaskProvider>().loadAll();
       if (!mounted) return;
       Navigator.pop(context);
-      _toast(S.get('task_added'));
+      _toast("Vazifa qo'shildi");
     } catch (e) {
       if (!mounted) return;
-      _toast(e.toString(), err: true);
-    } finally {
-      if (mounted) setState(() => _loading = false);
+      setState(() => _loading = false);
+      _toast('Xatolik: ${e.toString()}', err: true);
+      return;
     }
+    if (mounted) setState(() => _loading = false);
   }
 
   void _toast(String msg, {bool err = false}) {

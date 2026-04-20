@@ -162,11 +162,8 @@ class _ChatState extends State<ChatScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ShaderMask(
-                          shaderCallback: (b) => const LinearGradient(
-                            colors: [
-                              Color(0xFFFFFFFF),
-                              Color(0xFFE0D4FB),
-                            ],
+                          shaderCallback: (b) => LinearGradient(
+                            colors: AppColors.titleGradient,
                           ).createShader(b),
                           blendMode: BlendMode.srcIn,
                           child: Text(
@@ -536,8 +533,8 @@ class _EmptyChat extends StatelessWidget {
         const SizedBox(height: 20),
         Center(
           child: ShaderMask(
-            shaderCallback: (b) => const LinearGradient(
-              colors: [Color(0xFFFFFFFF), Color(0xFFE0D4FB)],
+            shaderCallback: (b) => LinearGradient(
+              colors: AppColors.titleGradient,
             ).createShader(b),
             blendMode: BlendMode.srcIn,
             child: Text(

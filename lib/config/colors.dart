@@ -100,4 +100,13 @@ class AppColors {
   static Color get glowPrimary => primary.withOpacity(0.35);
   static Color get glowGold => accent.withOpacity(0.35);
   static Color get glowCyan => secondary.withOpacity(0.35);
+
+  // ─── ADAPTIVE GRADIENTS (theme-aware titles etc) ─────────
+  static List<Color> get titleGradient => _dark
+      ? const [Color(0xFFFFFFFF), Color(0xFFE0D4FB)]
+      : const [Color(0xFF4F46E5), Color(0xFFA855F7)];
+
+  static List<Color> get softTitleGradient => _dark
+      ? const [Color(0xFFFFFFFF), Color(0xFFBFB5EE)]
+      : const [Color(0xFF1E1B4B), Color(0xFF4F46E5)];
 }

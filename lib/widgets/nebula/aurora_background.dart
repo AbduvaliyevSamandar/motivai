@@ -39,7 +39,9 @@ class _AuroraBackgroundState extends State<AuroraBackground>
 
   @override
   Widget build(BuildContext context) {
-    final op = widget.subtle ? 0.5 : 1.0;
+    // In light mode, blobs look too strong on a white bg — dim them.
+    final lightFactor = AppColors.isDark ? 1.0 : 0.65;
+    final op = (widget.subtle ? 0.5 : 1.0) * lightFactor;
     return AnimatedBuilder(
       animation: _ctrl,
       builder: (context, _) {

@@ -69,8 +69,8 @@ class _Header extends StatelessWidget {
           ),
           const SizedBox(width: 4),
           ShaderMask(
-            shaderCallback: (b) => const LinearGradient(
-              colors: [Color(0xFFFFFFFF), Color(0xFFE0D4FB)],
+            shaderCallback: (b) => LinearGradient(
+              colors: AppColors.titleGradient,
             ).createShader(b),
             blendMode: BlendMode.srcIn,
             child: Text(
@@ -372,8 +372,8 @@ class _EmptyFeed extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ShaderMask(
-              shaderCallback: (b) => const LinearGradient(
-                colors: [Color(0xFFFFFFFF), Color(0xFFE0D4FB)],
+              shaderCallback: (b) => LinearGradient(
+                colors: AppColors.titleGradient,
               ).createShader(b),
               blendMode: BlendMode.srcIn,
               child: Text(

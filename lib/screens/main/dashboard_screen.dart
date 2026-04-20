@@ -32,7 +32,11 @@ class DashboardScreen extends StatelessWidget {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      floatingActionButton: _buildFAB(context),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 84),
+        child: _buildFAB(context),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [
           const AuroraBackground(subtle: true),

@@ -67,12 +67,8 @@ class _ProgState extends State<ProgressScreen> {
                           child: Row(
                             children: [
                               ShaderMask(
-                                shaderCallback: (b) =>
-                                    const LinearGradient(
-                                  colors: [
-                                    Color(0xFFFFFFFF),
-                                    Color(0xFFE0D4FB),
-                                  ],
+                                shaderCallback: (b) => LinearGradient(
+                                  colors: AppColors.titleGradient,
                                 ).createShader(b),
                                 blendMode: BlendMode.srcIn,
                                 child: Text(

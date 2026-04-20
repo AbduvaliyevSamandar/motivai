@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/api.dart';
+import '../services/local_schedules.dart';
 import '../config/constants.dart';
 import '../models/models.dart';
 import 'notification_provider.dart';
@@ -61,17 +62,47 @@ class TaskProvider extends ChangeNotifier {
       final plans = data['plans'] as List? ?? [];
 
       _planTasks = [];
+      // Load local schedules once
+      final localSchedules = await LocalSchedules.getAll();
+
       for (final plan in plans) {
         final planId = (plan['_id'] ?? plan['id'] ?? '').toString();
         final planTitle = plan['title']?.toString() ?? '';
         final tasks = plan['tasks'] as List? ?? [];
         for (final t in tasks) {
           final taskMap = Map<String, dynamic>.from(t as Map);
-          // Plan ID va plan title qo'shamiz
           taskMap['plan_id'] = planId;
           taskMap['plan_title'] = planTitle;
-          // Backend task.id ni _id sifatida o'rnatamiz
           taskMap['_id'] = taskMap['id'] ?? '';
+          final taskId = (taskMap['id'] ?? '').toString();
+          final title = (taskMap['title'] ?? '').toString();
+
+          // Merge local schedule if exists (by id, or pending:title)
+          var local = localSchedules[taskId];
+          local ??= localSchedules['pending:$title'];
+          if (local != null) {
+            taskMap['scheduled_at'] = local.at.toIso8601String();
+            taskMap['reminder_minutes'] = local.remind;
+            // Promote pending to id-keyed for next time
+            if (taskId.isNotEmpty) {
+              await LocalSchedules.promotePending(
+                  title: title, taskId: taskId);
+            }
+          } else if (taskMap['scheduled_time'] is String) {
+            // Backend gives HH:MM — compose a DateTime for today/tomorrow
+            final hm = (taskMap['scheduled_time'] as String).split(':');
+            if (hm.length == 2) {
+              final hh = int.tryParse(hm[0]) ?? 0;
+              final mm = int.tryParse(hm[1]) ?? 0;
+              final now = DateTime.now();
+              var at = DateTime(now.year, now.month, now.day, hh, mm);
+              if (at.isBefore(now)) {
+                at = at.add(const Duration(days: 1));
+              }
+              taskMap['scheduled_at'] = at.toIso8601String();
+            }
+          }
+
           _planTasks.add(Task.fromJson(taskMap));
         }
       }
