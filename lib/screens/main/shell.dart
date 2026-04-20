@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,7 @@ import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/chat_provider.dart';
+import '../../providers/notification_provider.dart';
 import 'dashboard_screen.dart';
 import 'leaderboard_screen.dart';
 import 'progress_screen.dart';
@@ -24,6 +26,7 @@ class _ShellState extends State<MainShell> {
   int _idx = 0;
   bool _inited = false;
   DateTime? _lastBack;
+  Timer? _notifTicker;
 
   final _screens = const [
     DashboardScreen(),
@@ -39,6 +42,12 @@ class _ShellState extends State<MainShell> {
     WidgetsBinding.instance.addPostFrameCallback((_) => _init());
   }
 
+  @override
+  void dispose() {
+    _notifTicker?.cancel();
+    super.dispose();
+  }
+
   Future<void> _init() async {
     if (_inited) return;
     _inited = true;
@@ -46,6 +55,18 @@ class _ShellState extends State<MainShell> {
       context.read<TaskProvider>().loadAll(),
       context.read<ChatProvider>().init(),
     ]);
+    if (!mounted) return;
+    // Initial notification sync
+    await context
+        .read<TaskProvider>()
+        .syncNotifications(context.read<NotificationProvider>());
+    // Every minute check for upcoming/overdue
+    _notifTicker = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (!mounted) return;
+      context
+          .read<TaskProvider>()
+          .syncNotifications(context.read<NotificationProvider>());
+    });
   }
 
   Future<bool> _onWillPop() async {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/api.dart';
 import '../config/constants.dart';
 import '../models/models.dart';
+import 'notification_provider.dart';
 
 class TaskProvider extends ChangeNotifier {
   final _api = Api();
@@ -199,5 +200,47 @@ class TaskProvider extends ChangeNotifier {
   void clearError() {
     _error = null;
     notifyListeners();
+  }
+
+  // ── NOTIFICATIONS SYNC ────────────────────────────────
+  /// After loading tasks, schedule reminders and fire overdue notifs.
+  /// Called from MainShell after loadAll completes and periodically.
+  Future<void> syncNotifications(NotificationProvider notifs) async {
+    if (!notifs.enabled) return;
+    for (final t in _planTasks) {
+      if (t.isCompleted) {
+        await notifs.cancelTaskReminder(t.id);
+        continue;
+      }
+      if (!t.hasSchedule) continue;
+
+      // Overdue check
+      if (t.isOverdue) {
+        await notifs.fireOverdue(taskId: t.id, taskTitle: t.title);
+        await notifs.cancelTaskReminder(t.id);
+        continue;
+      }
+
+      // Schedule reminder (idempotent — plugin replaces by id)
+      await notifs.scheduleTaskReminder(
+        taskId: t.id,
+        taskTitle: t.title,
+        scheduledAt: t.scheduledAt!,
+        reminderMinutes: t.reminderMinutes,
+      );
+
+      // In-app soon alert (only if within reminder window and not flagged yet)
+      if (t.isUpcomingSoon) {
+        final already = notifs.feed.any((n) =>
+            n.type == AppNotifType.reminder && n.taskId == t.id);
+        if (!already) {
+          await notifs.fireUpcomingInApp(
+            taskId: t.id,
+            taskTitle: t.title,
+            minutesUntil: t.timeUntil?.inMinutes ?? 0,
+          );
+        }
+      }
+    }
   }
 }

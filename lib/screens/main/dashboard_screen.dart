@@ -8,11 +8,13 @@ import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../models/models.dart';
 import '../../widgets/nebula/nebula.dart';
 import '../widgets/task_card.dart';
 import '../widgets/completion_dialog.dart';
 import '../widgets/add_task_dialog.dart';
+import 'notifications_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -283,40 +285,89 @@ class _HeaderRow extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            color: AppColors.card.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: AppColors.border),
-          ),
-          child: Stack(
-            children: [
-              Center(
-                child: Icon(Icons.notifications_outlined,
-                    color: AppColors.sub, size: 20),
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  width: 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: AppColors.danger,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.danger.withOpacity(0.7),
-                        blurRadius: 6,
+        Consumer<NotificationProvider>(
+          builder: (ctx, np, __) {
+            final unread = np.unreadCount;
+            return Material(
+              color: AppColors.card.withOpacity(0.6),
+              borderRadius: BorderRadius.circular(14),
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  Navigator.push(
+                    ctx,
+                    PageRouteBuilder(
+                      pageBuilder: (_, __, ___) =>
+                          const NotificationsScreen(),
+                      transitionsBuilder: (_, a, __, c) => FadeTransition(
+                        opacity: a,
+                        child: SlideTransition(
+                          position: Tween<Offset>(
+                            begin: const Offset(0, 0.05),
+                            end: Offset.zero,
+                          ).animate(a),
+                          child: c,
+                        ),
                       ),
+                    ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(14),
+                child: Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Icon(Icons.notifications_outlined,
+                            color: unread > 0
+                                ? AppColors.primary
+                                : AppColors.sub,
+                            size: 20),
+                      ),
+                      if (unread > 0)
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: Container(
+                            constraints: const BoxConstraints(
+                                minWidth: 16, minHeight: 16),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                  colors: AppColors.gradWarning),
+                              borderRadius: BorderRadius.circular(8),
+                              boxShadow: [
+                                BoxShadow(
+                                  color:
+                                      AppColors.danger.withOpacity(0.6),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                            child: Center(
+                              child: Text(
+                                unread > 9 ? '9+' : '$unread',
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 9,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
+            );
+          },
         ),
       ],
     );

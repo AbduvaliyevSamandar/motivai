@@ -10,6 +10,7 @@ import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../widgets/nebula/nebula.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -301,12 +302,24 @@ class _ProfileState extends State<ProfileScreen> {
                       subtitle: _langName(S.lang),
                       onTap: _showLanguageDialog,
                     ),
-                    _tile(
-                      icon: Icons.notifications_outlined,
-                      iconColor: AppColors.accent,
-                      title: S.get('notifications'),
-                      subtitle: S.get('coming_soon'),
-                      onTap: () {},
+                    Consumer<NotificationProvider>(
+                      builder: (_, np, __) => _tile(
+                        icon: Icons.notifications_outlined,
+                        iconColor: AppColors.accent,
+                        title: S.get('notifications'),
+                        subtitle: np.enabled
+                            ? '${np.defaultReminderMinutes} min oldin eslatma'
+                            : "O'chirilgan",
+                        trailing: Switch.adaptive(
+                          value: np.enabled,
+                          activeColor: AppColors.primary,
+                          onChanged: (v) {
+                            HapticFeedback.selectionClick();
+                            np.setEnabled(v);
+                          },
+                        ),
+                        onTap: np.enabled ? _showReminderPicker : null,
+                      ),
                     ),
                   ]),
                 ),
@@ -871,7 +884,121 @@ class _ProfileState extends State<ProfileScreen> {
     );
   }
 
-  // placeholder to keep API
-  // ignore: unused_element
-  void _notUsed() {}
+  void _showReminderPicker() {
+    final np = context.read<NotificationProvider>();
+    final options = [5, 15, 30, 60, 120];
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(28)),
+          border: Border(
+              top: BorderSide(color: AppColors.glassBorder, width: 1.5)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 44,
+              height: 5,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Eslatma vaqti',
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.txt,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Vazifadan qancha vaqt oldin eslatish',
+              style: GoogleFonts.poppins(
+                color: AppColors.sub,
+                fontSize: 13,
+              ),
+            ),
+            const SizedBox(height: 20),
+            ...options.map((m) {
+              final label =
+                  m < 60 ? '$m daqiqa' : '${m ~/ 60} soat';
+              final active = np.defaultReminderMinutes == m;
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(14),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(14),
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                      np.setDefaultReminderMinutes(m);
+                      Navigator.pop(ctx);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        gradient: active
+                            ? LinearGradient(colors: [
+                                AppColors.primary.withOpacity(0.2),
+                                AppColors.secondary.withOpacity(0.1),
+                              ])
+                            : null,
+                        color: active ? null : AppColors.bg,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: active
+                              ? AppColors.primary
+                              : AppColors.border,
+                          width: active ? 1.5 : 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.notifications_active_rounded,
+                            color: active
+                                ? AppColors.primary
+                                : AppColors.sub,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              label,
+                              style: GoogleFonts.poppins(
+                                color: AppColors.txt,
+                                fontSize: 14,
+                                fontWeight: active
+                                    ? FontWeight.w700
+                                    : FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          if (active)
+                            const Icon(Icons.check_circle_rounded,
+                                color: AppColors.primary, size: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }),
+          ],
+        ),
+      ),
+    );
+  }
 }

@@ -19,6 +19,8 @@ class Task {
   final DateTime? completedAt;
   final String? planId;
   final String? planTitle;
+  final DateTime? scheduledAt;    // When task should happen
+  final int reminderMinutes;      // How many minutes before to remind (0 = no reminder)
 
   const Task({
     required this.id,
@@ -35,10 +37,43 @@ class Task {
     this.completedAt,
     this.planId,
     this.planTitle,
+    this.scheduledAt,
+    this.reminderMinutes   = 15,
   });
 
   String get emoji => _emojis[category] ?? '📌';
   Color  get color => C.cat[category] ?? C.primary;
+
+  // Time helpers
+  bool get hasSchedule => scheduledAt != null;
+  bool get isOverdue =>
+      scheduledAt != null &&
+      !isCompleted &&
+      DateTime.now().isAfter(scheduledAt!);
+  bool get isUpcomingSoon {
+    if (scheduledAt == null || isCompleted) return false;
+    final diff = scheduledAt!.difference(DateTime.now());
+    return diff.inMinutes > 0 && diff.inMinutes <= reminderMinutes;
+  }
+
+  Duration? get timeUntil =>
+      scheduledAt?.difference(DateTime.now());
+
+  String get timeLabel {
+    if (scheduledAt == null) return '';
+    final now = DateTime.now();
+    final s = scheduledAt!;
+    final sameDay = now.year == s.year && now.month == s.month && now.day == s.day;
+    final tomorrow = now.add(const Duration(days: 1));
+    final isTomorrow = tomorrow.year == s.year &&
+        tomorrow.month == s.month &&
+        tomorrow.day == s.day;
+    final hh = s.hour.toString().padLeft(2, '0');
+    final mm = s.minute.toString().padLeft(2, '0');
+    if (sameDay) return '$hh:$mm';
+    if (isTomorrow) return 'Erta $hh:$mm';
+    return '${s.day}/${s.month} $hh:$mm';
+  }
 
   String get diffLabel => const {
     'easy':   'Oson',
@@ -74,9 +109,18 @@ class Task {
         : null,
     planId:    j['plan_id']?.toString(),
     planTitle: j['plan_title']?.toString(),
+    scheduledAt: j['scheduled_at'] != null
+        ? DateTime.tryParse(j['scheduled_at'].toString())
+        : null,
+    reminderMinutes: (j['reminder_minutes'] ?? 15) as int,
   );
 
-  Task copyWith({bool? isCompleted, DateTime? completedAt}) => Task(
+  Task copyWith({
+    bool? isCompleted,
+    DateTime? completedAt,
+    DateTime? scheduledAt,
+    int? reminderMinutes,
+  }) => Task(
     id: id, title: title, description: description,
     category: category, difficulty: difficulty,
     points: points, durationMinutes: durationMinutes,
@@ -85,6 +129,56 @@ class Task {
     isCompleted:  isCompleted  ?? this.isCompleted,
     completedAt:  completedAt  ?? this.completedAt,
     planId: planId, planTitle: planTitle,
+    scheduledAt: scheduledAt ?? this.scheduledAt,
+    reminderMinutes: reminderMinutes ?? this.reminderMinutes,
+  );
+}
+
+// ═══════════════════════════════════════════════════════
+//  APP NOTIFICATION (in-app notification feed)
+// ═══════════════════════════════════════════════════════
+enum AppNotifType { reminder, overdue, achievement, info }
+
+class AppNotif {
+  final String id;
+  final AppNotifType type;
+  final String title;
+  final String body;
+  final DateTime at;
+  final String? taskId;
+  bool read;
+
+  AppNotif({
+    required this.id,
+    required this.type,
+    required this.title,
+    required this.body,
+    required this.at,
+    this.taskId,
+    this.read = false,
+  });
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'type': type.name,
+    'title': title,
+    'body': body,
+    'at': at.toIso8601String(),
+    'taskId': taskId,
+    'read': read,
+  };
+
+  factory AppNotif.fromJson(Map<String, dynamic> j) => AppNotif(
+    id: j['id'] ?? '',
+    type: AppNotifType.values.firstWhere(
+      (e) => e.name == j['type'],
+      orElse: () => AppNotifType.info,
+    ),
+    title: j['title'] ?? '',
+    body: j['body'] ?? '',
+    at: DateTime.tryParse(j['at'] ?? '') ?? DateTime.now(),
+    taskId: j['taskId'],
+    read: j['read'] ?? false,
   );
 }
 

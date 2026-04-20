@@ -43,6 +43,16 @@ class _TaskCardState extends State<TaskCard>
   Widget build(BuildContext context) {
     final t = widget.task;
     final done = t.isCompleted;
+    final overdue = t.isOverdue;
+    final upcoming = t.isUpcomingSoon;
+
+    final accent = done
+        ? AppColors.border
+        : overdue
+            ? AppColors.danger
+            : upcoming
+                ? AppColors.accent
+                : t.color;
 
     return ScaleTransition(
       scale: _scale,
@@ -55,15 +65,17 @@ class _TaskCardState extends State<TaskCard>
             color: AppColors.card,
             borderRadius: BorderRadius.circular(D.radiusLg),
             border: Border.all(
-              color: done ? AppColors.border : t.color.withOpacity(0.3),
-              width: done ? 1 : 1.5,
+              color: done
+                  ? AppColors.border
+                  : accent.withOpacity(overdue ? 0.6 : 0.35),
+              width: done ? 1 : (overdue ? 1.8 : 1.5),
             ),
             boxShadow: done
                 ? null
                 : [
                     BoxShadow(
-                      color: t.color.withOpacity(0.08),
-                      blurRadius: 12,
+                      color: accent.withOpacity(overdue ? 0.25 : 0.1),
+                      blurRadius: overdue ? 16 : 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
@@ -74,7 +86,15 @@ class _TaskCardState extends State<TaskCard>
               Container(
                 height: 4,
                 decoration: BoxDecoration(
-                  color: done ? AppColors.border : t.color,
+                  gradient: LinearGradient(
+                    colors: done
+                        ? [AppColors.border, AppColors.border]
+                        : overdue
+                            ? [AppColors.danger, AppColors.accent]
+                            : upcoming
+                                ? [AppColors.accent, t.color]
+                                : [t.color, t.color.withOpacity(0.6)],
+                  ),
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(D.radiusLg),
                     topRight: Radius.circular(D.radiusLg),
@@ -128,6 +148,8 @@ class _TaskCardState extends State<TaskCard>
                                 spacing: 6,
                                 runSpacing: 6,
                                 children: [
+                                  if (t.hasSchedule)
+                                    _TimeTag(task: t),
                                   _InfoTag(
                                     text: '\u23F1 ${t.durationMinutes}m',
                                     color: AppColors.sub,
@@ -151,10 +173,14 @@ class _TaskCardState extends State<TaskCard>
                         ),
                       ],
                     ),
-                    // AI badge
-                    if (t.isFromChat) ...[
+                    // AI / overdue / upcoming badges
+                    if (t.isFromChat || overdue || upcoming) ...[
                       const SizedBox(height: D.sp8),
-                      _AiBadge(),
+                      Wrap(spacing: 6, runSpacing: 6, children: [
+                        if (overdue) const _OverdueBadge(),
+                        if (upcoming) const _UpcomingBadge(),
+                        if (t.isFromChat) _AiBadge(),
+                      ]),
                     ],
                   ],
                 ),
@@ -306,6 +332,163 @@ class _InfoTag extends StatelessWidget {
               color: color,
               fontSize: 11,
               fontWeight: FontWeight.w500)),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TIME TAG (scheduled time)
+// ═══════════════════════════════════════════════════════════
+class _TimeTag extends StatelessWidget {
+  final Task task;
+  const _TimeTag({required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    final overdue = task.isOverdue;
+    final upcoming = task.isUpcomingSoon;
+    final color = overdue
+        ? AppColors.danger
+        : upcoming
+            ? AppColors.accent
+            : AppColors.info;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [
+          color.withOpacity(0.2),
+          color.withOpacity(0.08),
+        ]),
+        borderRadius: BorderRadius.circular(6),
+        border: Border.all(color: color.withOpacity(0.4)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            overdue
+                ? Icons.event_busy_rounded
+                : upcoming
+                    ? Icons.notifications_active_rounded
+                    : Icons.event_rounded,
+            color: color,
+            size: 12,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            task.timeLabel,
+            style: GoogleFonts.poppins(
+              color: color,
+              fontSize: 11,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  OVERDUE / UPCOMING BADGES
+// ═══════════════════════════════════════════════════════════
+class _OverdueBadge extends StatelessWidget {
+  const _OverdueBadge();
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(colors: [
+          AppColors.danger.withOpacity(0.3),
+          AppColors.accent.withOpacity(0.15),
+        ]),
+        borderRadius: BorderRadius.circular(D.radiusSm),
+        border: Border.all(color: AppColors.danger.withOpacity(0.5)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.error_outline_rounded,
+              size: 12, color: AppColors.danger),
+          const SizedBox(width: D.sp4),
+          Text(
+            'O\'tkazib yuborildi',
+            style: GoogleFonts.poppins(
+              color: AppColors.danger,
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _UpcomingBadge extends StatefulWidget {
+  const _UpcomingBadge();
+  @override
+  State<_UpcomingBadge> createState() => _UpcomingBadgeState();
+}
+
+class _UpcomingBadgeState extends State<_UpcomingBadge>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl;
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _ctrl,
+      builder: (_, __) => Container(
+        padding:
+            const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            AppColors.accent.withOpacity(0.25 + 0.15 * _ctrl.value),
+            AppColors.primary.withOpacity(0.15),
+          ]),
+          borderRadius: BorderRadius.circular(D.radiusSm),
+          border: Border.all(color: AppColors.accent.withOpacity(0.5)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.accent.withOpacity(0.25 * _ctrl.value),
+              blurRadius: 8,
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.notifications_active_rounded,
+                size: 12, color: AppColors.accent),
+            const SizedBox(width: D.sp4),
+            Text(
+              'Yaqinlashmoqda',
+              style: GoogleFonts.poppins(
+                color: AppColors.accent,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

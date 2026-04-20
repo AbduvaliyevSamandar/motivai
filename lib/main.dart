@@ -5,18 +5,20 @@ import 'providers/auth_provider.dart';
 import 'providers/task_provider.dart';
 import 'providers/chat_provider.dart';
 import 'providers/theme_provider.dart';
+import 'providers/notification_provider.dart';
+import 'services/notification_service.dart';
 import 'screens/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/main/shell.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp]);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
   ));
+  await NotificationService.instance.init();
   runApp(const App());
 }
 
@@ -29,16 +31,17 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
         ChangeNotifierProxyProvider<AuthProvider, TaskProvider>(
-          create:  (_) => TaskProvider(),
-          update:  (_, auth, prev) {
+          create: (_) => TaskProvider(),
+          update: (_, auth, prev) {
             prev?.updateToken(auth.token);
             return prev ?? TaskProvider();
           },
         ),
         ChangeNotifierProxyProvider<AuthProvider, ChatProvider>(
-          create:  (_) => ChatProvider(),
-          update:  (_, auth, prev) {
+          create: (_) => ChatProvider(),
+          update: (_, auth, prev) {
             prev?.updateToken(auth.token);
             return prev ?? ChatProvider();
           },
