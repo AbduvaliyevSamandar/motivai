@@ -6,8 +6,7 @@ import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/gradient_button.dart';
+import '../../widgets/nebula/nebula.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -56,65 +55,39 @@ class _LoginScreenState extends State<LoginScreen>
     final auth = context.read<AuthProvider>();
     final ok = await auth.login(_email.text.trim(), _pass.text);
     if (!ok && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      _errorToast(auth.error ?? S.get('error'));
+    }
+  }
+
+  void _errorToast(String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.error_outline, color: Colors.white, size: 20),
-            const SizedBox(width: D.sp8),
-            Expanded(child: Text(auth.error ?? S.get('error'))),
+            const Icon(Icons.error_outline,
+                color: Colors.white, size: 20),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(msg, style: GoogleFonts.poppins()),
+            ),
           ],
         ),
         backgroundColor: AppColors.danger,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(D.radiusMd),
-        ),
-      ));
-    }
+            borderRadius: BorderRadius.circular(14)),
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
       body: Stack(
         children: [
-          // Top gradient accent
-          Positioned(
-            top: -120,
-            right: -80,
-            child: Container(
-              width: 260,
-              height: 260,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.primary.withOpacity(0.22),
-                    AppColors.primary.withOpacity(0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: -140,
-            left: -80,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.secondary.withOpacity(0.18),
-                    AppColors.secondary.withOpacity(0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
+          const AuroraBackground(subtle: true),
+          const ParticleField(count: 24),
           SafeArea(
             child: FadeTransition(
               opacity: _fade,
@@ -127,27 +100,31 @@ class _LoginScreenState extends State<LoginScreen>
                     key: _form,
                     child: Column(
                       children: [
-                        const SizedBox(height: D.sp48),
+                        const SizedBox(height: 60),
 
-                        // Logo 30% smaller (120 -> 84)
+                        // Small glass logo mark
                         Container(
-                          width: 84,
-                          height: 84,
+                          width: 72,
+                          height: 72,
                           decoration: BoxDecoration(
-                            color: AppColors.surface,
-                            borderRadius: BorderRadius.circular(22),
+                            color: Colors.white.withOpacity(0.08),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                            ),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.primary.withOpacity(0.25),
+                                color:
+                                    AppColors.primary.withOpacity(0.3),
                                 blurRadius: 24,
                                 spreadRadius: 2,
                               ),
                             ],
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(22),
+                            borderRadius: BorderRadius.circular(20),
                             child: Padding(
-                              padding: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(10),
                               child: Image.asset(
                                 'assets/images/logo.png',
                                 fit: BoxFit.contain,
@@ -156,19 +133,22 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                         ),
 
-                        const SizedBox(height: D.sp20),
+                        const SizedBox(height: D.sp24),
 
                         ShaderMask(
-                          shaderCallback: (bounds) => const LinearGradient(
-                            colors: AppColors.gradPrimary,
-                          ).createShader(bounds),
+                          shaderCallback: (b) => const LinearGradient(
+                            colors: [
+                              Color(0xFFFFFFFF),
+                              Color(0xFFE0D4FB),
+                            ],
+                          ).createShader(b),
                           blendMode: BlendMode.srcIn,
                           child: Text(
-                            'MotivAI',
-                            style: GoogleFonts.poppins(
-                              fontSize: 28,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 1.2,
+                            'Xush kelibsiz',
+                            style: GoogleFonts.spaceGrotesk(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -1,
                               color: Colors.white,
                             ),
                           ),
@@ -178,15 +158,15 @@ class _LoginScreenState extends State<LoginScreen>
                           S.get('motto'),
                           style: GoogleFonts.poppins(
                             color: AppColors.sub,
-                            fontSize: 13,
+                            fontSize: 14,
                             height: 1.4,
                           ),
                           textAlign: TextAlign.center,
                         ),
 
-                        const SizedBox(height: D.sp32),
+                        const SizedBox(height: 40),
 
-                        CustomTextField(
+                        GlassTextField(
                           controller: _email,
                           label: S.get('email'),
                           prefixIcon: Icons.email_outlined,
@@ -196,14 +176,18 @@ class _LoginScreenState extends State<LoginScreen>
                             if (v == null || v.isEmpty) {
                               return S.get('enter_email');
                             }
-                            if (!v.contains('@')) return S.get('valid_email');
+                            final re = RegExp(
+                                r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+                            if (!re.hasMatch(v)) {
+                              return S.get('valid_email');
+                            }
                             return null;
                           },
                         ),
 
                         const SizedBox(height: D.sp16),
 
-                        CustomTextField(
+                        GlassTextField(
                           controller: _pass,
                           label: S.get('password'),
                           prefixIcon: Icons.lock_outline_rounded,
@@ -215,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   ? Icons.visibility_off_rounded
                                   : Icons.visibility_rounded,
                               color: AppColors.sub,
-                              size: D.iconMd,
+                              size: 20,
                             ),
                             onPressed: () =>
                                 setState(() => _obscure = !_obscure),
@@ -235,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen>
                             child: Text(
                               S.get('forgot_pass'),
                               style: GoogleFonts.poppins(
-                                color: AppColors.primary.withOpacity(0.9),
+                                color: AppColors.secondary,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -246,98 +230,49 @@ class _LoginScreenState extends State<LoginScreen>
                         const SizedBox(height: D.sp16),
 
                         Consumer<AuthProvider>(
-                          builder: (_, auth, __) => GradientButton(
+                          builder: (_, auth, __) => NebulaButton(
                             label: S.get('login'),
-                            onTap: _login,
-                            loading: auth.isLoading,
                             icon: Icons.arrow_forward_rounded,
+                            loading: auth.isLoading,
+                            onTap: _login,
                           ),
                         ),
 
                         const SizedBox(height: D.sp24),
 
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      AppColors.border,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: D.sp16),
-                              child: Text(
-                                S.get('or'),
-                                style: GoogleFonts.poppins(
-                                  color: AppColors.sub,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      AppColors.border,
-                                      Colors.transparent,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        _divider(),
 
                         const SizedBox(height: D.sp16),
 
-                        _SocialButton(
+                        _socialBtn(
                           label: S.get('login_google'),
-                          iconBg: const Color(0xFF4285F4).withOpacity(0.1),
+                          iconBg: const Color(0xFF4285F4),
                           iconChild: Text(
                             'G',
                             style: GoogleFonts.poppins(
-                              color: const Color(0xFF4285F4),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
                             ),
                           ),
                           onTap: () {
                             HapticFeedback.selectionClick();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(S.get('coming_soon')),
-                                backgroundColor: AppColors.accent,
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
+                            _errorToast(S.get('coming_soon'));
                           },
                         ),
-
                         const SizedBox(height: D.sp12),
-
-                        _SocialButton(
+                        _socialBtn(
                           label: S.get('login_phone'),
-                          iconBg: AppColors.success.withOpacity(0.1),
+                          iconBg: AppColors.success,
                           iconChild: const Icon(
                             Icons.phone_android_rounded,
-                            color: AppColors.success,
+                            color: Colors.white,
                             size: 18,
                           ),
                           onTap: _phoneAuth,
                         ),
 
-                        const SizedBox(height: D.sp24),
+                        const SizedBox(height: D.sp32),
 
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -349,38 +284,41 @@ class _LoginScreenState extends State<LoginScreen>
                                 fontSize: 14,
                               ),
                             ),
-                            const SizedBox(width: D.sp4),
+                            const SizedBox(width: 6),
                             GestureDetector(
                               onTap: () => Navigator.push(
                                 context,
                                 PageRouteBuilder(
                                   pageBuilder: (_, __, ___) =>
                                       const RegisterScreen(),
-                                  transitionsBuilder: (_, a, __, child) {
-                                    return SlideTransition(
+                                  transitionsBuilder:
+                                      (_, a, __, child) => FadeTransition(
+                                    opacity: a,
+                                    child: SlideTransition(
                                       position: Tween<Offset>(
-                                        begin: const Offset(1, 0),
+                                        begin: const Offset(0, 0.08),
                                         end: Offset.zero,
-                                      ).animate(CurvedAnimation(
-                                        parent: a,
-                                        curve: Curves.easeOutCubic,
-                                      )),
-                                      child: FadeTransition(
-                                        opacity: a,
-                                        child: child,
-                                      ),
-                                    );
-                                  },
+                                      ).animate(a),
+                                      child: child,
+                                    ),
+                                  ),
                                   transitionDuration:
-                                      const Duration(milliseconds: 350),
+                                      const Duration(milliseconds: 400),
                                 ),
                               ),
-                              child: Text(
-                                S.get('register'),
-                                style: GoogleFonts.poppins(
-                                  color: AppColors.primary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
+                              child: ShaderMask(
+                                shaderCallback: (b) =>
+                                    const LinearGradient(
+                                        colors: AppColors.gradCosmic)
+                                        .createShader(b),
+                                blendMode: BlendMode.srcIn,
+                                child: Text(
+                                  S.get('register'),
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
                             ),
@@ -400,6 +338,102 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
+  Widget _divider() {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.transparent, AppColors.border],
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            S.get('or'),
+            style: GoogleFonts.poppins(
+              color: AppColors.sub,
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            height: 1,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.border, Colors.transparent],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _socialBtn({
+    required String label,
+    required Widget iconChild,
+    required Color iconBg,
+    required VoidCallback onTap,
+  }) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: double.infinity,
+          height: 54,
+          decoration: BoxDecoration(
+            color: AppColors.card.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.border, width: 1.2),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: iconBg,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: iconBg.withOpacity(0.4),
+                      blurRadius: 12,
+                    ),
+                  ],
+                ),
+                child: Center(child: iconChild),
+              ),
+              const SizedBox(width: 12),
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _forgotPassword() {
     final emailCtrl = TextEditingController(text: _email.text);
     showModalBottomSheet(
@@ -411,7 +445,7 @@ class _LoginScreenState extends State<LoginScreen>
         accent: AppColors.primary,
         title: S.get('reset_pass'),
         subtitle: S.get('enter_email'),
-        child: CustomTextField(
+        child: GlassTextField(
           controller: emailCtrl,
           label: S.get('email'),
           prefixIcon: Icons.email_outlined,
@@ -422,7 +456,8 @@ class _LoginScreenState extends State<LoginScreen>
           Navigator.pop(ctx);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(S.get('reset_sent')),
+              content: Text(S.get('reset_sent'),
+                  style: GoogleFonts.poppins()),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
             ),
@@ -443,7 +478,7 @@ class _LoginScreenState extends State<LoginScreen>
         accent: AppColors.success,
         title: S.get('login_phone'),
         subtitle: S.get('phone_number'),
-        child: CustomTextField(
+        child: GlassTextField(
           controller: phoneCtrl,
           label: S.get('phone_number'),
           hint: '+998 90 123 45 67',
@@ -455,73 +490,13 @@ class _LoginScreenState extends State<LoginScreen>
           Navigator.pop(ctx);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(S.get('coming_soon')),
+              content: Text(S.get('coming_soon'),
+                  style: GoogleFonts.poppins()),
               backgroundColor: AppColors.accent,
               behavior: SnackBarBehavior.floating,
             ),
           );
         },
-      ),
-    );
-  }
-}
-
-class _SocialButton extends StatelessWidget {
-  final String label;
-  final Widget iconChild;
-  final Color iconBg;
-  final VoidCallback onTap;
-
-  const _SocialButton({
-    required this.label,
-    required this.iconChild,
-    required this.iconBg,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(D.radiusMd),
-      child: InkWell(
-        onTap: () {
-          HapticFeedback.selectionClick();
-          onTap();
-        },
-        borderRadius: BorderRadius.circular(D.radiusMd),
-        child: Ink(
-          width: double.infinity,
-          height: 52,
-          decoration: BoxDecoration(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(D.radiusMd),
-            border: Border.all(color: AppColors.border, width: 1.4),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 32,
-                height: 32,
-                decoration: BoxDecoration(
-                  color: iconBg,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(child: iconChild),
-              ),
-              const SizedBox(width: D.sp12),
-              Text(
-                label,
-                style: GoogleFonts.poppins(
-                  color: AppColors.txt,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -553,19 +528,15 @@ class _AuthSheet extends StatelessWidget {
         color: AppColors.card,
         borderRadius:
             const BorderRadius.vertical(top: Radius.circular(28)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 20,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        border: Border(
+          top: BorderSide(color: AppColors.glassBorder, width: 1.5),
+        ),
       ),
       padding: EdgeInsets.only(
-        left: D.sp24,
-        right: D.sp24,
-        top: D.sp16,
-        bottom: MediaQuery.of(context).viewInsets.bottom + D.sp24,
+        left: 24,
+        right: 24,
+        top: 16,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -578,33 +549,39 @@ class _AuthSheet extends StatelessWidget {
               borderRadius: BorderRadius.circular(3),
             ),
           ),
-          const SizedBox(height: D.sp24),
+          const SizedBox(height: 24),
           Container(
-            width: 64,
-            height: 64,
+            width: 72,
+            height: 72,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  accent.withOpacity(0.18),
+                  accent.withOpacity(0.25),
                   accent.withOpacity(0.05),
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: accent.withOpacity(0.4)),
+              boxShadow: [
+                BoxShadow(
+                  color: accent.withOpacity(0.3),
+                  blurRadius: 20,
+                ),
+              ],
             ),
-            child: Icon(icon, color: accent, size: 30),
+            child: Icon(icon, color: accent, size: 32),
           ),
-          const SizedBox(height: D.sp20),
+          const SizedBox(height: 20),
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: GoogleFonts.spaceGrotesk(
               color: AppColors.txt,
-              fontSize: 20,
+              fontSize: 22,
               fontWeight: FontWeight.w700,
+              letterSpacing: -0.5,
             ),
           ),
-          const SizedBox(height: D.sp8),
+          const SizedBox(height: 6),
           Text(
             subtitle,
             style: GoogleFonts.poppins(
@@ -614,14 +591,14 @@ class _AuthSheet extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: D.sp24),
+          const SizedBox(height: 24),
           child,
-          const SizedBox(height: D.sp24),
-          GradientButton(
+          const SizedBox(height: 24),
+          NebulaButton(
             label: actionLabel,
             onTap: onAction,
           ),
-          const SizedBox(height: D.sp8),
+          const SizedBox(height: 8),
         ],
       ),
     );

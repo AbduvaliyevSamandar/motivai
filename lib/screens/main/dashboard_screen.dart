@@ -9,8 +9,7 @@ import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
 import '../../models/models.dart';
-import '../../widgets/stat_card.dart';
-import '../../widgets/progress_bar_animated.dart';
+import '../../widgets/nebula/nebula.dart';
 import '../widgets/task_card.dart';
 import '../widgets/completion_dialog.dart';
 import '../widgets/add_task_dialog.dart';
@@ -30,131 +29,135 @@ class DashboardScreen extends StatelessWidget {
             : S.get('good_evening');
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      extendBodyBehindAppBar: true,
       floatingActionButton: _buildFAB(context),
-      body: RefreshIndicator(
-        color: AppColors.primary,
-        backgroundColor: AppColors.card,
-        onRefresh: () async {
-          HapticFeedback.lightImpact();
-          await tasks.loadAll();
-          await auth.refresh();
-        },
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(
-              parent: BouncingScrollPhysics()),
-          slivers: [
-            SliverToBoxAdapter(
-              child: _GradientHeader(
-                greet: greet,
-                name: auth.name,
-                level: auth.level,
-                streak: auth.streak,
-                emoji: auth.levelEmoji,
-                avatarUrl: auth.avatarUrl,
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(
-                  D.sp16, D.sp8, D.sp16, D.sp4),
-              sliver: SliverToBoxAdapter(
-                child: _StatsGrid(
-                  points: auth.points,
-                  level: auth.level,
-                  streak: auth.streak,
-                  tasksDone: tasks.completedToday,
-                ),
-              ),
-            ),
-            SliverPadding(
-              padding:
-                  const EdgeInsets.fromLTRB(D.sp16, D.sp12, D.sp16, D.sp8),
-              sliver: SliverToBoxAdapter(
-                child: _ProgressCard(
-                  done: tasks.completedToday,
-                  total: tasks.totalToday,
-                  progress: tasks.dailyProgress,
-                ),
-              ),
-            ),
-            if (tasks.isLoading && tasks.daily.isEmpty)
-              const SliverToBoxAdapter(child: _LoadingBlock())
-            else ...[
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(
-                    D.sp20, D.sp16, D.sp20, D.sp8),
-                sliver: SliverToBoxAdapter(
-                  child: _TasksSectionHeader(
-                    done: tasks.completedToday,
-                    total: tasks.totalToday,
-                  ),
-                ),
-              ),
-              if (tasks.daily.isEmpty)
-                const SliverToBoxAdapter(child: _EmptyState())
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: D.sp16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (_, i) => _StaggeredItem(
-                        index: i,
-                        child: TaskCard(
-                          task: tasks.daily[i],
-                          onComplete: () =>
-                              _complete(context, tasks, tasks.daily[i]),
-                        ),
+      body: Stack(
+        children: [
+          const AuroraBackground(subtle: true),
+          const ParticleField(count: 26),
+          RefreshIndicator(
+            color: AppColors.primary,
+            backgroundColor: AppColors.card,
+            onRefresh: () async {
+              HapticFeedback.lightImpact();
+              await tasks.loadAll();
+              await auth.refresh();
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics()),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SafeArea(
+                    bottom: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                          D.sp20, D.sp16, D.sp20, 8),
+                      child: _HeaderRow(
+                        greet: greet,
+                        name: auth.name,
+                        level: auth.level,
+                        emoji: auth.levelEmoji,
+                        avatarUrl: auth.avatarUrl,
                       ),
-                      childCount: tasks.daily.length,
                     ),
                   ),
                 ),
-              if (tasks.recommended.isNotEmpty) ...[
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(
-                      D.sp20, D.sp24, D.sp20, D.sp8),
-                  sliver: SliverToBoxAdapter(
-                    child: Row(children: [
-                      Container(
-                        padding: const EdgeInsets.all(D.sp8),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                              colors: AppColors.gradAccent),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.auto_awesome_rounded,
-                            color: Colors.white, size: D.iconMd),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(S.get('ai_suggest'),
-                          style: GoogleFonts.poppins(
-                              color: AppColors.txt,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold)),
-                    ]),
-                  ),
-                ),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: D.sp16),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (_, i) => _StaggeredItem(
-                        index: i,
-                        child: TaskCard(
-                          task: tasks.recommended[i],
-                          onComplete: () => _complete(
-                              context, tasks, tasks.recommended[i]),
-                        ),
-                      ),
-                      childCount: tasks.recommended.length,
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                        D.sp20, D.sp16, D.sp20, D.sp16),
+                    child: _HeroXPRing(
+                      points: auth.points,
+                      level: auth.level,
+                      completedToday: tasks.completedToday,
+                      totalToday: tasks.totalToday,
+                      dailyProgress: tasks.dailyProgress,
                     ),
                   ),
                 ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: D.sp16),
+                    child: _BentoGrid(
+                      points: auth.points,
+                      level: auth.level,
+                      streak: auth.streak,
+                      tasksDone: tasks.completedToday,
+                    ),
+                  ),
+                ),
+                if (tasks.isLoading && tasks.daily.isEmpty)
+                  const SliverToBoxAdapter(child: _LoadingBlock())
+                else ...[
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                        D.sp20, D.sp24, D.sp20, D.sp12),
+                    sliver: SliverToBoxAdapter(
+                      child: _SectionBanner(
+                        icon: Icons.rocket_launch_rounded,
+                        title: S.get('today_tasks'),
+                        badge: '${tasks.completedToday}/${tasks.totalToday}',
+                        gradient: AppColors.gradCosmic,
+                      ),
+                    ),
+                  ),
+                  if (tasks.daily.isEmpty)
+                    const SliverToBoxAdapter(child: _EmptyState())
+                  else
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: D.sp16),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (_, i) => _StaggeredItem(
+                            index: i,
+                            child: TaskCard(
+                              task: tasks.daily[i],
+                              onComplete: () => _complete(
+                                  context, tasks, tasks.daily[i]),
+                            ),
+                          ),
+                          childCount: tasks.daily.length,
+                        ),
+                      ),
+                    ),
+                  if (tasks.recommended.isNotEmpty) ...[
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(
+                          D.sp20, D.sp24, D.sp20, D.sp12),
+                      sliver: SliverToBoxAdapter(
+                        child: _SectionBanner(
+                          icon: Icons.auto_awesome_rounded,
+                          title: S.get('ai_suggest'),
+                          gradient: AppColors.gradAurora,
+                        ),
+                      ),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: D.sp16),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (_, i) => _StaggeredItem(
+                            index: i,
+                            child: TaskCard(
+                              task: tasks.recommended[i],
+                              onComplete: () => _complete(
+                                  context, tasks, tasks.recommended[i]),
+                            ),
+                          ),
+                          childCount: tasks.recommended.length,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+                const SliverToBoxAdapter(child: SizedBox(height: 120)),
               ],
-            ],
-            const SliverToBoxAdapter(child: SizedBox(height: 110)),
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -162,30 +165,44 @@ class DashboardScreen extends StatelessWidget {
   Widget _buildFAB(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(colors: AppColors.gradPrimary),
-        borderRadius: BorderRadius.circular(D.radiusLg),
+        shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.45),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
+            color: AppColors.primary.withOpacity(0.55),
+            blurRadius: 28,
+            offset: const Offset(0, 10),
+          ),
+          BoxShadow(
+            color: AppColors.pink.withOpacity(0.3),
+            blurRadius: 40,
+            offset: const Offset(0, 16),
           ),
         ],
       ),
-      child: FloatingActionButton.extended(
-        onPressed: () {
-          HapticFeedback.lightImpact();
-          showAddTaskDialog(context);
-        },
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        highlightElevation: 0,
-        icon: const Icon(Icons.add_rounded, color: Colors.white),
-        label: Text(
-          S.get('add_task'),
-          style: GoogleFonts.poppins(
-            color: Colors.white,
-            fontWeight: FontWeight.w600,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            showAddTaskDialog(context);
+          },
+          customBorder: const CircleBorder(),
+          child: Container(
+            width: 62,
+            height: 62,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: AppColors.gradCosmic,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: const Icon(
+              Icons.add_rounded,
+              color: Colors.white,
+              size: 30,
+            ),
           ),
         ),
       ),
@@ -218,133 +235,90 @@ class DashboardScreen extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  GRADIENT HEADER
+//  HEADER ROW — greeting + avatar + notification
 // ═══════════════════════════════════════════════════════════
-class _GradientHeader extends StatelessWidget {
+class _HeaderRow extends StatelessWidget {
   final String greet, name, emoji;
+  final int level;
   final String? avatarUrl;
-  final int level, streak;
 
-  const _GradientHeader({
+  const _HeaderRow({
     required this.greet,
     required this.name,
-    required this.emoji,
     required this.level,
-    required this.streak,
+    required this.emoji,
     required this.avatarUrl,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(28),
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -40,
-            right: -30,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.08),
+    return Row(
+      children: [
+        _Avatar(name: name, avatarUrl: avatarUrl),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                greet,
+                style: GoogleFonts.poppins(
+                  color: AppColors.sub,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-          ),
-          Positioned(
-            bottom: -60,
-            left: -40,
-            child: Container(
-              width: 180,
-              height: 180,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.05),
+              const SizedBox(height: 2),
+              Text(
+                name.isEmpty ? 'User' : name,
+                style: GoogleFonts.spaceGrotesk(
+                  color: AppColors.txt,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.5,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
+            ],
           ),
-          SafeArea(
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                  D.sp20, D.sp16, D.sp20, D.sp24),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  _Avatar(name: name, avatarUrl: avatarUrl),
-                  const SizedBox(width: D.sp12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          greet,
-                          style: GoogleFonts.poppins(
-                            color: Colors.white.withOpacity(0.85),
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 2),
-                        Text(
-                          name.isNotEmpty ? name : 'User',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w700,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 6),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.18),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.3),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(emoji,
-                                  style: const TextStyle(fontSize: 13)),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${S.get('level')} $level',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+        ),
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: AppColors.card.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: AppColors.border),
+          ),
+          child: Stack(
+            children: [
+              Center(
+                child: Icon(Icons.notifications_outlined,
+                    color: AppColors.sub, size: 20),
+              ),
+              Positioned(
+                top: 10,
+                right: 10,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: AppColors.danger,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.danger.withOpacity(0.7),
+                        blurRadius: 6,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: D.sp8),
-                  _PulseStreak(streak: streak),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -360,66 +334,286 @@ class _Avatar extends StatelessWidget {
         ? 'U'
         : name.trim().split(RegExp(r'\s+')).take(2).map((s) => s[0]).join();
     final hasNetwork =
-        avatarUrl != null && (avatarUrl!.startsWith('http'));
+        avatarUrl != null && avatarUrl!.startsWith('http');
     final isFile = avatarUrl != null && !hasNetwork && avatarUrl!.isNotEmpty;
 
     return Container(
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(
-          color: Colors.white.withOpacity(0.6),
-          width: 2,
+        gradient: const LinearGradient(
+          colors: AppColors.gradCosmic,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withOpacity(0.4),
+            blurRadius: 14,
+          ),
+        ],
       ),
       child: ClipOval(
         child: Container(
-          width: 52,
-          height: 52,
-          color: Colors.white.withOpacity(0.2),
+          width: 48,
+          height: 48,
+          color: AppColors.card,
           child: hasNetwork
               ? Image.network(
                   avatarUrl!,
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) =>
-                      _initialsAvatar(initials),
+                  errorBuilder: (_, __, ___) => _ini(initials),
                 )
               : isFile
                   ? Image.file(
                       File(avatarUrl!),
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          _initialsAvatar(initials),
+                      errorBuilder: (_, __, ___) => _ini(initials),
                     )
-                  : _initialsAvatar(initials),
+                  : _ini(initials),
         ),
       ),
     );
   }
 
-  Widget _initialsAvatar(String initials) {
-    return Center(
-      child: Text(
-        initials.toUpperCase(),
-        style: GoogleFonts.poppins(
-          color: Colors.white,
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
+  Widget _ini(String s) => Center(
+        child: Text(
+          s.toUpperCase(),
+          style: GoogleFonts.poppins(
+            color: AppColors.txt,
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
 
-class _PulseStreak extends StatefulWidget {
-  final int streak;
-  const _PulseStreak({required this.streak});
+// ═══════════════════════════════════════════════════════════
+//  HERO XP RING CARD
+// ═══════════════════════════════════════════════════════════
+class _HeroXPRing extends StatelessWidget {
+  final int points, level, completedToday, totalToday;
+  final double dailyProgress;
+
+  const _HeroXPRing({
+    required this.points,
+    required this.level,
+    required this.completedToday,
+    required this.totalToday,
+    required this.dailyProgress,
+  });
 
   @override
-  State<_PulseStreak> createState() => _PulseStreakState();
+  Widget build(BuildContext context) {
+    final allDone = completedToday == totalToday && totalToday > 0;
+
+    return GlassCard(
+      padding: const EdgeInsets.all(24),
+      glowColors: allDone
+          ? [AppColors.success, AppColors.accent]
+          : [AppColors.primary, AppColors.secondary],
+      glowIntensity: 0.4,
+      child: Row(
+        children: [
+          XPRing(
+            progress: dailyProgress,
+            size: 140,
+            strokeWidth: 10,
+            gradientColors: allDone
+                ? [
+                    AppColors.success,
+                    AppColors.accent,
+                    AppColors.success,
+                  ]
+                : AppColors.gradCosmic,
+            center: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  '$completedToday',
+                  style: GoogleFonts.spaceGrotesk(
+                    color: AppColors.txt,
+                    fontSize: 38,
+                    fontWeight: FontWeight.w700,
+                    height: 1,
+                    letterSpacing: -1.5,
+                  ),
+                ),
+                Text(
+                  '/ $totalToday',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: D.sp20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  S.get('today_goal').toUpperCase(),
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                ShaderMask(
+                  shaderCallback: (b) => LinearGradient(
+                    colors: allDone
+                        ? AppColors.gradSuccess
+                        : AppColors.gradCosmic,
+                  ).createShader(b),
+                  blendMode: BlendMode.srcIn,
+                  child: Text(
+                    '${(dailyProgress * 100).toInt()}%',
+                    style: GoogleFonts.spaceGrotesk(
+                      color: Colors.white,
+                      fontSize: 42,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -2,
+                      height: 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  allDone
+                      ? '${S.get("all_done")} 🎉'
+                      : S.get('completed'),
+                  style: GoogleFonts.poppins(
+                    color: allDone
+                        ? AppColors.success
+                        : AppColors.sub,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Icon(Icons.star_rounded,
+                        color: AppColors.accent, size: 14),
+                    const SizedBox(width: 4),
+                    Text(
+                      '$points XP',
+                      style: GoogleFonts.poppins(
+                        color: AppColors.txt,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(
+                          color: AppColors.primary.withOpacity(0.3),
+                        ),
+                      ),
+                      child: Text(
+                        'Lvl $level',
+                        style: GoogleFonts.poppins(
+                          color: AppColors.primary,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
-class _PulseStreakState extends State<_PulseStreak>
+// ═══════════════════════════════════════════════════════════
+//  BENTO GRID — asymmetric premium card layout
+// ═══════════════════════════════════════════════════════════
+class _BentoGrid extends StatelessWidget {
+  final int points, level, streak, tasksDone;
+
+  const _BentoGrid({
+    required this.points,
+    required this.level,
+    required this.streak,
+    required this.tasksDone,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              flex: 3,
+              child: BentoCard(
+                customChild: _StreakCustom(streak: streak),
+                height: 160,
+                accent: AppColors.accent,
+                gradient: AppColors.gradFire,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              flex: 2,
+              child: Column(
+                children: [
+                  BentoCard(
+                    icon: Icons.star_rounded,
+                    value: _fmt(points),
+                    label: 'XP',
+                    gradient: AppColors.gradGold,
+                    accent: AppColors.accent,
+                    trend: '+12%',
+                    height: 75,
+                  ),
+                  const SizedBox(height: 10),
+                  BentoCard(
+                    icon: Icons.check_circle_rounded,
+                    value: '$tasksDone',
+                    label: S.get('tasks_label'),
+                    gradient: AppColors.gradSuccess,
+                    accent: AppColors.success,
+                    height: 75,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  String _fmt(int n) =>
+      n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
+}
+
+class _StreakCustom extends StatefulWidget {
+  final int streak;
+  const _StreakCustom({required this.streak});
+
+  @override
+  State<_StreakCustom> createState() => _StreakCustomState();
+}
+
+class _StreakCustomState extends State<_StreakCustom>
     with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
 
@@ -428,7 +622,7 @@ class _PulseStreakState extends State<_PulseStreak>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1400),
+      duration: const Duration(milliseconds: 1600),
     )..repeat(reverse: true);
   }
 
@@ -440,103 +634,105 @@ class _PulseStreakState extends State<_PulseStreak>
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _ctrl,
-      builder: (_, __) {
-        final s = 1.0 + (_ctrl.value * 0.06);
-        return Transform.scale(
-          scale: s,
-          child: Container(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.22),
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white.withOpacity(0.35)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.white.withOpacity(0.12 * _ctrl.value),
-                  blurRadius: 18,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('\u{1F525}', style: TextStyle(fontSize: 22)),
-                const SizedBox(height: 2),
-                Text(
-                  '${widget.streak}',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Text(
-                  S.get('day'),
-                  style: GoogleFonts.poppins(
-                    color: Colors.white.withOpacity(0.85),
-                    fontSize: 10,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-//  STATS GRID 2x2
-// ═══════════════════════════════════════════════════════════
-class _StatsGrid extends StatelessWidget {
-  final int points, level, streak, tasksDone;
-  const _StatsGrid({
-    required this.points,
-    required this.level,
-    required this.streak,
-    required this.tasksDone,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      mainAxisSpacing: D.sp12,
-      crossAxisSpacing: D.sp12,
-      childAspectRatio: 1.55,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        StatCard(
-          icon: Icons.star_rounded,
-          value: '$points',
-          label: S.get('points'),
-          gradient: AppColors.gradGold,
-          trend: '+12%',
+        Row(
+          children: [
+            AnimatedBuilder(
+              animation: _ctrl,
+              builder: (_, __) => Transform.scale(
+                scale: 1.0 + 0.08 * _ctrl.value,
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: AppColors.gradFire,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.accent
+                            .withOpacity(0.4 + 0.3 * _ctrl.value),
+                        blurRadius: 18,
+                      ),
+                    ],
+                  ),
+                  child: const Text('\u{1F525}',
+                      style: TextStyle(fontSize: 20)),
+                ),
+              ),
+            ),
+            const Spacer(),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.success.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.trending_up_rounded,
+                      size: 11, color: AppColors.success),
+                  const SizedBox(width: 2),
+                  Text(
+                    'best',
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.success,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        StatCard(
-          icon: Icons.trending_up_rounded,
-          value: '$level',
-          label: S.get('level'),
-          gradient: AppColors.gradPrimary,
+        const Spacer(),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            ShaderMask(
+              shaderCallback: (b) => const LinearGradient(
+                colors: AppColors.gradFire,
+              ).createShader(b),
+              blendMode: BlendMode.srcIn,
+              child: Text(
+                '${widget.streak}',
+                style: GoogleFonts.spaceGrotesk(
+                  fontSize: 54,
+                  fontWeight: FontWeight.w700,
+                  height: 1,
+                  letterSpacing: -3,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                S.get('day'),
+                style: GoogleFonts.poppins(
+                  color: AppColors.sub,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ),
-        StatCard(
-          icon: Icons.local_fire_department_rounded,
-          value: '$streak',
-          label: S.get('streak'),
-          gradient: AppColors.gradAccent,
-        ),
-        StatCard(
-          icon: Icons.check_circle_rounded,
-          value: '$tasksDone',
-          label: S.get('tasks_label'),
-          gradient: AppColors.gradSuccess,
-          trend: '+${tasksDone * 5}',
+        const SizedBox(height: 2),
+        Text(
+          S.get('streak').toUpperCase(),
+          style: GoogleFonts.poppins(
+            color: AppColors.sub,
+            fontSize: 10,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 1.8,
+          ),
         ),
       ],
     );
@@ -544,177 +740,75 @@ class _StatsGrid extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  PROGRESS CARD with ProgressBarAnimated
+//  SECTION BANNER
 // ═══════════════════════════════════════════════════════════
-class _ProgressCard extends StatelessWidget {
-  final int done, total;
-  final double progress;
+class _SectionBanner extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String? badge;
+  final List<Color> gradient;
 
-  const _ProgressCard({
-    required this.done,
-    required this.total,
-    required this.progress,
+  const _SectionBanner({
+    required this.icon,
+    required this.title,
+    this.badge,
+    required this.gradient,
   });
 
   @override
   Widget build(BuildContext context) {
-    final pct = (progress * 100).toInt();
-    final allDone = done == total && total > 0;
-
-    return Container(
-      padding: const EdgeInsets.all(D.sp16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(D.radiusLg),
-        border: Border.all(
-          color: allDone
-              ? AppColors.success.withOpacity(0.4)
-              : AppColors.border.withOpacity(0.6),
-          width: allDone ? 1.5 : 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: (allDone ? AppColors.success : AppColors.primary)
-                .withOpacity(0.08),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: allDone
-                        ? AppColors.gradSuccess
-                        : AppColors.gradPrimary,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Icon(
-                  allDone ? Icons.rocket_launch_rounded : Icons.flag_rounded,
-                  color: Colors.white,
-                  size: D.iconMd,
-                ),
-              ),
-              const SizedBox(width: D.sp12),
-              Expanded(
-                child: Text(
-                  S.get('today_goal'),
-                  style: GoogleFonts.poppins(
-                    color: AppColors.txt,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: allDone
-                      ? AppColors.success.withOpacity(0.15)
-                      : AppColors.primary.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(
-                  '$done / $total',
-                  style: GoogleFonts.poppins(
-                    color: allDone
-                        ? AppColors.success
-                        : AppColors.primary,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 13,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: D.sp16),
-          ProgressBarAnimated(
-            value: progress,
-            height: 10,
-            gradient: allDone ? AppColors.gradSuccess : AppColors.gradPrimary,
-          ),
-          const SizedBox(height: D.sp12),
-          Text(
-            allDone
-                ? '\u{1F389} ${S.get('all_done')}'
-                : '$pct% ${S.get('completed')}',
-            style: GoogleFonts.poppins(
-              color: allDone ? AppColors.success : AppColors.sub,
-              fontSize: 12,
-              fontWeight: allDone ? FontWeight.w600 : FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ═══════════════════════════════════════════════════════════
-//  SECTION HEADER
-// ═══════════════════════════════════════════════════════════
-class _TasksSectionHeader extends StatelessWidget {
-  final int done, total;
-  const _TasksSectionHeader({required this.done, required this.total});
-
-  @override
-  Widget build(BuildContext context) {
-    final allDone = done == total && total > 0;
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(D.sp8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            gradient: const LinearGradient(colors: AppColors.gradPrimary),
+            gradient: LinearGradient(colors: gradient),
             borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: gradient.first.withOpacity(0.4),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          child: const Icon(Icons.today_rounded,
-              color: Colors.white, size: D.iconMd),
+          child: Icon(icon, color: Colors.white, size: 18),
         ),
-        const SizedBox(width: 10),
+        const SizedBox(width: 12),
         Text(
-          S.get('today_tasks'),
-          style: GoogleFonts.poppins(
+          title,
+          style: GoogleFonts.spaceGrotesk(
             color: AppColors.txt,
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.w700,
+            letterSpacing: -0.5,
           ),
         ),
         const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: allDone
-                  ? AppColors.gradSuccess
-                  : AppColors.gradPrimary,
+        if (badge != null)
+          Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: gradient),
+              borderRadius: BorderRadius.circular(12),
             ),
-            borderRadius: BorderRadius.circular(D.radiusMd),
-          ),
-          child: Text(
-            '$done/$total',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
+            child: Text(
+              badge!,
+              style: GoogleFonts.poppins(
+                color: Colors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
-        ),
       ],
     );
   }
 }
 
 // ═══════════════════════════════════════════════════════════
-//  STAGGERED ITEM ANIMATION
+//  STAGGERED ITEM
 // ═══════════════════════════════════════════════════════════
 class _StaggeredItem extends StatefulWidget {
   final int index;
@@ -736,11 +830,11 @@ class _StaggeredItemState extends State<_StaggeredItem>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 450),
     );
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _slide = Tween<Offset>(
-      begin: const Offset(0, 0.15),
+      begin: const Offset(0, 0.12),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
     Future.delayed(Duration(milliseconds: 60 * widget.index.clamp(0, 8)),
@@ -765,7 +859,7 @@ class _StaggeredItemState extends State<_StaggeredItem>
 }
 
 // ═══════════════════════════════════════════════════════════
-//  LOADING & EMPTY
+//  LOADING + EMPTY
 // ═══════════════════════════════════════════════════════════
 class _LoadingBlock extends StatelessWidget {
   const _LoadingBlock();
@@ -777,7 +871,7 @@ class _LoadingBlock extends StatelessWidget {
         child: Column(
           children: [
             const CircularProgressIndicator(color: AppColors.primary),
-            const SizedBox(height: D.sp16),
+            const SizedBox(height: 16),
             Text(
               S.get('loading'),
               style: GoogleFonts.poppins(
@@ -794,7 +888,6 @@ class _LoadingBlock extends StatelessWidget {
 
 class _EmptyState extends StatefulWidget {
   const _EmptyState();
-
   @override
   State<_EmptyState> createState() => _EmptyStateState();
 }
@@ -808,7 +901,7 @@ class _EmptyStateState extends State<_EmptyState>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1800),
+      duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
   }
 
@@ -820,76 +913,82 @@ class _EmptyStateState extends State<_EmptyState>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin:
-          const EdgeInsets.symmetric(horizontal: D.sp16, vertical: D.sp8),
-      padding:
-          const EdgeInsets.symmetric(vertical: D.sp48, horizontal: D.sp24),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(D.radiusLg),
-        border: Border.all(color: AppColors.border.withOpacity(0.6)),
-      ),
-      child: Column(
-        children: [
-          AnimatedBuilder(
-            animation: _ctrl,
-            builder: (_, __) => Transform.translate(
-              offset: Offset(0, -8 * _ctrl.value),
-              child: Container(
-                width: 90,
-                height: 90,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppColors.primary.withOpacity(0.15),
-                      AppColors.accent.withOpacity(0.12),
+    return Padding(
+      padding: const EdgeInsets.all(D.sp16),
+      child: GlassCard(
+        padding: const EdgeInsets.symmetric(
+            vertical: D.sp48, horizontal: D.sp24),
+        child: Column(
+          children: [
+            AnimatedBuilder(
+              animation: _ctrl,
+              builder: (_, __) => Transform.translate(
+                offset: Offset(0, -10 * _ctrl.value),
+                child: Container(
+                  width: 100,
+                  height: 100,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.primary.withOpacity(0.25),
+                        AppColors.pink.withOpacity(0.18),
+                      ],
+                    ),
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary
+                            .withOpacity(0.3 * _ctrl.value),
+                        blurRadius: 30,
+                        spreadRadius: 4,
+                      ),
                     ],
                   ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.2 * _ctrl.value),
-                      blurRadius: 22,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text('\u{1F680}', style: TextStyle(fontSize: 42)),
+                  child: const Center(
+                    child:
+                        Text('\u{1F680}', style: TextStyle(fontSize: 48)),
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: D.sp16),
-          Text(
-            S.get('no_tasks'),
-            style: GoogleFonts.poppins(
-              color: AppColors.txt,
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
+            const SizedBox(height: 20),
+            Text(
+              S.get('no_tasks'),
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.txt,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
+              ),
             ),
-          ),
-          const SizedBox(height: D.sp8),
-          Text(
-            S.get('pull_refresh'),
-            style: GoogleFonts.poppins(
-              color: AppColors.sub,
-              fontSize: 13,
+            const SizedBox(height: 8),
+            Text(
+              S.get('pull_refresh'),
+              style: GoogleFonts.poppins(
+                color: AppColors.sub,
+                fontSize: 13,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: D.sp16),
-          Text(
-            S.get('motto'),
-            style: GoogleFonts.poppins(
-              color: AppColors.primary,
-              fontSize: 13,
-              fontStyle: FontStyle.italic,
+            const SizedBox(height: 20),
+            ShaderMask(
+              shaderCallback: (b) => const LinearGradient(
+                colors: AppColors.gradAurora,
+              ).createShader(b),
+              blendMode: BlendMode.srcIn,
+              child: Text(
+                S.get('motto'),
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.italic,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

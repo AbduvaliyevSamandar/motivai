@@ -8,9 +8,7 @@ import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
-import '../../widgets/stat_card.dart';
-import '../../widgets/progress_bar_animated.dart';
-import '../../widgets/custom_chip.dart';
+import '../../widgets/nebula/nebula.dart';
 
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
@@ -40,71 +38,139 @@ class _ProgState extends State<ProgressScreen> {
     final ins = tasks.insights;
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
-      appBar: AppBar(
-        backgroundColor: AppColors.bg,
-        elevation: 0,
-        title: Text(
-          '\u{1F4CA} ${S.get("analytics")}',
-          style: GoogleFonts.poppins(
-            color: AppColors.txt,
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh_rounded, color: AppColors.sub),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              tasks.loadInsights();
-              auth.refresh();
-            },
-          ),
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          const AuroraBackground(subtle: true),
+          const ParticleField(count: 22),
+          tasks.isLoading && ins == null
+              ? const Center(
+                  child: CircularProgressIndicator(
+                      color: AppColors.primary),
+                )
+              : RefreshIndicator(
+                  color: AppColors.primary,
+                  backgroundColor: AppColors.card,
+                  onRefresh: () async {
+                    await tasks.loadInsights();
+                    await auth.refresh();
+                  },
+                  child: ListView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    children: [
+                      SafeArea(
+                        bottom: false,
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(20, 16, 20, 8),
+                          child: Row(
+                            children: [
+                              ShaderMask(
+                                shaderCallback: (b) =>
+                                    const LinearGradient(
+                                  colors: [
+                                    Color(0xFFFFFFFF),
+                                    Color(0xFFE0D4FB),
+                                  ],
+                                ).createShader(b),
+                                blendMode: BlendMode.srcIn,
+                                child: Text(
+                                  S.get('analytics'),
+                                  style: GoogleFonts.spaceGrotesk(
+                                    color: Colors.white,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w700,
+                                    letterSpacing: -0.5,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              Material(
+                                color: AppColors.card.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(12),
+                                child: InkWell(
+                                  onTap: () {
+                                    HapticFeedback.lightImpact();
+                                    tasks.loadInsights();
+                                    auth.refresh();
+                                  },
+                                  borderRadius:
+                                      BorderRadius.circular(12),
+                                  child: Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(12),
+                                      border: Border.all(
+                                          color: AppColors.border),
+                                    ),
+                                    child: Icon(
+                                        Icons.refresh_rounded,
+                                        color: AppColors.sub,
+                                        size: 18),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16),
+                        child: _StatsGrid(auth: auth),
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16),
+                        child: _LevelHero(auth: auth, ins: ins),
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16),
+                        child: _PeriodFilter(
+                          selected: _period,
+                          onChanged: (v) {
+                            HapticFeedback.selectionClick();
+                            setState(() => _period = v);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16),
+                        child: _CosmicLineChart(ins: ins),
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16),
+                        child: _HeatmapCard(ins: ins),
+                      ),
+                      const SizedBox(height: 14),
+                      if (ins != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16),
+                          child: _PieCategoryCard(ins: ins),
+                        ),
+                      const SizedBox(height: 120),
+                    ],
+                  ),
+                ),
         ],
       ),
-      body: tasks.isLoading && ins == null
-          ? const Center(
-              child: CircularProgressIndicator(color: AppColors.primary),
-            )
-          : RefreshIndicator(
-              color: AppColors.primary,
-              backgroundColor: AppColors.card,
-              onRefresh: () async {
-                await tasks.loadInsights();
-                await auth.refresh();
-              },
-              child: ListView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(
-                    D.sp16, D.sp8, D.sp16, 80),
-                children: [
-                  _StatsGrid(auth: auth),
-                  const SizedBox(height: D.sp16),
-                  _LevelCard(auth: auth, ins: ins),
-                  const SizedBox(height: D.sp16),
-                  _PeriodFilter(
-                    selected: _period,
-                    onChanged: (v) {
-                      HapticFeedback.selectionClick();
-                      setState(() => _period = v);
-                    },
-                  ),
-                  const SizedBox(height: D.sp16),
-                  _WeeklyLineChart(ins: ins),
-                  const SizedBox(height: D.sp16),
-                  _HeatmapCard(ins: ins),
-                  const SizedBox(height: D.sp16),
-                  if (ins != null) _CategoryPieCard(ins: ins),
-                ],
-              ),
-            ),
     );
   }
 }
 
 // ═══════════════════════════════════════════════════════════
-//  STATS GRID — 4 gradient cards
+//  STATS GRID
 // ═══════════════════════════════════════════════════════════
 class _StatsGrid extends StatelessWidget {
   final AuthProvider auth;
@@ -114,37 +180,40 @@ class _StatsGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.count(
       crossAxisCount: 2,
-      crossAxisSpacing: D.sp12,
-      mainAxisSpacing: D.sp12,
+      crossAxisSpacing: 12,
+      mainAxisSpacing: 12,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       childAspectRatio: 1.55,
       children: [
-        StatCard(
+        BentoCard(
           icon: Icons.star_rounded,
           value: '${auth.points}',
           label: S.get('total_points'),
           gradient: AppColors.gradGold,
+          accent: AppColors.accent,
           trend: '+8%',
         ),
-        StatCard(
+        BentoCard(
           icon: Icons.trending_up_rounded,
           value: '${auth.level}',
           label: S.get('level'),
-          gradient: AppColors.gradPrimary,
+          gradient: AppColors.gradCosmic,
+          accent: AppColors.primary,
         ),
-        StatCard(
+        BentoCard(
           icon: Icons.local_fire_department_rounded,
           value: '${auth.streak}',
           label: S.get('streak'),
-          gradient: AppColors.gradAccent,
+          gradient: AppColors.gradFire,
+          accent: AppColors.accent,
         ),
-        StatCard(
+        BentoCard(
           icon: Icons.check_circle_rounded,
           value: '${auth.totalTasks}',
           label: S.get('tasks_label'),
           gradient: AppColors.gradSuccess,
-          trend: '+${auth.totalTasks}',
+          accent: AppColors.success,
         ),
       ],
     );
@@ -152,95 +221,68 @@ class _StatsGrid extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  LEVEL CARD
+//  LEVEL HERO (XP ring + next level)
 // ═══════════════════════════════════════════════════════════
-class _LevelCard extends StatelessWidget {
+class _LevelHero extends StatelessWidget {
   final AuthProvider auth;
   final Map<String, dynamic>? ins;
-  const _LevelCard({required this.auth, required this.ins});
+  const _LevelHero({required this.auth, required this.ins});
 
   @override
   Widget build(BuildContext context) {
     final ptsNext = (ins?['points_to_next_level'] ?? 100) as int;
-    final lvl = auth.level;
     final progress = ptsNext > 0
         ? (1 - ptsNext / (ptsNext + 200)).clamp(0.0, 1.0)
         : 1.0;
 
-    return Container(
-      padding: const EdgeInsets.all(D.sp16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withOpacity(0.08),
-            AppColors.secondary.withOpacity(0.05),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(D.radiusLg),
-        border: Border.all(color: AppColors.primary.withOpacity(0.25)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return GlassCard(
+      glowColors: [AppColors.primary, AppColors.secondary],
+      glowIntensity: 0.25,
+      padding: const EdgeInsets.all(20),
+      child: Row(
         children: [
-          Row(
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  gradient:
-                      const LinearGradient(colors: AppColors.gradPrimary),
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    auth.levelEmoji,
-                    style: const TextStyle(fontSize: 26),
+          XPRing(
+            progress: progress,
+            size: 110,
+            strokeWidth: 8,
+            gradientColors: AppColors.gradCosmic,
+            center: Text(
+              auth.levelEmoji,
+              style: const TextStyle(fontSize: 36),
+            ),
+          ),
+          const SizedBox(width: 20),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'DARAJA',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.5,
                   ),
                 ),
-              ),
-              const SizedBox(width: D.sp12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${S.get("level")} $lvl',
-                      style: GoogleFonts.poppins(
-                        color: AppColors.txt,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      '${S.get("next_level")}: $ptsNext ${S.get("points")}',
-                      style: GoogleFonts.poppins(
-                        color: AppColors.sub,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
+                const SizedBox(height: 4),
+                BigNumber(
+                  value: '${auth.level}',
+                  size: 54,
+                  gradient: AppColors.gradCosmic,
+                  align: TextAlign.start,
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: D.sp16),
-          ProgressBarAnimated(value: progress, height: 10, showPercent: true),
-          const SizedBox(height: D.sp8),
-          Text(
-            '${auth.points} ${S.get("points")} \u2022 ${(progress * 100).toInt()}%',
-            style: GoogleFonts.poppins(
-              color: AppColors.sub,
-              fontSize: 12,
+                const SizedBox(height: 8),
+                Text(
+                  '${S.get("next_level")}: $ptsNext XP',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -255,8 +297,7 @@ class _LevelCard extends StatelessWidget {
 class _PeriodFilter extends StatelessWidget {
   final int selected;
   final ValueChanged<int> onChanged;
-  const _PeriodFilter(
-      {required this.selected, required this.onChanged});
+  const _PeriodFilter({required this.selected, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -264,8 +305,9 @@ class _PeriodFilter extends StatelessWidget {
     return Row(
       children: List.generate(items.length, (i) {
         return Padding(
-          padding: EdgeInsets.only(right: i < items.length - 1 ? D.sp8 : 0),
-          child: CustomChip(
+          padding: EdgeInsets.only(
+              right: i < items.length - 1 ? 8 : 0),
+          child: NebulaChip(
             label: items[i],
             selected: selected == i,
             onTap: () => onChanged(i),
@@ -277,11 +319,11 @@ class _PeriodFilter extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  WEEKLY LINE CHART with gradient fill
+//  COSMIC LINE CHART
 // ═══════════════════════════════════════════════════════════
-class _WeeklyLineChart extends StatelessWidget {
+class _CosmicLineChart extends StatelessWidget {
   final Map<String, dynamic>? ins;
-  const _WeeklyLineChart({required this.ins});
+  const _CosmicLineChart({required this.ins});
 
   @override
   Widget build(BuildContext context) {
@@ -293,50 +335,47 @@ class _WeeklyLineChart extends StatelessWidget {
       weekly.add(0);
     }
     final days = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
-    final maxY = weekly.reduce((a, b) => a > b ? a : b);
+    final maxY = weekly.isEmpty ? 10.0 : weekly.reduce((a, b) => a > b ? a : b);
     final chartMax = maxY < 10 ? 10.0 : maxY * 1.25;
 
-    return Container(
-      padding: const EdgeInsets.all(D.sp16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(D.radiusLg),
-        border: Border.all(color: AppColors.border.withOpacity(0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(AppColors.isDark ? 0.18 : 0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
+    return GlassCard(
+      padding: const EdgeInsets.all(18),
+      glowColors: [AppColors.primary, AppColors.secondary],
+      glowIntensity: 0.15,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(D.sp8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                      colors: AppColors.gradPrimary),
+                      colors: AppColors.gradCosmic),
                   borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.5),
+                      blurRadius: 12,
+                    ),
+                  ],
                 ),
                 child: const Icon(Icons.show_chart_rounded,
-                    color: Colors.white, size: D.iconMd),
+                    color: Colors.white, size: 18),
               ),
-              const SizedBox(width: D.sp12),
+              const SizedBox(width: 12),
               Text(
                 S.get('weekly_points'),
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.spaceGrotesk(
                   color: AppColors.txt,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: D.sp24),
+          const SizedBox(height: 24),
           SizedBox(
             height: 180,
             child: LineChart(
@@ -345,14 +384,14 @@ class _WeeklyLineChart extends StatelessWidget {
                 maxY: chartMax,
                 lineTouchData: LineTouchData(
                   touchTooltipData: LineTouchTooltipData(
-                    tooltipBgColor: AppColors.txt,
+                    tooltipBgColor: AppColors.primary,
                     getTooltipItems: (spots) => spots.map((s) {
                       return LineTooltipItem(
-                        '${s.y.toInt()} ${S.get("points")}',
+                        '${s.y.toInt()} XP',
                         GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w700,
                         ),
                       );
                     }).toList(),
@@ -362,9 +401,9 @@ class _WeeklyLineChart extends StatelessWidget {
                   drawVerticalLine: false,
                   horizontalInterval: chartMax / 4,
                   getDrawingHorizontalLine: (_) => FlLine(
-                    color: AppColors.border.withOpacity(0.5),
+                    color: AppColors.border.withOpacity(0.4),
                     strokeWidth: 1,
-                    dashArray: [4, 4],
+                    dashArray: [4, 6],
                   ),
                 ),
                 borderData: FlBorderData(show: false),
@@ -420,10 +459,13 @@ class _WeeklyLineChart extends StatelessWidget {
                     isCurved: true,
                     curveSmoothness: 0.35,
                     gradient: const LinearGradient(
-                      colors: AppColors.gradPrimary,
-                    ),
-                    barWidth: 3,
+                        colors: AppColors.gradCosmic),
+                    barWidth: 3.5,
                     isStrokeCapRound: true,
+                    shadow: Shadow(
+                      color: AppColors.primary.withOpacity(0.5),
+                      blurRadius: 12,
+                    ),
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, __, ___, ____) =>
@@ -438,7 +480,7 @@ class _WeeklyLineChart extends StatelessWidget {
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          AppColors.primary.withOpacity(0.25),
+                          AppColors.primary.withOpacity(0.35),
                           AppColors.secondary.withOpacity(0.02),
                         ],
                         begin: Alignment.topCenter,
@@ -457,7 +499,7 @@ class _WeeklyLineChart extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  HEATMAP — 5 weeks x 7 days
+//  HEATMAP (nebula dots)
 // ═══════════════════════════════════════════════════════════
 class _HeatmapCard extends StatelessWidget {
   final Map<String, dynamic>? ins;
@@ -470,15 +512,14 @@ class _HeatmapCard extends StatelessWidget {
     if (raw is List) {
       data = raw.map((e) => (e as num).toInt()).toList();
     } else {
-      // Fallback: generate mock-ish based on weekly
       final w = ins?['weekly_points'];
       final avg = (w is List && w.isNotEmpty)
-          ? (w.map((e) => (e as num).toInt()).reduce((a, b) => a + b) /
+          ? (w.map((e) => (e as num).toInt())
+                      .reduce((a, b) => a + b) /
                   w.length)
               .round()
           : 0;
       data = List.generate(35, (i) {
-        // Lower activity for later weeks
         final factor = (i / 35) * 0.5 + 0.5;
         final base = (avg * factor).round();
         return (i % 3 == 0 ? base + 1 : base).clamp(0, 10);
@@ -491,47 +532,51 @@ class _HeatmapCard extends StatelessWidget {
     final maxVal = data.isEmpty ? 1 : data.reduce((a, b) => a > b ? a : b);
     final safeMax = maxVal == 0 ? 1 : maxVal;
 
-    return Container(
-      padding: const EdgeInsets.all(D.sp16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(D.radiusLg),
-        border: Border.all(color: AppColors.border.withOpacity(0.5)),
-      ),
+    return GlassCard(
+      padding: const EdgeInsets.all(18),
+      glowColors: [AppColors.secondary, AppColors.primary],
+      glowIntensity: 0.12,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(D.sp8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                      colors: AppColors.gradSuccess),
+                      colors: AppColors.gradCyan),
                   borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.secondary.withOpacity(0.5),
+                      blurRadius: 12,
+                    ),
+                  ],
                 ),
                 child: const Icon(Icons.calendar_month_rounded,
-                    color: Colors.white, size: D.iconMd),
+                    color: Colors.white, size: 18),
               ),
-              const SizedBox(width: D.sp12),
+              const SizedBox(width: 12),
               Text(
                 'Faollik (35 kun)',
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.spaceGrotesk(
                   color: AppColors.txt,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: D.sp16),
+          const SizedBox(height: 18),
           LayoutBuilder(
             builder: (context, c) {
               const cols = 5;
               const rows = 7;
               final gap = 6.0;
-              final cell = ((c.maxWidth - gap * (cols - 1)) / cols)
-                  .clamp(14.0, 36.0);
+              final cell =
+                  ((c.maxWidth - gap * (cols - 1)) / cols).clamp(14.0, 36.0);
               return SizedBox(
                 height: rows * cell + (rows - 1) * gap,
                 child: Column(
@@ -561,7 +606,7 @@ class _HeatmapCard extends StatelessWidget {
               );
             },
           ),
-          const SizedBox(height: D.sp12),
+          const SizedBox(height: 12),
           Row(
             children: [
               Text(
@@ -579,9 +624,10 @@ class _HeatmapCard extends StatelessWidget {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withOpacity(
-                        0.15 + i * 0.18,
-                      ),
+                      gradient: LinearGradient(colors: [
+                        AppColors.primary.withOpacity(0.1 + i * 0.18),
+                        AppColors.secondary.withOpacity(0.1 + i * 0.15),
+                      ]),
                       borderRadius: BorderRadius.circular(3),
                     ),
                   ),
@@ -589,7 +635,7 @@ class _HeatmapCard extends StatelessWidget {
               }),
               const SizedBox(width: 6),
               Text(
-                'Ko\'p',
+                "Ko'p",
                 style: GoogleFonts.poppins(
                   color: AppColors.sub,
                   fontSize: 11,
@@ -615,19 +661,26 @@ class _HeatCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final opacity = intensity == 0 ? 0.08 : (0.15 + intensity * 0.75);
+    final op = intensity == 0 ? 0.05 : (0.15 + intensity * 0.75);
     return Tooltip(
-      message: value > 0 ? '$value ta' : 'Bo\'sh',
+      message: value > 0 ? '$value ta' : "Bo'sh",
       child: Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: AppColors.primary.withOpacity(opacity),
+          gradient: LinearGradient(colors: [
+            AppColors.primary.withOpacity(op),
+            AppColors.secondary.withOpacity(op * 0.8),
+          ]),
           borderRadius: BorderRadius.circular(4),
-          border: Border.all(
-            color: AppColors.border.withOpacity(0.3),
-            width: 0.5,
-          ),
+          boxShadow: intensity > 0.5
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(intensity * 0.3),
+                    blurRadius: 6,
+                  ),
+                ]
+              : null,
         ),
       ),
     );
@@ -635,17 +688,16 @@ class _HeatCell extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  PIE CHART — Category breakdown
+//  PIE CATEGORY
 // ═══════════════════════════════════════════════════════════
-class _CategoryPieCard extends StatefulWidget {
+class _PieCategoryCard extends StatefulWidget {
   final Map<String, dynamic> ins;
-  const _CategoryPieCard({required this.ins});
-
+  const _PieCategoryCard({required this.ins});
   @override
-  State<_CategoryPieCard> createState() => _CategoryPieCardState();
+  State<_PieCategoryCard> createState() => _PieCategoryCardState();
 }
 
-class _CategoryPieCardState extends State<_CategoryPieCard> {
+class _PieCategoryCardState extends State<_PieCategoryCard> {
   int _touchedIndex = -1;
 
   static const _labels = {
@@ -671,40 +723,44 @@ class _CategoryPieCardState extends State<_CategoryPieCard> {
     if (entries.isEmpty) return const SizedBox.shrink();
     final total = entries.fold<int>(0, (a, e) => a + e.value);
 
-    return Container(
-      padding: const EdgeInsets.all(D.sp16),
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(D.radiusLg),
-        border: Border.all(color: AppColors.border.withOpacity(0.5)),
-      ),
+    return GlassCard(
+      padding: const EdgeInsets.all(18),
+      glowColors: [AppColors.pink, AppColors.primary],
+      glowIntensity: 0.15,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(D.sp8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient:
-                      const LinearGradient(colors: AppColors.gradAccent),
+                  gradient: const LinearGradient(
+                      colors: AppColors.gradAccent),
                   borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.pink.withOpacity(0.5),
+                      blurRadius: 12,
+                    ),
+                  ],
                 ),
                 child: const Icon(Icons.pie_chart_rounded,
-                    color: Colors.white, size: D.iconMd),
+                    color: Colors.white, size: 18),
               ),
-              const SizedBox(width: D.sp12),
+              const SizedBox(width: 12),
               Text(
                 S.get('cat_breakdown'),
-                style: GoogleFonts.poppins(
+                style: GoogleFonts.spaceGrotesk(
                   color: AppColors.txt,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: D.sp20),
+          const SizedBox(height: 20),
           SizedBox(
             height: 200,
             child: Row(
@@ -727,8 +783,8 @@ class _CategoryPieCardState extends State<_CategoryPieCard> {
                           });
                         },
                       ),
-                      sectionsSpace: 2,
-                      centerSpaceRadius: 40,
+                      sectionsSpace: 3,
+                      centerSpaceRadius: 38,
                       startDegreeOffset: -90,
                       sections: List.generate(entries.length, (i) {
                         final e = entries[i];
@@ -740,24 +796,28 @@ class _CategoryPieCardState extends State<_CategoryPieCard> {
                           color: color,
                           value: e.value.toDouble(),
                           title: '${(pct * 100).toInt()}%',
-                          radius: isTouched ? 70 : 58,
+                          radius: isTouched ? 72 : 58,
                           titleStyle: GoogleFonts.poppins(
                             fontSize: isTouched ? 14 : 12,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                             shadows: [
                               Shadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 3,
+                                color: Colors.black.withOpacity(0.4),
+                                blurRadius: 4,
                               ),
                             ],
+                          ),
+                          borderSide: BorderSide(
+                            color: AppColors.card,
+                            width: 2,
                           ),
                         );
                       }),
                     ),
                   ),
                 ),
-                const SizedBox(width: D.sp16),
+                const SizedBox(width: 14),
                 Expanded(
                   flex: 5,
                   child: Column(
@@ -768,7 +828,7 @@ class _CategoryPieCardState extends State<_CategoryPieCard> {
                       final color =
                           AppColors.cat[e.key] ?? AppColors.primary;
                       return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4),
+                        padding: const EdgeInsets.symmetric(vertical: 3),
                         child: Row(
                           children: [
                             Container(
@@ -777,9 +837,15 @@ class _CategoryPieCardState extends State<_CategoryPieCard> {
                               decoration: BoxDecoration(
                                 color: color,
                                 borderRadius: BorderRadius.circular(3),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: color.withOpacity(0.6),
+                                    blurRadius: 6,
+                                  ),
+                                ],
                               ),
                             ),
-                            const SizedBox(width: D.sp8),
+                            const SizedBox(width: 8),
                             Expanded(
                               child: Text(
                                 info?.$2 ?? e.key,
@@ -793,10 +859,10 @@ class _CategoryPieCardState extends State<_CategoryPieCard> {
                             ),
                             Text(
                               '${e.value}',
-                              style: GoogleFonts.poppins(
+                              style: GoogleFonts.spaceGrotesk(
                                 color: AppColors.sub,
                                 fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                           ],

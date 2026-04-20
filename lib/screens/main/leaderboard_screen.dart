@@ -8,6 +8,7 @@ import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/models.dart';
+import '../../widgets/nebula/nebula.dart';
 
 class LeaderboardScreen extends StatefulWidget {
   const LeaderboardScreen({super.key});
@@ -40,52 +41,62 @@ class _LbState extends State<LeaderboardScreen>
     final tasks = context.watch<TaskProvider>();
 
     return Scaffold(
-      backgroundColor: AppColors.bg,
-      body: RefreshIndicator(
-        color: AppColors.primary,
-        backgroundColor: AppColors.card,
-        onRefresh: () => tasks.refreshLeaderboard(),
-        child: NestedScrollView(
-          physics: const BouncingScrollPhysics(),
-          headerSliverBuilder: (_, __) => [
-            SliverToBoxAdapter(
-              child: _MyRankHeader(rank: tasks.myRank, auth: auth),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              delegate: _TabsDelegate(
-                tab: _tab,
-                onRefresh: () {
-                  HapticFeedback.lightImpact();
-                  tasks.refreshLeaderboard();
-                },
-              ),
-            ),
-          ],
-          body: tasks.isLoading && tasks.globalLb.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.primary,
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          const AuroraBackground(subtle: true),
+          const ParticleField(count: 22),
+          RefreshIndicator(
+            color: AppColors.primary,
+            backgroundColor: AppColors.card,
+            onRefresh: () => tasks.refreshLeaderboard(),
+            child: NestedScrollView(
+              physics: const BouncingScrollPhysics(),
+              headerSliverBuilder: (_, __) => [
+                SliverToBoxAdapter(
+                  child: SafeArea(
+                    bottom: false,
+                    child: _MyRankHeader(
+                        rank: tasks.myRank, auth: auth),
                   ),
-                )
-              : TabBarView(
-                  controller: _tab,
-                  children: [
-                    _LbTab(
-                      entries: tasks.globalLb,
-                      myId: auth.user?['_id']?.toString() ??
-                          auth.user?['id']?.toString() ??
-                          '',
-                    ),
-                    _LbTab(
-                      entries: tasks.weeklyLb,
-                      myId: auth.user?['_id']?.toString() ??
-                          auth.user?['id']?.toString() ??
-                          '',
-                    ),
-                  ],
                 ),
-        ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _TabsDelegate(
+                    tab: _tab,
+                    onRefresh: () {
+                      HapticFeedback.lightImpact();
+                      tasks.refreshLeaderboard();
+                    },
+                  ),
+                ),
+              ],
+              body: tasks.isLoading && tasks.globalLb.isEmpty
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
+                    )
+                  : TabBarView(
+                      controller: _tab,
+                      children: [
+                        _LbTab(
+                          entries: tasks.globalLb,
+                          myId: auth.user?['_id']?.toString() ??
+                              auth.user?['id']?.toString() ??
+                              '',
+                        ),
+                        _LbTab(
+                          entries: tasks.weeklyLb,
+                          myId: auth.user?['_id']?.toString() ??
+                              auth.user?['id']?.toString() ??
+                              '',
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -94,41 +105,40 @@ class _LbState extends State<LeaderboardScreen>
 class _TabsDelegate extends SliverPersistentHeaderDelegate {
   final TabController tab;
   final VoidCallback onRefresh;
-
   _TabsDelegate({required this.tab, required this.onRefresh});
 
   @override
-  double get minExtent => 56;
+  double get minExtent => 60;
   @override
-  double get maxExtent => 56;
+  double get maxExtent => 60;
 
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
-      color: AppColors.bg,
-      padding: const EdgeInsets.symmetric(horizontal: D.sp16),
+      color: AppColors.bg.withOpacity(0.85),
+      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
       child: Row(
         children: [
           Expanded(
             child: Container(
-              height: 42,
+              height: 46,
               decoration: BoxDecoration(
-                color: AppColors.card,
-                borderRadius: BorderRadius.circular(D.radiusMd),
+                color: AppColors.card.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.border),
               ),
               child: TabBar(
                 controller: tab,
                 indicator: BoxDecoration(
-                  gradient:
-                      const LinearGradient(colors: AppColors.gradPrimary),
-                  borderRadius: BorderRadius.circular(D.radiusMd - 2),
+                  gradient: const LinearGradient(
+                      colors: AppColors.gradCosmic),
+                  borderRadius: BorderRadius.circular(13),
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
+                      color: AppColors.primary.withOpacity(0.5),
+                      blurRadius: 14,
+                      offset: const Offset(0, 4),
                     ),
                   ],
                 ),
@@ -138,7 +148,7 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
                 labelColor: Colors.white,
                 unselectedLabelColor: AppColors.sub,
                 labelStyle: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                   fontSize: 13,
                 ),
                 unselectedLabelStyle: GoogleFonts.poppins(
@@ -152,18 +162,18 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
               ),
             ),
           ),
-          const SizedBox(width: D.sp8),
+          const SizedBox(width: 8),
           Material(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(D.radiusMd),
+            color: AppColors.card.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(14),
             child: InkWell(
               onTap: onRefresh,
-              borderRadius: BorderRadius.circular(D.radiusMd),
+              borderRadius: BorderRadius.circular(14),
               child: Container(
-                width: 42,
-                height: 42,
+                width: 46,
+                height: 46,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(D.radiusMd),
+                  borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Icon(Icons.refresh_rounded,
@@ -194,120 +204,113 @@ class _MyRankHeader extends StatelessWidget {
         ? 'U'
         : auth.name.trim().split(RegExp(r'\s+')).take(2).map((s) => s[0]).join();
 
-    return Container(
-      margin: const EdgeInsets.all(D.sp16),
-      padding:
-          const EdgeInsets.fromLTRB(D.sp20, D.sp20, D.sp20, D.sp20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: AppColors.gradPrimary,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.3),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            top: -30,
-            right: -30,
-            child: Container(
-              width: 120,
-              height: 120,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
+      child: GlassCard(
+        padding: const EdgeInsets.all(20),
+        glowColors: [AppColors.primary, AppColors.pink],
+        glowIntensity: 0.3,
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
+                gradient:
+                    const LinearGradient(colors: AppColors.gradCosmic),
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.1),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(0.5),
+                    blurRadius: 16,
+                  ),
+                ],
               ),
-            ),
-          ),
-          Row(
-            children: [
-              Container(
-                width: 58,
-                height: 58,
+              child: Container(
+                width: 56,
+                height: 56,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.2),
+                  color: AppColors.card,
                   shape: BoxShape.circle,
-                  border: Border.all(
-                      color: Colors.white.withOpacity(0.4), width: 2),
                 ),
                 child: Center(
                   child: Text(
                     initials.toUpperCase(),
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
+                    style: GoogleFonts.spaceGrotesk(
+                      color: AppColors.txt,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: D.sp16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      auth.name.isEmpty ? 'User' : auth.name,
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      '${auth.levelEmoji} ${S.get("level")} ${auth.level}  \u2022  \u2B50 ${auth.points}',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white.withOpacity(0.85),
-                        fontSize: 12,
-                      ),
-                    ),
-                    if (tot > 0) ...[
-                      const SizedBox(height: 4),
-                      Text(
-                        'Top ${(100 - pct.toDouble()).toStringAsFixed(0)}%   •   $tot ${S.get("students")}',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white.withOpacity(0.75),
-                          fontSize: 11,
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-              Column(
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '#$r',
-                    style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      height: 1,
+                    auth.name.isEmpty ? 'User' : auth.name,
+                    style: GoogleFonts.spaceGrotesk(
+                      color: AppColors.txt,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.3,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    S.get('rating'),
+                    '${auth.levelEmoji} Lvl ${auth.level}  \u2022  \u2B50 ${auth.points}',
                     style: GoogleFonts.poppins(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 11,
+                      color: AppColors.sub,
+                      fontSize: 12,
                     ),
                   ),
+                  if (tot > 0) ...[
+                    const SizedBox(height: 2),
+                    Text(
+                      'Top ${(100 - pct.toDouble()).toStringAsFixed(0)}% \u2022 $tot ${S.get("students")}',
+                      style: GoogleFonts.poppins(
+                        color: AppColors.hint,
+                        fontSize: 11,
+                      ),
+                    ),
+                  ],
                 ],
               ),
-            ],
-          ),
-        ],
+            ),
+            Column(
+              children: [
+                ShaderMask(
+                  shaderCallback: (b) => const LinearGradient(
+                          colors: AppColors.gradCosmic)
+                      .createShader(b),
+                  blendMode: BlendMode.srcIn,
+                  child: Text(
+                    '#$r',
+                    style: GoogleFonts.spaceGrotesk(
+                      color: Colors.white,
+                      fontSize: 36,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -1.5,
+                      height: 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  S.get('rating').toUpperCase(),
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -332,26 +335,31 @@ class _LbTab extends StatelessWidget {
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary.withOpacity(0.15),
-                        AppColors.accent.withOpacity(0.12),
-                      ],
-                    ),
+                    gradient: LinearGradient(colors: [
+                      AppColors.primary.withOpacity(0.25),
+                      AppColors.accent.withOpacity(0.15),
+                    ]),
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.3),
+                        blurRadius: 30,
+                      ),
+                    ],
                   ),
                   child: const Center(
                     child:
                         Text('\u{1F680}', style: TextStyle(fontSize: 48)),
                   ),
                 ),
-                const SizedBox(height: D.sp16),
+                const SizedBox(height: 18),
                 Text(
                   S.get('empty_board'),
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.spaceGrotesk(
                     color: AppColors.txt,
-                    fontSize: 17,
-                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -376,15 +384,12 @@ class _LbTab extends StatelessWidget {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(
           parent: BouncingScrollPhysics()),
-      padding: const EdgeInsets.fromLTRB(D.sp16, D.sp8, D.sp16, 80),
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
       children: [
-        if (top3.isNotEmpty)
-          _Podium(top: top3, myId: myId),
-        const SizedBox(height: D.sp12),
-        ...rest.map((e) => _LbTile(
-              entry: e,
-              isMe: e.id == myId,
-            )),
+        if (top3.isNotEmpty) _Podium(top: top3, myId: myId),
+        const SizedBox(height: 12),
+        ...rest.map(
+            (e) => _LbTile(entry: e, isMe: e.id == myId)),
       ],
     );
   }
@@ -397,13 +402,12 @@ class _Podium extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // slot layout: [2nd, 1st, 3rd]
     final second = top.length > 1 ? top[1] : null;
     final first = top[0];
     final third = top.length > 2 ? top[2] : null;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: D.sp12),
+      padding: const EdgeInsets.symmetric(vertical: 14),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
@@ -412,7 +416,7 @@ class _Podium extends StatelessWidget {
               entry: second,
               rank: 2,
               height: 120,
-              gradient: const [Color(0xFFE0E0E0), Color(0xFFBDBDBD)],
+              gradient: const [Color(0xFFCBD5E1), Color(0xFF94A3B8)],
               isMe: second?.id == myId,
             ),
           ),
@@ -431,7 +435,7 @@ class _Podium extends StatelessWidget {
               entry: third,
               rank: 3,
               height: 100,
-              gradient: const [Color(0xFFFFB74D), Color(0xFFE65100)],
+              gradient: const [Color(0xFFFCA589), Color(0xFFC04A14)],
               isMe: third?.id == myId,
             ),
           ),
@@ -509,9 +513,8 @@ class _PodiumSlotState extends State<_PodiumSlot>
                 gradient: LinearGradient(colors: widget.gradient),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.gradient.first.withOpacity(0.4),
-                    blurRadius: 12,
-                    spreadRadius: 1,
+                    color: widget.gradient.first.withOpacity(0.55),
+                    blurRadius: 18,
                   ),
                 ],
               ),
@@ -525,9 +528,9 @@ class _PodiumSlotState extends State<_PodiumSlot>
                 child: Center(
                   child: Text(
                     initials,
-                    style: GoogleFonts.poppins(
+                    style: GoogleFonts.spaceGrotesk(
                       color: AppColors.txt,
-                      fontSize: 20,
+                      fontSize: 22,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -540,23 +543,25 @@ class _PodiumSlotState extends State<_PodiumSlot>
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.poppins(
-                color: widget.isMe ? AppColors.primary : AppColors.txt,
+                color: widget.isMe
+                    ? AppColors.primary
+                    : AppColors.txt,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
               ),
             ),
             Text(
               '${e.points}',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.spaceGrotesk(
                 color: AppColors.accent,
-                fontSize: 13,
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Container(
               height: widget.height,
-              width: double.infinity,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: widget.gradient,
@@ -564,12 +569,11 @@ class _PodiumSlotState extends State<_PodiumSlot>
                   end: Alignment.bottomCenter,
                 ),
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
+                    top: Radius.circular(14)),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.gradient.last.withOpacity(0.35),
-                    blurRadius: 10,
+                    color: widget.gradient.last.withOpacity(0.4),
+                    blurRadius: 14,
                     offset: const Offset(0, 4),
                   ),
                 ],
@@ -577,13 +581,14 @@ class _PodiumSlotState extends State<_PodiumSlot>
               child: Center(
                 child: Text(
                   '#${widget.rank}',
-                  style: GoogleFonts.poppins(
+                  style: GoogleFonts.spaceGrotesk(
                     color: Colors.white,
-                    fontSize: 26,
+                    fontSize: 30,
                     fontWeight: FontWeight.w800,
+                    letterSpacing: -1,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.15),
+                        color: Colors.black.withOpacity(0.25),
                         blurRadius: 4,
                       ),
                     ],
@@ -606,20 +611,18 @@ class _LbTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: D.sp8),
+      margin: const EdgeInsets.only(bottom: 8),
       padding:
-          const EdgeInsets.symmetric(horizontal: D.sp12, vertical: D.sp12),
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         gradient: isMe
-            ? LinearGradient(
-                colors: [
-                  AppColors.primary.withOpacity(0.12),
-                  AppColors.secondary.withOpacity(0.06),
-                ],
-              )
+            ? LinearGradient(colors: [
+                AppColors.primary.withOpacity(0.18),
+                AppColors.secondary.withOpacity(0.1),
+              ])
             : null,
-        color: isMe ? null : AppColors.card,
-        borderRadius: BorderRadius.circular(14),
+        color: isMe ? null : AppColors.card.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isMe
               ? AppColors.primary.withOpacity(0.5)
@@ -629,8 +632,8 @@ class _LbTile extends StatelessWidget {
         boxShadow: isMe
             ? [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.12),
-                  blurRadius: 10,
+                  color: AppColors.primary.withOpacity(0.25),
+                  blurRadius: 16,
                   offset: const Offset(0, 4),
                 ),
               ]
@@ -642,24 +645,25 @@ class _LbTile extends StatelessWidget {
           child: Center(
             child: Text(
               '#${entry.rank}',
-              style: GoogleFonts.poppins(
-                fontSize: 13,
+              style: GoogleFonts.spaceGrotesk(
+                fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: isMe ? AppColors.primary : AppColors.sub,
+                letterSpacing: -0.3,
               ),
             ),
           ),
         ),
         const SizedBox(width: 6),
         Container(
-          width: 40,
-          height: 40,
+          width: 42,
+          height: 42,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: isMe
-                  ? AppColors.gradPrimary
+                  ? AppColors.gradCosmic
                   : [
-                      AppColors.primary.withOpacity(0.15),
+                      AppColors.primary.withOpacity(0.2),
                       AppColors.secondary.withOpacity(0.1),
                     ],
             ),
@@ -670,15 +674,15 @@ class _LbTile extends StatelessWidget {
               entry.fullName.isNotEmpty
                   ? entry.fullName[0].toUpperCase()
                   : 'U',
-              style: GoogleFonts.poppins(
+              style: GoogleFonts.spaceGrotesk(
                 color: isMe ? Colors.white : AppColors.primary,
-                fontSize: 16,
+                fontSize: 17,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
         ),
-        const SizedBox(width: D.sp12),
+        const SizedBox(width: 12),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -703,7 +707,7 @@ class _LbTile extends StatelessWidget {
                         horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                          colors: AppColors.gradPrimary),
+                          colors: AppColors.gradCosmic),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -735,19 +739,28 @@ class _LbTile extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text(
-              _fmt(entry.points),
-              style: GoogleFonts.poppins(
-                color: AppColors.accent,
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
+            ShaderMask(
+              shaderCallback: (b) => const LinearGradient(
+                      colors: AppColors.gradGold)
+                  .createShader(b),
+              blendMode: BlendMode.srcIn,
+              child: Text(
+                _fmt(entry.points),
+                style: GoogleFonts.spaceGrotesk(
+                  color: Colors.white,
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
+                ),
               ),
             ),
             Text(
-              S.get('points'),
+              'XP',
               style: GoogleFonts.poppins(
                 color: AppColors.sub,
-                fontSize: 11,
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 1,
               ),
             ),
           ],
