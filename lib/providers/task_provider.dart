@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/api.dart';
 import '../services/local_schedules.dart';
@@ -246,6 +247,110 @@ class TaskProvider extends ChangeNotifier {
   void clearError() {
     _error = null;
     notifyListeners();
+  }
+
+  // ── CREATE TASK ───────────────────────────────────────
+  /// Unified task creation. Returns true on success. Does optimistic UI
+  /// update — newly created task appears instantly, even before reload.
+  Future<bool> createTask({
+    required String title,
+    String description = '',
+    String category = 'study',
+    String difficulty = 'medium',
+    int durationMinutes = 30,
+    int xpReward = 50,
+    DateTime? scheduledAt,
+    int reminderMinutes = 15,
+  }) async {
+    _error = null;
+    try {
+      final taskBody = <String, dynamic>{
+        'title': title,
+        'description': description,
+        'category': category,
+        'difficulty': difficulty,
+        'duration': durationMinutes,
+        'xp_reward': xpReward,
+      };
+      if (scheduledAt != null) {
+        final hh = scheduledAt.hour.toString().padLeft(2, '0');
+        final mm = scheduledAt.minute.toString().padLeft(2, '0');
+        taskBody['scheduled_time'] = '$hh:$mm';
+      }
+
+      final planBody = <String, dynamic>{
+        'title': title,
+        'description': description,
+        'goal': title,
+        'category': category,
+        'duration': 1,
+        'tasks': [taskBody],
+        'milestones': [],
+        'reminder_enabled': reminderMinutes > 0,
+        'visibility': 'private',
+      };
+
+      final res = await _api.post(K.plans, planBody);
+
+      // Parse response — extract new plan + task ids for optimistic insert
+      String? planId;
+      String? taskId;
+      try {
+        final data = res is Map ? res['data'] as Map? : null;
+        final plan = data?['plan'];
+        if (plan is Map) {
+          planId = (plan['_id'] ?? plan['id'])?.toString();
+          final tasks = plan['tasks'] as List?;
+          if (tasks != null && tasks.isNotEmpty) {
+            taskId = (tasks.first['id'] ?? tasks.first['_id'])?.toString();
+          }
+        }
+      } catch (_) {}
+
+      // Save scheduling locally if provided
+      if (scheduledAt != null && taskId != null && taskId.isNotEmpty) {
+        await LocalSchedules.saveById(
+          taskId: taskId,
+          scheduledAt: scheduledAt,
+          reminderMinutes: reminderMinutes,
+        );
+      } else if (scheduledAt != null) {
+        await LocalSchedules.savePending(
+          title: title,
+          scheduledAt: scheduledAt,
+          reminderMinutes: reminderMinutes,
+        );
+      }
+
+      // Optimistic insert so UI updates IMMEDIATELY
+      if (taskId != null && taskId.isNotEmpty) {
+        _planTasks.insert(
+          0,
+          Task(
+            id: taskId,
+            title: title,
+            description: description,
+            category: category,
+            difficulty: difficulty,
+            points: xpReward,
+            durationMinutes: durationMinutes,
+            planId: planId,
+            planTitle: title,
+            scheduledAt: scheduledAt,
+            reminderMinutes: reminderMinutes,
+          ),
+        );
+        notifyListeners();
+      }
+
+      // Reload in background to sync any server-side modifications
+      unawaited(_loadPlans());
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
   }
 
   // ── DELETE TASK ────────────────────────────────────────

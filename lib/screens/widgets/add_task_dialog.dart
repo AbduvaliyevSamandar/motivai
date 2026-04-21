@@ -3,10 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
-import '../../config/dimensions.dart';
 import '../../config/strings.dart';
-import '../../services/api.dart';
-import '../../config/constants.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../services/local_schedules.dart';
@@ -537,87 +534,43 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       return;
     }
 
-    // CREATE MODE
+    // CREATE MODE — use TaskProvider.createTask which does optimistic insert
     try {
       final duration = int.tryParse(_durationCtrl.text.trim()) ?? 30;
       final points = _diffPoints(_difficulty);
 
-      // Backend uses `duration` (minutes) on TaskCreate and `duration` (days) on PlanCreate.
-      final taskBody = <String, dynamic>{
-        'title': title,
-        'description': _descCtrl.text.trim(),
-        'category': _category,
-        'difficulty': _difficulty,
-        'duration': duration,
-        'xp_reward': points,
-      };
-      if (_scheduledAt != null) {
-        final hh = _scheduledAt!.hour.toString().padLeft(2, '0');
-        final mm = _scheduledAt!.minute.toString().padLeft(2, '0');
-        taskBody['scheduled_time'] = '$hh:$mm';
-      }
+      final ok = await context.read<TaskProvider>().createTask(
+            title: title,
+            description: _descCtrl.text.trim(),
+            category: _category,
+            difficulty: _difficulty,
+            durationMinutes: duration,
+            xpReward: points,
+            scheduledAt: _scheduledAt,
+            reminderMinutes: _reminderMinutes,
+          );
 
-      final planBody = <String, dynamic>{
-        'title': title,
-        'description': _descCtrl.text.trim(),
-        'goal': title,
-        'category': _category,
-        'duration': 1,
-        'tasks': [taskBody],
-        'milestones': [],
-        'reminder_enabled': _reminderMinutes > 0,
-        'visibility': 'private',
-      };
-
-      // Save schedule LOCALLY first (before network) so UI can show it
-      // even if the reload picks up task with wrong id mapping.
-      if (_scheduledAt != null) {
-        await LocalSchedules.savePending(
-          title: title,
-          scheduledAt: _scheduledAt!,
-          reminderMinutes: _reminderMinutes,
-        );
-      }
-
-      final res = await Api().post(K.plans, planBody);
       if (!mounted) return;
-
-      // Try to extract task id for better tracking
-      String? taskId;
-      try {
-        final data = res is Map ? res['data'] as Map? : null;
-        final plan = data?['plan'];
-        if (plan is Map) {
-          final tasks = plan['tasks'] as List?;
-          if (tasks != null && tasks.isNotEmpty) {
-            taskId = (tasks.first['id'] ?? tasks.first['_id'])?.toString();
-          }
-        }
-      } catch (_) {}
-
-      if (_scheduledAt != null && taskId != null && taskId.isNotEmpty) {
-        await LocalSchedules.saveById(
-          taskId: taskId,
-          scheduledAt: _scheduledAt!,
-          reminderMinutes: _reminderMinutes,
+      if (!ok) {
+        setState(() => _loading = false);
+        _toast(
+          'Xatolik: ${context.read<TaskProvider>().error ?? "Server javob bermadi"}',
+          err: true,
         );
+        return;
       }
 
-      // Schedule local notification
+      // Schedule local reminder (no-op on web)
       if (_scheduledAt != null && _reminderMinutes > 0) {
-        if (!mounted) return;
         final notifs = context.read<NotificationProvider>();
         await notifs.scheduleTaskReminder(
-          taskId: taskId ?? 'new_${DateTime.now().millisecondsSinceEpoch}',
+          taskId: 'new_${DateTime.now().millisecondsSinceEpoch}',
           taskTitle: title,
           scheduledAt: _scheduledAt!,
           reminderMinutes: _reminderMinutes,
         );
       }
 
-      if (!mounted) return;
-      // Reload — this merges local schedule back into tasks
-      await context.read<TaskProvider>().loadAll();
       if (!mounted) return;
       Navigator.pop(context);
       _toast("Vazifa qo'shildi");
