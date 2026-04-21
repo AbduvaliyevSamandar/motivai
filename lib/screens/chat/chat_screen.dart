@@ -62,16 +62,21 @@ class _ChatState extends State<ChatScreen> {
   Future<void> _addToTasks(List<TaskSuggestion> suggestions) async {
     final sel = suggestions.where((s) => s.isSelected).toList();
     if (sel.isEmpty) {
-      _snack(S.get('error'), err: true);
+      _snack("Kamida bitta vazifa tanlang", err: true);
       return;
     }
-    final ok = await context.read<ChatProvider>().addToDaily(sel);
-    if (ok && mounted) {
-      await context.read<TaskProvider>().loadAll();
+    HapticFeedback.mediumImpact();
+    // Route through TaskProvider so tasks land in the unified list
+    final tasks = context.read<TaskProvider>();
+    final planId = await tasks.addSuggestions(suggestions: sel);
+
+    if (planId != null && mounted) {
+      // Add a confirmation message to chat
+      await context.read<ChatProvider>().confirmAdded(sel.length);
       _toBottom();
-      _snack('${sel.length} ${S.get('task_added')}');
+      _snack('${sel.length} ta vazifa qo\'shildi \u{1F389}');
     } else {
-      _snack(S.get('error'), err: true);
+      _snack(tasks.error ?? "Xatolik yuz berdi", err: true);
     }
   }
 
@@ -863,18 +868,42 @@ class _TaskSuggestionPanel extends StatefulWidget {
 
 class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
   bool _done = false;
+  bool _submitting = false;
+
+  int get _selectedCount =>
+      widget.tasks.where((t) => t.isSelected).length;
+  int get _totalXP => widget.tasks
+      .where((t) => t.isSelected)
+      .fold<int>(0, (sum, t) => sum + t.estimatedPoints);
+  int get _totalMinutes => widget.tasks
+      .where((t) => t.isSelected)
+      .fold<int>(0, (sum, t) => sum + t.durationMinutes);
+
+  void _toggleAll(bool selectAll) {
+    HapticFeedback.selectionClick();
+    setState(() {
+      for (final t in widget.tasks) {
+        t.isSelected = selectAll;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     if (_done) return const SizedBox.shrink();
+    final allSelected =
+        widget.tasks.isNotEmpty && _selectedCount == widget.tasks.length;
+    final anySelected = _selectedCount > 0;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12, left: 6),
       child: GlassCard(
         glowColors: [AppColors.primary, AppColors.secondary],
-        glowIntensity: 0.2,
+        glowIntensity: 0.25,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Header with title + count
             Row(
               children: [
                 Container(
@@ -883,31 +912,53 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     gradient: const LinearGradient(
                         colors: AppColors.gradCosmic),
                     borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primary.withOpacity(0.45),
+                        blurRadius: 10,
+                      ),
+                    ],
                   ),
-                  child: const Icon(Icons.task_alt_rounded,
+                  child: const Icon(Icons.auto_awesome_rounded,
                       color: Colors.white, size: 16),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
-                  child: Text(
-                    S.get('ai_suggest'),
-                    style: GoogleFonts.spaceGrotesk(
-                      color: AppColors.txt,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 15,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'AI tavsiya etgan vazifalar',
+                        style: GoogleFonts.spaceGrotesk(
+                          color: AppColors.txt,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      Text(
+                        'Tanlang va ro\'yxatingizga qo\'shing',
+                        style: GoogleFonts.poppins(
+                          color: AppColors.sub,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: AppColors.primary.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: AppColors.primary.withOpacity(0.4),
+                    ),
                   ),
                   child: Text(
-                    '${widget.tasks.length}',
-                    style: GoogleFonts.poppins(
+                    '${widget.tasks.length} ta',
+                    style: GoogleFonts.spaceGrotesk(
                       color: AppColors.primary,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -917,48 +968,211 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
               ],
             ),
             const SizedBox(height: 12),
+
+            // Select all / none chips
+            Row(
+              children: [
+                _selectChip(
+                  label: 'Barchasini tanlash',
+                  icon: Icons.check_circle_outline_rounded,
+                  active: allSelected,
+                  onTap: () => _toggleAll(true),
+                ),
+                const SizedBox(width: 6),
+                _selectChip(
+                  label: 'Tozalash',
+                  icon: Icons.clear_all_rounded,
+                  active: false,
+                  onTap: () => _toggleAll(false),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            // Task items
             ...widget.tasks.map((t) => _SuggestItem(
                   task: t,
-                  onToggle: () =>
-                      setState(() => t.isSelected = !t.isSelected),
+                  onToggle: () {
+                    HapticFeedback.selectionClick();
+                    setState(() => t.isSelected = !t.isSelected);
+                  },
                 )),
-            const SizedBox(height: 12),
+
+            const SizedBox(height: 10),
+
+            // Selection summary
+            if (anySelected)
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: [
+                    AppColors.accent.withOpacity(0.18),
+                    AppColors.primary.withOpacity(0.12),
+                  ]),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                      color: AppColors.accent.withOpacity(0.35)),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.star_rounded,
+                        color: AppColors.accent, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      '$_totalXP XP',
+                      style: GoogleFonts.spaceGrotesk(
+                        color: AppColors.accent,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(width: 14),
+                    Icon(Icons.schedule_rounded,
+                        color: AppColors.sub, size: 14),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${_totalMinutes} min',
+                      style: GoogleFonts.poppins(
+                        color: AppColors.sub,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      '$_selectedCount / ${widget.tasks.length}',
+                      style: GoogleFonts.spaceGrotesk(
+                        color: AppColors.txt,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            // Actions
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {
-                      setState(() => _done = true);
-                      widget.onDecline();
-                    },
+                    onPressed: _submitting
+                        ? null
+                        : () {
+                            HapticFeedback.selectionClick();
+                            setState(() => _done = true);
+                            widget.onDecline();
+                          },
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.sub,
                       side: BorderSide(color: AppColors.border),
-                      minimumSize: const Size(0, 46),
+                      minimumSize: const Size(0, 48),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
                     ),
-                    child: Text(S.get('cancel'),
-                        style: GoogleFonts.poppins()),
+                    child: Text(
+                      'Bekor qilish',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 13,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   flex: 2,
                   child: NebulaButton(
-                    label: S.get('add_task'),
+                    label: anySelected
+                        ? 'Qo\'shish ($_selectedCount)'
+                        : 'Vazifa tanlang',
                     icon: Icons.add_task_rounded,
-                    height: 46,
-                    onTap: () {
+                    height: 48,
+                    disabled: !anySelected,
+                    loading: _submitting,
+                    onTap: () async {
+                      if (_submitting) return;
+                      setState(() => _submitting = true);
+                      await Future<void>.delayed(
+                          const Duration(milliseconds: 80));
                       widget.onAdd(widget.tasks);
-                      setState(() => _done = true);
+                      if (!mounted) return;
+                      setState(() {
+                        _submitting = false;
+                        _done = true;
+                      });
                     },
                   ),
                 ),
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _selectChip({
+    required String label,
+    required IconData icon,
+    required bool active,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(10),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+                horizontal: 10, vertical: 8),
+            decoration: BoxDecoration(
+              gradient: active
+                  ? LinearGradient(colors: [
+                      AppColors.primary.withOpacity(0.22),
+                      AppColors.secondary.withOpacity(0.12),
+                    ])
+                  : null,
+              color: active ? null : AppColors.card.withOpacity(0.5),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: active
+                    ? AppColors.primary.withOpacity(0.5)
+                    : AppColors.border,
+              ),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon,
+                    size: 14,
+                    color: active
+                        ? AppColors.primary
+                        : AppColors.sub),
+                const SizedBox(width: 4),
+                Flexible(
+                  child: Text(
+                    label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.poppins(
+                      color: active
+                          ? AppColors.primary
+                          : AppColors.sub,
+                      fontSize: 11,
+                      fontWeight:
+                          active ? FontWeight.w700 : FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

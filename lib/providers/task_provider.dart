@@ -353,6 +353,93 @@ class TaskProvider extends ChangeNotifier {
     }
   }
 
+  // ── BULK CREATE (from AI chat) ────────────────────────
+  /// Creates a single plan containing multiple AI-suggested tasks.
+  /// Returns the created plan id on success, null on failure.
+  /// Does optimistic insert so all tasks appear instantly.
+  Future<String?> addSuggestions({
+    required List<TaskSuggestion> suggestions,
+    String planTitle = 'AI taklif etgan vazifalar',
+    String goal = 'AI tavsiyalarini bajarish',
+  }) async {
+    if (suggestions.isEmpty) return null;
+    _error = null;
+    try {
+      final taskBodies = suggestions
+          .map((s) => {
+                'title': s.title,
+                'description': s.description,
+                'category': s.category,
+                'difficulty': s.difficulty,
+                'duration': s.durationMinutes,
+                'xp_reward': s.estimatedPoints,
+              })
+          .toList();
+
+      final planBody = <String, dynamic>{
+        'title': planTitle,
+        'description': 'AI chat orqali qo\'shilgan',
+        'goal': goal,
+        'category': 'study',
+        'duration': 1,
+        'tasks': taskBodies,
+        'milestones': [],
+        'reminder_enabled': true,
+        'visibility': 'private',
+      };
+
+      final res = await _api.post(K.plans, planBody);
+
+      String? planId;
+      final List<Task> newTasks = [];
+      try {
+        final data = res is Map ? res['data'] as Map? : null;
+        final plan = data?['plan'];
+        if (plan is Map) {
+          planId = (plan['_id'] ?? plan['id'])?.toString();
+          final tasks = plan['tasks'] as List?;
+          if (tasks != null) {
+            for (var i = 0; i < tasks.length; i++) {
+              final t = tasks[i] as Map<String, dynamic>;
+              final id = (t['id'] ?? t['_id'])?.toString() ?? '';
+              final src = i < suggestions.length ? suggestions[i] : null;
+              newTasks.add(Task(
+                id: id,
+                title: t['title']?.toString() ?? src?.title ?? '',
+                description:
+                    t['description']?.toString() ?? src?.description ?? '',
+                category: t['category']?.toString() ?? 'study',
+                difficulty: t['difficulty']?.toString() ?? 'medium',
+                points:
+                    (t['xp_reward'] ?? src?.estimatedPoints ?? 30) as int,
+                durationMinutes:
+                    (t['duration_minutes'] ?? src?.durationMinutes ?? 30)
+                        as int,
+                planId: planId,
+                planTitle: planTitle,
+                isFromChat: true,
+              ));
+            }
+          }
+        }
+      } catch (_) {}
+
+      // Optimistic insert — put all new tasks at top
+      if (newTasks.isNotEmpty) {
+        _planTasks.insertAll(0, newTasks);
+        notifyListeners();
+      }
+
+      // Silent background reload to sync
+      unawaited(_loadPlans());
+      return planId;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return null;
+    }
+  }
+
   // ── DELETE TASK ────────────────────────────────────────
   /// Since each user-added task lives in its own plan, delete = delete plan.
   /// For multi-task plans (AI-added bulk), we keep the plan and only drop the

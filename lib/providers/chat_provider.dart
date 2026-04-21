@@ -128,33 +128,27 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── ADD TASKS TO DAILY LIST ────────────────────────────
+  // ── CONFIRM AI TASKS ADDED (called by chat screen after TaskProvider success)
+  Future<void> confirmAdded(int count) async {
+    final confirmMsg = ChatMsg(
+      id: 'confirm_${DateTime.now().millisecondsSinceEpoch}',
+      role: 'assistant',
+      content:
+          '✅ Ajoyib! **$count ta vazifa** sizning ro\'yxatingizga qo\'shildi!\n\n'
+          'Ularni bajarib XP to\'plang va reytingda yuqoriga chiqing! 💪🏆',
+      timestamp: DateTime.now(),
+    );
+    _msgs.add(confirmMsg);
+    _pending = [];
+    await _store.saveChat(_msgs.map((m) => m.toJson()).toList());
+    notifyListeners();
+  }
+
+  // Deprecated — kept for backward compat, now routes via TaskProvider externally
   Future<bool> addToDaily(List<TaskSuggestion> selected) async {
     if (selected.isEmpty) return false;
-    try {
-      await _api.post(K.fromChat, {
-        'tasks': selected.map((t) => t.toJson()).toList(),
-      });
-
-      final confirmMsg = ChatMsg(
-        id:        'confirm_${DateTime.now().millisecondsSinceEpoch}',
-        role:      'assistant',
-        content:
-            '✅ Ajoyib! **${selected.length} ta vazifa** '
-            'kunlik ro\'yxatingizga qo\'shildi!\n\n'
-            'Ularni bajarib ball to\'plang va reytingda yuqorilang! 💪🏆',
-        timestamp: DateTime.now(),
-      );
-      _msgs.add(confirmMsg);
-      _pending = [];
-      await _store.saveChat(_msgs.map((m) => m.toJson()).toList());
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      notifyListeners();
-      return false;
-    }
+    await confirmAdded(selected.length);
+    return true;
   }
 
   // ── CLEAR ─────────────────────────────────────────────
