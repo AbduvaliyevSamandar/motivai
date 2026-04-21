@@ -9,6 +9,7 @@ import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../config/theme_presets.dart';
+import '../../services/sound_pack.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/notification_provider.dart';
@@ -19,6 +20,9 @@ import 'achievements_screen.dart';
 import 'habits_screen.dart';
 import 'wrapped_screen.dart';
 import 'flashcards_screen.dart';
+import 'journey_screen.dart';
+import 'friends_screen.dart';
+import 'friend_challenges_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -365,6 +369,49 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
+                      icon: Icons.park_rounded,
+                      iconColor: AppColors.success,
+                      title: 'Sayohat',
+                      subtitle: '30 kunlik daraxt o\'sishi',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const JourneyScreen()),
+                        );
+                      },
+                    ),
+                    _tile(
+                      icon: Icons.group_rounded,
+                      iconColor: AppColors.pink,
+                      title: 'Do\'stlar',
+                      subtitle: 'Taklif kodi bilan guruhlash',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const FriendsScreen()),
+                        );
+                      },
+                    ),
+                    _tile(
+                      icon: Icons.emoji_events_rounded,
+                      iconColor: AppColors.accent,
+                      title: 'Chellenjlar',
+                      subtitle: 'Do\'st bilan 7 kunlik turnir',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  const FriendChallengesScreen()),
+                        );
+                      },
+                    ),
+                    _tile(
                       icon: Icons.translate_rounded,
                       iconColor: AppColors.secondary,
                       title: S.get('language'),
@@ -398,6 +445,15 @@ class _ProfileState extends State<ProfileScreen> {
                             subtitle: '5 soniyadan keyin test keladi',
                             onTap: _testNotification,
                           ),
+                        if (np.enabled)
+                          _tile(
+                            icon: Icons.music_note_rounded,
+                            iconColor: AppColors.pink,
+                            title: 'Tovush pachkasi',
+                            subtitle:
+                                '${SoundPackStore.info(SoundPackStore.current).emoji}  ${SoundPackStore.info(SoundPackStore.current).name}',
+                            onTap: _showSoundPackPicker,
+                          ),
                       ]),
                     ),
                   ]),
@@ -419,6 +475,20 @@ class _ProfileState extends State<ProfileScreen> {
                       title: 'Ma\'lumotlarni eksport',
                       subtitle: 'Vazifalar, odatlar, kartalar — JSON',
                       onTap: _exportData,
+                    ),
+                    _tile(
+                      icon: Icons.share_rounded,
+                      iconColor: AppColors.pink,
+                      title: 'Template ulashish',
+                      subtitle: 'Odatlar + kartalar — do\'stga yuboring',
+                      onTap: _shareTemplate,
+                    ),
+                    _tile(
+                      icon: Icons.file_upload_rounded,
+                      iconColor: AppColors.success,
+                      title: 'Template import',
+                      subtitle: 'JSON yopishtiring — odat/kartalarga qo\'shiladi',
+                      onTap: _importTemplate,
                     ),
                     _tile(
                       icon: Icons.cleaning_services_outlined,
@@ -1009,6 +1079,140 @@ class _ProfileState extends State<ProfileScreen> {
     );
   }
 
+  void _showSoundPackPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border(
+              top: BorderSide(color: AppColors.glassBorder, width: 1.5),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              const SizedBox(height: 18),
+              ShaderMask(
+                shaderCallback: (b) => LinearGradient(
+                  colors: AppColors.titleGradient,
+                ).createShader(b),
+                blendMode: BlendMode.srcIn,
+                child: Text(
+                  'Tovush pachkasi',
+                  style: GoogleFonts.spaceGrotesk(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Bildirishnoma uslubini tanlang',
+                style: GoogleFonts.poppins(
+                  color: AppColors.sub,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ...SoundPack.values.map((s) {
+                final info = SoundPackStore.info(s);
+                final active = SoundPackStore.current == s;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(14),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () async {
+                        HapticFeedback.selectionClick();
+                        await SoundPackStore.set(s);
+                        if (ctx.mounted) setS(() {});
+                        if (mounted) setState(() {});
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: active
+                              ? LinearGradient(colors: [
+                                  AppColors.primary.withOpacity(0.22),
+                                  AppColors.secondary.withOpacity(0.1),
+                                ])
+                              : null,
+                          color: active ? null : AppColors.bg,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: active
+                                ? AppColors.primary
+                                : AppColors.border,
+                            width: active ? 1.5 : 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(info.emoji,
+                                style: const TextStyle(fontSize: 24)),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    info.name,
+                                    style: GoogleFonts.spaceGrotesk(
+                                      color: AppColors.txt,
+                                      fontSize: 14,
+                                      fontWeight: active
+                                          ? FontWeight.w700
+                                          : FontWeight.w600,
+                                    ),
+                                  ),
+                                  Text(
+                                    info.desc,
+                                    style: GoogleFonts.poppins(
+                                      color: AppColors.sub,
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (active)
+                              Icon(Icons.check_circle_rounded,
+                                  color: AppColors.primary, size: 20),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showLanguageDialog() {
     showDialog(
       context: context,
@@ -1144,6 +1348,159 @@ class _ProfileState extends State<ProfileScreen> {
                 style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _shareTemplate() async {
+    HapticFeedback.lightImpact();
+    final bytes = await ExportService.shareTemplate();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        'Template nusxa olindi ($bytes bayt). Endi do\'stingizga yuboring.',
+        style: GoogleFonts.poppins(),
+      ),
+      backgroundColor: AppColors.success,
+      behavior: SnackBarBehavior.floating,
+    ));
+  }
+
+  void _importTemplate() {
+    final ctrl = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(ctx).viewInsets.bottom,
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border(
+              top:
+                  BorderSide(color: AppColors.glassBorder, width: 1.5),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              const SizedBox(height: 18),
+              ShaderMask(
+                shaderCallback: (b) => LinearGradient(
+                  colors: AppColors.titleGradient,
+                ).createShader(b),
+                blendMode: BlendMode.srcIn,
+                child: Text(
+                  'Template import',
+                  style: GoogleFonts.spaceGrotesk(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Do\'stingizdan olgan JSON ni yopishtiring',
+                style: GoogleFonts.poppins(
+                    color: AppColors.sub, fontSize: 12),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: ctrl,
+                minLines: 5,
+                maxLines: 10,
+                style: GoogleFonts.poppins(
+                    color: AppColors.txt, fontSize: 12),
+                decoration: InputDecoration(
+                  hintText: '{"app":"MotivAI", ...}',
+                  hintStyle: GoogleFonts.poppins(
+                      color: AppColors.hint, fontSize: 12),
+                  filled: true,
+                  fillColor: AppColors.bg,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.border),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: AppColors.border),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                        color: AppColors.primary, width: 1.5),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () async {
+                        final clip = await Clipboard.getData(
+                            Clipboard.kTextPlain);
+                        if (clip?.text != null) {
+                          ctrl.text = clip!.text!;
+                        }
+                      },
+                      icon: Icon(Icons.paste_rounded,
+                          color: AppColors.sub, size: 18),
+                      label: Text('Clipboard',
+                          style: GoogleFonts.poppins(
+                              color: AppColors.sub)),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: AppColors.border),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              NebulaButton(
+                label: 'Import qilish',
+                icon: Icons.file_upload_rounded,
+                onTap: () async {
+                  final raw = ctrl.text.trim();
+                  if (raw.isEmpty) return;
+                  final r = await ExportService.importTemplateJson(raw);
+                  if (!ctx.mounted) return;
+                  Navigator.pop(ctx);
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor:
+                        r.ok ? AppColors.success : AppColors.danger,
+                    content: Text(
+                      r.ok
+                          ? 'Qo\'shildi: ${r.habits} odat, ${r.decks} kolod, ${r.cards} karta'
+                          : (r.error ?? 'Xatolik'),
+                      style: GoogleFonts.poppins(),
+                    ),
+                  ));
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

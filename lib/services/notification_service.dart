@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'sound_pack.dart';
 
 /// Thin wrapper around flutter_local_notifications.
 /// On web, methods become no-ops (web not supported by the plugin).
@@ -63,21 +64,37 @@ class NotificationService {
     }
   }
 
-  NotificationDetails get _details => const NotificationDetails(
-        android: AndroidNotificationDetails(
-          'motivai_default',
-          'MotivAI',
-          channelDescription: 'Vazifalar, eslatmalar va yutuqlar',
-          importance: Importance.high,
-          priority: Priority.high,
-          styleInformation: BigTextStyleInformation(''),
-        ),
-        iOS: DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: true,
-        ),
-      );
+  NotificationDetails get _details {
+    final pack = SoundPackStore.current;
+    final info = SoundPackStore.info(pack);
+    final hasSound =
+        pack != SoundPack.vibrate && pack != SoundPack.silent;
+    final hasVibration = pack != SoundPack.silent;
+    final priority = pack == SoundPack.urgent
+        ? Priority.max
+        : pack == SoundPack.calm
+            ? Priority.defaultPriority
+            : Priority.high;
+    return NotificationDetails(
+      android: AndroidNotificationDetails(
+        info.channel,
+        'MotivAI \u{2022} ${info.name}',
+        channelDescription: info.desc,
+        importance: pack == SoundPack.urgent
+            ? Importance.max
+            : Importance.high,
+        priority: priority,
+        playSound: hasSound,
+        enableVibration: hasVibration,
+        styleInformation: const BigTextStyleInformation(''),
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: hasSound,
+      ),
+    );
+  }
 
   /// Immediate notification (overdue, achievements, etc.)
   Future<void> show({

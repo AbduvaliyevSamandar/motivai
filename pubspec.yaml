@@ -36,6 +36,15 @@ dependencies:
   flutter_local_notifications: ^17.2.3
   timezone: ^0.9.4
 
+  # Voice input
+  speech_to_text: ^6.6.0
+
+  # Android home widget
+  home_widget: ^0.6.0
+
+  # Network status (offline detection)
+  connectivity_plus: ^6.0.0
+
   cupertino_icons: ^1.0.6
 
 dev_dependencies:

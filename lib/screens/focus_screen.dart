@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../services/pomodoro.dart';
 import '../services/ambient_sounds.dart';
+import '../services/journey_storage.dart';
 import '../widgets/nebula/nebula.dart';
 
 /// Opens a full-screen Pomodoro session. Returns minutes focused when closed.
@@ -179,6 +180,9 @@ class _FocusScreenState extends State<FocusScreen> {
   void _exit() {
     HapticFeedback.mediumImpact();
     final minutes = _session.stop();
+    if (minutes > 0) {
+      JourneyStorage.recordFocusMinutes(minutes);
+    }
     Navigator.of(context).pop<int?>(minutes);
   }
 

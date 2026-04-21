@@ -7,6 +7,9 @@ import 'providers/chat_provider.dart';
 import 'providers/theme_provider.dart';
 import 'providers/notification_provider.dart';
 import 'services/notification_service.dart';
+import 'services/sound_pack.dart';
+import 'services/action_queue.dart';
+import 'services/home_widget_service.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -19,6 +22,8 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
   ));
+  await SoundPackStore.load();
+  await HomeWidgetService.init();
   await NotificationService.instance.init();
   runApp(const App());
 }
@@ -54,6 +59,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider<ActionQueue>.value(value: ActionQueue.instance),
         ChangeNotifierProxyProvider<AuthProvider, TaskProvider>(
           create: (_) => TaskProvider(),
           update: (_, auth, prev) {

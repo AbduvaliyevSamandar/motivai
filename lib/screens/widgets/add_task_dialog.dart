@@ -9,6 +9,7 @@ import '../../providers/notification_provider.dart';
 import '../../services/local_schedules.dart';
 import '../../models/models.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../../widgets/voice_input_button.dart';
 
 void showAddTaskDialog(BuildContext context, {Task? editTask}) {
   showModalBottomSheet(
@@ -226,6 +227,10 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 controller: _titleCtrl,
                 hint: S.get('task_title'),
                 prefixIcon: Icons.edit_rounded,
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: VoiceInputButton(controller: _titleCtrl),
+                ),
               ),
               const SizedBox(height: 14),
               _label(S.get('task_desc')),

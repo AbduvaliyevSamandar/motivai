@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import '../services/api.dart';
 import '../services/local_schedules.dart';
 import '../services/pinned_storage.dart';
+import '../services/journey_storage.dart';
+import '../services/friend_challenge.dart';
+import '../services/home_widget_service.dart';
 import '../config/constants.dart';
 import '../models/models.dart';
 import 'notification_provider.dart';
@@ -160,6 +163,7 @@ class TaskProvider extends ChangeNotifier {
 
       _planTasks = rebuilt;
       debugPrint('✅ loadPlans done — ${_planTasks.length} tasks');
+      _pushWidget();
     } catch (e) {
       debugPrint('❌ loadPlans error: $e');
       _error = e.toString();
@@ -273,6 +277,32 @@ class TaskProvider extends ChangeNotifier {
             ? t.copyWith(isCompleted: true, completedAt: DateTime.now())
             : t)
         .toList();
+    // Record into focus journey (tree growth)
+    JourneyStorage.recordTaskDone();
+    // Friend challenges progress
+    FriendChallenges.recordMyTask();
+    _pushWidget();
+  }
+
+  /// Push latest state to the Android home-screen widget.
+  void _pushWidget() {
+    final next = _planTasks.firstWhere(
+      (t) => !t.isCompleted,
+      orElse: () => const Task(
+        id: '',
+        title: 'Hozircha rejalar yo\'q',
+        description: '',
+        category: '',
+        difficulty: 'easy',
+        points: 0,
+        durationMinutes: 0,
+      ),
+    );
+    HomeWidgetService.update(
+      nextTaskTitle: next.title,
+      tasksDone: completedToday,
+      tasksTotal: totalToday,
+    );
   }
 
   // ── HELPERS ───────────────────────────────────────────
