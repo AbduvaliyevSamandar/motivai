@@ -57,7 +57,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
             child: CustomScrollView(
               physics: const AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics()),
+                  parent: ClampingScrollPhysics()),
               slivers: [
                 SliverToBoxAdapter(
                   child: SafeArea(
@@ -129,7 +129,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   _buildTaskList(context, tasks),
                 ],
-                const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                const SliverToBoxAdapter(child: SizedBox(height: 90)),
               ],
             ),
           ),
