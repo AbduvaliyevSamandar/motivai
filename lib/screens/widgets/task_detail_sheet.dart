@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 import '../../models/models.dart';
+import '../../services/task_notes.dart';
 import '../../widgets/nebula/nebula.dart';
 import '../focus_screen.dart';
 
@@ -174,6 +175,9 @@ class _TaskDetailSheet extends StatelessWidget {
 
             // Details grid
             _detailsSection(),
+
+            // Notes / Reflection
+            _TaskNoteWidget(taskId: task.id),
 
             // Plan info
             if (task.planTitle != null && task.planTitle!.isNotEmpty) ...[
@@ -486,5 +490,192 @@ class _TaskDetailSheet extends StatelessWidget {
     if (diff.inMinutes < 60) return '${diff.inMinutes} min oldin';
     if (diff.inHours < 24) return '${diff.inHours} soat oldin';
     return '${diff.inDays} kun oldin';
+  }
+}
+
+class _TaskNoteWidget extends StatefulWidget {
+  final String taskId;
+  const _TaskNoteWidget({required this.taskId});
+  @override
+  State<_TaskNoteWidget> createState() => _TaskNoteWidgetState();
+}
+
+class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
+  final _ctrl = TextEditingController();
+  bool _editing = false;
+  String? _saved;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  Future<void> _load() async {
+    final n = await TaskNotes.get(widget.taskId);
+    if (mounted) {
+      setState(() {
+        _saved = n;
+        _ctrl.text = n ?? '';
+      });
+    }
+  }
+
+  Future<void> _save() async {
+    FocusScope.of(context).unfocus();
+    await TaskNotes.set(widget.taskId, _ctrl.text);
+    if (!mounted) return;
+    HapticFeedback.lightImpact();
+    setState(() {
+      _saved = _ctrl.text.trim().isEmpty ? null : _ctrl.text.trim();
+      _editing = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hasNote = _saved != null && _saved!.isNotEmpty;
+    if (!hasNote && !_editing) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          child: InkWell(
+            onTap: () {
+              HapticFeedback.selectionClick();
+              setState(() => _editing = true);
+            },
+            borderRadius: BorderRadius.circular(12),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.bg,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                    color: AppColors.border,
+                    style: BorderStyle.solid),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.note_add_outlined,
+                      color: AppColors.sub, size: 16),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Izoh qo\'shish (reflection)',
+                    style: GoogleFonts.poppins(
+                      color: AppColors.sub,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.bg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.note_outlined,
+                    color: AppColors.accent, size: 14),
+                const SizedBox(width: 6),
+                Text(
+                  'IZOH',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const Spacer(),
+                if (!_editing)
+                  GestureDetector(
+                    onTap: () => setState(() => _editing = true),
+                    child: Icon(Icons.edit_outlined,
+                        color: AppColors.sub, size: 14),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (_editing) ...[
+              TextField(
+                controller: _ctrl,
+                maxLines: 4,
+                autofocus: true,
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
+                  fontSize: 13,
+                  height: 1.5,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Nima o\'rgandingiz? Qanday borish mumkin?',
+                  hintStyle: GoogleFonts.poppins(
+                    color: AppColors.hint,
+                    fontSize: 12,
+                  ),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _editing = false;
+                        _ctrl.text = _saved ?? '';
+                      });
+                    },
+                    child: Text('Bekor',
+                        style: GoogleFonts.poppins(
+                            color: AppColors.sub, fontSize: 12)),
+                  ),
+                  TextButton(
+                    onPressed: _save,
+                    child: Text('Saqlash',
+                        style: GoogleFonts.poppins(
+                            color: AppColors.primary,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700)),
+                  ),
+                ],
+              ),
+            ] else
+              Text(
+                _saved ?? '',
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
+                  fontSize: 13,
+                  height: 1.5,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 }

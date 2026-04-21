@@ -9,6 +9,7 @@ import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../../widgets/productivity_score_card.dart';
 
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
@@ -117,6 +118,15 @@ class _ProgState extends State<ProgressScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16),
                         child: _StatsGrid(auth: auth),
+                      ),
+                      const SizedBox(height: 14),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16),
+                        child: ProductivityScoreCard(
+                          tasks: tasks.all,
+                          streak: auth.streak,
+                        ),
                       ),
                       const SizedBox(height: 14),
                       Padding(
