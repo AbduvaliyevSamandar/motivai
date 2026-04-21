@@ -252,6 +252,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: InkWell(
           onTap: () {
             HapticFeedback.lightImpact();
+            // Always switch to Faol when opening add — new task lives there
+            if (_showCompleted) {
+              setState(() => _showCompleted = false);
+            }
             showAddTaskDialog(context);
           },
           customBorder: const CircleBorder(),
