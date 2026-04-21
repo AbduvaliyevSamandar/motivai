@@ -78,7 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(
-                        D.sp20, D.sp16, D.sp20, D.sp16),
+                        D.sp16, D.sp12, D.sp16, D.sp8),
                     child: _HeroXPRing(
                       points: auth.points,
                       level: auth.level,
@@ -90,11 +90,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: D.sp16),
-                    child: _BentoGrid(
+                    padding: const EdgeInsets.fromLTRB(
+                        D.sp16, 0, D.sp16, 4),
+                    child: _QuickStats(
                       points: auth.points,
-                      level: auth.level,
                       streak: auth.streak,
                       tasksDone: tasks.completedToday,
                     ),
@@ -662,7 +661,120 @@ class _HeroXPRing extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  BENTO GRID — asymmetric premium card layout
+//  QUICK STATS — compact horizontal chips
+// ═══════════════════════════════════════════════════════════
+class _QuickStats extends StatelessWidget {
+  final int points, streak, tasksDone;
+  const _QuickStats({
+    required this.points,
+    required this.streak,
+    required this.tasksDone,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: _chip(
+            icon: Icons.star_rounded,
+            value: _fmt(points),
+            label: 'XP',
+            gradient: AppColors.gradGold,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _chip(
+            icon: Icons.local_fire_department_rounded,
+            value: '$streak',
+            label: 'streak',
+            gradient: AppColors.gradFire,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Expanded(
+          child: _chip(
+            icon: Icons.check_circle_rounded,
+            value: '$tasksDone',
+            label: 'bajarildi',
+            gradient: AppColors.gradSuccess,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _chip({
+    required IconData icon,
+    required String value,
+    required String label,
+    required List<Color> gradient,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: AppColors.card.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: gradient.first.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: gradient),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: gradient.first.withOpacity(0.35),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: Icon(icon, color: Colors.white, size: 15),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  value,
+                  style: GoogleFonts.spaceGrotesk(
+                    color: AppColors.txt,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    height: 1.1,
+                    letterSpacing: -0.3,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  label,
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _fmt(int n) =>
+      n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BENTO GRID (legacy, not used anymore — kept for ref)
 // ═══════════════════════════════════════════════════════════
 class _BentoGrid extends StatelessWidget {
   final int points, level, streak, tasksDone;
