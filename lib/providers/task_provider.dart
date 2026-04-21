@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import '../services/api.dart';
 import '../services/local_schedules.dart';
+import '../services/pinned_storage.dart';
 import '../config/constants.dart';
 import '../models/models.dart';
 import 'notification_provider.dart';
@@ -24,8 +25,27 @@ class TaskProvider extends ChangeNotifier {
   // ── Getters ───────────────────────────────────────────
   /// All tasks (active + completed)
   List<Task>    get all         => List.unmodifiable(_planTasks);
-  /// Only non-completed
-  List<Task>    get active      => _planTasks.where((t) => !t.isCompleted).toList();
+  Set<String> _pinned = {};
+  Set<String> get pinned => _pinned;
+  bool isPinned(String id) => _pinned.contains(id);
+
+  Future<void> togglePin(String id) async {
+    await PinnedStorage.toggle(id);
+    _pinned = await PinnedStorage.load();
+    notifyListeners();
+  }
+
+  /// Only non-completed — pinned items sorted first
+  List<Task>    get active      {
+    final list = _planTasks.where((t) => !t.isCompleted).toList();
+    list.sort((a, b) {
+      final ap = _pinned.contains(a.id);
+      final bp = _pinned.contains(b.id);
+      if (ap != bp) return ap ? -1 : 1;
+      return 0;
+    });
+    return list;
+  }
   /// Only completed (most recent first)
   List<Task>    get completed   {
     final list = _planTasks.where((t) => t.isCompleted).toList();
@@ -61,6 +81,7 @@ class TaskProvider extends ChangeNotifier {
     _loading = true;
     _error   = null;
     notifyListeners();
+    _pinned = await PinnedStorage.load();
     await Future.wait([
       _loadPlans(),
       _loadLeaderboard(),

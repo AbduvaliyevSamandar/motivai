@@ -73,7 +73,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
           height: 56,
           decoration: BoxDecoration(
             gradient:
-                const LinearGradient(colors: AppColors.gradCosmic),
+                LinearGradient(colors: AppColors.gradCosmic),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
@@ -531,7 +531,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
           height: 56,
           decoration: BoxDecoration(
             gradient:
-                const LinearGradient(colors: AppColors.gradCosmic),
+                LinearGradient(colors: AppColors.gradCosmic),
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(

@@ -12,6 +12,8 @@ class TaskCard extends StatefulWidget {
   final VoidCallback onComplete;
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
+  final VoidCallback? onPin;
+  final bool pinned;
 
   const TaskCard({
     super.key,
@@ -19,6 +21,8 @@ class TaskCard extends StatefulWidget {
     required this.onComplete,
     this.onEdit,
     this.onDelete,
+    this.onPin,
+    this.pinned = false,
   });
 
   @override
@@ -154,6 +158,11 @@ class _TaskCardState extends State<TaskCard>
                                 spacing: 6,
                                 runSpacing: 6,
                                 children: [
+                                  if (widget.pinned)
+                                    _InfoTag(
+                                      text: '\u{1F4CC} Pin',
+                                      color: AppColors.accent,
+                                    ),
                                   if (t.hasSchedule)
                                     _TimeTag(task: t),
                                   _InfoTag(
@@ -171,12 +180,15 @@ class _TaskCardState extends State<TaskCard>
                           ),
                         ),
                         const SizedBox(width: D.sp8),
-                        // More menu (edit/delete) — only for active tasks
+                        // More menu (pin/edit/delete) — only for active tasks
                         if (!done && (widget.onEdit != null ||
-                            widget.onDelete != null))
+                            widget.onDelete != null ||
+                            widget.onPin != null))
                           _MoreMenu(
                             onEdit: widget.onEdit,
                             onDelete: widget.onDelete,
+                            onPin: widget.onPin,
+                            pinned: widget.pinned,
                           ),
                         // Complete button
                         _CompleteButton(
@@ -311,7 +323,14 @@ class _TaskCardState extends State<TaskCard>
 class _MoreMenu extends StatelessWidget {
   final VoidCallback? onEdit;
   final VoidCallback? onDelete;
-  const _MoreMenu({this.onEdit, this.onDelete});
+  final VoidCallback? onPin;
+  final bool pinned;
+  const _MoreMenu({
+    this.onEdit,
+    this.onDelete,
+    this.onPin,
+    this.pinned = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -335,6 +354,29 @@ class _MoreMenu extends StatelessWidget {
         side: BorderSide(color: AppColors.border),
       ),
       itemBuilder: (_) => [
+        if (onPin != null)
+          PopupMenuItem(
+            value: 'pin',
+            child: Row(
+              children: [
+                Icon(
+                  pinned
+                      ? Icons.push_pin_rounded
+                      : Icons.push_pin_outlined,
+                  color: AppColors.accent,
+                  size: 18,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  pinned ? 'Pinni yechish' : 'Pin qilish',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.txt,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
         if (onEdit != null)
           PopupMenuItem(
             value: 'edit',
@@ -376,6 +418,7 @@ class _MoreMenu extends StatelessWidget {
         HapticFeedback.selectionClick();
         if (v == 'edit') onEdit?.call();
         if (v == 'delete') onDelete?.call();
+        if (v == 'pin') onPin?.call();
       },
     );
   }
@@ -411,7 +454,7 @@ class _CompleteButton extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: done
               ? null
-              : const LinearGradient(colors: AppColors.gradPrimary),
+              : LinearGradient(colors: AppColors.gradPrimary),
           color: done ? AppColors.success.withOpacity(0.15) : null,
           shape: BoxShape.circle,
           boxShadow: done

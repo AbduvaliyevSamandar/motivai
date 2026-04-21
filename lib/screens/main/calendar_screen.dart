@@ -344,7 +344,7 @@ class _CalendarCell extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         decoration: BoxDecoration(
           gradient: isSelected
-              ? const LinearGradient(colors: AppColors.gradCosmic)
+              ? LinearGradient(colors: AppColors.gradCosmic)
               : null,
           color: isSelected
               ? null

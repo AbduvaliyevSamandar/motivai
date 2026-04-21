@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../services/pomodoro.dart';
+import '../services/ambient_sounds.dart';
 import '../widgets/nebula/nebula.dart';
 
 /// Opens a full-screen Pomodoro session. Returns minutes focused when closed.
@@ -43,6 +44,7 @@ class FocusScreen extends StatefulWidget {
 
 class _FocusScreenState extends State<FocusScreen> {
   late final PomodoroSession _session;
+  AmbientSound _ambient = AmbientSounds.none;
 
   @override
   void initState() {
@@ -53,6 +55,113 @@ class _FocusScreenState extends State<FocusScreen> {
     );
     _session.addListener(_tick);
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+    _loadAmbient();
+  }
+
+  Future<void> _loadAmbient() async {
+    final s = await AmbientSounds.selected();
+    if (mounted) setState(() => _ambient = s);
+  }
+
+  Future<void> _pickAmbient() async {
+    HapticFeedback.selectionClick();
+    final chosen = await showModalBottomSheet<AmbientSound>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(24)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Fon ovozi',
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.txt,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Tez orada chalinadi (infratuzilma tayyor)',
+              style: GoogleFonts.poppins(
+                color: AppColors.sub,
+                fontSize: 11,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: AmbientSounds.all.map((s) {
+                final sel = s.id == _ambient.id;
+                return GestureDetector(
+                  onTap: () => Navigator.pop(ctx, s),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      gradient: sel
+                          ? LinearGradient(colors: [
+                              s.color.withOpacity(0.3),
+                              s.color.withOpacity(0.15),
+                            ])
+                          : null,
+                      color: sel ? null : AppColors.bg,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: sel
+                            ? s.color.withOpacity(0.6)
+                            : AppColors.border,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(s.emoji,
+                            style: const TextStyle(fontSize: 14)),
+                        const SizedBox(width: 6),
+                        Text(
+                          s.name,
+                          style: GoogleFonts.poppins(
+                            color: sel ? s.color : AppColors.txt,
+                            fontSize: 12,
+                            fontWeight: sel
+                                ? FontWeight.w700
+                                : FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (chosen != null) {
+      await AmbientSounds.select(chosen.id);
+      if (mounted) setState(() => _ambient = chosen);
+    }
   }
 
   void _tick() {
@@ -169,6 +278,44 @@ class _FocusScreenState extends State<FocusScreen> {
                           ),
                         ),
                         const Spacer(),
+                        Material(
+                          color: Colors.white.withOpacity(0.08),
+                          borderRadius: BorderRadius.circular(12),
+                          child: InkWell(
+                            onTap: _pickAmbient,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 6),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(12),
+                                border: Border.all(
+                                    color: Colors.white
+                                        .withOpacity(0.2)),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(_ambient.emoji,
+                                      style: const TextStyle(
+                                          fontSize: 14)),
+                                  const SizedBox(width: 6),
+                                  Text(
+                                    _ambient.name,
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.white
+                                          .withOpacity(0.85),
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
                         _PhaseBadge(
                           label: _session.phaseLabel,
                           cycle: _session.cycle,

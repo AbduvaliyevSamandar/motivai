@@ -14,11 +14,14 @@ import '../../widgets/nebula/nebula.dart';
 import '../../widgets/daily_quote_card.dart';
 import '../../widgets/daily_challenge_card.dart';
 import '../../services/daily_challenge.dart';
+import '../../services/coins_storage.dart';
+import '../../widgets/coins_badge.dart';
 import '../widgets/task_card.dart';
 import '../widgets/completion_dialog.dart';
 import '../widgets/add_task_dialog.dart';
 import 'notifications_screen.dart';
 import 'calendar_screen.dart';
+import 'search_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -170,9 +173,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
             index: i,
             child: TaskCard(
               task: list[i],
+              pinned: tasks.isPinned(list[i].id),
               onComplete: () => _complete(context, tasks, list[i]),
               onEdit: () => _edit(context, list[i]),
               onDelete: () => _confirmDelete(context, tasks, list[i]),
+              onPin: () => tasks.togglePin(list[i].id),
             ),
           ),
           childCount: list.length,
@@ -308,6 +313,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ch.type == ChallengeType.streakKeep) {
         await DailyChallengeService.increment();
       }
+      // Award coins based on difficulty
+      await CoinsStorage.add(CoinsStorage.taskReward(task.difficulty));
       await ctx.read<AuthProvider>().refresh();
       if (!ctx.mounted) return;
       showDialog(
@@ -374,6 +381,46 @@ class _HeaderRow extends StatelessWidget {
               ),
             ],
           ),
+        ),
+        // Search button
+        Builder(builder: (ctx) {
+          return Material(
+            color: AppColors.card.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(14),
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.selectionClick();
+                Navigator.push(
+                  ctx,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => const SearchScreen(),
+                    transitionsBuilder: (_, a, __, c) =>
+                        FadeTransition(opacity: a, child: c),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(14),
+              child: Container(
+                width: 44,
+                height: 44,
+                margin: const EdgeInsets.only(right: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Icon(
+                  Icons.search_rounded,
+                  color: AppColors.sub,
+                  size: 20,
+                ),
+              ),
+            ),
+          );
+        }),
+        // Coins badge
+        Padding(
+          padding: const EdgeInsets.only(right: 6),
+          child: CoinsBadge(),
         ),
         // Calendar button
         Builder(builder: (ctx) {
@@ -1360,7 +1407,7 @@ class _TaskToggle extends StatelessWidget {
           margin: const EdgeInsets.all(3),
           decoration: BoxDecoration(
             gradient: active
-                ? const LinearGradient(colors: AppColors.gradCosmic)
+                ? LinearGradient(colors: AppColors.gradCosmic)
                 : null,
             borderRadius: BorderRadius.circular(11),
             boxShadow: active

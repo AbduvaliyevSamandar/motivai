@@ -553,7 +553,7 @@ class _ProfileState extends State<ProfileScreen> {
     return Center(
       child: ShaderMask(
         shaderCallback: (r) =>
-            const LinearGradient(colors: AppColors.gradCosmic)
+            LinearGradient(colors: AppColors.gradCosmic)
                 .createShader(r),
         blendMode: BlendMode.srcIn,
         child: Text(

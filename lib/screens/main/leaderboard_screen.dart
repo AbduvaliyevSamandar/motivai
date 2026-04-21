@@ -216,7 +216,7 @@ class _MyRankHeader extends StatelessWidget {
               padding: const EdgeInsets.all(3),
               decoration: BoxDecoration(
                 gradient:
-                    const LinearGradient(colors: AppColors.gradCosmic),
+                    LinearGradient(colors: AppColors.gradCosmic),
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(

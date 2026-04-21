@@ -18,7 +18,7 @@ class AppColors {
 
   // ─── NEBULA SURFACES ───────────────────────────────────────
   static Color get bg => _dark
-      ? const Color(0xFF08091A) // deep space
+      ? const Color(0xFF08091A)
       : const Color(0xFFF7F6FB);
 
   static Color get bgDeep => _dark
@@ -33,7 +33,6 @@ class AppColors {
       ? const Color(0xFF161933)
       : const Color(0xFFFFFFFF);
 
-  // Glass surface for frosted cards
   static Color get glass => _dark
       ? const Color(0x3316193D)
       : const Color(0xCCFFFFFF);
@@ -51,20 +50,14 @@ class AppColors {
       : const Color(0xFFF0EEF7);
 
   // ─── TYPOGRAPHY ────────────────────────────────────────────
-  static Color get txt => _dark
-      ? const Color(0xFFF1F1FA)
-      : const Color(0xFF0F1028);
+  static Color get txt =>
+      _dark ? const Color(0xFFF1F1FA) : const Color(0xFF0F1028);
+  static Color get sub =>
+      _dark ? const Color(0xFFA5A8C7) : const Color(0xFF6B6E8F);
+  static Color get hint =>
+      _dark ? const Color(0xFF6C6F8E) : const Color(0xFFA5A8C7);
 
-  static Color get sub => _dark
-      ? const Color(0xFFA5A8C7)
-      : const Color(0xFF6B6E8F);
-
-  static Color get hint => _dark
-      ? const Color(0xFF6C6F8E)
-      : const Color(0xFFA5A8C7);
-
-  // ─── GRADIENTS (aurora & cosmic) ───────────────────────────
-  // Primary — cosmic aurora (violet → cyan)
+  // ─── GRADIENTS ─────────────────────────────────────────────
   static const gradPrimary = [Color(0xFFA855F7), Color(0xFF7C3AED)];
   static const gradCosmic = [
     Color(0xFF7C3AED),
@@ -96,17 +89,13 @@ class AppColors {
     'challenge': Color(0xFFEC4899),
   };
 
-  // ─── GLOW COLORS (for boxShadow) ──────────────────────────
+  // ─── GLOW ─────────────────────────────────────────────────
   static Color get glowPrimary => primary.withOpacity(0.35);
   static Color get glowGold => accent.withOpacity(0.35);
   static Color get glowCyan => secondary.withOpacity(0.35);
 
-  // ─── ADAPTIVE GRADIENTS (theme-aware titles etc) ─────────
+  // ─── ADAPTIVE TITLE GRADIENT ──────────────────────────────
   static List<Color> get titleGradient => _dark
       ? const [Color(0xFFFFFFFF), Color(0xFFE0D4FB)]
       : const [Color(0xFF4F46E5), Color(0xFFA855F7)];
-
-  static List<Color> get softTitleGradient => _dark
-      ? const [Color(0xFFFFFFFF), Color(0xFFBFB5EE)]
-      : const [Color(0xFF1E1B4B), Color(0xFF4F46E5)];
 }

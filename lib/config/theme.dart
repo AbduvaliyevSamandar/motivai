@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 
-/// Backward-compatible alias.
 class C {
   static bool get isDark => AppColors.isDark;
   static void setDark(bool v) => AppColors.setDark(v);
@@ -38,7 +37,6 @@ class C {
   static const cat = AppColors.cat;
 }
 
-/// Nebula Premium ThemeData
 class AppTheme {
   static ThemeData get dark => _build(Brightness.dark);
   static ThemeData get light => _build(Brightness.light);
@@ -103,15 +101,6 @@ class AppTheme {
         ),
         iconTheme: IconThemeData(color: txt, size: 24),
       ),
-      cardTheme: CardThemeData(
-        color: card,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-          side: BorderSide(color: borderColor.withOpacity(0.5)),
-        ),
-        margin: EdgeInsets.zero,
-      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: card.withOpacity(0.6),
@@ -129,20 +118,10 @@ class AppTheme {
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.danger),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
-          borderSide:
-              const BorderSide(color: AppColors.danger, width: 2),
-        ),
         labelStyle: TextStyle(color: sub),
         hintStyle: TextStyle(color: hint),
         prefixIconColor: sub,
         suffixIconColor: sub,
-        errorStyle: const TextStyle(color: AppColors.danger, fontSize: 12),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -158,76 +137,6 @@ class AppTheme {
             fontWeight: FontWeight.w700,
           ),
         ),
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          minimumSize: const Size(double.infinity, 52),
-          side: BorderSide(color: AppColors.primary.withOpacity(0.5)),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          textStyle: GoogleFonts.poppins(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          textStyle: GoogleFonts.poppins(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Colors.transparent,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: sub,
-        showUnselectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        elevation: 0,
-      ),
-      snackBarTheme: SnackBarThemeData(
-        backgroundColor: card,
-        contentTextStyle: GoogleFonts.poppins(
-          color: txt,
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: borderColor),
-        ),
-        elevation: 8,
-      ),
-      dialogTheme: DialogThemeData(
-        backgroundColor: card,
-        elevation: 12,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-          side: BorderSide(color: borderColor),
-        ),
-        titleTextStyle: GoogleFonts.poppins(
-          fontSize: 20,
-          fontWeight: FontWeight.w700,
-          color: txt,
-        ),
-        contentTextStyle: GoogleFonts.poppins(
-          fontSize: 14,
-          color: sub,
-        ),
-      ),
-      dividerColor: borderColor,
-      dividerTheme: DividerThemeData(
-        color: isDark
-            ? const Color(0xFF1A1D36)
-            : const Color(0xFFF0EEF7),
-        thickness: 1,
-        space: 0,
       ),
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
