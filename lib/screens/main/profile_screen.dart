@@ -12,10 +12,12 @@ import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../services/notification_service.dart';
+import '../../services/export_service.dart';
 import '../../widgets/nebula/nebula.dart';
 import 'achievements_screen.dart';
 import 'habits_screen.dart';
 import 'wrapped_screen.dart';
+import 'flashcards_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -306,6 +308,21 @@ class _ProfileState extends State<ProfileScreen> {
                       onTap: _showChangePassword,
                     ),
                     _tile(
+                      icon: Icons.credit_card_rounded,
+                      iconColor: AppColors.info,
+                      title: 'Flashcards',
+                      subtitle: 'Spaced repetition bilan yodlash',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const FlashcardsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _tile(
                       icon: Icons.eco_rounded,
                       iconColor: AppColors.success,
                       title: 'Kundalik odatlar',
@@ -387,6 +404,13 @@ class _ProfileState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
+                    _tile(
+                      icon: Icons.download_rounded,
+                      iconColor: AppColors.info,
+                      title: 'Ma\'lumotlarni eksport',
+                      subtitle: 'Vazifalar, odatlar, kartalar — JSON',
+                      onTap: _exportData,
+                    ),
                     _tile(
                       icon: Icons.cleaning_services_outlined,
                       iconColor: AppColors.accent,
@@ -937,6 +961,29 @@ class _ProfileState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _exportData() async {
+    HapticFeedback.lightImpact();
+    final bytes = await ExportService.exportToClipboard();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.check_circle_rounded,
+              color: Colors.white, size: 18),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              'Nusxa olindi ($bytes bayt)',
+              style: GoogleFonts.poppins(),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: AppColors.success,
+      behavior: SnackBarBehavior.floating,
+    ));
   }
 
   Future<void> _testNotification() async {
