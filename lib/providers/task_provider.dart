@@ -322,7 +322,7 @@ class TaskProvider extends ChangeNotifier {
         );
       }
 
-      // Optimistic insert so UI updates IMMEDIATELY
+      // Optimistic insert so UI updates IMMEDIATELY (even before reload)
       if (taskId != null && taskId.isNotEmpty) {
         _planTasks.insert(
           0,
@@ -341,12 +341,17 @@ class TaskProvider extends ChangeNotifier {
           ),
         );
         notifyListeners();
+        debugPrint('✅ Optimistic insert — new task $taskId added (total: ${_planTasks.length})');
+      } else {
+        debugPrint('⚠️ No taskId extracted from response — relying on reload');
       }
 
-      // Reload in background to sync any server-side modifications
-      unawaited(_loadPlans());
+      // Await reload so the caller sees the final state
+      await _loadPlans();
+      debugPrint('♻️ Reload complete — total tasks: ${_planTasks.length}');
       return true;
     } catch (e) {
+      debugPrint('❌ createTask error: $e');
       _error = e.toString();
       notifyListeners();
       return false;
@@ -430,8 +435,8 @@ class TaskProvider extends ChangeNotifier {
         notifyListeners();
       }
 
-      // Silent background reload to sync
-      unawaited(_loadPlans());
+      // Await reload to ensure final state is synced
+      await _loadPlans();
       return planId;
     } catch (e) {
       _error = e.toString();
