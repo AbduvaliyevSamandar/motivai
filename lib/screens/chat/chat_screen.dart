@@ -56,6 +56,13 @@ class _ChatState extends State<ChatScreen> {
       'streak': auth.streak,
       'points': auth.points,
     });
+    // If AI auto-created a plan, refresh dashboard tasks
+    if (mounted && chat.consumePlanCreatedSignal()) {
+      await context.read<TaskProvider>().loadAll();
+      if (mounted) {
+        _snack("Reja yaratildi — Bosh sahifadan ko'ring");
+      }
+    }
     _toBottom();
   }
 

@@ -12,11 +12,20 @@ class ChatProvider extends ChangeNotifier {
   bool                 _typing = false;
   String?              _error;
   List<TaskSuggestion> _pending = [];
+  bool                 _planCreatedSignal = false;
 
   List<ChatMsg>        get msgs    => List.unmodifiable(_msgs);
   bool                 get isTyping=> _typing;
   String?              get error   => _error;
   List<TaskSuggestion> get pending => _pending;
+
+  /// Read-and-clear flag — true for one tick after AI auto-created a plan,
+  /// so UI can trigger TaskProvider.loadAll().
+  bool consumePlanCreatedSignal() {
+    if (!_planCreatedSignal) return false;
+    _planCreatedSignal = false;
+    return true;
+  }
 
   void updateToken(String? _) {}
 
@@ -65,7 +74,6 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // Oxirgi 8 xabar tarixi
       final history = _msgs
           .where((m) => m.id != userMsg.id)
           .toList()
@@ -79,37 +87,66 @@ class ChatProvider extends ChangeNotifier {
       final res = await _api.post(
         K.aiChat,
         {
-          'message':                text.trim(),
-          'conversation_history':   history,
+          'message': text.trim(),
+          'conversation_history': history,
         },
         timeout: K.aiTimeout,
       );
 
-      // Backend: {"success":true, "data": {"message":"...", "session_id":"...", ...}}
+      // Live backend: {"success":true, "data":{"message":..., "created_plan": {...}|null, "tokens_used":0}}
       final resData = res['data'] as Map<String, dynamic>? ?? res;
-      final content = resData['message']?.toString() ??
+      String content = resData['message']?.toString() ??
           res['message']?.toString() ??
           'Javob olishda xato yuz berdi.';
 
-      final rawTasks = res['suggested_tasks'];
+      // Detect OpenAI quota error — make it clearly visible & helpful
+      final isQuotaErr =
+          content.toLowerCase().contains('quota') ||
+              content.toLowerCase().contains('billing');
+      if (isQuotaErr) {
+        content =
+            '\u26A0\uFE0F AI servisi vaqtincha ishlamayapti (OpenAI kredit tugagan).'
+            '\n\nMarkazda siz vazifalarni **qo\'lda** qo\'shishingiz mumkin — '
+            'pastdagi \u2795 tugmachasi bilan.';
+      }
+
+      // Case 1: backend auto-created a plan — reload tasks so they appear in dashboard
+      final createdPlan = resData['created_plan'];
+      bool planCreated = false;
+      if (createdPlan is Map) {
+        planCreated = true;
+      }
+
+      // Case 2: some builds may include explicit task suggestions
       List<TaskSuggestion>? tasks;
-      if (rawTasks is List && rawTasks.isNotEmpty) {
-        tasks = rawTasks
-            .map((t) => TaskSuggestion.fromJson(
-                t as Map<String, dynamic>))
+      final rawTasks = resData['suggested_tasks'] ?? res['suggested_tasks'];
+      final rawPlanTasks = resData['plan_data'] is Map
+          ? (resData['plan_data']['tasks'] as List?)
+          : null;
+      final taskList = rawTasks ?? rawPlanTasks;
+      if (taskList is List && taskList.isNotEmpty) {
+        tasks = taskList
+            .map((t) => TaskSuggestion.fromJson(t as Map<String, dynamic>))
             .toList();
       }
 
+      if (planCreated) {
+        content +=
+            "\n\n\u2728 **Reja avtomatik yaratildi** — Bosh sahifadagi 'Vazifalar' ro\'yxatida ko\'ring.";
+      }
+
       final aiMsg = ChatMsg(
-        id:        '${DateTime.now().microsecondsSinceEpoch}',
-        role:      'assistant',
-        content:   content,
+        id: '${DateTime.now().microsecondsSinceEpoch}',
+        role: 'assistant',
+        content: content,
         timestamp: DateTime.now(),
-        tasks:     tasks,
+        tasks: tasks,
+        isError: isQuotaErr,
       );
 
       _msgs.add(aiMsg);
       _pending = tasks ?? [];
+      _planCreatedSignal = planCreated;
     } catch (e) {
       _error = e.toString();
       _msgs.add(ChatMsg(
