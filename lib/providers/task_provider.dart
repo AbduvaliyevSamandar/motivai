@@ -21,8 +21,23 @@ class TaskProvider extends ChangeNotifier {
   String? _error;
 
   // ── Getters ───────────────────────────────────────────
-  List<Task>    get daily       => _planTasks.where((t) => !t.isCompleted).toList();
-  List<Task>    get recommended => _planTasks.where((t) => !t.isCompleted).take(5).toList();
+  /// All tasks (active + completed)
+  List<Task>    get all         => List.unmodifiable(_planTasks);
+  /// Only non-completed
+  List<Task>    get active      => _planTasks.where((t) => !t.isCompleted).toList();
+  /// Only completed (most recent first)
+  List<Task>    get completed   {
+    final list = _planTasks.where((t) => t.isCompleted).toList();
+    list.sort((a, b) {
+      final ad = a.completedAt ?? DateTime(2000);
+      final bd = b.completedAt ?? DateTime(2000);
+      return bd.compareTo(ad);
+    });
+    return list;
+  }
+  /// Deprecated — kept for backward compat; returns active for now
+  List<Task>    get daily       => active;
+  List<Task>    get recommended => const <Task>[];
   List<LbEntry> get globalLb    => _globalLb;
   List<LbEntry> get weeklyLb    => _weeklyLb;
   Map<String, dynamic>? get myRank   => _myRank;
@@ -231,6 +246,116 @@ class TaskProvider extends ChangeNotifier {
   void clearError() {
     _error = null;
     notifyListeners();
+  }
+
+  // ── DELETE TASK ────────────────────────────────────────
+  /// Since each user-added task lives in its own plan, delete = delete plan.
+  /// For multi-task plans (AI-added bulk), we keep the plan and only drop the
+  /// task locally + via PUT plan with updated tasks list.
+  Future<bool> deleteTask(String taskId, {String? planId}) async {
+    _error = null;
+    try {
+      final pid = planId ?? _findPlanId(taskId);
+      if (pid == null) {
+        _error = 'Plan topilmadi';
+        notifyListeners();
+        return false;
+      }
+      final tasksInSamePlan =
+          _planTasks.where((t) => t.planId == pid).length;
+
+      if (tasksInSamePlan <= 1) {
+        // Single-task plan → delete the whole plan
+        await _api.delete('${K.plans}/$pid');
+      } else {
+        // Multi-task plan → rebuild tasks list without this one via PUT
+        final remaining = _planTasks
+            .where((t) => t.planId == pid && t.id != taskId)
+            .map((t) => {
+                  'id': t.id,
+                  'title': t.title,
+                  'description': t.description,
+                  'category': t.category,
+                  'difficulty': t.difficulty,
+                  'duration': t.durationMinutes,
+                  'xp_reward': t.points,
+                  'is_completed': t.isCompleted,
+                })
+            .toList();
+        await _api.put('${K.plans}/$pid', {'tasks': remaining});
+      }
+      _planTasks.removeWhere((t) => t.id == taskId);
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // ── UPDATE TASK (edit) ─────────────────────────────────
+  /// Update via PUT /plans/{plan_id}. Only fields we own locally (plan title /
+  /// description / tasks list) are sent. Schedule + reminder stay client-side.
+  Future<bool> updateTask({
+    required String taskId,
+    String? planId,
+    String? title,
+    String? description,
+    String? category,
+    String? difficulty,
+    int? durationMinutes,
+    int? xpReward,
+  }) async {
+    _error = null;
+    try {
+      final pid = planId ?? _findPlanId(taskId);
+      if (pid == null) {
+        _error = 'Plan topilmadi';
+        notifyListeners();
+        return false;
+      }
+      // Rebuild plan's tasks list with patched task
+      final updatedTasks = _planTasks
+          .where((t) => t.planId == pid)
+          .map((t) {
+        if (t.id != taskId) {
+          return {
+            'id': t.id,
+            'title': t.title,
+            'description': t.description,
+            'category': t.category,
+            'difficulty': t.difficulty,
+            'duration': t.durationMinutes,
+            'xp_reward': t.points,
+            'is_completed': t.isCompleted,
+          };
+        }
+        return {
+          'id': t.id,
+          'title': title ?? t.title,
+          'description': description ?? t.description,
+          'category': category ?? t.category,
+          'difficulty': difficulty ?? t.difficulty,
+          'duration': durationMinutes ?? t.durationMinutes,
+          'xp_reward': xpReward ?? t.points,
+          'is_completed': t.isCompleted,
+        };
+      }).toList();
+
+      final planPatch = <String, dynamic>{
+        if (title != null) 'title': title,
+        if (description != null) 'description': description,
+        'tasks': updatedTasks,
+      };
+      await _api.put('${K.plans}/$pid', planPatch);
+      await loadAll();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
   }
 
   // ── NOTIFICATIONS SYNC ────────────────────────────────

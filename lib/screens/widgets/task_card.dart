@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -8,11 +9,15 @@ import '../../models/models.dart';
 class TaskCard extends StatefulWidget {
   final Task task;
   final VoidCallback onComplete;
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
 
   const TaskCard({
     super.key,
     required this.task,
     required this.onComplete,
+    this.onEdit,
+    this.onDelete,
   });
 
   @override
@@ -165,6 +170,13 @@ class _TaskCardState extends State<TaskCard>
                           ),
                         ),
                         const SizedBox(width: D.sp8),
+                        // More menu (edit/delete) — only for active tasks
+                        if (!done && (widget.onEdit != null ||
+                            widget.onDelete != null))
+                          _MoreMenu(
+                            onEdit: widget.onEdit,
+                            onDelete: widget.onDelete,
+                          ),
                         // Complete button
                         _CompleteButton(
                           done: done,
@@ -189,6 +201,82 @@ class _TaskCardState extends State<TaskCard>
           ),
         ),
       ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MORE MENU
+// ═══════════════════════════════════════════════════════════
+class _MoreMenu extends StatelessWidget {
+  final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
+  const _MoreMenu({this.onEdit, this.onDelete});
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      padding: EdgeInsets.zero,
+      icon: Container(
+        width: 32,
+        height: 32,
+        margin: const EdgeInsets.only(right: 4),
+        decoration: BoxDecoration(
+          color: AppColors.card.withOpacity(0.6),
+          shape: BoxShape.circle,
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Icon(Icons.more_vert_rounded,
+            size: 16, color: AppColors.sub),
+      ),
+      color: AppColors.card,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(14),
+        side: BorderSide(color: AppColors.border),
+      ),
+      itemBuilder: (_) => [
+        if (onEdit != null)
+          PopupMenuItem(
+            value: 'edit',
+            child: Row(
+              children: [
+                const Icon(Icons.edit_outlined,
+                    color: AppColors.primary, size: 18),
+                const SizedBox(width: 10),
+                Text(
+                  'Tahrirlash',
+                  style: GoogleFonts.poppins(
+                    color: AppColors.txt,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        if (onDelete != null)
+          PopupMenuItem(
+            value: 'delete',
+            child: Row(
+              children: [
+                const Icon(Icons.delete_outline_rounded,
+                    color: AppColors.danger, size: 18),
+                const SizedBox(width: 10),
+                Text(
+                  "O'chirish",
+                  style: GoogleFonts.poppins(
+                    color: AppColors.danger,
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+      onSelected: (v) {
+        HapticFeedback.selectionClick();
+        if (v == 'edit') onEdit?.call();
+        if (v == 'delete') onDelete?.call();
+      },
     );
   }
 }

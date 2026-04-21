@@ -111,6 +111,29 @@ class Api {
     }
   }
 
+  // ── DELETE ───────────────────────────────────────────
+  Future<dynamic> delete(String ep) async {
+    final uri = Uri.parse(_fixUrl(ep));
+    try {
+      final headers = await _headers();
+      var res = await http
+          .delete(uri, headers: headers)
+          .timeout(K.timeout);
+      if ((res.statusCode == 307 || res.statusCode == 308) &&
+          res.headers['location'] != null) {
+        final newUri = Uri.parse(res.headers['location']!);
+        res = await http
+            .delete(newUri, headers: headers)
+            .timeout(K.timeout);
+      }
+      return _parse(res);
+    } on ApiError {
+      rethrow;
+    } catch (e) {
+      throw ApiError('Tarmoq xatosi: $e');
+    }
+  }
+
   // ── PARSE ─────────────────────────────────────────────
   dynamic _parse(http.Response res) {
     dynamic body;

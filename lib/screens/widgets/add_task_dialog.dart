@@ -10,35 +10,39 @@ import '../../config/constants.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../services/local_schedules.dart';
+import '../../models/models.dart';
 import '../../widgets/nebula/nebula.dart';
 
-void showAddTaskDialog(BuildContext context) {
+void showAddTaskDialog(BuildContext context, {Task? editTask}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => const _AddTaskSheet(),
+    builder: (_) => _AddTaskSheet(editTask: editTask),
   );
 }
 
 class _AddTaskSheet extends StatefulWidget {
-  const _AddTaskSheet();
+  final Task? editTask;
+  const _AddTaskSheet({this.editTask});
 
   @override
   State<_AddTaskSheet> createState() => _AddTaskSheetState();
 }
 
 class _AddTaskSheetState extends State<_AddTaskSheet> {
-  final _titleCtrl = TextEditingController();
-  final _descCtrl = TextEditingController();
-  final _durationCtrl = TextEditingController(text: '30');
+  late final TextEditingController _titleCtrl;
+  late final TextEditingController _descCtrl;
+  late final TextEditingController _durationCtrl;
 
-  String _category = 'study';
-  String _difficulty = 'medium';
+  late String _category;
+  late String _difficulty;
   bool _loading = false;
 
   DateTime? _scheduledAt;
   int _reminderMinutes = 15;
+
+  bool get _isEdit => widget.editTask != null;
 
   static const _categories = [
     ('study', '\u{1F4DA}', 'study'),
@@ -71,12 +75,24 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill default reminder from settings
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final np = context.read<NotificationProvider>();
-      setState(() => _reminderMinutes = np.defaultReminderMinutes);
-    });
+    final t = widget.editTask;
+    _titleCtrl = TextEditingController(text: t?.title ?? '');
+    _descCtrl = TextEditingController(text: t?.description ?? '');
+    _durationCtrl =
+        TextEditingController(text: '${t?.durationMinutes ?? 30}');
+    _category = t?.category ?? 'study';
+    _difficulty = t?.difficulty ?? 'medium';
+    _scheduledAt = t?.scheduledAt;
+    _reminderMinutes = t?.reminderMinutes ?? 15;
+
+    if (t == null) {
+      // Pre-fill default reminder from settings only for new tasks
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final np = context.read<NotificationProvider>();
+        setState(() => _reminderMinutes = np.defaultReminderMinutes);
+      });
+    }
   }
 
   Future<void> _pickDateTime() async {
@@ -195,7 +211,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                     ).createShader(b),
                     blendMode: BlendMode.srcIn,
                     child: Text(
-                      S.get('add_task'),
+                      _isEdit ? 'Vazifani tahrirlash' : S.get('add_task'),
                       style: GoogleFonts.spaceGrotesk(
                         color: Colors.white,
                         fontSize: 22,
@@ -327,8 +343,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               ),
               const SizedBox(height: 24),
               NebulaButton(
-                label: S.get('add_task'),
-                icon: Icons.add_rounded,
+                label: _isEdit ? 'Saqlash' : S.get('add_task'),
+                icon: _isEdit ? Icons.check_rounded : Icons.add_rounded,
                 loading: _loading,
                 onTap: _submit,
               ),
@@ -468,6 +484,60 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       return;
     }
     setState(() => _loading = true);
+
+    // EDIT MODE — update via TaskProvider
+    if (_isEdit) {
+      final t = widget.editTask!;
+      try {
+        final ok = await context.read<TaskProvider>().updateTask(
+              taskId: t.id,
+              planId: t.planId,
+              title: title,
+              description: _descCtrl.text.trim(),
+              category: _category,
+              difficulty: _difficulty,
+              durationMinutes:
+                  int.tryParse(_durationCtrl.text.trim()) ?? t.durationMinutes,
+              xpReward: _diffPoints(_difficulty),
+            );
+        if (!mounted) return;
+        if (_scheduledAt != null) {
+          await LocalSchedules.saveById(
+            taskId: t.id,
+            scheduledAt: _scheduledAt!,
+            reminderMinutes: _reminderMinutes,
+          );
+          if (_reminderMinutes > 0 && mounted) {
+            await context.read<NotificationProvider>().scheduleTaskReminder(
+                  taskId: t.id,
+                  taskTitle: title,
+                  scheduledAt: _scheduledAt!,
+                  reminderMinutes: _reminderMinutes,
+                );
+          }
+        } else {
+          await LocalSchedules.remove(t.id);
+        }
+        if (!mounted) return;
+        if (ok) {
+          await context.read<TaskProvider>().loadAll();
+          if (!mounted) return;
+          Navigator.pop(context);
+          _toast('Yangilandi');
+        } else {
+          setState(() => _loading = false);
+          _toast(context.read<TaskProvider>().error ?? "Xatolik",
+              err: true);
+        }
+      } catch (e) {
+        if (!mounted) return;
+        setState(() => _loading = false);
+        _toast('Xatolik: $e', err: true);
+      }
+      return;
+    }
+
+    // CREATE MODE
     try {
       final duration = int.tryParse(_durationCtrl.text.trim()) ?? 30;
       final points = _diffPoints(_difficulty);

@@ -16,8 +16,14 @@ import '../widgets/completion_dialog.dart';
 import '../widgets/add_task_dialog.dart';
 import 'notifications_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  bool _showCompleted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +100,7 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (tasks.isLoading && tasks.daily.isEmpty)
+                if (tasks.isLoading && tasks.all.isEmpty)
                   const SliverToBoxAdapter(child: _LoadingBlock())
                 else ...[
                   SliverPadding(
@@ -103,61 +109,25 @@ class DashboardScreen extends StatelessWidget {
                     sliver: SliverToBoxAdapter(
                       child: _SectionBanner(
                         icon: Icons.rocket_launch_rounded,
-                        title: S.get('today_tasks'),
+                        title: 'Vazifalar',
                         badge: '${tasks.completedToday}/${tasks.totalToday}',
                         gradient: AppColors.gradCosmic,
                       ),
                     ),
                   ),
-                  if (tasks.daily.isEmpty)
-                    const SliverToBoxAdapter(child: _EmptyState())
-                  else
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: D.sp16),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (_, i) => _StaggeredItem(
-                            index: i,
-                            child: TaskCard(
-                              task: tasks.daily[i],
-                              onComplete: () => _complete(
-                                  context, tasks, tasks.daily[i]),
-                            ),
-                          ),
-                          childCount: tasks.daily.length,
-                        ),
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                        D.sp16, 0, D.sp16, D.sp12),
+                    sliver: SliverToBoxAdapter(
+                      child: _TaskToggle(
+                        showCompleted: _showCompleted,
+                        activeCount: tasks.active.length,
+                        doneCount: tasks.completed.length,
+                        onChanged: (v) => setState(() => _showCompleted = v),
                       ),
                     ),
-                  if (tasks.recommended.isNotEmpty) ...[
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(
-                          D.sp20, D.sp24, D.sp20, D.sp12),
-                      sliver: SliverToBoxAdapter(
-                        child: _SectionBanner(
-                          icon: Icons.auto_awesome_rounded,
-                          title: S.get('ai_suggest'),
-                          gradient: AppColors.gradAurora,
-                        ),
-                      ),
-                    ),
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: D.sp16),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (_, i) => _StaggeredItem(
-                            index: i,
-                            child: TaskCard(
-                              task: tasks.recommended[i],
-                              onComplete: () => _complete(
-                                  context, tasks, tasks.recommended[i]),
-                            ),
-                          ),
-                          childCount: tasks.recommended.length,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
+                  _buildTaskList(context, tasks),
                 ],
                 const SliverToBoxAdapter(child: SizedBox(height: 120)),
               ],
@@ -166,6 +136,98 @@ class DashboardScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildTaskList(BuildContext context, TaskProvider tasks) {
+    final list = _showCompleted ? tasks.completed : tasks.active;
+    if (list.isEmpty) {
+      return SliverToBoxAdapter(
+        child: _EmptyState(completed: _showCompleted),
+      );
+    }
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: D.sp16),
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (_, i) => _StaggeredItem(
+            index: i,
+            child: TaskCard(
+              task: list[i],
+              onComplete: () => _complete(context, tasks, list[i]),
+              onEdit: () => _edit(context, list[i]),
+              onDelete: () => _confirmDelete(context, tasks, list[i]),
+            ),
+          ),
+          childCount: list.length,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _edit(BuildContext ctx, Task task) async {
+    HapticFeedback.selectionClick();
+    showAddTaskDialog(ctx, editTask: task);
+  }
+
+  Future<void> _confirmDelete(
+      BuildContext ctx, TaskProvider tasks, Task task) async {
+    HapticFeedback.mediumImpact();
+    final ok = await showDialog<bool>(
+      context: ctx,
+      builder: (_) => AlertDialog(
+        backgroundColor: AppColors.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(22),
+          side: BorderSide(color: AppColors.border),
+        ),
+        title: Text(
+          "Vazifani o'chirish?",
+          style: GoogleFonts.spaceGrotesk(
+            color: AppColors.txt,
+            fontWeight: FontWeight.w700,
+            letterSpacing: -0.3,
+          ),
+        ),
+        content: Text(
+          '"${task.title}" — bu amalni qaytarib bo\'lmaydi.',
+          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(S.get('cancel'),
+                style: GoogleFonts.poppins(color: AppColors.sub)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.danger,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+            ),
+            child: Text("O'chirish", style: GoogleFonts.poppins()),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    final done =
+        await tasks.deleteTask(task.id, planId: task.planId);
+    if (!ctx.mounted) return;
+    if (done) {
+      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+        content: Text("Vazifa o'chirildi",
+            style: GoogleFonts.poppins()),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+      ));
+    } else if (tasks.error != null) {
+      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+        content: Text(tasks.error!),
+        backgroundColor: AppColors.danger,
+        behavior: SnackBarBehavior.floating,
+      ));
+    }
   }
 
   Widget _buildFAB(BuildContext context) {
@@ -942,7 +1004,8 @@ class _LoadingBlock extends StatelessWidget {
 }
 
 class _EmptyState extends StatefulWidget {
-  const _EmptyState();
+  final bool completed;
+  const _EmptyState({this.completed = false});
   @override
   State<_EmptyState> createState() => _EmptyStateState();
 }
@@ -968,6 +1031,13 @@ class _EmptyStateState extends State<_EmptyState>
 
   @override
   Widget build(BuildContext context) {
+    final completed = widget.completed;
+    final emoji = completed ? '\u{1F389}' : '\u{1F680}';
+    final title = completed ? 'Hali bajarilgan vazifa yo\'q' : S.get('no_tasks');
+    final sub = completed
+        ? "Vazifalarni bajaring — bu yerda ko'rinadi"
+        : S.get('pull_refresh');
+
     return Padding(
       padding: const EdgeInsets.all(D.sp16),
       child: GlassCard(
@@ -999,50 +1069,153 @@ class _EmptyStateState extends State<_EmptyState>
                       ),
                     ],
                   ),
-                  child: const Center(
-                    child:
-                        Text('\u{1F680}', style: TextStyle(fontSize: 48)),
+                  child: Center(
+                    child: Text(emoji, style: const TextStyle(fontSize: 48)),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              S.get('no_tasks'),
+              title,
               style: GoogleFonts.spaceGrotesk(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               ),
+              textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             Text(
-              S.get('pull_refresh'),
+              sub,
               style: GoogleFonts.poppins(
                 color: AppColors.sub,
                 fontSize: 13,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
-            ShaderMask(
-              shaderCallback: (b) => const LinearGradient(
-                colors: AppColors.gradAurora,
-              ).createShader(b),
-              blendMode: BlendMode.srcIn,
-              child: Text(
-                S.get('motto'),
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  fontStyle: FontStyle.italic,
+            if (!completed) ...[
+              const SizedBox(height: 20),
+              ShaderMask(
+                shaderCallback: (b) => const LinearGradient(
+                  colors: AppColors.gradAurora,
+                ).createShader(b),
+                blendMode: BlendMode.srcIn,
+                child: Text(
+                  S.get('motto'),
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    fontStyle: FontStyle.italic,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
+            ],
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TASK TOGGLE (Faol / Bajarilgan)
+// ═══════════════════════════════════════════════════════════
+class _TaskToggle extends StatelessWidget {
+  final bool showCompleted;
+  final int activeCount;
+  final int doneCount;
+  final ValueChanged<bool> onChanged;
+
+  const _TaskToggle({
+    required this.showCompleted,
+    required this.activeCount,
+    required this.doneCount,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 44,
+      decoration: BoxDecoration(
+        color: AppColors.card.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.border),
+      ),
+      child: Row(
+        children: [
+          _segment('Faol', activeCount, !showCompleted,
+              () => onChanged(false)),
+          _segment('Bajarilgan', doneCount, showCompleted,
+              () => onChanged(true)),
+        ],
+      ),
+    );
+  }
+
+  Widget _segment(String label, int count, bool active, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          onTap();
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          margin: const EdgeInsets.all(3),
+          decoration: BoxDecoration(
+            gradient: active
+                ? const LinearGradient(colors: AppColors.gradCosmic)
+                : null,
+            borderRadius: BorderRadius.circular(11),
+            boxShadow: active
+                ? [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  color: active ? Colors.white : AppColors.sub,
+                  fontSize: 13,
+                  fontWeight:
+                      active ? FontWeight.w700 : FontWeight.w500,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: active
+                      ? Colors.white.withOpacity(0.22)
+                      : AppColors.border.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  '$count',
+                  style: GoogleFonts.spaceGrotesk(
+                    color: active ? Colors.white : AppColors.sub,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
