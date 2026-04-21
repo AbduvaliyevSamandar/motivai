@@ -11,6 +11,7 @@ import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/notification_provider.dart';
+import '../../services/notification_service.dart';
 import '../../widgets/nebula/nebula.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -300,23 +301,33 @@ class _ProfileState extends State<ProfileScreen> {
                       onTap: _showLanguageDialog,
                     ),
                     Consumer<NotificationProvider>(
-                      builder: (_, np, __) => _tile(
-                        icon: Icons.notifications_outlined,
-                        iconColor: AppColors.accent,
-                        title: S.get('notifications'),
-                        subtitle: np.enabled
-                            ? '${np.defaultReminderMinutes} min oldin eslatma'
-                            : "O'chirilgan",
-                        trailing: Switch.adaptive(
-                          value: np.enabled,
-                          activeColor: AppColors.primary,
-                          onChanged: (v) {
-                            HapticFeedback.selectionClick();
-                            np.setEnabled(v);
-                          },
+                      builder: (_, np, __) => Column(children: [
+                        _tile(
+                          icon: Icons.notifications_outlined,
+                          iconColor: AppColors.accent,
+                          title: S.get('notifications'),
+                          subtitle: np.enabled
+                              ? '${np.defaultReminderMinutes} min oldin eslatma'
+                              : "O'chirilgan",
+                          trailing: Switch.adaptive(
+                            value: np.enabled,
+                            activeColor: AppColors.primary,
+                            onChanged: (v) {
+                              HapticFeedback.selectionClick();
+                              np.setEnabled(v);
+                            },
+                          ),
+                          onTap: np.enabled ? _showReminderPicker : null,
                         ),
-                        onTap: np.enabled ? _showReminderPicker : null,
-                      ),
+                        if (np.enabled)
+                          _tile(
+                            icon: Icons.notifications_active_rounded,
+                            iconColor: AppColors.success,
+                            title: 'Bildirishnomani sinash',
+                            subtitle: '5 soniyadan keyin test keladi',
+                            onTap: _testNotification,
+                          ),
+                      ]),
                     ),
                   ]),
                 ),
@@ -344,16 +355,59 @@ class _ProfileState extends State<ProfileScreen> {
                       color: AppColors.danger,
                       onTap: () => _confirmLogout(auth),
                     ),
+                    const SizedBox(height: 24),
+                    _section('Ilova haqida'),
+                    const SizedBox(height: 12),
+                    _tile(
+                      icon: Icons.info_outline_rounded,
+                      iconColor: AppColors.info,
+                      title: 'MotivAI haqida',
+                      onTap: _showAbout,
+                    ),
+                    _tile(
+                      icon: Icons.help_outline_rounded,
+                      iconColor: AppColors.secondary,
+                      title: 'Yordam',
+                      subtitle: 'Qo\'llanma va savollar',
+                      onTap: _showHelp,
+                    ),
                     const SizedBox(height: 32),
                     Center(
-                      child: Text(
-                        'MotivAI v2.1.0',
-                        style: GoogleFonts.spaceGrotesk(
-                          color: AppColors.sub.withOpacity(0.5),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 0.5,
-                        ),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(colors: [
+                                AppColors.primary.withOpacity(0.22),
+                                AppColors.secondary.withOpacity(0.15),
+                              ]),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(Icons.bolt_rounded,
+                                color: AppColors.primary, size: 28),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            'MotivAI v2.2.0',
+                            style: GoogleFonts.spaceGrotesk(
+                              color: AppColors.txt,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                          Text(
+                            'Maqsadga — har kuni bir qadam',
+                            style: GoogleFonts.poppins(
+                              color: AppColors.sub,
+                              fontSize: 11,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 120),
@@ -834,6 +888,264 @@ class _ProfileState extends State<ProfileScreen> {
             ),
             child: Text(S.get('clear_cache'),
                 style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _testNotification() async {
+    HapticFeedback.lightImpact();
+    final np = context.read<NotificationProvider>();
+    // Schedule one 5s into the future
+    final when = DateTime.now().add(const Duration(seconds: 5));
+    await NotificationService.instance.scheduleAt(
+      id: 99999,
+      title: 'MotivAI test',
+      body: 'Bu sinov bildirishnomasi — hammasi ishlayapti! \u{1F389}',
+      at: when,
+    );
+    // Also add to in-app feed
+    np.addAchievement(
+        'Test bildirishnoma', '5 soniyadan keyin yetib keladi');
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Row(
+        children: [
+          const Icon(Icons.check_circle_rounded,
+              color: Colors.white, size: 18),
+          const SizedBox(width: 8),
+          Text(
+            '5 soniyadan keyin keladi \u{1F514}',
+            style: GoogleFonts.poppins(),
+          ),
+        ],
+      ),
+      backgroundColor: AppColors.success,
+      behavior: SnackBarBehavior.floating,
+    ));
+  }
+
+  void _showAbout() {
+    showDialog(
+      context: context,
+      builder: (_) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 360),
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [
+              AppColors.card,
+              Color.lerp(AppColors.card, AppColors.primary, 0.08)!,
+            ]),
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(
+              color: AppColors.primary.withOpacity(0.4),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.3),
+                blurRadius: 30,
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 70,
+                height: 70,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                      colors: AppColors.gradCosmic),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.5),
+                      blurRadius: 20,
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.bolt_rounded,
+                    color: Colors.white, size: 36),
+              ),
+              const SizedBox(height: 16),
+              ShaderMask(
+                shaderCallback: (b) => LinearGradient(
+                  colors: AppColors.titleGradient,
+                ).createShader(b),
+                blendMode: BlendMode.srcIn,
+                child: Text(
+                  'MotivAI',
+                  style: GoogleFonts.spaceGrotesk(
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              ),
+              Text(
+                'v2.2.0',
+                style: GoogleFonts.spaceGrotesk(
+                  color: AppColors.sub,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'AI orqali talabalarga motivatsiya beruvchi ilova',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  color: AppColors.txt,
+                  fontSize: 14,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 18),
+              _aboutRow('\u{1F527}', 'Flutter + FastAPI + MongoDB'),
+              const SizedBox(height: 8),
+              _aboutRow('\u{1F3A8}', 'Nebula Premium design'),
+              const SizedBox(height: 8),
+              _aboutRow('\u{1F680}', 'Open source, \u{1F1FA}\u{1F1FF} Uzbekistan'),
+              const SizedBox(height: 20),
+              NebulaButton(
+                label: 'Yopish',
+                onTap: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _aboutRow(String emoji, String label) {
+    return Row(
+      children: [
+        Text(emoji, style: const TextStyle(fontSize: 16)),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            label,
+            style: GoogleFonts.poppins(
+              color: AppColors.sub,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showHelp() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(28)),
+          border: Border(
+              top: BorderSide(color: AppColors.glassBorder, width: 1.5)),
+        ),
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 44,
+              height: 5,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(3),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ShaderMask(
+              shaderCallback: (b) => LinearGradient(
+                colors: AppColors.titleGradient,
+              ).createShader(b),
+              blendMode: BlendMode.srcIn,
+              child: Text(
+                "Qo'llanma",
+                style: GoogleFonts.spaceGrotesk(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            _helpItem(Icons.add_rounded, 'Vazifa qo\'shish',
+                "'+' tugmasi orqali nom, vaqt, eslatma bilan qo'shing"),
+            _helpItem(Icons.check_circle_rounded, 'Bajarish',
+                "Davra tugmasini bosing yoki o'ngga swipe qiling"),
+            _helpItem(Icons.swipe_left_rounded, 'O\'chirish',
+                "Chapga swipe qiling yoki 3-nuqta menyu"),
+            _helpItem(Icons.touch_app_rounded, 'Tafsilot',
+                "Vazifani bosing — tafsilot oynasi ochiladi"),
+            _helpItem(Icons.auto_awesome_rounded, 'AI Chat',
+                "AI'dan tavsiya so'rang — tanlab ro'yxatga qo'shing"),
+            _helpItem(Icons.notifications_active_rounded, 'Bildirishnoma',
+                "Vazifaga vaqt qo'ying — oldindan eslatadi"),
+            const SizedBox(height: 14),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _helpItem(IconData icon, String title, String body) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(colors: [
+                AppColors.primary.withOpacity(0.22),
+                AppColors.secondary.withOpacity(0.12),
+              ]),
+              borderRadius: BorderRadius.circular(11),
+              border: Border.all(
+                  color: AppColors.primary.withOpacity(0.3)),
+            ),
+            child: Icon(icon, color: AppColors.primary, size: 18),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: GoogleFonts.poppins(
+                    color: AppColors.txt,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  body,
+                  style: GoogleFonts.poppins(
+                    color: AppColors.sub,
+                    fontSize: 12,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

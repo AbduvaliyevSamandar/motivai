@@ -5,6 +5,7 @@ import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../models/models.dart';
+import 'task_detail_sheet.dart';
 
 class TaskCard extends StatefulWidget {
   final Task task;
@@ -59,7 +60,7 @@ class _TaskCardState extends State<TaskCard>
                 ? AppColors.accent
                 : t.color;
 
-    return ScaleTransition(
+    final card = ScaleTransition(
       scale: _scale,
       child: AnimatedOpacity(
         duration: const Duration(milliseconds: 300),
@@ -200,6 +201,105 @@ class _TaskCardState extends State<TaskCard>
             ],
           ),
         ),
+      ),
+    );
+
+    // Tap anywhere (except buttons) opens detail sheet
+    final tappable = Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(D.radiusLg),
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.selectionClick();
+          showTaskDetail(
+            context,
+            widget.task,
+            onComplete: done ? null : widget.onComplete,
+            onEdit: widget.onEdit,
+            onDelete: widget.onDelete,
+          );
+        },
+        borderRadius: BorderRadius.circular(D.radiusLg),
+        child: card,
+      ),
+    );
+
+    // For active, non-completed tasks — wrap with Dismissible (swipe actions)
+    if (!done && (widget.onDelete != null)) {
+      return Dismissible(
+        key: ValueKey('task_${widget.task.id}'),
+        direction: DismissDirection.horizontal,
+        confirmDismiss: (dir) async {
+          if (dir == DismissDirection.endToStart) {
+            // Swipe left → delete
+            widget.onDelete?.call();
+            return false; // let the parent confirm dialog handle it
+          } else if (dir == DismissDirection.startToEnd) {
+            // Swipe right → complete
+            widget.onComplete();
+            return false;
+          }
+          return false;
+        },
+        background: _swipeBg(
+          align: Alignment.centerLeft,
+          color: AppColors.success,
+          icon: Icons.check_circle_rounded,
+          label: 'Bajardim',
+        ),
+        secondaryBackground: _swipeBg(
+          align: Alignment.centerRight,
+          color: AppColors.danger,
+          icon: Icons.delete_outline_rounded,
+          label: "O'chirish",
+        ),
+        child: tappable,
+      );
+    }
+
+    return tappable;
+  }
+
+  Widget _swipeBg({
+    required Alignment align,
+    required Color color,
+    required IconData icon,
+    required String label,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: D.sp12),
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            color.withOpacity(0.25),
+            color.withOpacity(0.12),
+          ],
+          begin: align == Alignment.centerLeft
+              ? Alignment.centerLeft
+              : Alignment.centerRight,
+          end: align == Alignment.centerLeft
+              ? Alignment.centerRight
+              : Alignment.centerLeft,
+        ),
+        borderRadius: BorderRadius.circular(D.radiusLg),
+        border: Border.all(color: color.withOpacity(0.4)),
+      ),
+      alignment: align,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 22),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: GoogleFonts.poppins(
+              color: color,
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
       ),
     );
   }

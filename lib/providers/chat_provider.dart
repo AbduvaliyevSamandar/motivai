@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/api.dart';
 import '../services/storage.dart';
+import '../services/task_templates.dart';
 import '../config/constants.dart';
 import '../models/models.dart';
 
@@ -99,15 +100,17 @@ class ChatProvider extends ChangeNotifier {
           res['message']?.toString() ??
           'Javob olishda xato yuz berdi.';
 
-      // Detect OpenAI quota error — make it clearly visible & helpful
+      // Detect OpenAI quota error — show fallback template suggestions
       final isQuotaErr =
           content.toLowerCase().contains('quota') ||
               content.toLowerCase().contains('billing');
+      List<TaskSuggestion>? fallbackTasks;
       if (isQuotaErr) {
+        fallbackTasks = TaskTemplates.suggestFor(text);
+        if (fallbackTasks.isEmpty) fallbackTasks = TaskTemplates.starter();
         content =
-            '\u26A0\uFE0F AI servisi vaqtincha ishlamayapti (OpenAI kredit tugagan).'
-            '\n\nMarkazda siz vazifalarni **qo\'lda** qo\'shishingiz mumkin — '
-            'pastdagi \u2795 tugmachasi bilan.';
+            '\u{1F4A1} AI servisi vaqtincha ishlamayapti.'
+            '\n\nSiz uchun tayyor shablonlar tanladim — kerakli vazifalarni belgilang va qo\'shing.';
       }
 
       // Case 1: backend auto-created a plan — reload tasks so they appear in dashboard
@@ -129,6 +132,9 @@ class ChatProvider extends ChangeNotifier {
             .map((t) => TaskSuggestion.fromJson(t as Map<String, dynamic>))
             .toList();
       }
+
+      // Apply fallback tasks when quota error
+      tasks ??= fallbackTasks;
 
       if (planCreated) {
         content +=
