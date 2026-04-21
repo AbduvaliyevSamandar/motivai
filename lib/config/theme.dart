@@ -6,18 +6,18 @@ class C {
   static bool get isDark => AppColors.isDark;
   static void setDark(bool v) => AppColors.setDark(v);
 
-  static const primary = AppColors.primary;
-  static const primaryDark = AppColors.primaryDark;
-  static const secondary = AppColors.secondary;
-  static const accent = AppColors.accent;
-  static const success = AppColors.success;
-  static const danger = AppColors.danger;
-  static const info = AppColors.info;
-  static const primaryLight = AppColors.secondary;
-  static const gold = AppColors.accent;
-  static const teal = AppColors.info;
-  static const warning = AppColors.accent;
-  static const error = AppColors.danger;
+  static Color get primary => AppColors.primary;
+  static Color get primaryDark => AppColors.primaryDark;
+  static Color get secondary => AppColors.secondary;
+  static Color get accent => AppColors.accent;
+  static Color get success => AppColors.success;
+  static Color get danger => AppColors.danger;
+  static Color get info => AppColors.info;
+  static Color get primaryLight => AppColors.secondary;
+  static Color get gold => AppColors.accent;
+  static Color get teal => AppColors.info;
+  static Color get warning => AppColors.accent;
+  static Color get error => AppColors.danger;
 
   static Color get bg => AppColors.bg;
   static Color get surface => AppColors.surface;
@@ -28,13 +28,13 @@ class C {
   static Color get sub => AppColors.sub;
   static Color get hint => AppColors.hint;
 
-  static const gradPrimary = AppColors.gradPrimary;
-  static const gradSuccess = AppColors.gradSuccess;
-  static const gradWarning = AppColors.gradWarning;
-  static const gradGold = AppColors.gradGold;
-  static const gradAccent = AppColors.gradAccent;
-  static const gradGreen = AppColors.gradSuccess;
-  static const cat = AppColors.cat;
+  static List<Color> get gradPrimary => AppColors.gradPrimary;
+  static List<Color> get gradSuccess => AppColors.gradSuccess;
+  static List<Color> get gradWarning => AppColors.gradWarning;
+  static List<Color> get gradGold => AppColors.gradGold;
+  static List<Color> get gradAccent => AppColors.gradAccent;
+  static List<Color> get gradGreen => AppColors.gradSuccess;
+  static Map<String, Color> get cat => AppColors.cat;
 }
 
 class AppTheme {
@@ -116,7 +116,7 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
         labelStyle: TextStyle(color: sub),
         hintStyle: TextStyle(color: hint),

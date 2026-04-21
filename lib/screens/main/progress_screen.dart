@@ -45,7 +45,7 @@ class _ProgState extends State<ProgressScreen> {
           const AuroraBackground(subtle: true),
           const ParticleField(count: 22),
           tasks.isLoading && ins == null
-              ? const Center(
+              ? Center(
                   child: CircularProgressIndicator(
                       color: AppColors.primary),
                 )
@@ -356,7 +356,7 @@ class _CosmicLineChart extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                       colors: AppColors.gradCosmic),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
@@ -464,7 +464,7 @@ class _CosmicLineChart extends StatelessWidget {
                     ),
                     isCurved: true,
                     curveSmoothness: 0.35,
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                         colors: AppColors.gradCosmic),
                     barWidth: 3.5,
                     isStrokeCapRound: true,
@@ -741,7 +741,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                       colors: AppColors.gradAccent),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [

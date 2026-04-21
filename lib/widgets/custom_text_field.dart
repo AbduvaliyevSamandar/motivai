@@ -106,11 +106,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(D.radiusMd),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+            borderSide: BorderSide(color: AppColors.primary, width: 2),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(D.radiusMd),
-            borderSide: const BorderSide(color: AppColors.danger),
+            borderSide: BorderSide(color: AppColors.danger),
           ),
           labelStyle: GoogleFonts.poppins(
             fontSize: 14,

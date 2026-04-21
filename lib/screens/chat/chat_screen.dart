@@ -150,7 +150,7 @@ class _ChatState extends State<ChatScreen> {
                     width: 42,
                     height: 42,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: AppColors.gradCosmic,
                       ),
                       borderRadius: BorderRadius.circular(12),
@@ -526,7 +526,7 @@ class _EmptyChat extends StatelessWidget {
             width: 110,
             height: 110,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
+              gradient: LinearGradient(
                 colors: AppColors.gradCosmic,
               ),
               shape: BoxShape.circle,
@@ -632,7 +632,7 @@ class _ChatBubble extends StatelessWidget {
                       width: 20,
                       height: 20,
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                             colors: AppColors.gradCosmic),
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -676,7 +676,7 @@ class _ChatBubble extends StatelessWidget {
   Widget _userBubble() {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: AppColors.gradCosmic,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -759,7 +759,7 @@ class _ChatBubble extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ListTile(
-              leading: const Icon(Icons.copy_rounded,
+              leading: Icon(Icons.copy_rounded,
                   color: AppColors.primary),
               title: Text(
                 'Nusxa olish',
@@ -783,7 +783,7 @@ class _ChatBubble extends StatelessWidget {
             ),
             ListTile(
               leading:
-                  const Icon(Icons.delete_outline, color: AppColors.danger),
+                  Icon(Icons.delete_outline, color: AppColors.danger),
               title: Text(
                 S.get('delete'),
                 style: GoogleFonts.poppins(
@@ -916,7 +916,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                         colors: AppColors.gradCosmic),
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [

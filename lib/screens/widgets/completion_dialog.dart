@@ -186,7 +186,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.star_rounded,
+                            Icon(Icons.star_rounded,
                                 color: AppColors.accent, size: 28),
                             const SizedBox(width: 10),
                             BigNumber(
@@ -206,7 +206,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 18, vertical: 10),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
+                          gradient: LinearGradient(
                               colors: AppColors.gradCosmic),
                           borderRadius: BorderRadius.circular(14),
                           boxShadow: [

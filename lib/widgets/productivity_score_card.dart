@@ -32,7 +32,7 @@ class ProductivityScoreCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                       colors: AppColors.gradCosmic),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
@@ -62,7 +62,7 @@ class ProductivityScoreCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               ShaderMask(
-                shaderCallback: (b) => const LinearGradient(
+                shaderCallback: (b) => LinearGradient(
                         colors: AppColors.gradCosmic)
                     .createShader(b),
                 blendMode: BlendMode.srcIn,

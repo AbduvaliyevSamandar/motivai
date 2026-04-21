@@ -22,32 +22,32 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   final _ctrl = PageController();
   int _page = 0;
 
-  static const _slides = [
-    _OSlide(
-      emoji: '\u{1F31F}',
-      title: 'MotivAI ga xush kelibsiz!',
-      body: 'Maqsadga har kuni bir qadam — AI bilan motivatsion reja.',
-      gradient: AppColors.gradCosmic,
-    ),
-    _OSlide(
-      emoji: '\u{1F3AF}',
-      title: 'Vazifa qo\'shing',
-      body: 'Vaqti, qiyinligi va eslatma bilan. Bajarsa XP oling.',
-      gradient: AppColors.gradGold,
-    ),
-    _OSlide(
-      emoji: '\u{1F525}',
-      title: 'Streak saqlang',
-      body: 'Har kuni ish qiling — olov o\'chirmasin! Freeze kun ham bor.',
-      gradient: AppColors.gradFire,
-    ),
-    _OSlide(
-      emoji: '\u{1F4AB}',
-      title: 'Reytingda yuqorilang',
-      body: 'Pomodoro, flashcards, yutuqlar — hamma sizni kuchli qiladi.',
-      gradient: AppColors.gradAurora,
-    ),
-  ];
+  List<_OSlide> get _slides => [
+        _OSlide(
+          emoji: '\u{1F31F}',
+          title: 'MotivAI ga xush kelibsiz!',
+          body: 'Maqsadga har kuni bir qadam — AI bilan motivatsion reja.',
+          gradient: AppColors.gradCosmic,
+        ),
+        _OSlide(
+          emoji: '\u{1F3AF}',
+          title: 'Vazifa qo\'shing',
+          body: 'Vaqti, qiyinligi va eslatma bilan. Bajarsa XP oling.',
+          gradient: AppColors.gradGold,
+        ),
+        _OSlide(
+          emoji: '\u{1F525}',
+          title: 'Streak saqlang',
+          body: 'Har kuni ish qiling — olov o\'chirmasin! Freeze kun ham bor.',
+          gradient: AppColors.gradFire,
+        ),
+        _OSlide(
+          emoji: '\u{1F4AB}',
+          title: 'Reytingda yuqorilang',
+          body: 'Pomodoro, flashcards, yutuqlar — hamma sizni kuchli qiladi.',
+          gradient: AppColors.gradAurora,
+        ),
+      ];
 
   Future<void> _finish() async {
     final p = await SharedPreferences.getInstance();

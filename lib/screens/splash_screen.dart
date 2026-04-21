@@ -240,7 +240,7 @@ class _LoadingBar extends StatelessWidget {
                   child: Container(
                     height: 4,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                         colors: AppColors.gradAurora,
                       ),
                       borderRadius: BorderRadius.circular(3),

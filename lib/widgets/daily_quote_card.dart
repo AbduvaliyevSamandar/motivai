@@ -64,7 +64,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                         colors: AppColors.gradCosmic),
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [

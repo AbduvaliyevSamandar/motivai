@@ -382,7 +382,7 @@ class _MoreMenu extends StatelessWidget {
             value: 'edit',
             child: Row(
               children: [
-                const Icon(Icons.edit_outlined,
+                Icon(Icons.edit_outlined,
                     color: AppColors.primary, size: 18),
                 const SizedBox(width: 10),
                 Text(
@@ -400,7 +400,7 @@ class _MoreMenu extends StatelessWidget {
             value: 'delete',
             child: Row(
               children: [
-                const Icon(Icons.delete_outline_rounded,
+                Icon(Icons.delete_outline_rounded,
                     color: AppColors.danger, size: 18),
                 const SizedBox(width: 10),
                 Text(
@@ -641,7 +641,7 @@ class _OverdueBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded,
+          Icon(Icons.error_outline_rounded,
               size: 12, color: AppColors.danger),
           const SizedBox(width: D.sp4),
           Text(
@@ -706,7 +706,7 @@ class _UpcomingBadgeState extends State<_UpcomingBadge>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.notifications_active_rounded,
+            Icon(Icons.notifications_active_rounded,
                 size: 12, color: AppColors.accent),
             const SizedBox(width: D.sp4),
             Text(
@@ -745,7 +745,7 @@ class _AiBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.auto_awesome, size: 12, color: AppColors.primary),
+          Icon(Icons.auto_awesome, size: 12, color: AppColors.primary),
           const SizedBox(width: D.sp4),
           Text(
             'AI',

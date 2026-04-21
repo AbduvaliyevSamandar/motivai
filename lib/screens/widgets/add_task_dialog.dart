@@ -187,7 +187,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                           colors: AppColors.gradCosmic),
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [

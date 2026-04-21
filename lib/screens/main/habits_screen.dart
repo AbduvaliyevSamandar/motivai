@@ -107,7 +107,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
                 colors: AppColors.gradCosmic),
             shape: BoxShape.circle,
             boxShadow: [
@@ -159,7 +159,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                 ),
                 Expanded(
                   child: _loading
-                      ? const Center(
+                      ? Center(
                           child: CircularProgressIndicator(
                               color: AppColors.primary))
                       : _habits.isEmpty
@@ -257,7 +257,7 @@ class _HabitCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           alignment: Alignment.centerRight,
-          child: const Icon(Icons.delete_outline_rounded,
+          child: Icon(Icons.delete_outline_rounded,
               color: AppColors.danger),
         ),
         confirmDismiss: (_) async {
@@ -477,7 +477,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
                   height: 44,
                   decoration: BoxDecoration(
                     gradient: sel
-                        ? const LinearGradient(
+                        ? LinearGradient(
                             colors: AppColors.gradCosmic)
                         : null,
                     color: sel ? null : AppColors.bg,

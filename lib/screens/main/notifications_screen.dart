@@ -89,7 +89,7 @@ class _Header extends StatelessWidget {
               padding: const EdgeInsets.symmetric(
                   horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                     colors: AppColors.gradCosmic),
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -132,7 +132,7 @@ class _Header extends StatelessWidget {
                 PopupMenuItem(
                   value: 'clear',
                   child: Row(children: [
-                    const Icon(Icons.delete_outline_rounded,
+                    Icon(Icons.delete_outline_rounded,
                         color: AppColors.danger, size: 18),
                     const SizedBox(width: 10),
                     Text(
@@ -217,7 +217,7 @@ class _NotifTile extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         child:
-            const Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+            Icon(Icons.delete_outline_rounded, color: AppColors.danger),
       ),
       onDismissed: (_) {
         HapticFeedback.mediumImpact();
@@ -367,7 +367,7 @@ class _EmptyFeed extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Icon(Icons.notifications_none_rounded,
+              child: Icon(Icons.notifications_none_rounded,
                   color: AppColors.primary, size: 46),
             ),
             const SizedBox(height: 20),

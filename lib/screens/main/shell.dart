@@ -198,7 +198,7 @@ class _FloatingGlassNav extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             gradient: active
-                                ? const LinearGradient(
+                                ? LinearGradient(
                                     colors: AppColors.gradCosmic,
                                   )
                                 : null,

@@ -425,7 +425,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       Navigator.pop(context),
                                   child: ShaderMask(
                                     shaderCallback: (b) =>
-                                        const LinearGradient(
+                                        LinearGradient(
                                             colors: AppColors
                                                 .gradCosmic)
                                             .createShader(b),
@@ -465,7 +465,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           width: 4,
           height: 20,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               colors: AppColors.gradCosmic,
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,

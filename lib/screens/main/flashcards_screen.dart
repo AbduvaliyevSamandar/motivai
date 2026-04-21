@@ -124,7 +124,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                 ),
                 Expanded(
                   child: _loading
-                      ? const Center(
+                      ? Center(
                           child: CircularProgressIndicator(
                               color: AppColors.primary))
                       : _decks.isEmpty
@@ -253,7 +253,7 @@ class _DeckCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                         colors: AppColors.gradCosmic),
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
@@ -416,7 +416,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
                   height: 44,
                   decoration: BoxDecoration(
                     gradient: sel
-                        ? const LinearGradient(
+                        ? LinearGradient(
                             colors: AppColors.gradCosmic)
                         : null,
                     color: sel ? null : AppColors.bg,

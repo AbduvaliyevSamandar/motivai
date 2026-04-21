@@ -74,7 +74,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          gradient: const LinearGradient(
+                          gradient: LinearGradient(
                               colors: AppColors.gradCosmic),
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -92,7 +92,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                 ),
                 Expanded(
                   child: _loading
-                      ? const Center(
+                      ? Center(
                           child: CircularProgressIndicator(
                               color: AppColors.primary))
                       : GridView.builder(

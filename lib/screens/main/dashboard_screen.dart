@@ -281,7 +281,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           child: Container(
             width: 62,
             height: 62,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
                 colors: AppColors.gradCosmic,
@@ -572,7 +572,7 @@ class _Avatar extends StatelessWidget {
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: AppColors.gradCosmic,
         ),
         boxShadow: [
@@ -1028,7 +1028,7 @@ class _StreakCustomState extends State<_StreakCustom>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.trending_up_rounded,
+                  Icon(Icons.trending_up_rounded,
                       size: 11, color: AppColors.success),
                   const SizedBox(width: 2),
                   Text(
@@ -1224,7 +1224,7 @@ class _LoadingBlock extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            const CircularProgressIndicator(color: AppColors.primary),
+            CircularProgressIndicator(color: AppColors.primary),
             const SizedBox(height: 16),
             Text(
               S.get('loading'),
@@ -1335,7 +1335,7 @@ class _EmptyStateState extends State<_EmptyState>
             if (!completed) ...[
               const SizedBox(height: 20),
               ShaderMask(
-                shaderCallback: (b) => const LinearGradient(
+                shaderCallback: (b) => LinearGradient(
                   colors: AppColors.gradAurora,
                 ).createShader(b),
                 blendMode: BlendMode.srcIn,

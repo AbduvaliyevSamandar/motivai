@@ -389,7 +389,7 @@ class _TaskHit extends StatelessWidget {
                   ),
                 ),
                 if (task.isCompleted)
-                  const Icon(Icons.check_circle_rounded,
+                  Icon(Icons.check_circle_rounded,
                       color: AppColors.success, size: 18),
               ],
             ),

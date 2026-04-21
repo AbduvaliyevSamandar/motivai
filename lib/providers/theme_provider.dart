@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/colors.dart';
 import '../config/theme.dart';
+import '../config/theme_presets.dart';
 import '../config/strings.dart';
 
 class ThemeProvider extends ChangeNotifier {
@@ -24,8 +25,17 @@ class ThemeProvider extends ChangeNotifier {
     AppColors.setDark(_isDark);
     C.setDark(_isDark);
     S.setLang(_lang);
+    await ThemePresets.load();
     notifyListeners();
   }
+
+  /// Switch active color preset (ocean, forest, cyberpunk, pastel, mono, nebula).
+  Future<void> setPreset(String id) async {
+    await ThemePresets.set(id);
+    notifyListeners();
+  }
+
+  String get presetId => ThemePresets.current.id;
 
   Future<void> toggle() async {
     _isDark = !_isDark;

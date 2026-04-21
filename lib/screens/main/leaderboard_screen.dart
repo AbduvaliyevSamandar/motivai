@@ -72,7 +72,7 @@ class _LbState extends State<LeaderboardScreen>
                 ),
               ],
               body: tasks.isLoading && tasks.globalLb.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: CircularProgressIndicator(
                         color: AppColors.primary,
                       ),
@@ -131,7 +131,7 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
               child: TabBar(
                 controller: tab,
                 indicator: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                       colors: AppColors.gradCosmic),
                   borderRadius: BorderRadius.circular(13),
                   boxShadow: [
@@ -282,7 +282,7 @@ class _MyRankHeader extends StatelessWidget {
             Column(
               children: [
                 ShaderMask(
-                  shaderCallback: (b) => const LinearGradient(
+                  shaderCallback: (b) => LinearGradient(
                           colors: AppColors.gradCosmic)
                       .createShader(b),
                   blendMode: BlendMode.srcIn,
@@ -706,7 +706,7 @@ class _LbTile extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
+                      gradient: LinearGradient(
                           colors: AppColors.gradCosmic),
                       borderRadius: BorderRadius.circular(6),
                     ),

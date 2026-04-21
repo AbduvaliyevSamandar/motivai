@@ -22,7 +22,7 @@ class LevelBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: D.sp12, vertical: 6),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: AppColors.gradPrimary,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,

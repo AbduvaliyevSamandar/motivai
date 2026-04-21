@@ -62,6 +62,9 @@ class _NebulaButtonState extends State<NebulaButton>
   @override
   Widget build(BuildContext context) {
     final grad = widget.gradient ?? AppColors.gradCosmic;
+    final isDark = AppColors.isDark;
+    final glowA = isDark ? 0.45 : 0.22;
+    final glowB = isDark ? 0.30 : 0.14;
 
     Widget body = Container(
       height: widget.height,
@@ -76,14 +79,14 @@ class _NebulaButtonState extends State<NebulaButton>
             ? null
             : [
                 BoxShadow(
-                  color: grad.first.withOpacity(0.45),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
+                  color: grad.first.withOpacity(glowA),
+                  blurRadius: isDark ? 24 : 16,
+                  offset: const Offset(0, 6),
                 ),
                 BoxShadow(
-                  color: grad.last.withOpacity(0.3),
-                  blurRadius: 40,
-                  offset: const Offset(0, 14),
+                  color: grad.last.withOpacity(glowB),
+                  blurRadius: isDark ? 40 : 22,
+                  offset: const Offset(0, 10),
                 ),
               ],
       ),

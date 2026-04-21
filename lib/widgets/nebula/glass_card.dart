@@ -96,13 +96,15 @@ class _GlassCardState extends State<GlassCard>
     );
 
     if (widget.gradientBorder) {
+      final borderA = AppColors.isDark ? 0.5 : 0.25;
+      final borderB = AppColors.isDark ? 0.2 : 0.10;
       card = Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
           gradient: LinearGradient(
             colors: [
-              glowColors.first.withOpacity(0.5),
-              glowColors.last.withOpacity(0.2),
+              glowColors.first.withOpacity(borderA),
+              glowColors.last.withOpacity(borderB),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -113,7 +115,9 @@ class _GlassCardState extends State<GlassCard>
           borderRadius: BorderRadius.circular(radius - 1.2),
           child: Container(
             decoration: BoxDecoration(
-              color: AppColors.bg.withOpacity(AppColors.isDark ? 0.5 : 0.3),
+              color: AppColors.isDark
+                  ? AppColors.bg.withOpacity(0.5)
+                  : AppColors.surface,
               borderRadius: BorderRadius.circular(radius - 1.2),
             ),
             child: card,
@@ -122,22 +126,33 @@ class _GlassCardState extends State<GlassCard>
       );
     }
 
-    // Glow shadow
+    // Glow shadow (softer in light mode to avoid border bleed)
+    final glowScale = AppColors.isDark ? 1.0 : 0.45;
     card = Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(radius),
-        boxShadow: [
-          BoxShadow(
-            color: glowColors.first.withOpacity(widget.glowIntensity * 0.5),
-            blurRadius: 24,
-            offset: const Offset(0, 8),
-          ),
-          BoxShadow(
-            color: glowColors.last.withOpacity(widget.glowIntensity * 0.3),
-            blurRadius: 40,
-            offset: const Offset(0, 16),
-          ),
-        ],
+        boxShadow: AppColors.isDark
+            ? [
+                BoxShadow(
+                  color: glowColors.first
+                      .withOpacity(widget.glowIntensity * 0.5 * glowScale),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+                BoxShadow(
+                  color: glowColors.last
+                      .withOpacity(widget.glowIntensity * 0.3 * glowScale),
+                  blurRadius: 40,
+                  offset: const Offset(0, 16),
+                ),
+              ]
+            : [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 18,
+                  offset: const Offset(0, 6),
+                ),
+              ],
       ),
       margin: widget.margin,
       child: card,

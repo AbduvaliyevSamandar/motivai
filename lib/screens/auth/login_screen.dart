@@ -305,7 +305,7 @@ class _LoginScreenState extends State<LoginScreen>
                               ),
                               child: ShaderMask(
                                 shaderCallback: (b) =>
-                                    const LinearGradient(
+                                    LinearGradient(
                                         colors: AppColors.gradCosmic)
                                         .createShader(b),
                                 blendMode: BlendMode.srcIn,

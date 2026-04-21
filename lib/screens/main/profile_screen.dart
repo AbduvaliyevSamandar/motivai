@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
+import '../../config/theme_presets.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/notification_provider.dart';
@@ -112,7 +113,7 @@ class _ProfileState extends State<ProfileScreen> {
                                     width: 30,
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      gradient: const LinearGradient(
+                                      gradient: LinearGradient(
                                           colors: AppColors.gradCosmic),
                                       shape: BoxShape.circle,
                                       border: Border.all(
@@ -195,7 +196,7 @@ class _ProfileState extends State<ProfileScreen> {
                                     horizontal: 8),
                                 width: 4,
                                 height: 4,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   color: AppColors.accent,
                                   shape: BoxShape.circle,
                                 ),
@@ -300,6 +301,14 @@ class _ProfileState extends State<ProfileScreen> {
                           theme.toggle();
                         },
                       ),
+                    ),
+                    _tile(
+                      icon: Icons.palette_rounded,
+                      iconColor: AppColors.pink,
+                      title: 'Rang mavzusi',
+                      subtitle:
+                          '${ThemePresets.current.emoji}  ${ThemePresets.current.name}',
+                      onTap: _showThemePicker,
                     ),
                     _tile(
                       icon: Icons.lock_outline_rounded,
@@ -455,7 +464,7 @@ class _ProfileState extends State<ProfileScreen> {
                               ]),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(Icons.bolt_rounded,
+                            child: Icon(Icons.bolt_rounded,
                                 color: AppColors.primary, size: 28),
                           ),
                           const SizedBox(height: 10),
@@ -575,7 +584,7 @@ class _ProfileState extends State<ProfileScreen> {
           width: 4,
           height: 16,
           decoration: BoxDecoration(
-            gradient: const LinearGradient(
+            gradient: LinearGradient(
               colors: AppColors.gradCosmic,
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -824,6 +833,182 @@ class _ProfileState extends State<ProfileScreen> {
     );
   }
 
+  void _showThemePicker() {
+    final theme = context.read<ThemeProvider>();
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border(
+              top:
+                  BorderSide(color: AppColors.glassBorder, width: 1.5),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              const SizedBox(height: 18),
+              ShaderMask(
+                shaderCallback: (b) => LinearGradient(
+                  colors: AppColors.titleGradient,
+                ).createShader(b),
+                blendMode: BlendMode.srcIn,
+                child: Text(
+                  'Rang mavzusi',
+                  style: GoogleFonts.spaceGrotesk(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Ilovaning rang palitrasini tanlang',
+                style: GoogleFonts.poppins(
+                  color: AppColors.sub,
+                  fontSize: 12,
+                ),
+              ),
+              const SizedBox(height: 20),
+              GridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.55,
+                children: ThemePresets.all.map((p) {
+                  final active = p.id == ThemePresets.current.id;
+                  return GestureDetector(
+                    onTap: () async {
+                      HapticFeedback.selectionClick();
+                      await theme.setPreset(p.id);
+                      if (ctx.mounted) setS(() {});
+                      if (mounted) setState(() {});
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 220),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            p.primary.withOpacity(0.25),
+                            p.secondary.withOpacity(0.18),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(
+                          color: active
+                              ? p.primary
+                              : AppColors.border,
+                          width: active ? 2 : 1,
+                        ),
+                        boxShadow: active
+                            ? [
+                                BoxShadow(
+                                  color: p.primary.withOpacity(0.35),
+                                  blurRadius: 16,
+                                  spreadRadius: 1,
+                                ),
+                              ]
+                            : null,
+                      ),
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(p.emoji,
+                                  style: const TextStyle(fontSize: 22)),
+                              if (active)
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    color: p.primary,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(
+                                    Icons.check_rounded,
+                                    color: Colors.white,
+                                    size: 14,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          Column(
+                            crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                p.name,
+                                style: GoogleFonts.spaceGrotesk(
+                                  color: AppColors.txt,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.2,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Row(
+                                children: [
+                                  _swatch(p.primary),
+                                  const SizedBox(width: 4),
+                                  _swatch(p.secondary),
+                                  const SizedBox(width: 4),
+                                  _swatch(p.accent),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _swatch(Color c) {
+    return Container(
+      width: 14,
+      height: 14,
+      decoration: BoxDecoration(
+        color: c,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white.withOpacity(0.3)),
+      ),
+    );
+  }
+
   void _showLanguageDialog() {
     showDialog(
       context: context,
@@ -896,7 +1081,7 @@ class _ProfileState extends State<ProfileScreen> {
               ),
             ),
             if (isActive)
-              const Icon(Icons.check_circle_rounded,
+              Icon(Icons.check_circle_rounded,
                   color: AppColors.primary, size: 22),
           ]),
         ),
@@ -1050,7 +1235,7 @@ class _ProfileState extends State<ProfileScreen> {
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                       colors: AppColors.gradCosmic),
                   shape: BoxShape.circle,
                   boxShadow: [
@@ -1388,7 +1573,7 @@ class _ProfileState extends State<ProfileScreen> {
                             ),
                           ),
                           if (active)
-                            const Icon(Icons.check_circle_rounded,
+                            Icon(Icons.check_circle_rounded,
                                 color: AppColors.primary, size: 20),
                         ],
                       ),
