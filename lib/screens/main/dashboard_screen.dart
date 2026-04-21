@@ -671,46 +671,62 @@ class _QuickStats extends StatelessWidget {
     required this.tasksDone,
   });
 
+  String _fmt(int n) =>
+      n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _chip(
-            icon: Icons.star_rounded,
-            value: _fmt(points),
-            label: 'XP',
-            gradient: AppColors.gradGold,
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: _StatChip(
+              icon: Icons.star_rounded,
+              value: _fmt(points),
+              label: 'XP',
+              gradient: AppColors.gradGold,
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _chip(
-            icon: Icons.local_fire_department_rounded,
-            value: '$streak',
-            label: 'streak',
-            gradient: AppColors.gradFire,
+          const SizedBox(width: 8),
+          Expanded(
+            child: _StatChip(
+              icon: Icons.local_fire_department_rounded,
+              value: '$streak',
+              label: 'streak',
+              gradient: AppColors.gradFire,
+            ),
           ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _chip(
-            icon: Icons.check_circle_rounded,
-            value: '$tasksDone',
-            label: 'bajarildi',
-            gradient: AppColors.gradSuccess,
+          const SizedBox(width: 8),
+          Expanded(
+            child: _StatChip(
+              icon: Icons.check_circle_rounded,
+              value: '$tasksDone',
+              label: 'bajarildi',
+              gradient: AppColors.gradSuccess,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
+}
 
-  Widget _chip({
-    required IconData icon,
-    required String value,
-    required String label,
-    required List<Color> gradient,
-  }) {
+class _StatChip extends StatelessWidget {
+  final IconData icon;
+  final String value;
+  final String label;
+  final List<Color> gradient;
+
+  const _StatChip({
+    required this.icon,
+    required this.value,
+    required this.label,
+    required this.gradient,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
@@ -719,6 +735,7 @@ class _QuickStats extends StatelessWidget {
         border: Border.all(color: gradient.first.withOpacity(0.3)),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             width: 28,
@@ -726,23 +743,19 @@ class _QuickStats extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: gradient),
               borderRadius: BorderRadius.circular(8),
-              boxShadow: [
-                BoxShadow(
-                  color: gradient.first.withOpacity(0.35),
-                  blurRadius: 8,
-                ),
-              ],
             ),
             child: Icon(icon, color: Colors.white, size: 15),
           ),
           const SizedBox(width: 8),
-          Expanded(
+          Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
                   value,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.spaceGrotesk(
                     color: AppColors.txt,
                     fontSize: 14,
@@ -750,16 +763,16 @@ class _QuickStats extends StatelessWidget {
                     height: 1.1,
                     letterSpacing: -0.3,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
                     fontSize: 9,
                     fontWeight: FontWeight.w500,
                   ),
-                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -768,9 +781,6 @@ class _QuickStats extends StatelessWidget {
       ),
     );
   }
-
-  String _fmt(int n) =>
-      n >= 1000 ? '${(n / 1000).toStringAsFixed(1)}k' : '$n';
 }
 
 // ═══════════════════════════════════════════════════════════
