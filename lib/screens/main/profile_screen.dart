@@ -15,6 +15,7 @@ import '../../services/notification_service.dart';
 import '../../widgets/nebula/nebula.dart';
 import 'achievements_screen.dart';
 import 'habits_screen.dart';
+import 'wrapped_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -315,6 +316,24 @@ class _ProfileState extends State<ProfileScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => const HabitsScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _tile(
+                      icon: Icons.auto_awesome_rounded,
+                      iconColor: AppColors.pink,
+                      title: 'Haftalik xulosa',
+                      subtitle: 'Bu haftangiz natijalari',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (_, __, ___) =>
+                                const WrappedScreen(),
+                            transitionsBuilder: (_, a, __, c) =>
+                                FadeTransition(opacity: a, child: c),
                           ),
                         );
                       },
