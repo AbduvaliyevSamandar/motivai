@@ -13,6 +13,8 @@ import '../../providers/theme_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../services/notification_service.dart';
 import '../../widgets/nebula/nebula.dart';
+import 'achievements_screen.dart';
+import 'habits_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -255,6 +257,15 @@ class _ProfileState extends State<ProfileScreen> {
                         label: S.get('achievements'),
                         gradient: AppColors.gradCosmic,
                         accent: AppColors.primary,
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AchievementsScreen(),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -292,6 +303,21 @@ class _ProfileState extends State<ProfileScreen> {
                       iconColor: AppColors.info,
                       title: S.get('change_pass'),
                       onTap: _showChangePassword,
+                    ),
+                    _tile(
+                      icon: Icons.eco_rounded,
+                      iconColor: AppColors.success,
+                      title: 'Kundalik odatlar',
+                      subtitle: 'Streak orqali o\'z-o\'zingizni rivojlantiring',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const HabitsScreen(),
+                          ),
+                        );
+                      },
                     ),
                     _tile(
                       icon: Icons.translate_rounded,

@@ -189,54 +189,51 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<void> _confirmDelete(
       BuildContext ctx, TaskProvider tasks, Task task) async {
     HapticFeedback.mediumImpact();
-    final ok = await showDialog<bool>(
-      context: ctx,
-      builder: (_) => AlertDialog(
-        backgroundColor: AppColors.card,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
-          side: BorderSide(color: AppColors.border),
-        ),
-        title: Text(
-          "Vazifani o'chirish?",
-          style: GoogleFonts.spaceGrotesk(
-            color: AppColors.txt,
-            fontWeight: FontWeight.w700,
-            letterSpacing: -0.3,
-          ),
-        ),
-        content: Text(
-          '"${task.title}" — bu amalni qaytarib bo\'lmaydi.',
-          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: Text(S.get('cancel'),
-                style: GoogleFonts.poppins(color: AppColors.sub)),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, true),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.danger,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-            ),
-            child: Text("O'chirish", style: GoogleFonts.poppins()),
-          ),
-        ],
-      ),
-    );
-    if (ok != true) return;
+    // Optimistic: delete immediately + show undo snackbar
     final done =
         await tasks.deleteTask(task.id, planId: task.planId);
     if (!ctx.mounted) return;
     if (done) {
-      ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
-        content: Text("Vazifa o'chirildi",
-            style: GoogleFonts.poppins()),
-        backgroundColor: AppColors.success,
+      final messenger = ScaffoldMessenger.of(ctx);
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(SnackBar(
+        content: Row(
+          children: [
+            const Icon(Icons.delete_outline_rounded,
+                color: Colors.white, size: 18),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                '"${task.title}" o\'chirildi',
+                style: GoogleFonts.poppins(
+                    color: Colors.white, fontWeight: FontWeight.w500),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: AppColors.danger,
         behavior: SnackBarBehavior.floating,
+        duration: const Duration(seconds: 5),
+        action: SnackBarAction(
+          label: 'BEKOR QILISH',
+          textColor: Colors.white,
+          onPressed: () async {
+            HapticFeedback.lightImpact();
+            // Recreate the task
+            await tasks.createTask(
+              title: task.title,
+              description: task.description,
+              category: task.category,
+              difficulty: task.difficulty,
+              durationMinutes: task.durationMinutes,
+              xpReward: task.points,
+              scheduledAt: task.scheduledAt,
+              reminderMinutes: task.reminderMinutes,
+            );
+          },
+        ),
       ));
     } else if (tasks.error != null) {
       ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(

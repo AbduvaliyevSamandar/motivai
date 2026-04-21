@@ -1,248 +1,367 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../config/theme.dart';
-import '../../config/strings.dart';
-import '../../providers/task_provider.dart';
-import '../../models/models.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../config/colors.dart';
+import '../../services/achievements.dart';
+import '../../widgets/nebula/nebula.dart';
 
 class AchievementsScreen extends StatefulWidget {
   const AchievementsScreen({super.key});
   @override
-  State<AchievementsScreen> createState() => _AchState();
+  State<AchievementsScreen> createState() => _AchievementsScreenState();
 }
 
-class _AchState extends State<AchievementsScreen> {
-  bool _loaded = false;
+class _AchievementsScreenState extends State<AchievementsScreen> {
+  List<(AchievementDef, bool)> _items = [];
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_loaded) {
-        _loaded = true;
-        context.read<TaskProvider>().loadAchievements();
-      }
-    });
+    _load();
+  }
+
+  Future<void> _load() async {
+    final list = await AchievementService.listWithStatus();
+    if (mounted) {
+      setState(() {
+        _items = list;
+        _loading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final tasks = context.watch<TaskProvider>();
-    final all   = tasks.achievements;
-    final done  = all.where((a) => a.isUnlocked).length;
-
+    final unlockedCount = _items.where((e) => e.$2).length;
+    final total = _items.length;
     return Scaffold(
-      backgroundColor: C.bg,
-      appBar: AppBar(
-        title: Row(children: [
-          Text('🏆 ${S.get("achievements")}',
-              style: TextStyle(
-                  color: C.txt,
-                  fontWeight: FontWeight.bold)),
-          const SizedBox(width: 10),
-          Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: C.primary.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(12)),
-            child: Text('$done/${all.length}',
-                style: const TextStyle(
-                    color: C.primary,
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold)),
+      extendBodyBehindAppBar: true,
+      body: Stack(
+        children: [
+          const AuroraBackground(subtle: true),
+          const ParticleField(count: 22),
+          SafeArea(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.arrow_back_ios_new_rounded,
+                            color: AppColors.txt, size: 20),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                      const SizedBox(width: 4),
+                      ShaderMask(
+                        shaderCallback: (b) => LinearGradient(
+                          colors: AppColors.titleGradient,
+                        ).createShader(b),
+                        blendMode: BlendMode.srcIn,
+                        child: Text(
+                          'Yutuqlar',
+                          style: GoogleFonts.spaceGrotesk(
+                            color: Colors.white,
+                            fontSize: 22,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: -0.5,
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                              colors: AppColors.gradCosmic),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          '$unlockedCount / $total',
+                          style: GoogleFonts.spaceGrotesk(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: _loading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                              color: AppColors.primary))
+                      : GridView.builder(
+                          padding: const EdgeInsets.fromLTRB(
+                              16, 8, 16, 40),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 12,
+                            mainAxisSpacing: 12,
+                            childAspectRatio: 0.85,
+                          ),
+                          itemCount: _items.length,
+                          itemBuilder: (_, i) {
+                            final (a, unlocked) = _items[i];
+                            return _AchCard(def: a, unlocked: unlocked);
+                          },
+                        ),
+                ),
+              ],
+            ),
           ),
-        ]),
-        backgroundColor: C.surface,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.refresh, color: C.sub),
-            onPressed: () =>
-                tasks.loadAchievements()),
         ],
       ),
-      body: tasks.isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                  color: C.primary))
-          : all.isEmpty
-              ? const _Empty()
-              : Column(children: [
-                  // Progress banner
-                  if (all.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(
-                          16, 12, 16, 0),
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            C.gold.withOpacity(0.1),
-                            C.primary.withOpacity(0.1),
-                          ],
-                        ),
-                        borderRadius:
-                            BorderRadius.circular(14),
-                        border: Border.all(
-                            color:
-                                C.gold.withOpacity(0.3))),
-                      child: Column(children: [
-                        Row(
-                          mainAxisAlignment:
-                              MainAxisAlignment
-                                  .spaceBetween,
-                          children: [
-                          Text(
-                            '$done ta yutuq qo\'lga kiritildi',
-                            style: TextStyle(
-                                color: C.txt,
-                                fontWeight:
-                                    FontWeight.w600)),
-                          Text(
-                            all.isEmpty
-                                ? '0%'
-                                : '${(done / all.length * 100).toInt()}%',
-                            style: const TextStyle(
-                                color: C.gold,
-                                fontWeight:
-                                    FontWeight.bold)),
-                        ]),
-                        const SizedBox(height: 8),
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(6),
-                          child: LinearProgressIndicator(
-                            value: all.isEmpty
-                                ? 0
-                                : done / all.length,
-                            backgroundColor: C.border,
-                            valueColor:
-                                const AlwaysStoppedAnimation(
-                                    C.gold),
-                            minHeight: 8)),
-                      ]),
-                    ),
-
-                  Expanded(
-                    child: GridView.builder(
-                      padding: const EdgeInsets.all(16),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        childAspectRatio: 0.82,
-                      ),
-                      itemCount: all.length,
-                      itemBuilder: (_, i) =>
-                          _AchCard(a: all[i]),
-                    ),
-                  ),
-                ]),
     );
   }
 }
 
 class _AchCard extends StatelessWidget {
-  final Achievement a;
-  const _AchCard({required this.a});
+  final AchievementDef def;
+  final bool unlocked;
+  const _AchCard({required this.def, required this.unlocked});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: a.isUnlocked ? C.card : C.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: a.isUnlocked
-              ? a.rarityColor.withOpacity(0.5)
-              : C.border,
-          width: a.isUnlocked ? 1.5 : 1,
-        ),
-        boxShadow: a.isUnlocked
-            ? [BoxShadow(
-                color: a.rarityColor.withOpacity(0.15),
-                blurRadius: 12,
-                spreadRadius: 1)]
-            : null,
-      ),
-      child: Stack(children: [
-        // Locked overlay
-        if (!a.isUnlocked)
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                color: C.bg.withOpacity(0.35),
-                borderRadius: BorderRadius.circular(15)),
-            ),
+    final accent = def.rarityColor;
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        showDialog(
+          context: context,
+          builder: (_) => _AchDialog(def: def, unlocked: unlocked),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: unlocked
+              ? LinearGradient(colors: [
+                  accent.withOpacity(0.25),
+                  accent.withOpacity(0.08),
+                ])
+              : null,
+          color: unlocked ? null : AppColors.card.withOpacity(0.4),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(
+            color: unlocked
+                ? accent.withOpacity(0.5)
+                : AppColors.border,
+            width: unlocked ? 1.5 : 1,
           ),
-        Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            Text(a.isUnlocked ? a.emoji : '🔒',
-                style: TextStyle(
-                    fontSize: a.isUnlocked ? 36 : 28)),
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 8, vertical: 3),
-              decoration: BoxDecoration(
-                color: a.rarityColor.withOpacity(0.15),
-                borderRadius: BorderRadius.circular(8)),
-              child: Text(a.rarityLabel,
-                  style: TextStyle(
-                      color: a.rarityColor,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold))),
-            SizedBox(height: 8),
-            Text(a.name,
-                style: TextStyle(
-                    color: a.isUnlocked ? C.txt : C.sub,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis),
-            SizedBox(height: 4),
-            Text(a.description,
-                style: TextStyle(
-                    color: C.sub, fontSize: 10),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis),
-            if (a.isUnlocked) ...[
-              const SizedBox(height: 6),
-              Text('+${a.bonusPoints} ball',
-                  style: const TextStyle(
-                      color: C.gold,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold)),
-            ],
-          ]),
+          boxShadow: unlocked
+              ? [
+                  BoxShadow(
+                    color: accent.withOpacity(0.25),
+                    blurRadius: 14,
+                  ),
+                ]
+              : null,
         ),
-      ]),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Opacity(
+              opacity: unlocked ? 1.0 : 0.3,
+              child: Container(
+                width: 64,
+                height: 64,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: unlocked
+                      ? RadialGradient(colors: [
+                          accent.withOpacity(0.45),
+                          accent.withOpacity(0.1),
+                        ])
+                      : null,
+                  color: unlocked ? null : AppColors.bg,
+                ),
+                child: Center(
+                  child: Text(
+                    unlocked ? def.emoji : '\u{1F512}',
+                    style: const TextStyle(fontSize: 30),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              def.title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: GoogleFonts.spaceGrotesk(
+                color: unlocked ? AppColors.txt : AppColors.sub,
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.2,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                color: accent.withOpacity(unlocked ? 0.2 : 0.08),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                def.rarity.toUpperCase(),
+                style: GoogleFonts.poppins(
+                  color: unlocked ? accent : AppColors.sub,
+                  fontSize: 8,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
 
-class _Empty extends StatelessWidget {
-  const _Empty();
+class _AchDialog extends StatelessWidget {
+  final AchievementDef def;
+  final bool unlocked;
+  const _AchDialog({required this.def, required this.unlocked});
+
   @override
-  Widget build(BuildContext context) => Center(
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text('🏆', style: TextStyle(fontSize: 64)),
-        SizedBox(height: 16),
-        Text(S.get('achievements'),
-            style: TextStyle(color: C.sub, fontSize: 16)),
-        SizedBox(height: 8),
-        Text('${S.get("tasks_label")}!',
-            style: TextStyle(
-                color: C.primary, fontSize: 13)),
-      ],
-    ),
-  );
+  Widget build(BuildContext context) {
+    final accent = def.rarityColor;
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 320),
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(colors: [
+            AppColors.card,
+            Color.lerp(AppColors.card, accent, 0.08)!,
+          ]),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: accent.withOpacity(0.5), width: 1.5),
+          boxShadow: [
+            BoxShadow(
+              color: accent.withOpacity(0.35),
+              blurRadius: 30,
+              spreadRadius: 2,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Opacity(
+              opacity: unlocked ? 1.0 : 0.3,
+              child: Container(
+                width: 84,
+                height: 84,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(colors: [
+                    accent.withOpacity(0.55),
+                    accent.withOpacity(0.1),
+                  ]),
+                ),
+                child: Center(
+                  child: Text(
+                    unlocked ? def.emoji : '\u{1F512}',
+                    style: const TextStyle(fontSize: 44),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              def.title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.spaceGrotesk(
+                color: AppColors.txt,
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.3,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              def.description,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                color: AppColors.sub,
+                fontSize: 13,
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: accent.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    def.rarity.toUpperCase(),
+                    style: GoogleFonts.poppins(
+                      color: accent,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: 1,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: AppColors.accent.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star_rounded,
+                          color: AppColors.accent, size: 12),
+                      const SizedBox(width: 2),
+                      Text(
+                        '+${def.bonusXP}',
+                        style: GoogleFonts.spaceGrotesk(
+                          color: AppColors.accent,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            NebulaButton(
+              label: unlocked ? 'Ajoyib!' : 'Qulflangan',
+              icon: unlocked
+                  ? Icons.check_rounded
+                  : Icons.lock_outline_rounded,
+              disabled: !unlocked,
+              gradient: unlocked
+                  ? AppColors.gradSuccess
+                  : AppColors.gradCosmic,
+              onTap: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
