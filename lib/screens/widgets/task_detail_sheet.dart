@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 import '../../models/models.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../focus_screen.dart';
 
 void showTaskDetail(
   BuildContext context,
@@ -210,8 +211,22 @@ class _TaskDetailSheet extends StatelessWidget {
             // Actions
             if (!task.isCompleted) ...[
               NebulaButton(
+                label: 'Fokus (Pomodoro)',
+                icon: Icons.timer_rounded,
+                onTap: () async {
+                  Navigator.pop(context);
+                  await startPomodoro(
+                    context,
+                    taskId: task.id,
+                    taskTitle: task.title,
+                  );
+                },
+              ),
+              const SizedBox(height: 10),
+              NebulaButton(
                 label: 'Bajardim',
                 icon: Icons.check_rounded,
+                gradient: AppColors.gradSuccess,
                 onTap: onComplete == null
                     ? null
                     : () {

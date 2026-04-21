@@ -11,10 +11,14 @@ import '../../providers/task_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../models/models.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../../widgets/daily_quote_card.dart';
+import '../../widgets/daily_challenge_card.dart';
+import '../../services/daily_challenge.dart';
 import '../widgets/task_card.dart';
 import '../widgets/completion_dialog.dart';
 import '../widgets/add_task_dialog.dart';
 import 'notifications_screen.dart';
+import 'calendar_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -91,12 +95,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(
-                        D.sp16, 0, D.sp16, 4),
+                        D.sp16, 0, D.sp16, 8),
                     child: _QuickStats(
                       points: auth.points,
                       streak: auth.streak,
                       tasksDone: tasks.completedToday,
                     ),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        D.sp16, 4, D.sp16, 8),
+                    child: DailyChallengeCard(),
+                  ),
+                ),
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        D.sp16, 4, D.sp16, 4),
+                    child: DailyQuoteCard(),
                   ),
                 ),
                 if (tasks.isLoading && tasks.all.isEmpty)
@@ -287,6 +305,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final res = await tasks.complete(task.id, planId: task.planId);
     if (!ctx.mounted) return;
     if (res != null) {
+      // Daily challenge progress (completeN type)
+      final ch = DailyChallengeService.today();
+      if (ch.type == ChallengeType.completeN ||
+          ch.type == ChallengeType.streakKeep) {
+        await DailyChallengeService.increment();
+      }
       await ctx.read<AuthProvider>().refresh();
       if (!ctx.mounted) return;
       showDialog(
@@ -354,6 +378,49 @@ class _HeaderRow extends StatelessWidget {
             ],
           ),
         ),
+        // Calendar button
+        Builder(builder: (ctx) {
+          return Material(
+            color: AppColors.card.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(14),
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.selectionClick();
+                Navigator.push(
+                  ctx,
+                  PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => const CalendarScreen(),
+                    transitionsBuilder: (_, a, __, c) => FadeTransition(
+                      opacity: a,
+                      child: SlideTransition(
+                        position: Tween<Offset>(
+                          begin: const Offset(0, 0.05),
+                          end: Offset.zero,
+                        ).animate(a),
+                        child: c,
+                      ),
+                    ),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(14),
+              child: Container(
+                width: 44,
+                height: 44,
+                margin: const EdgeInsets.only(right: 6),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: AppColors.border),
+                ),
+                child: Icon(
+                  Icons.calendar_month_rounded,
+                  color: AppColors.sub,
+                  size: 20,
+                ),
+              ),
+            ),
+          );
+        }),
         Consumer<NotificationProvider>(
           builder: (ctx, np, __) {
             final unread = np.unreadCount;
