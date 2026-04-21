@@ -92,28 +92,53 @@ class Task {
     'productivity': '⚡', 'challenge': '🏆',
   };
 
-  factory Task.fromJson(Map<String, dynamic> j) => Task(
-    id:                j['_id']               ?? j['id']  ?? '',
-    title:             j['title']             ?? '',
-    description:       j['description']       ?? '',
-    category:          j['category']          ?? 'study',
-    difficulty:        j['difficulty']        ?? 'easy',
-    points:            (j['xp_reward'] ?? j['points_reward'] ?? j['points'] ?? 10) as int,
-    durationMinutes:   (j['duration_minutes'] ?? 30) as int,
-    tags:              List<String>.from(j['tags'] ?? []),
-    isCompleted:       j['is_completed']      ?? false,
-    isGlobalChallenge: j['is_global_challenge'] ?? false,
-    isFromChat:        j['is_from_chat']      ?? false,
-    completedAt: j['completed_at'] != null
-        ? DateTime.tryParse(j['completed_at'].toString())
-        : null,
-    planId:    j['plan_id']?.toString(),
-    planTitle: j['plan_title']?.toString(),
-    scheduledAt: j['scheduled_at'] != null
-        ? DateTime.tryParse(j['scheduled_at'].toString())
-        : null,
-    reminderMinutes: (j['reminder_minutes'] ?? 15) as int,
-  );
+  factory Task.fromJson(Map<String, dynamic> j) {
+    int _asInt(dynamic v, int fallback) {
+      if (v == null) return fallback;
+      if (v is int) return v;
+      if (v is double) return v.toInt();
+      if (v is num) return v.toInt();
+      if (v is String) return int.tryParse(v) ?? fallback;
+      return fallback;
+    }
+    bool _asBool(dynamic v, bool fallback) {
+      if (v == null) return fallback;
+      if (v is bool) return v;
+      if (v is String) return v.toLowerCase() == 'true';
+      if (v is num) return v != 0;
+      return fallback;
+    }
+    List<String> _asStrList(dynamic v) {
+      if (v is List) {
+        return v.map((e) => e?.toString() ?? '').toList();
+      }
+      return const [];
+    }
+    return Task(
+      id: (j['_id'] ?? j['id'] ?? '').toString(),
+      title: (j['title'] ?? '').toString(),
+      description: (j['description'] ?? '').toString(),
+      category: (j['category'] ?? 'study').toString(),
+      difficulty: (j['difficulty'] ?? 'easy').toString(),
+      points: _asInt(
+          j['xp_reward'] ?? j['points_reward'] ?? j['points'], 10),
+      durationMinutes:
+          _asInt(j['duration_minutes'] ?? j['duration'], 30),
+      tags: _asStrList(j['tags']),
+      isCompleted: _asBool(j['is_completed'], false),
+      isGlobalChallenge: _asBool(j['is_global_challenge'], false),
+      isFromChat: _asBool(j['is_from_chat'], false),
+      completedAt: j['completed_at'] != null
+          ? DateTime.tryParse(j['completed_at'].toString())
+          : null,
+      planId: j['plan_id']?.toString(),
+      planTitle: j['plan_title']?.toString(),
+      scheduledAt: j['scheduled_at'] != null
+          ? DateTime.tryParse(j['scheduled_at'].toString())
+          : null,
+      reminderMinutes: _asInt(j['reminder_minutes'], 15),
+    );
+  }
 
   Task copyWith({
     bool? isCompleted,

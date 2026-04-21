@@ -73,56 +73,74 @@ class TaskProvider extends ChangeNotifier {
   Future<void> _loadPlans() async {
     try {
       final res = await _api.get('${K.plans}?is_active=true');
+      debugPrint('📥 loadPlans response runtimeType: ${res.runtimeType}');
       // Backend: {"success":true, "data": {"plans": [...]}}
-      final data = res['data'] as Map<String, dynamic>? ?? res;
-      final plans = data['plans'] as List? ?? [];
+      final data = res is Map
+          ? (res['data'] is Map
+              ? (res['data'] as Map).cast<String, dynamic>()
+              : res.cast<String, dynamic>())
+          : <String, dynamic>{};
+      final plans = data['plans'] is List
+          ? (data['plans'] as List)
+          : const [];
+      debugPrint('📥 loadPlans — ${plans.length} plans fetched');
 
-      _planTasks = [];
-      // Load local schedules once
+      final rebuilt = <Task>[];
       final localSchedules = await LocalSchedules.getAll();
 
       for (final plan in plans) {
-        final planId = (plan['_id'] ?? plan['id'] ?? '').toString();
-        final planTitle = plan['title']?.toString() ?? '';
-        final tasks = plan['tasks'] as List? ?? [];
+        if (plan is! Map) continue;
+        final planMap = plan.cast<String, dynamic>();
+        final planId = (planMap['_id'] ?? planMap['id'] ?? '').toString();
+        final planTitle = (planMap['title'] ?? '').toString();
+        final tasks = planMap['tasks'] is List
+            ? (planMap['tasks'] as List)
+            : const [];
         for (final t in tasks) {
-          final taskMap = Map<String, dynamic>.from(t as Map);
-          taskMap['plan_id'] = planId;
-          taskMap['plan_title'] = planTitle;
-          taskMap['_id'] = taskMap['id'] ?? '';
-          final taskId = (taskMap['id'] ?? '').toString();
-          final title = (taskMap['title'] ?? '').toString();
+          if (t is! Map) continue;
+          try {
+            final taskMap = (t).cast<String, dynamic>();
+            final mutable = Map<String, dynamic>.from(taskMap);
+            mutable['plan_id'] = planId;
+            mutable['plan_title'] = planTitle;
+            mutable['_id'] = mutable['id'] ?? '';
+            final taskId = (mutable['id'] ?? '').toString();
+            final title = (mutable['title'] ?? '').toString();
 
-          // Merge local schedule if exists (by id, or pending:title)
-          var local = localSchedules[taskId];
-          local ??= localSchedules['pending:$title'];
-          if (local != null) {
-            taskMap['scheduled_at'] = local.at.toIso8601String();
-            taskMap['reminder_minutes'] = local.remind;
-            // Promote pending to id-keyed for next time
-            if (taskId.isNotEmpty) {
-              await LocalSchedules.promotePending(
-                  title: title, taskId: taskId);
-            }
-          } else if (taskMap['scheduled_time'] is String) {
-            // Backend gives HH:MM — compose a DateTime for today/tomorrow
-            final hm = (taskMap['scheduled_time'] as String).split(':');
-            if (hm.length == 2) {
-              final hh = int.tryParse(hm[0]) ?? 0;
-              final mm = int.tryParse(hm[1]) ?? 0;
-              final now = DateTime.now();
-              var at = DateTime(now.year, now.month, now.day, hh, mm);
-              if (at.isBefore(now)) {
-                at = at.add(const Duration(days: 1));
+            var local = localSchedules[taskId];
+            local ??= localSchedules['pending:$title'];
+            if (local != null) {
+              mutable['scheduled_at'] = local.at.toIso8601String();
+              mutable['reminder_minutes'] = local.remind;
+              if (taskId.isNotEmpty) {
+                await LocalSchedules.promotePending(
+                    title: title, taskId: taskId);
               }
-              taskMap['scheduled_at'] = at.toIso8601String();
+            } else if (mutable['scheduled_time'] is String) {
+              final hm = (mutable['scheduled_time'] as String).split(':');
+              if (hm.length == 2) {
+                final hh = int.tryParse(hm[0]) ?? 0;
+                final mm = int.tryParse(hm[1]) ?? 0;
+                final now = DateTime.now();
+                var at = DateTime(now.year, now.month, now.day, hh, mm);
+                if (at.isBefore(now)) {
+                  at = at.add(const Duration(days: 1));
+                }
+                mutable['scheduled_at'] = at.toIso8601String();
+              }
             }
-          }
 
-          _planTasks.add(Task.fromJson(taskMap));
+            rebuilt.add(Task.fromJson(mutable));
+          } catch (e) {
+            debugPrint('⚠️ task parse error: $e (task: $t)');
+          }
         }
       }
+
+      _planTasks = rebuilt;
+      debugPrint('✅ loadPlans done — ${_planTasks.length} tasks');
     } catch (e) {
+      debugPrint('❌ loadPlans error: $e');
       _error = e.toString();
     }
     notifyListeners();
