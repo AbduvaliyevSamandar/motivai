@@ -240,6 +240,10 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 hint: S.get('task_desc'),
                 prefixIcon: Icons.description_rounded,
                 maxLines: 3,
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(right: 6),
+                  child: VoiceInputButton(controller: _descCtrl),
+                ),
               ),
               const SizedBox(height: 18),
 

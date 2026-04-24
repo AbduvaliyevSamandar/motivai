@@ -11,6 +11,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
 import '../../models/models.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../../widgets/voice_input_button.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -334,7 +335,13 @@ class _ChatState extends State<ChatScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 8),
+                    if (!busy)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2),
+                        child: VoiceInputButton(controller: _ctrl),
+                      ),
+                    const SizedBox(width: 6),
                     GestureDetector(
                       onTap: busy ? null : _send,
                       child: AnimatedContainer(

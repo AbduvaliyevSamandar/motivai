@@ -225,15 +225,26 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ── AVATAR (local) ────────────────────────────────────
+  // ── AVATAR (local, per-user) ──────────────────────────
+  String _avatarKey() {
+    // Namespace the avatar by user id or email so accounts on the same
+    // device don't overwrite each other.
+    final uid = userId.isNotEmpty
+        ? userId
+        : (email.isNotEmpty ? email : 'anon');
+    return 'motivai_avatar_local::$uid';
+  }
+
   Future<void> updateAvatar(String path) async {
     final p = await SharedPreferences.getInstance();
-    await p.setString('motivai_avatar_local', path);
+    // Clean up the legacy global key, if present.
+    await p.remove('motivai_avatar_local');
+    await p.setString(_avatarKey(), path);
     notifyListeners();
   }
 
   Future<String?> getLocalAvatar() async {
     final p = await SharedPreferences.getInstance();
-    return p.getString('motivai_avatar_local');
+    return p.getString(_avatarKey());
   }
 }
