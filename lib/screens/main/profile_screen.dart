@@ -23,6 +23,9 @@ import 'flashcards_screen.dart';
 import 'journey_screen.dart';
 import 'friends_screen.dart';
 import 'friend_challenges_screen.dart';
+import 'rituals_screen.dart';
+import 'heatmap_screen.dart';
+import '../../services/haptic_service.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -294,15 +297,37 @@ class _ProfileState extends State<ProfileScreen> {
                           ? Icons.dark_mode_rounded
                           : Icons.light_mode_rounded,
                       iconColor: AppColors.primary,
-                      title: theme.isDark
-                          ? S.get('dark_mode')
-                          : S.get('light_mode'),
+                      title: theme.auto
+                          ? 'Avto rejim'
+                          : (theme.isDark
+                              ? S.get('dark_mode')
+                              : S.get('light_mode')),
+                      subtitle: theme.auto
+                          ? 'Soatga qarab avtomatik'
+                          : null,
                       trailing: Switch.adaptive(
                         value: theme.isDark,
                         activeColor: AppColors.primary,
-                        onChanged: (_) {
+                        onChanged: theme.auto
+                            ? null
+                            : (_) {
+                                HapticFeedback.selectionClick();
+                                theme.toggle();
+                              },
+                      ),
+                    ),
+                    _tile(
+                      icon: Icons.brightness_auto_rounded,
+                      iconColor: AppColors.info,
+                      title: 'Avto tema',
+                      subtitle:
+                          'Kechqurun dark, kunduzi light — avtomatik',
+                      trailing: Switch.adaptive(
+                        value: theme.auto,
+                        activeColor: AppColors.primary,
+                        onChanged: (v) {
                           HapticFeedback.selectionClick();
-                          theme.toggle();
+                          theme.setAuto(v);
                         },
                       ),
                     ),
@@ -383,6 +408,34 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
+                      icon: Icons.grid_view_rounded,
+                      iconColor: AppColors.info,
+                      title: 'Mahsuldorlik xaritasi',
+                      subtitle: 'Qaysi soatda eng faol ekanligi',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const HeatmapScreen()),
+                        );
+                      },
+                    ),
+                    _tile(
+                      icon: Icons.self_improvement_rounded,
+                      iconColor: AppColors.accent,
+                      title: 'Rituallar',
+                      subtitle: 'Takroriy mashg\'ulotlar uchun eslatma',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const RitualsScreen()),
+                        );
+                      },
+                    ),
+                    _tile(
                       icon: Icons.group_rounded,
                       iconColor: AppColors.pink,
                       title: 'Do\'stlar',
@@ -455,6 +508,14 @@ class _ProfileState extends State<ProfileScreen> {
                             onTap: _showSoundPackPicker,
                           ),
                       ]),
+                    ),
+                    _tile(
+                      icon: Icons.vibration_rounded,
+                      iconColor: AppColors.secondary,
+                      title: 'Titrash kuchi',
+                      subtitle:
+                          '${Haptics.info(Haptics.level).emoji}  ${Haptics.info(Haptics.level).name}',
+                      onTap: _showHapticPicker,
                     ),
                   ]),
                 ),
@@ -1075,6 +1136,126 @@ class _ProfileState extends State<ProfileScreen> {
         color: c,
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white.withOpacity(0.3)),
+      ),
+    );
+  }
+
+  void _showHapticPicker() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setS) => Container(
+          decoration: BoxDecoration(
+            color: AppColors.card,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border(
+              top: BorderSide(color: AppColors.glassBorder, width: 1.5),
+            ),
+          ),
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 44,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: AppColors.border,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                'Titrash kuchi',
+                style: GoogleFonts.spaceGrotesk(
+                  color: AppColors.txt,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text('Tanlang va darhol sinab ko\'ring',
+                  style: GoogleFonts.poppins(
+                      color: AppColors.sub, fontSize: 12)),
+              const SizedBox(height: 20),
+              ...HapticLevel.values.map((l) {
+                final info = Haptics.info(l);
+                final active = Haptics.level == l;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(14),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(14),
+                      onTap: () async {
+                        await Haptics.set(l);
+                        Haptics.medium();
+                        if (ctx.mounted) setS(() {});
+                        if (mounted) setState(() {});
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: active
+                              ? LinearGradient(colors: [
+                                  AppColors.primary.withOpacity(0.22),
+                                  AppColors.secondary.withOpacity(0.1),
+                                ])
+                              : null,
+                          color: active ? null : AppColors.bg,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: active
+                                ? AppColors.primary
+                                : AppColors.border,
+                            width: active ? 1.5 : 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(info.emoji,
+                                style: const TextStyle(fontSize: 22)),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  Text(info.name,
+                                      style: GoogleFonts.spaceGrotesk(
+                                        color: AppColors.txt,
+                                        fontSize: 14,
+                                        fontWeight: active
+                                            ? FontWeight.w700
+                                            : FontWeight.w600,
+                                      )),
+                                  Text(info.desc,
+                                      style: GoogleFonts.poppins(
+                                        color: AppColors.sub,
+                                        fontSize: 11,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            if (active)
+                              Icon(Icons.check_circle_rounded,
+                                  color: AppColors.primary, size: 20),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
       ),
     );
   }

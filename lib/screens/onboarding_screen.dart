@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/colors.dart';
+import '../services/user_goal.dart';
 import '../widgets/nebula/nebula.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -21,6 +22,9 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   final _ctrl = PageController();
   int _page = 0;
+  String? _selectedGoal;
+
+  int get _pageCount => _slides.length + 1; // +1 for goal picker page
 
   List<_OSlide> get _slides => [
         _OSlide(
@@ -52,6 +56,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Future<void> _finish() async {
     final p = await SharedPreferences.getInstance();
     await p.setBool('motivai_onboarding_done', true);
+    if (_selectedGoal != null) {
+      await UserGoal.set(_selectedGoal!);
+    }
     widget.onFinish();
   }
 
@@ -63,7 +70,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLast = _page == _slides.length - 1;
+    final isLast = _page == _pageCount - 1;
+    final onGoalPage = _page == _slides.length;
+    final canAdvance = !onGoalPage || _selectedGoal != null;
     return Scaffold(
       backgroundColor: const Color(0xFF08091A),
       body: Stack(
@@ -80,7 +89,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       // Progress dots
                       Row(
                         children: List.generate(
-                          _slides.length,
+                          _pageCount,
                           (i) => AnimatedContainer(
                             duration:
                                 const Duration(milliseconds: 220),
@@ -116,13 +125,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Expanded(
                   child: PageView.builder(
                     controller: _ctrl,
-                    itemCount: _slides.length,
+                    itemCount: _pageCount,
                     onPageChanged: (i) {
                       HapticFeedback.selectionClick();
                       setState(() => _page = i);
                     },
-                    itemBuilder: (_, i) =>
-                        _SlideView(slide: _slides[i]),
+                    itemBuilder: (_, i) {
+                      if (i < _slides.length) {
+                        return _SlideView(slide: _slides[i]);
+                      }
+                      return _GoalPicker(
+                        selected: _selectedGoal,
+                        onSelect: (id) {
+                          HapticFeedback.selectionClick();
+                          setState(() => _selectedGoal = id);
+                        },
+                      );
+                    },
                   ),
                 ),
                 Padding(
@@ -132,6 +151,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     icon: isLast
                         ? Icons.rocket_launch_rounded
                         : Icons.arrow_forward_rounded,
+                    disabled: !canAdvance,
                     onTap: () {
                       if (isLast) {
                         _finish();
@@ -218,6 +238,137 @@ class _SlideView extends StatelessWidget {
               color: Colors.white.withOpacity(0.8),
               fontSize: 15,
               height: 1.6,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _GoalPicker extends StatelessWidget {
+  final String? selected;
+  final ValueChanged<String> onSelect;
+  const _GoalPicker({required this.selected, required this.onSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    final options = UserGoal.options();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Text('\u{1F3AF}', style: const TextStyle(fontSize: 56)),
+          const SizedBox(height: 14),
+          ShaderMask(
+            shaderCallback: (b) => LinearGradient(
+              colors: AppColors.gradCosmic,
+            ).createShader(b),
+            blendMode: BlendMode.srcIn,
+            child: Text(
+              'Asosiy maqsadingiz?',
+              textAlign: TextAlign.center,
+              style: GoogleFonts.spaceGrotesk(
+                color: Colors.white,
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.8,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Tanlang — biz sizga mos reja tuzamiz',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: Colors.white.withOpacity(0.7),
+              fontSize: 13,
+            ),
+          ),
+          const SizedBox(height: 22),
+          Expanded(
+            child: ListView.builder(
+              itemCount: options.length,
+              itemBuilder: (_, i) {
+                final o = options[i];
+                final active = o.id == selected;
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () => onSelect(o.id),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          gradient: active
+                              ? LinearGradient(colors: [
+                                  Colors.white.withOpacity(0.18),
+                                  Colors.white.withOpacity(0.08),
+                                ])
+                              : null,
+                          color: active
+                              ? null
+                              : Colors.white.withOpacity(0.04),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: active
+                                ? Colors.white.withOpacity(0.8)
+                                : Colors.white.withOpacity(0.15),
+                            width: active ? 1.5 : 1,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 42,
+                              height: 42,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color:
+                                    Colors.white.withOpacity(0.08),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Text(o.emoji,
+                                  style:
+                                      const TextStyle(fontSize: 22)),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                children: [
+                                  Text(o.name,
+                                      style: GoogleFonts.spaceGrotesk(
+                                        color: Colors.white,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                      )),
+                                  Text(o.desc,
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.white
+                                            .withOpacity(0.65),
+                                        fontSize: 11,
+                                      )),
+                                ],
+                              ),
+                            ),
+                            if (active)
+                              const Icon(Icons.check_circle_rounded,
+                                  color: Colors.white, size: 22),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
         ],

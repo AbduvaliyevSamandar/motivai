@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,9 @@ import 'services/notification_service.dart';
 import 'services/sound_pack.dart';
 import 'services/action_queue.dart';
 import 'services/home_widget_service.dart';
+import 'services/haptic_service.dart';
+import 'services/rituals_storage.dart';
+import 'services/user_goal.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -23,8 +27,12 @@ void main() async {
     statusBarIconBrightness: Brightness.light,
   ));
   await SoundPackStore.load();
+  await Haptics.load();
+  await UserGoal.load();
   await HomeWidgetService.init();
   await NotificationService.instance.init();
+  // Re-schedule any saved rituals after notification plugin is ready.
+  unawaited(RitualsStorage.rescheduleAll());
   runApp(const App());
 }
 

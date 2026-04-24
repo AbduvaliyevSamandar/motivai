@@ -10,6 +10,10 @@ import android.widget.RemoteViews
 import es.antonborri.home_widget.HomeWidgetPlugin
 
 class MotivAiWidgetProvider : AppWidgetProvider() {
+    companion object {
+        const val ACTION_REFRESH = "com.example.motivai.WIDGET_REFRESH"
+    }
+
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
@@ -38,19 +42,43 @@ class MotivAiWidgetProvider : AppWidgetProvider() {
                 "$tasksDone/$tasksTotal"
             )
 
-            val intent = context.packageManager
+            // Tap body -> launch app
+            val launchIntent = context.packageManager
                 .getLaunchIntentForPackage(context.packageName)
-            if (intent != null) {
+            if (launchIntent != null) {
                 val pi = PendingIntent.getActivity(
                     context,
                     0,
-                    intent,
+                    launchIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
                 views.setOnClickPendingIntent(R.id.widgetRoot, pi)
             }
 
+            // Tap refresh icon -> broadcast refresh
+            val refreshIntent = Intent(context, MotivAiWidgetProvider::class.java).apply {
+                action = ACTION_REFRESH
+            }
+            val refreshPi = PendingIntent.getBroadcast(
+                context,
+                id,
+                refreshIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            views.setOnClickPendingIntent(R.id.widgetRefresh, refreshPi)
+
             appWidgetManager.updateAppWidget(id, views)
+        }
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (intent.action == ACTION_REFRESH) {
+            val mgr = AppWidgetManager.getInstance(context)
+            val ids = mgr.getAppWidgetIds(
+                ComponentName(context, MotivAiWidgetProvider::class.java)
+            )
+            onUpdate(context, mgr, ids)
         }
     }
 }

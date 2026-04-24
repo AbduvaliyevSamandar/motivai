@@ -34,6 +34,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _showCompleted = false;
+  bool _mitMode = false; // Most Important Tasks - show top 3 only
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +175,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                   ),
+                  if (!_showCompleted && tasks.active.length > 3)
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(
+                          D.sp16, 0, D.sp16, D.sp8),
+                      sliver: SliverToBoxAdapter(
+                        child: _MitChip(
+                          active: _mitMode,
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                            setState(() => _mitMode = !_mitMode);
+                          },
+                        ),
+                      ),
+                    ),
                   _buildTaskList(context, tasks),
                 ],
                 const SliverToBoxAdapter(child: SizedBox(height: 90)),
@@ -186,7 +201,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildTaskList(BuildContext context, TaskProvider tasks) {
-    final list = _showCompleted ? tasks.completed : tasks.active;
+    var list = _showCompleted ? tasks.completed : tasks.active;
+    // MIT mode: show only top 3 non-completed tasks
+    if (_mitMode && !_showCompleted) {
+      list = list.take(3).toList();
+    }
     if (list.isEmpty) {
       return SliverToBoxAdapter(
         child: _EmptyState(completed: _showCompleted),
@@ -1547,6 +1566,90 @@ class _SmartPlanShortcut extends StatelessWidget {
               ),
               Icon(Icons.arrow_forward_rounded,
                   color: AppColors.primary, size: 18),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MitChip extends StatelessWidget {
+  final bool active;
+  final VoidCallback onTap;
+  const _MitChip({required this.active, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 14, vertical: 10),
+          decoration: BoxDecoration(
+            gradient: active
+                ? LinearGradient(colors: [
+                    AppColors.accent.withOpacity(0.35),
+                    AppColors.pink.withOpacity(0.18),
+                  ])
+                : null,
+            color: active ? null : AppColors.card.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: active
+                  ? AppColors.accent
+                  : AppColors.border,
+              width: active ? 1.5 : 1,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                active
+                    ? Icons.filter_3_rounded
+                    : Icons.filter_list_rounded,
+                color: active
+                    ? AppColors.accent
+                    : AppColors.sub,
+                size: 18,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      active
+                          ? 'MIT rejim: eng muhim 3 vazifa'
+                          : 'MIT rejim — faqat 3 vazifaga fokuslaning',
+                      style: GoogleFonts.spaceGrotesk(
+                        color: AppColors.txt,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    if (!active)
+                      Text(
+                        'Choice overload kamaytiradi',
+                        style: GoogleFonts.poppins(
+                            color: AppColors.sub, fontSize: 10),
+                      ),
+                  ],
+                ),
+              ),
+              Icon(
+                active
+                    ? Icons.toggle_on_rounded
+                    : Icons.toggle_off_rounded,
+                color: active ? AppColors.accent : AppColors.sub,
+                size: 24,
+              ),
             ],
           ),
         ),

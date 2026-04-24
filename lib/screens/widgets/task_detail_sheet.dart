@@ -5,6 +5,7 @@ import '../../config/colors.dart';
 import '../../models/models.dart';
 import '../../services/task_notes.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../../widgets/task_mentor_sheet.dart';
 import '../focus_screen.dart';
 
 void showTaskDetail(
@@ -215,8 +216,25 @@ class _TaskDetailSheet extends StatelessWidget {
             // Actions
             if (!task.isCompleted) ...[
               NebulaButton(
+                label: 'AI yordam',
+                icon: Icons.psychology_rounded,
+                gradient: AppColors.gradCosmic,
+                onTap: () async {
+                  HapticFeedback.selectionClick();
+                  Navigator.pop(context);
+                  // Re-open mentor sheet on root nav so it feels like
+                  // a separate, primary action.
+                  await Future<void>.delayed(
+                      const Duration(milliseconds: 120));
+                  if (!context.mounted) return;
+                  await TaskMentorSheet.show(context, task);
+                },
+              ),
+              const SizedBox(height: 10),
+              NebulaButton(
                 label: 'Fokus (Pomodoro)',
                 icon: Icons.timer_rounded,
+                glow: false,
                 onTap: () async {
                   Navigator.pop(context);
                   await startPomodoro(
