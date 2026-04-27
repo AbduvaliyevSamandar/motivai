@@ -225,20 +225,16 @@ async def reset_password(data: ResetPasswordRequest):
 async def google_login(data: GoogleAuthRequest):
     """Verify a Google ID token and either log the user in or create them.
 
-    Requires ``GOOGLE_OAUTH_CLIENT_ID`` (and optionally additional
-    audiences via ``GOOGLE_OAUTH_AUDIENCES``) to be set in env vars.
+    We hit Google's public tokeninfo endpoint directly instead of using
+    the google-auth library so there are no extra Python dependencies on
+    the deploy. The endpoint validates signature + expiry server-side.
+
+    Requires ``GOOGLE_OAUTH_CLIENT_ID`` to be set in env vars.
     """
     if not settings.GOOGLE_OAUTH_CLIENT_ID:
         raise HTTPException(status_code=503, detail="Google sign-in not configured")
 
-    try:
-        from google.oauth2 import id_token as google_id_token
-        from google.auth.transport import requests as g_requests
-    except ImportError:
-        raise HTTPException(
-            status_code=503,
-            detail="google-auth package not installed on server",
-        )
+    import httpx
 
     accepted_audiences = {settings.GOOGLE_OAUTH_CLIENT_ID}
     if settings.GOOGLE_OAUTH_AUDIENCES:
@@ -247,17 +243,27 @@ async def google_login(data: GoogleAuthRequest):
         )
 
     try:
-        info = google_id_token.verify_oauth2_token(
-            data.id_token,
-            g_requests.Request(),
-        )
-    except ValueError as exc:
-        logger.warning("Google ID token verification failed: %s", exc)
-        raise HTTPException(status_code=401, detail="Invalid Google token")
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            res = await client.get(
+                "https://oauth2.googleapis.com/tokeninfo",
+                params={"id_token": data.id_token},
+            )
+        if res.status_code != 200:
+            raise HTTPException(status_code=401, detail="Invalid Google token")
+        info = res.json()
+    except httpx.HTTPError as exc:
+        logger.warning("Google tokeninfo request failed: %s", exc)
+        raise HTTPException(status_code=503, detail="Google verification unavailable")
 
+    # Google returns 'aud' (audience), 'email', 'email_verified', 'name',
+    # 'picture', 'sub' (Google user id). 'email_verified' comes back as
+    # the string 'true'/'false', not a real bool.
     if info.get("aud") not in accepted_audiences:
         raise HTTPException(status_code=401, detail="Audience mismatch")
-    if not info.get("email") or not info.get("email_verified"):
+    if not info.get("email"):
+        raise HTTPException(status_code=401, detail="Email missing from Google token")
+    verified = info.get("email_verified")
+    if verified not in (True, "true", "True"):
         raise HTTPException(status_code=401, detail="Email not verified by Google")
 
     email = info["email"].lower()
