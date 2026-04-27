@@ -42,6 +42,9 @@ class Settings(BaseSettings):
     # (e.g. iOS / Android client IDs).
     GOOGLE_OAUTH_AUDIENCES: str = ""
 
+    # Admin token (used by /admin/* maintenance endpoints). Empty -> off.
+    ADMIN_SECRET: str = ""
+
     # CORS
     ALLOWED_ORIGINS: str = "*"
 
