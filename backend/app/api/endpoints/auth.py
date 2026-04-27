@@ -15,6 +15,7 @@ from app.schemas.auth import (
 )
 from app.services.user_service import create_user, get_user_by_email, get_user_by_id, safe_user_dict, update_streak_and_xp
 from app.services.email_service import send_otp_email
+from app.services.email_validator_service import validate_email, EmailValidationError
 from app.services import otp_service
 from app.core.security import verify_password, create_access_token, get_password_hash
 from app.core.config import settings
@@ -29,10 +30,15 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/register", response_model=dict)
 async def register(data: RegisterRequest):
+    try:
+        validate_email(data.email)
+    except EmailValidationError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
     existing = await get_user_by_email(data.email)
     if existing:
         raise HTTPException(status_code=409, detail="Email already registered")
-    
+
     user = await create_user(data.model_dump())
     token = create_access_token({"sub": user["_id"]})
     
@@ -109,6 +115,11 @@ async def send_otp(data: SendOtpRequest):
     For ``purpose='reset'`` we reject if there is no such user. ``login``
     is accepted unconditionally (used as 2FA-ish flow).
     """
+    try:
+        validate_email(data.email)
+    except EmailValidationError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
     existing = await get_user_by_email(data.email)
     if data.purpose == "register" and existing:
         raise HTTPException(status_code=409, detail="Email already registered")
@@ -149,6 +160,11 @@ async def register_with_otp(data: RegisterWithOtpRequest):
     Frontend may either: (a) verify-otp first then call register without code,
     or (b) skip the intermediate check and submit code+password together.
     """
+    try:
+        validate_email(data.email)
+    except EmailValidationError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
     existing = await get_user_by_email(data.email)
     if existing:
         raise HTTPException(status_code=409, detail="Email already registered")
