@@ -1,8 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// In-app currency (coins) — earned from tasks / pomodoro / challenges.
 class CoinsStorage {
-  static const _key = 'motivai_coins';
+  static const _baseKey = 'motivai_coins';
+  static String get _key => UserScope.key(_baseKey);
 
   static Future<int> balance() async {
     final p = await SharedPreferences.getInstance();

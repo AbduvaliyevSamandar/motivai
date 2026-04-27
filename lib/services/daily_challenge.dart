@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 enum ChallengeType {
   completeN, // complete N tasks today
@@ -25,9 +26,12 @@ class DailyChallenge {
 }
 
 class DailyChallengeService {
-  static const _completedKey = 'motivai_daily_challenge_completed';
-  static const _dateKey = 'motivai_daily_challenge_date';
-  static const _progressKey = 'motivai_daily_challenge_progress';
+  static const _completedKeyBase = 'motivai_daily_challenge_completed';
+  static String get _completedKey => UserScope.key(_completedKeyBase);
+  static const _dateKeyBase = 'motivai_daily_challenge_date';
+  static String get _dateKey => UserScope.key(_dateKeyBase);
+  static const _progressKeyBase = 'motivai_daily_challenge_progress';
+  static String get _progressKey => UserScope.key(_progressKeyBase);
 
   /// Deterministic challenge by day-of-year — same user gets same challenge daily.
   static DailyChallenge today() {

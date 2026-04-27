@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
+import 'user_scope.dart';
 
 /// Action queue for offline mode — any action that fails due to no network
 /// is persisted and replayed when we come back online.
@@ -46,7 +47,8 @@ class ActionQueue extends ChangeNotifier {
     _init();
   }
 
-  static const _key = 'motivai_action_queue_v1';
+  static const _keyBase = 'motivai_action_queue_v1';
+  static String get _key => UserScope.key(_keyBase);
   final _api = Api();
   List<PendingAction> _queue = [];
   bool _online = true;

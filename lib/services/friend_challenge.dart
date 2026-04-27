@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Simple 7-day paired challenge. Since we don't have real-time sync,
 /// both sides track independently and compare by reported scores.
@@ -72,12 +73,16 @@ class FriendChallenge {
 }
 
 class FriendChallenges {
-  static const _key = 'motivai_friend_challenges_v1';
+  static const _keyBase = 'motivai_friend_challenges_v1';
+  static String get _key => UserScope.key(_keyBase);
   static List<FriendChallenge> _cache = [];
   static bool _loaded = false;
+  static String _loadedFor = '';
 
   static Future<void> _ensure() async {
-    if (_loaded) return;
+    if (_loaded && _loadedFor == UserScope.userId) return;
+        _cache = [];
+        _loadedFor = UserScope.userId;
     final p = await SharedPreferences.getInstance();
     final raw = p.getString(_key);
     if (raw != null) {

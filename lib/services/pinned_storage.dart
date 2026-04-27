@@ -1,8 +1,10 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Pinned/favorite task IDs — stored locally, shown at the top of the list.
 class PinnedStorage {
-  static const _key = 'motivai_pinned_tasks_v1';
+  static const _keyBase = 'motivai_pinned_tasks_v1';
+  static String get _key => UserScope.key(_keyBase);
 
   static Future<Set<String>> load() async {
     final p = await SharedPreferences.getInstance();

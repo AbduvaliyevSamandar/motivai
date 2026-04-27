@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 class Flashcard {
   final String id;
@@ -108,8 +109,10 @@ class FlashDeck {
 }
 
 class FlashcardsStorage {
-  static const _decksKey = 'motivai_flash_decks_v1';
-  static const _cardsKey = 'motivai_flash_cards_v1';
+  static const _decksKeyBase = 'motivai_flash_decks_v1';
+  static String get _decksKey => UserScope.key(_decksKeyBase);
+  static const _cardsKeyBase = 'motivai_flash_cards_v1';
+  static String get _cardsKey => UserScope.key(_cardsKeyBase);
 
   static Future<List<FlashDeck>> loadDecks() async {
     final p = await SharedPreferences.getInstance();

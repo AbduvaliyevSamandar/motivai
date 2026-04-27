@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Local friends list (no backend yet) — each friend is remembered by name,
 /// invite-code, emoji and the XP/streak they reported last. Good enough to
@@ -54,15 +55,21 @@ class Friend {
 }
 
 class FriendsStorage {
-  static const _listKey = 'motivai_friends_v1';
-  static const _myCodeKey = 'motivai_my_invite_code';
+  static const _listKeyBase = 'motivai_friends_v1';
+  static String get _listKey => UserScope.key(_listKeyBase);
+  static const _myCodeKeyBase = 'motivai_my_invite_code';
+  static String get _myCodeKey => UserScope.key(_myCodeKeyBase);
 
   static List<Friend> _cache = [];
   static String? _myCode;
   static bool _loaded = false;
+  static String _loadedFor = '';
 
   static Future<void> _ensure() async {
-    if (_loaded) return;
+    if (_loaded && _loadedFor == UserScope.userId) return;
+    _cache = [];
+    _myCode = null;
+    _loadedFor = UserScope.userId;
     final p = await SharedPreferences.getInstance();
     final raw = p.getString(_listKey);
     if (raw != null) {

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/constants.dart';
+import 'user_scope.dart';
 
 /// Token xavfsiz saqlanadi — telefon o'chirib yoqilsa ham, kesh tozalansa ham
 class Storage {
@@ -47,19 +48,21 @@ class Storage {
     await p.remove(K.userKey);
   }
 
-  // ── CHAT HISTORY ─────────────────────────────────────
+  // ── CHAT HISTORY (per-user) ──────────────────────────
+  String _chatKey() => UserScope.key('chat_history');
+
   Future<void> saveChat(List<Map<String, dynamic>> msgs) async {
     final p = await SharedPreferences.getInstance();
     // Faqat oxirgi 50 ta xabarni saqlash
     final trimmed = msgs.length > 50
         ? msgs.sublist(msgs.length - 50)
         : msgs;
-    await p.setString('chat_history', jsonEncode(trimmed));
+    await p.setString(_chatKey(), jsonEncode(trimmed));
   }
 
   Future<List<Map<String, dynamic>>> loadChat() async {
     final p = await SharedPreferences.getInstance();
-    final s = p.getString('chat_history');
+    final s = p.getString(_chatKey());
     if (s == null) return [];
     try {
       return (jsonDecode(s) as List).cast<Map<String, dynamic>>();
@@ -70,7 +73,7 @@ class Storage {
 
   Future<void> clearChat() async {
     final p = await SharedPreferences.getInstance();
-    await p.remove('chat_history');
+    await p.remove(_chatKey());
   }
 
   // ── CLEAR ALL (logout) ────────────────────────────────

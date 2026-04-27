@@ -14,6 +14,7 @@ import 'services/home_widget_service.dart';
 import 'services/haptic_service.dart';
 import 'services/rituals_storage.dart';
 import 'services/user_goal.dart';
+import 'services/legacy_wipe.dart';
 import 'screens/splash_screen.dart';
 import 'screens/onboarding_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -26,6 +27,7 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarIconBrightness: Brightness.light,
   ));
+  await LegacyWipe.run();
   await SoundPackStore.load();
   await Haptics.load();
   await UserGoal.load();

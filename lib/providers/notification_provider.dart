@@ -4,9 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/models.dart';
 import '../services/notification_service.dart';
+import '../services/user_scope.dart';
 
 class NotificationProvider extends ChangeNotifier {
-  static const _storageKey = 'motivai_notifs_v1';
+  static const _storageKeyBase = 'motivai_notifs_v1';
+  static String get _storageKey => UserScope.key(_storageKeyBase);
+  // Enabled / reminder-minutes are device-level prefs (apply across accounts).
   static const _enabledKey = 'motivai_notifs_enabled';
   static const _reminderKey = 'motivai_reminder_minutes';
   static const _maxFeed = 100;
@@ -21,6 +24,20 @@ class NotificationProvider extends ChangeNotifier {
   int get defaultReminderMinutes => _defaultReminderMinutes;
 
   NotificationProvider() {
+    _load();
+    UserScope.changes.addListener(_onUserChanged);
+  }
+
+  @override
+  void dispose() {
+    UserScope.changes.removeListener(_onUserChanged);
+    super.dispose();
+  }
+
+  void _onUserChanged() {
+    // Wipe in-memory feed and reload for the new user.
+    _feed.clear();
+    notifyListeners();
     _load();
   }
 

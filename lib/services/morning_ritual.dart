@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Morning ritual — 3 quick prompts per day: mood, main goal, gratitude.
 /// Stores last 30 days to power analytics / streaks later.
@@ -31,12 +32,16 @@ class MorningRitualEntry {
 }
 
 class MorningRitual {
-  static const _key = 'motivai_morning_ritual_v1';
+  static const _keyBase = 'motivai_morning_ritual_v1';
+  static String get _key => UserScope.key(_keyBase);
   static List<MorningRitualEntry> _cache = [];
   static bool _loaded = false;
+  static String _loadedFor = '';
 
   static Future<void> _ensure() async {
-    if (_loaded) return;
+    if (_loaded && _loadedFor == UserScope.userId) return;
+        _cache = [];
+        _loadedFor = UserScope.userId;
     final p = await SharedPreferences.getInstance();
     final raw = p.getString(_key);
     if (raw != null) {

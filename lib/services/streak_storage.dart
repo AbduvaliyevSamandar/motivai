@@ -1,10 +1,13 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Client-side streak protection ("freeze") — works around the fact that
 /// the backend doesn't track streak freezes. Stored in SharedPreferences.
 class StreakStorage {
-  static const _countKey = 'motivai_streak_freezes';
-  static const _lastGrantKey = 'motivai_streak_freeze_last_grant';
+  static const _countKeyBase = 'motivai_streak_freezes';
+  static String get _countKey => UserScope.key(_countKeyBase);
+  static const _lastGrantKeyBase = 'motivai_streak_freeze_last_grant';
+  static String get _lastGrantKey => UserScope.key(_lastGrantKeyBase);
   static const _maxFreezes = 3;
 
   static Future<int> freezesAvailable() async {

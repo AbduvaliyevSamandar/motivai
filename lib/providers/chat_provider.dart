@@ -2,12 +2,33 @@ import 'package:flutter/material.dart';
 import '../services/api.dart';
 import '../services/storage.dart';
 import '../services/task_templates.dart';
+import '../services/user_scope.dart';
 import '../config/constants.dart';
 import '../models/models.dart';
 
 class ChatProvider extends ChangeNotifier {
   final _api   = Api();
   final _store = Storage();
+
+  ChatProvider() {
+    UserScope.changes.addListener(_onUserChanged);
+  }
+
+  @override
+  void dispose() {
+    UserScope.changes.removeListener(_onUserChanged);
+    super.dispose();
+  }
+
+  Future<void> _onUserChanged() async {
+    // Wipe in-memory chat — next init() will load this user's history.
+    _msgs = [];
+    _pending = [];
+    _typing = false;
+    _error = null;
+    notifyListeners();
+    await init();
+  }
 
   List<ChatMsg>        _msgs   = [];
   bool                 _typing = false;

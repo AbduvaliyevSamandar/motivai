@@ -6,6 +6,7 @@ import '../services/pinned_storage.dart';
 import '../services/journey_storage.dart';
 import '../services/friend_challenge.dart';
 import '../services/home_widget_service.dart';
+import '../services/user_scope.dart';
 import '../config/constants.dart';
 import '../models/models.dart';
 import 'notification_provider.dart';
@@ -78,6 +79,31 @@ class TaskProvider extends ChangeNotifier {
       _planTasks.isEmpty ? 0 : completedToday / _planTasks.length;
 
   void updateToken(String? _) {}
+
+  TaskProvider() {
+    UserScope.changes.addListener(_onUserChanged);
+  }
+
+  @override
+  void dispose() {
+    UserScope.changes.removeListener(_onUserChanged);
+    super.dispose();
+  }
+
+  void _onUserChanged() {
+    // Wipe everything in memory — caller (App) typically also calls
+    // loadAll() right after login, so we just clear state here.
+    _planTasks = [];
+    _globalLb = [];
+    _weeklyLb = [];
+    _myRank = null;
+    _insights = null;
+    _planStats = null;
+    _achievements = [];
+    _pinned = {};
+    _error = null;
+    notifyListeners();
+  }
 
   // ── LOAD ALL ──────────────────────────────────────────
   Future<void> loadAll() async {

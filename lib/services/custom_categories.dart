@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 class CustomCategory {
   final String id;
@@ -32,7 +33,8 @@ class CustomCategory {
 }
 
 class CustomCategoriesStorage {
-  static const _key = 'motivai_custom_categories_v1';
+  static const _keyBase = 'motivai_custom_categories_v1';
+  static String get _key => UserScope.key(_keyBase);
 
   static Future<List<CustomCategory>> load() async {
     final p = await SharedPreferences.getInstance();

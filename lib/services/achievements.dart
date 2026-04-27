@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../config/colors.dart';
+import 'user_scope.dart';
 
 class AchievementDef {
   final String id;
@@ -43,7 +44,8 @@ class _Stats {
 }
 
 class AchievementService {
-  static const _unlockedKey = 'motivai_unlocked_achievements';
+  static const _unlockedKeyBase = 'motivai_unlocked_achievements';
+  static String get _unlockedKey => UserScope.key(_unlockedKeyBase);
 
   static final List<AchievementDef> all = [
     AchievementDef(

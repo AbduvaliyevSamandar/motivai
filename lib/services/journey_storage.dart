@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Focus journey — 30-day growing tree.
 /// Each productive day (1+ completed task) counts as one sprout.
@@ -40,12 +41,16 @@ class JourneyDay {
 }
 
 class JourneyStorage {
-  static const _key = 'motivai_journey_v1';
+  static const _keyBase = 'motivai_journey_v1';
+  static String get _key => UserScope.key(_keyBase);
   static Map<String, JourneyDay> _cache = {};
   static bool _loaded = false;
+  static String _loadedFor = '';
 
   static Future<void> _ensure() async {
-    if (_loaded) return;
+    if (_loaded && _loadedFor == UserScope.userId) return;
+    _cache = {};
+    _loadedFor = UserScope.userId;
     final p = await SharedPreferences.getInstance();
     final raw = p.getString(_key);
     if (raw != null) {

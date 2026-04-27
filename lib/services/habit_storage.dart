@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Simple habit tracker stored client-side.
 class Habit {
@@ -56,7 +57,8 @@ class Habit {
 }
 
 class HabitStorage {
-  static const _key = 'motivai_habits_v1';
+  static const _keyBase = 'motivai_habits_v1';
+  static String get _key => UserScope.key(_keyBase);
 
   static Future<List<Habit>> load() async {
     final p = await SharedPreferences.getInstance();

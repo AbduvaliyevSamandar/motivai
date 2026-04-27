@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Client-side task schedule storage.
 /// Backend stores only scheduled_time (HH:MM). We store the full DateTime
 /// + reminderMinutes locally, keyed by taskId (or title hash if id unknown).
 class LocalSchedules {
-  static const _key = 'motivai_local_schedules_v1';
+  static const _keyBase = 'motivai_local_schedules_v1';
+  static String get _key => UserScope.key(_keyBase);
 
   static Future<Map<String, _Entry>> _load() async {
     try {

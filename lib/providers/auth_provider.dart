@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api.dart';
 import '../services/storage.dart';
+import '../services/user_scope.dart';
 import '../config/constants.dart';
 
 class AuthProvider extends ChangeNotifier {
@@ -54,6 +55,7 @@ class AuthProvider extends ChangeNotifier {
         _token = tok;
         final cached = await _store.getUser();
         if (cached != null) _user = cached;
+        _applyScope();
         _refreshProfile().catchError((_) {});
       }
     } catch (_) {
@@ -64,6 +66,13 @@ class AuthProvider extends ChangeNotifier {
       _loading = false;
       notifyListeners();
     }
+  }
+
+  void _applyScope() {
+    final id = _user?['_id']?.toString() ??
+        _user?['id']?.toString() ??
+        _user?['email']?.toString();
+    UserScope.setUser(id);
   }
 
   // ── REFRESH PROFILE ───────────────────────────────────
@@ -107,6 +116,7 @@ class AuthProvider extends ChangeNotifier {
 
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
+      _applyScope();
       _loading = false;
       notifyListeners();
       return true;
@@ -150,6 +160,7 @@ class AuthProvider extends ChangeNotifier {
 
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
+      _applyScope();
       _loading = false;
       notifyListeners();
       return true;
@@ -206,6 +217,7 @@ class AuthProvider extends ChangeNotifier {
     await _store.clearAll();
     _token = null;
     _user  = null;
+    UserScope.setUser(null);
     notifyListeners();
   }
 
@@ -275,6 +287,7 @@ class AuthProvider extends ChangeNotifier {
       _user = userMap?.cast<String, dynamic>();
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
+      _applyScope();
       _loading = false;
       notifyListeners();
       return true;
@@ -328,6 +341,7 @@ class AuthProvider extends ChangeNotifier {
       _user = userMap?.cast<String, dynamic>();
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
+      _applyScope();
       _loading = false;
       notifyListeners();
       return true;

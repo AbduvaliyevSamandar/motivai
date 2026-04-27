@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'notification_service.dart';
+import 'user_scope.dart';
 
 /// A recurring daily/weekly mini-ritual (e.g. "20 min ingliz har ertalab 07:30").
 class Ritual {
@@ -97,12 +98,16 @@ class Ritual {
 }
 
 class RitualsStorage {
-  static const _key = 'motivai_rituals_v1';
+  static const _keyBase = 'motivai_rituals_v1';
+  static String get _key => UserScope.key(_keyBase);
   static List<Ritual> _cache = [];
   static bool _loaded = false;
+  static String _loadedFor = '';
 
   static Future<void> _ensure() async {
-    if (_loaded) return;
+    if (_loaded && _loadedFor == UserScope.userId) return;
+        _cache = [];
+        _loadedFor = UserScope.userId;
     final p = await SharedPreferences.getInstance();
     final raw = p.getString(_key);
     if (raw != null) {

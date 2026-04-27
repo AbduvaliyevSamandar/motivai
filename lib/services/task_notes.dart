@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// Per-task reflections / notes stored locally.
 class TaskNotes {
-  static const _key = 'motivai_task_notes_v1';
+  static const _keyBase = 'motivai_task_notes_v1';
+  static String get _key => UserScope.key(_keyBase);
 
   static Future<Map<String, String>> loadAll() async {
     final p = await SharedPreferences.getInstance();

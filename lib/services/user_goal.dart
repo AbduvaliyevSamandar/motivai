@@ -1,17 +1,24 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_scope.dart';
 
 /// User's primary long-term goal, captured at onboarding. The Smart Plan
 /// and AI suggestions use this to shape default recommendations.
 class UserGoal {
-  static const _key = 'motivai_user_goal';
-  static const _customKey = 'motivai_user_goal_custom';
+  static const _keyBase = 'motivai_user_goal';
+  static String get _key => UserScope.key(_keyBase);
+  static const _customKeyBase = 'motivai_user_goal_custom';
+  static String get _customKey => UserScope.key(_customKeyBase);
 
   static String? _current;
   static String? _custom;
   static bool _loaded = false;
+  static String _loadedFor = '';
 
   static Future<void> load() async {
-    if (_loaded) return;
+    if (_loaded && _loadedFor == UserScope.userId) return;
+    _current = null;
+    _custom = null;
+    _loadedFor = UserScope.userId;
     final p = await SharedPreferences.getInstance();
     _current = p.getString(_key);
     _custom = p.getString(_customKey);
