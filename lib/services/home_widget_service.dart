@@ -4,7 +4,7 @@ import 'package:home_widget/home_widget.dart';
 /// Writes app state to the Android home-screen widget storage so the
 /// native widget can render the user's streak and next task.
 class HomeWidgetService {
-  static const _appId = 'com.motivai';
+  static const _appId = 'uz.motivai.app';
   static const _providerName = 'MotivAiWidgetProvider';
 
   static Future<void> init() async {

@@ -211,6 +211,25 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // ── DELETE ACCOUNT ────────────────────────────────────
+  Future<bool> deleteAccount() async {
+    _error = null;
+    try {
+      await _api.delete('/auth/account');
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+    // Locally treat the same way as logout — wipe everything.
+    await _store.clearAll();
+    _token = null;
+    _user = null;
+    UserScope.setUser(null);
+    notifyListeners();
+    return true;
+  }
+
   // ── LOGOUT ────────────────────────────────────────────
   Future<void> logout() async {
     try { await _api.post(K.logout, {}); } catch (_) {}

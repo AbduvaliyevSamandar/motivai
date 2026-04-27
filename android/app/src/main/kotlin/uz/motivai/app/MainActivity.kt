@@ -1,4 +1,4 @@
-package com.example.motivai
+package uz.motivai.app
 
 import io.flutter.embedding.android.FlutterActivity
 

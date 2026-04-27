@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.motivai"
+    namespace = "uz.motivai.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.motivai"
+        applicationId = "uz.motivai.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

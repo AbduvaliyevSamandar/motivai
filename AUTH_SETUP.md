@@ -54,7 +54,7 @@ You should get `{"success": true, ...}` and an email with the code in seconds.
      keytool -list -v -keystore ~/.android/debug.keystore \
        -alias androiddebugkey -storepass android -keypass android
      ```
-     Use package `com.example.motivai`.
+     Use package `uz.motivai.app`.
    - For iOS: create an **iOS client ID** if you ship to iOS.
 
 ### b. Add Render env vars (backend verifies the ID token)

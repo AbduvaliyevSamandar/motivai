@@ -20,7 +20,19 @@
       "Bash(dart run:*)",
       "Bash(cp \"/c/Users/Samandar/Desktop/Motivai for students.png\" /c/Users/Samandar/Desktop/motivai/assets/icon/icon.png)",
       "Bash(cp \"/c/Users/Samandar/Desktop/Motivai for students.png\" /c/Users/Samandar/Desktop/motivai/assets/images/logo.png)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(flutter build *)",
+      "Bash(tasklist)",
+      "Bash(taskkill //IM dart.exe //F)",
+      "Bash(taskkill //IM flutter_tester.exe //F)",
+      "Bash(taskkill //IM chrome.exe //F)",
+      "Bash(find lib *)",
+      "Bash(awk -F' - ' '{print $2}')",
+      "Bash(adb install *)",
+      "Bash(nslookup motivai-20s9.onrender.com)",
+      "Bash(nslookup motivai-20s9.onrender.com 8.8.8.8)",
+      "Bash(keytool -list -v -keystore __TRACKED_VAR__/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android)",
+      "Bash(flutter clean *)"
     ]
   }
 }

@@ -1,4 +1,4 @@
-package com.example.motivai
+package uz.motivai.app
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -11,7 +11,7 @@ import es.antonborri.home_widget.HomeWidgetPlugin
 
 class MotivAiWidgetProvider : AppWidgetProvider() {
     companion object {
-        const val ACTION_REFRESH = "com.example.motivai.WIDGET_REFRESH"
+        const val ACTION_REFRESH = "uz.motivai.app.WIDGET_REFRESH"
     }
 
     override fun onUpdate(

@@ -90,6 +90,24 @@ async def update_profile(data: UpdateProfileRequest, current_user: dict = Depend
     user = await get_user_by_id(current_user["_id"])
     return {"success": True, "message": "Profile updated", "data": {"user": await safe_user_dict(user)}}
 
+@router.delete("/account", response_model=dict)
+async def delete_account(current_user: dict = Depends(get_current_user)):
+    """Permanently delete the signed-in user's account and all derived
+    data. Required by Play Store policy: in-app account deletion must be
+    available without contacting support.
+    """
+    user_id = current_user["_id"]
+    db = get_db()
+    id_strs = [user_id, ObjectId(user_id)]
+    for coll in ("plans", "chat_messages", "progress", "leaderboard"):
+        try:
+            await db[coll].delete_many({"user_id": {"$in": id_strs}})
+        except Exception:
+            pass
+    await db.users.delete_one({"_id": ObjectId(user_id)})
+    return {"success": True, "message": "Account deleted"}
+
+
 @router.put("/change-password", response_model=dict)
 async def change_password(data: ChangePasswordRequest, current_user: dict = Depends(get_current_user)):
     if not verify_password(data.current_password, current_user["hashed_password"]):
