@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -125,9 +125,7 @@ class _ShellState extends State<MainShell> {
   }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  FLOATING GLASS NAV (pill with gradient indicator)
-// ═══════════════════════════════════════════════════════════
+// Bottom nav. Uses Lucide line icons; iOS-style label below the icon.
 class _FloatingGlassNav extends StatelessWidget {
   final int index;
   final ValueChanged<int> onChanged;
@@ -135,125 +133,57 @@ class _FloatingGlassNav extends StatelessWidget {
   const _FloatingGlassNav({required this.index, required this.onChanged});
 
   static const _items = [
-    (Icons.home_outlined, Icons.home_rounded, 'home'),
-    (Icons.auto_awesome_outlined, Icons.auto_awesome_rounded, 'chat'),
-    (Icons.leaderboard_outlined, Icons.leaderboard_rounded, 'rating'),
-    (Icons.bar_chart_outlined, Icons.bar_chart_rounded, 'analytics'),
-    (Icons.person_outline_rounded, Icons.person_rounded, 'profile'),
+    (LucideIcons.home, 'home'),
+    (LucideIcons.sparkles, 'chat'),
+    (LucideIcons.barChart3, 'rating'),
+    (LucideIcons.lineChart, 'analytics'),
+    (LucideIcons.user, 'profile'),
   ];
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(26),
-            gradient: LinearGradient(
-              colors: [
-                AppColors.primary.withOpacity(0.4),
-                AppColors.secondary.withOpacity(0.3),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
-                blurRadius: 24,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          padding: const EdgeInsets.all(1.4),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24.6),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.card.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(24.6),
-                ),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 8),
-                child: Row(
-                  children: List.generate(_items.length, (i) {
-                    final active = index == i;
-                    final (icon, activeIcon, label) = _items[i];
-                    return Expanded(
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () => onChanged(i),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 260),
-                          curve: Curves.easeOut,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 2),
-                          padding: EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: active ? 10 : 8,
-                          ),
-                          decoration: BoxDecoration(
-                            gradient: active
-                                ? LinearGradient(
-                                    colors: AppColors.gradCosmic,
-                                  )
-                                : null,
-                            borderRadius: BorderRadius.circular(18),
-                            boxShadow: active
-                                ? [
-                                    BoxShadow(
-                                      color: AppColors.primary
-                                          .withOpacity(0.45),
-                                      blurRadius: 14,
-                                      offset: const Offset(0, 4),
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                          child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.center,
-                            children: [
-                              AnimatedScale(
-                                scale: active ? 1.05 : 1.0,
-                                duration:
-                                    const Duration(milliseconds: 200),
-                                child: Icon(
-                                  active ? activeIcon : icon,
-                                  color: active
-                                      ? Colors.white
-                                      : AppColors.sub,
-                                  size: 22,
-                                ),
-                              ),
-                              if (active) ...[
-                                const SizedBox(width: 6),
-                                Flexible(
-                                  child: Text(
-                                    S.get(label),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.white,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w700,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ],
-                          ),
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          top: BorderSide(color: AppColors.border, width: 1),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 64,
+          child: Row(
+            children: List.generate(_items.length, (i) {
+              final active = index == i;
+              final (icon, label) = _items[i];
+              return Expanded(
+                child: InkWell(
+                  onTap: () => onChanged(i),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        color: active ? AppColors.primary : AppColors.sub,
+                        size: 22,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        S.get(label),
+                        style: GoogleFonts.poppins(
+                          fontSize: 10,
+                          fontWeight:
+                              active ? FontWeight.w600 : FontWeight.w500,
+                          color:
+                              active ? AppColors.primary : AppColors.sub,
                         ),
                       ),
-                    );
-                  }),
+                    ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
           ),
         ),
       ),

@@ -76,53 +76,11 @@ class _BentoCardState extends State<BentoCard>
       height: widget.height,
       padding: widget.padding ?? const EdgeInsets.all(D.sp16),
       decoration: BoxDecoration(
-        gradient: widget.dark
-            ? LinearGradient(
-                colors: [
-                  AppColors.card,
-                  Color.lerp(AppColors.card, accent, 0.08)!,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : null,
-        color: widget.dark ? null : AppColors.card,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(
-          color: accent.withOpacity(0.3),
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: accent.withOpacity(0.14),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.border, width: 1),
       ),
-      child: Stack(
-        children: [
-          // Corner glow blob
-          Positioned(
-            top: -30,
-            right: -30,
-            child: Container(
-              width: 80,
-              height: 80,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    accent.withOpacity(0.35),
-                    accent.withOpacity(0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          widget.customChild ?? _buildDefault(accent, gradient),
-        ],
-      ),
+      child: widget.customChild ?? _buildDefault(accent, gradient),
     );
 
     return GestureDetector(
@@ -152,17 +110,10 @@ class _BentoCardState extends State<BentoCard>
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: gradient),
+                  color: accent.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: accent.withOpacity(0.4),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
-                child: Icon(widget.icon, color: Colors.white, size: 18),
+                child: Icon(widget.icon, color: accent, size: 18),
               ),
             const Spacer(),
             if (widget.trend != null)

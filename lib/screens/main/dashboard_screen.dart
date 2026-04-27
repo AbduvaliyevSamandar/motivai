@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -296,50 +297,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Widget _buildFAB(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.55),
-            blurRadius: 28,
-            offset: const Offset(0, 10),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          if (_showCompleted) {
+            setState(() => _showCompleted = false);
+          }
+          showAddTaskDialog(context);
+        },
+        customBorder: const CircleBorder(),
+        child: Container(
+          width: 56,
+          height: 56,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primary,
           ),
-          BoxShadow(
-            color: AppColors.pink.withOpacity(0.3),
-            blurRadius: 40,
-            offset: const Offset(0, 16),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            // Always switch to Faol when opening add — new task lives there
-            if (_showCompleted) {
-              setState(() => _showCompleted = false);
-            }
-            showAddTaskDialog(context);
-          },
-          customBorder: const CircleBorder(),
-          child: Container(
-            width: 62,
-            height: 62,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                colors: AppColors.gradCosmic,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: const Icon(
-              Icons.add_rounded,
-              color: Colors.white,
-              size: 30,
-            ),
+          child: const Icon(
+            LucideIcons.plus,
+            color: Colors.white,
+            size: 24,
           ),
         ),
       ),

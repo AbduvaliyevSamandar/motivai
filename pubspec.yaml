@@ -51,6 +51,9 @@ dependencies:
   # External URLs (privacy / terms)
   url_launcher: ^6.2.6
 
+  # Better icon library (Linear / Vercel / Notion style, thin-stroke)
+  lucide_icons: ^0.257.0
+
   cupertino_icons: ^1.0.6
 
 dev_dependencies:
