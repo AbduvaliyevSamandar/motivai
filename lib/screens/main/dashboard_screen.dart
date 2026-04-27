@@ -594,24 +594,15 @@ class _Avatar extends StatelessWidget {
     final isFile = avatarUrl != null && !hasNetwork && avatarUrl!.isNotEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: LinearGradient(
-          colors: AppColors.gradCosmic,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withOpacity(0.4),
-            blurRadius: 14,
-          ),
-        ],
+        border: Border.all(color: AppColors.border, width: 1.5),
       ),
       child: ClipOval(
         child: Container(
           width: 48,
           height: 48,
-          color: AppColors.card,
+          color: AppColors.surface,
           child: hasNetwork
               ? Image.network(
                   avatarUrl!,

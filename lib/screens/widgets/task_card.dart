@@ -72,42 +72,31 @@ class _TaskCardState extends State<TaskCard>
         child: Container(
           margin: const EdgeInsets.only(bottom: D.sp12),
           decoration: BoxDecoration(
-            color: AppColors.card,
-            borderRadius: BorderRadius.circular(D.radiusLg),
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(14),
             border: Border.all(
-              color: done
-                  ? AppColors.border
-                  : accent.withOpacity(overdue ? 0.6 : 0.35),
-              width: done ? 1 : (overdue ? 1.8 : 1.5),
+              color: overdue
+                  ? AppColors.danger.withOpacity(0.4)
+                  : AppColors.border,
+              width: 1,
             ),
-            boxShadow: done
-                ? null
-                : [
-                    BoxShadow(
-                      color: accent.withOpacity(overdue ? 0.25 : 0.1),
-                      blurRadius: overdue ? 16 : 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
           ),
           child: Column(
             children: [
               // ── Top color strip ──────────────────
               Container(
-                height: 4,
+                height: 3,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: done
-                        ? [AppColors.border, AppColors.border]
-                        : overdue
-                            ? [AppColors.danger, AppColors.accent]
-                            : upcoming
-                                ? [AppColors.accent, t.color]
-                                : [t.color, t.color.withOpacity(0.6)],
-                  ),
+                  color: done
+                      ? AppColors.border
+                      : overdue
+                          ? AppColors.danger
+                          : upcoming
+                              ? AppColors.accent
+                              : t.color,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(D.radiusLg),
-                    topRight: Radius.circular(D.radiusLg),
+                    topLeft: Radius.circular(14),
+                    topRight: Radius.circular(14),
                   ),
                 ),
               ),
@@ -448,29 +437,23 @@ class _CompleteButton extends StatelessWidget {
       },
       onTapCancel: () => ctrl.reverse(),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        width: 40,
-        height: 40,
+        duration: const Duration(milliseconds: 220),
+        width: 36,
+        height: 36,
         decoration: BoxDecoration(
-          gradient: done
-              ? null
-              : LinearGradient(colors: AppColors.gradPrimary),
-          color: done ? AppColors.success.withOpacity(0.15) : null,
+          color: done
+              ? AppColors.success.withOpacity(0.15)
+              : Colors.transparent,
           shape: BoxShape.circle,
-          boxShadow: done
-              ? null
-              : [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.35),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
+          border: Border.all(
+            color: done ? AppColors.success : AppColors.border,
+            width: done ? 1 : 1.5,
+          ),
         ),
         child: Icon(
           Icons.check_rounded,
-          color: done ? AppColors.success : Colors.white,
-          size: 22,
+          color: done ? AppColors.success : AppColors.sub,
+          size: 18,
         ),
       ),
     );

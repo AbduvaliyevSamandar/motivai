@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -125,108 +126,74 @@ class _ChatState extends State<ChatScreen> {
   Widget _buildHeader() {
     return SafeArea(
       bottom: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(22),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-            child: Container(
-              padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 8, 8, 12),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          border: Border(
+            bottom: BorderSide(color: AppColors.border),
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: 36,
+              height: 36,
               decoration: BoxDecoration(
-                color: AppColors.card.withOpacity(0.65),
-                borderRadius: BorderRadius.circular(22),
-                border: Border.all(color: AppColors.glassBorder),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.2),
-                    blurRadius: 24,
-                    offset: const Offset(0, 6),
-                  ),
-                ],
+                color: AppColors.primary.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Row(
+              child: Icon(
+                PhosphorIcons.sparkle(PhosphorIconsStyle.fill),
+                color: AppColors.primary,
+                size: 18,
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 42,
-                    height: 42,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: AppColors.gradCosmic,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withOpacity(0.5),
-                          blurRadius: 14,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.auto_awesome_rounded,
-                      color: Colors.white,
-                      size: 22,
+                  Text(
+                    'MotivAI',
+                    style: GoogleFonts.poppins(
+                      color: AppColors.txt,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.2,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+                  Consumer<ChatProvider>(
+                    builder: (_, chat, __) => Row(
                       children: [
-                        ShaderMask(
-                          shaderCallback: (b) => LinearGradient(
-                            colors: AppColors.titleGradient,
-                          ).createShader(b),
-                          blendMode: BlendMode.srcIn,
-                          child: Text(
-                            'MotivAI',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: -0.3,
-                            ),
-                          ),
-                        ),
-                        Consumer<ChatProvider>(
-                          builder: (_, chat, __) => Row(
-                            children: [
-                              _PulseDot(active: chat.isTyping),
-                              const SizedBox(width: 6),
-                              Text(
-                                chat.isTyping
-                                    ? S.get('ai_typing')
-                                    : 'Online',
-                                style: GoogleFonts.poppins(
-                                  color: AppColors.sub,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                        _PulseDot(active: chat.isTyping),
+                        const SizedBox(width: 6),
+                        Text(
+                          chat.isTyping
+                              ? S.get('ai_typing')
+                              : 'Online',
+                          style: GoogleFonts.poppins(
+                            color: AppColors.sub,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
-                  ),
-                  IconButton(
-                    icon: Container(
-                      padding: const EdgeInsets.all(7),
-                      decoration: BoxDecoration(
-                        color: AppColors.card.withOpacity(0.7),
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(color: AppColors.border),
-                      ),
-                      child: Icon(Icons.delete_sweep_outlined,
-                          color: AppColors.sub, size: 16),
-                    ),
-                    onPressed: _clearConfirm,
                   ),
                 ],
               ),
             ),
-          ),
+            IconButton(
+              icon: Icon(
+                PhosphorIcons.trash(PhosphorIconsStyle.regular),
+                color: AppColors.sub,
+                size: 18,
+              ),
+              onPressed: _clearConfirm,
+            ),
+          ],
         ),
       ),
     );
