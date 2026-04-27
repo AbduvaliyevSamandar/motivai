@@ -73,24 +73,40 @@ async def merge_duplicate_emails() -> None:
     in ``migrations``.
     """
     try:
-        marker = await db.db.migrations.find_one({"name": "merge_duplicate_emails_v1"})
+        marker = await db.db.migrations.find_one({"name": "merge_duplicate_emails_v2"})
         if marker:
             return
 
         from bson import ObjectId
 
-        # Group by lowercase email
+        # Normalize first: trim + lowercase every email so the grouping
+        # below isn't fooled by stray whitespace or mixed case.
+        async for u in db.db.users.find({}, {"_id": 1, "email": 1}):
+            raw = (u.get("email") or "").strip().lower()
+            if raw and raw != u.get("email"):
+                await db.db.users.update_one(
+                    {"_id": u["_id"]},
+                    {"$set": {"email": raw}},
+                )
+
+        # Group by exact email (now normalized)
         pipeline = [
+            {"$match": {"email": {"$ne": None, "$type": "string"}}},
             {"$group": {
-                "_id": {"$toLower": "$email"},
+                "_id": "$email",
                 "count": {"$sum": 1},
                 "ids": {"$push": "$_id"},
+                "names": {"$push": "$name"},
             }},
             {"$match": {"count": {"$gt": 1}}},
         ]
         merged = 0
         async for group in db.db.users.aggregate(pipeline):
             ids = group["ids"]
+            logger.info(
+                "🔗 Duplicate group: email=%r names=%s count=%d",
+                group["_id"], group.get("names"), group["count"],
+            )
             # Pull full docs to pick winner
             docs = []
             async for d in db.db.users.find({"_id": {"$in": ids}}):
@@ -160,8 +176,9 @@ async def merge_duplicate_emails() -> None:
             )
 
         await db.db.migrations.insert_one({
-            "name": "merge_duplicate_emails_v1",
+            "name": "merge_duplicate_emails_v2",
             "merged": merged,
+            "ran_at": datetime.utcnow(),
         })
         logger.info("🔗 merge_duplicate_emails complete — %d duplicates collapsed", merged)
     except Exception as e:
