@@ -9,6 +9,7 @@ import '../../providers/auth_provider.dart';
 import '../../services/google_auth.dart';
 import '../../widgets/nebula/nebula.dart';
 import '../../widgets/otp_sheet.dart';
+import '../../widgets/google_logo.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -613,22 +614,7 @@ class _GoogleButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 22,
-                  height: 22,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Text(
-                    'G',
-                    style: TextStyle(
-                      color: Color(0xFF4285F4),
-                      fontWeight: FontWeight.w900,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
+                const GoogleLogo(size: 20),
                 const SizedBox(width: 12),
                 Text(
                   'Google bilan kirish',

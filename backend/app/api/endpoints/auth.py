@@ -269,6 +269,7 @@ async def google_login(data: GoogleAuthRequest):
     email = info["email"].lower()
     name = info.get("name") or info.get("given_name") or email.split("@")[0]
     avatar = info.get("picture")
+    google_sub = info.get("sub")
 
     user = await get_user_by_email(email)
     if not user:
@@ -284,9 +285,26 @@ async def google_login(data: GoogleAuthRequest):
             "country": data.country,
             "avatar": avatar,
             "auth_provider": "google",
-            "google_sub": info.get("sub"),
+            "google_sub": google_sub,
         }
         user = await create_user(payload)
+    else:
+        # Existing email account → link Google to it. Google has just
+        # proven the user owns this inbox, so flip email_verified=True
+        # and remember the google_sub for future sign-ins.
+        db = get_db()
+        await db.users.update_one(
+            {"_id": ObjectId(user["_id"])},
+            {"$set": {
+                "email_verified": True,
+                "is_verified": True,
+                "google_sub": google_sub,
+                "auth_provider": user.get("auth_provider") or "google",
+                "avatar": user.get("avatar") or avatar,
+                "updated_at": datetime.utcnow(),
+            }},
+        )
+        user = await get_user_by_id(user["_id"])
 
     token = create_access_token({"sub": user["_id"]})
     return {

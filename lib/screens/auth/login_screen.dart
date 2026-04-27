@@ -9,6 +9,7 @@ import '../../providers/auth_provider.dart';
 import '../../services/google_auth.dart';
 import '../../widgets/nebula/nebula.dart';
 import '../../widgets/otp_sheet.dart';
+import '../../widgets/google_logo.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -58,8 +59,17 @@ class _LoginScreenState extends State<LoginScreen>
     setState(() => _formError = null);
     final auth = context.read<AuthProvider>();
     final ok = await auth.login(_email.text.trim(), _pass.text);
-    if (!ok && mounted) {
-      setState(() => _formError = _humanize(auth.error));
+    if (!mounted) return;
+    if (!ok) {
+      // Always render something in the banner — even when the provider
+      // didn't surface an error message, the user must see why nothing
+      // happened.
+      final humanized = _humanize(auth.error);
+      setState(() {
+        _formError = humanized.isEmpty
+            ? 'Kirish amalga oshmadi. Qayta urinib ko\'ring.'
+            : humanized;
+      });
     }
   }
 
@@ -252,15 +262,8 @@ class _LoginScreenState extends State<LoginScreen>
                         if (GoogleAuth.available)
                           _socialBtn(
                             label: S.get('login_google'),
-                            iconBg: const Color(0xFF4285F4),
-                            iconChild: Text(
-                              'G',
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
+                            iconBg: Colors.white,
+                            iconChild: const GoogleLogo(size: 18),
                             onTap: _googleSignIn,
                           ),
 

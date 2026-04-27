@@ -34,9 +34,19 @@ class GoogleAuth {
 
   /// Triggers the Google account picker and returns the ID token. Returns
   /// null if the user cancelled or anything failed.
+  ///
+  /// Always signs out first so the system always shows the account picker
+  /// — otherwise Google quietly reuses the last signed-in account, which
+  /// is a usability surprise.
   static Future<String?> signIn() async {
     if (!available) return null;
     try {
+      try {
+        await _signIn().signOut();
+        await _signIn().disconnect();
+      } catch (_) {
+        // First call has nothing to disconnect — that's fine.
+      }
       final account = await _signIn().signIn();
       if (account == null) return null;
       final auth = await account.authentication;
