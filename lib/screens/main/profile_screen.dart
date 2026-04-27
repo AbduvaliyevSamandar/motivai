@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -587,6 +588,20 @@ class _ProfileState extends State<ProfileScreen> {
                       title: 'Yordam',
                       subtitle: 'Qo\'llanma va savollar',
                       onTap: _showHelp,
+                    ),
+                    _tile(
+                      icon: Icons.shield_outlined,
+                      iconColor: AppColors.success,
+                      title: 'Maxfiylik siyosati',
+                      onTap: () => _openUrl(
+                          'https://abduvaliyevsamandar.github.io/motivai/privacy.html'),
+                    ),
+                    _tile(
+                      icon: Icons.description_outlined,
+                      iconColor: AppColors.info,
+                      title: 'Foydalanish shartlari',
+                      onTap: () => _openUrl(
+                          'https://abduvaliyevsamandar.github.io/motivai/terms.html'),
                     ),
                     const SizedBox(height: 32),
                     Center(
@@ -1862,6 +1877,21 @@ class _ProfileState extends State<ProfileScreen> {
         ),
       ],
     );
+  }
+
+  Future<void> _openUrl(String url) async {
+    HapticFeedback.selectionClick();
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: AppColors.danger,
+        behavior: SnackBarBehavior.floating,
+        content: Text('Sahifa ochib bo\'lmadi',
+            style: GoogleFonts.poppins()),
+      ));
+    }
   }
 
   void _showHelp() {

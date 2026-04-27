@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — MotivAI</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #0b0d1f;
+      color: #e8eaf6;
+      line-height: 1.7;
+      padding: 32px 16px;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    h1 {
+      background: linear-gradient(135deg, #a855f7, #00d9ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+    .updated {
+      color: #888aa0;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+    h2 {
+      color: #c084fc;
+      font-size: 20px;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+    h3 {
+      color: #e879f9;
+      font-size: 16px;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    p, li {
+      color: #c5c8e0;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    ul {
+      padding-left: 22px;
+      margin-bottom: 16px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+    a {
+      color: #00d9ff;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(0, 217, 255, 0.4);
+    }
+    a:hover {
+      border-bottom-color: #00d9ff;
+    }
+    .contact {
+      margin-top: 40px;
+      padding: 20px;
+      background: rgba(168, 85, 247, 0.1);
+      border-radius: 14px;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+    }
+    .lang-switch {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .lang-switch button {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      color: #e8eaf6;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      cursor: pointer;
+      margin: 0 4px;
+    }
+    .lang-switch button.active {
+      background: rgba(168, 85, 247, 0.4);
+    }
+    .section { display: none; }
+    .section.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Last updated: April 27, 2026</p>
+    </div>
+
+    <div class="lang-switch">
+      <button onclick="switchLang('en')" id="btn-en" class="active">English</button>
+      <button onclick="switchLang('uz')" id="btn-uz">O'zbekcha</button>
+    </div>
+
+    <!-- ENGLISH -->
+    <div class="section active" id="lang-en">
+      <p>This Privacy Policy describes how MotivAI ("we", "us", or "our") collects, uses, and protects your information when you use our mobile application and related services.</p>
+
+      <h2>1. Information We Collect</h2>
+
+      <h3>Information you provide directly</h3>
+      <ul>
+        <li><strong>Account data:</strong> name, email address, password (hashed), profile picture</li>
+        <li><strong>Authentication:</strong> Google account info if you sign in with Google (email, name, profile picture, Google user ID)</li>
+        <li><strong>User-generated content:</strong> tasks, plans, goals, habits, flashcards, chat messages with the AI assistant, journal entries (morning ritual)</li>
+      </ul>
+
+      <h3>Information collected automatically</h3>
+      <ul>
+        <li><strong>Usage data:</strong> XP, streak, completed tasks count, focus minutes</li>
+        <li><strong>Device info (locally only):</strong> theme preference, sound pack, haptic settings</li>
+      </ul>
+
+      <h2>2. How We Use Your Information</h2>
+      <ul>
+        <li>Provide, maintain, and improve the app's functionality</li>
+        <li>Generate AI-powered task suggestions and motivational content</li>
+        <li>Track your progress (XP, streaks, leaderboard)</li>
+        <li>Send notifications and reminders you've configured</li>
+        <li>Verify your email address via one-time codes (OTP)</li>
+        <li>Prevent abuse, fraud, and spam (e.g., disposable email blocking)</li>
+      </ul>
+
+      <h2>3. Third-Party Services</h2>
+      <p>We use the following services to operate MotivAI:</p>
+      <ul>
+        <li><strong>Google Sign-In:</strong> for optional authentication. <a href="https://policies.google.com/privacy">Google's privacy policy</a></li>
+        <li><strong>OpenAI API:</strong> AI chat and task suggestions. Messages may be sent to OpenAI's servers. <a href="https://openai.com/privacy/">OpenAI privacy</a></li>
+        <li><strong>MongoDB Atlas:</strong> encrypted database hosting</li>
+        <li><strong>Render.com:</strong> server hosting</li>
+        <li><strong>Gmail SMTP:</strong> sending verification emails</li>
+      </ul>
+
+      <h2>4. Data Storage & Security</h2>
+      <ul>
+        <li>Passwords are stored as bcrypt hashes — never in plain text</li>
+        <li>Authentication tokens use industry-standard JWT with HS256</li>
+        <li>OTP codes are hashed in the database and expire in 10 minutes</li>
+        <li>Connections to our servers use HTTPS/TLS encryption</li>
+        <li>Local app data (preferences, cached tasks) is stored on your device only</li>
+      </ul>
+
+      <h2>5. Data Retention & Deletion</h2>
+      <p>We retain your data while your account is active. You can <strong>permanently delete your account at any time</strong> from within the app:</p>
+      <ul>
+        <li>Profile → "Akkauntni o'chirish" (Delete account)</li>
+        <li>This removes your user record, all tasks/plans, chat history, leaderboard entries, and progress data</li>
+        <li>Deletion is immediate and irreversible</li>
+      </ul>
+
+      <h2>6. Children</h2>
+      <p>MotivAI is intended for users aged 13 and above. We do not knowingly collect data from children under 13. If you believe a child has registered, contact us and we will delete the account.</p>
+
+      <h2>7. International Users</h2>
+      <p>Our servers are located in the United States and Europe (via Render and MongoDB Atlas). By using MotivAI, you consent to your data being processed in those regions.</p>
+
+      <h2>8. Your Rights</h2>
+      <ul>
+        <li>Access — view your data via the app or by exporting (Profile → "Ma'lumotlarni eksport")</li>
+        <li>Rectification — update your profile, change password</li>
+        <li>Deletion — delete your account from within the app</li>
+        <li>Portability — export your data as JSON</li>
+      </ul>
+
+      <h2>9. Changes to This Policy</h2>
+      <p>We may update this policy occasionally. Major changes will be announced in the app. The "Last updated" date at the top reflects the most recent revision.</p>
+
+      <h2>10. Contact</h2>
+      <div class="contact">
+        Questions or requests? Reach us at:<br>
+        <strong>elmurodovmaxmud77@gmail.com</strong>
+      </div>
+    </div>
+
+    <!-- UZBEK -->
+    <div class="section" id="lang-uz">
+      <p>Ushbu Maxfiylik siyosati MotivAI ilovasidan foydalanish jarayonida sizning ma'lumotlaringizni qanday yig'amiz, ishlatamiz va himoya qilamiz — buni tushuntiradi.</p>
+
+      <h2>1. Yig'iladigan ma'lumotlar</h2>
+
+      <h3>Siz to'g'ridan-to'g'ri kiritadigan</h3>
+      <ul>
+        <li><strong>Akkaunt:</strong> ism, email manzil, parol (xeshlangan), profil rasmi</li>
+        <li><strong>Avtorizatsiya:</strong> Google bilan kirgan bo'lsangiz — Google email, ism, rasm, foydalanuvchi ID</li>
+        <li><strong>Foydalanuvchi kontenti:</strong> vazifalar, rejalar, maqsadlar, odatlar, kartalar, AI chat xabarlari, kun boshi rituali</li>
+      </ul>
+
+      <h3>Avtomatik yig'iladigan</h3>
+      <ul>
+        <li><strong>Foydalanish:</strong> XP, streak, bajarilgan vazifalar, fokus daqiqalari</li>
+        <li><strong>Qurilma sozlamalari (faqat lokal):</strong> tema, tovush, titrash sozlamalari</li>
+      </ul>
+
+      <h2>2. Ma'lumotlardan qanday foydalanamiz</h2>
+      <ul>
+        <li>Ilova ishini ta'minlash va yaxshilash</li>
+        <li>AI orqali vazifa tavsiyalari va motivatsion kontent yaratish</li>
+        <li>Progress kuzatish (XP, streak, reyting)</li>
+        <li>Sozlangan eslatma va bildirishnomalarni yuborish</li>
+        <li>Bir martalik kod (OTP) orqali email tasdiqlash</li>
+        <li>Soxta akkauntlar va spamning oldini olish</li>
+      </ul>
+
+      <h2>3. Uchinchi tomon xizmatlar</h2>
+      <ul>
+        <li><strong>Google Sign-In:</strong> Google orqali kirish</li>
+        <li><strong>OpenAI API:</strong> AI chat — xabarlar OpenAI serveriga yuboriladi</li>
+        <li><strong>MongoDB Atlas:</strong> shifrlangan ma'lumotlar bazasi</li>
+        <li><strong>Render.com:</strong> server hosting</li>
+        <li><strong>Gmail SMTP:</strong> tasdiq email yuborish</li>
+      </ul>
+
+      <h2>4. Saqlash va xavfsizlik</h2>
+      <ul>
+        <li>Parollar bcrypt xesh sifatida saqlanadi — hech qachon ochiq matnda emas</li>
+        <li>Avtorizatsiya tokeni JWT/HS256 — sanoat standarti</li>
+        <li>OTP kodlari bazada xeshlangan, 10 daqiqada eskiradi</li>
+        <li>Server bilan aloqa HTTPS/TLS shifrlangan</li>
+        <li>Lokal ma'lumotlar (sozlamalar, kesh) faqat sizning qurilmangizda</li>
+      </ul>
+
+      <h2>5. Ma'lumotlarni o'chirish</h2>
+      <p>Akkauntingiz faol bo'lganda ma'lumotlar saqlanadi. Istalgan vaqt <strong>akkauntingizni butunlay o'chira olasiz</strong>:</p>
+      <ul>
+        <li>Profil → "Akkauntni o'chirish"</li>
+        <li>Bu sizning yozuvingiz, vazifalar, chat tarix, reyting ma'lumotlari, progress hammasini o'chiradi</li>
+        <li>O'chirish darhol va qaytib bo'lmaydi</li>
+      </ul>
+
+      <h2>6. Bolalar</h2>
+      <p>MotivAI 13 yoshdan oshganlar uchun. 13 yoshdan kichik bolalardan ma'lumot yig'maymiz. Bola ro'yxatdan o'tgan bo'lsa biz bilan bog'laning, akkaunt o'chiriladi.</p>
+
+      <h2>7. Bog'lanish</h2>
+      <div class="contact">
+        Savol yoki so'rovlar uchun:<br>
+        <strong>elmurodovmaxmud77@gmail.com</strong>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchLang(lang) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById('lang-' + lang).classList.add('active');
+      document.querySelectorAll('.lang-switch button').forEach(b => b.classList.remove('active'));
+      document.getElementById('btn-' + lang).classList.add('active');
+    }
+  </script>
+</body>
+</html>
