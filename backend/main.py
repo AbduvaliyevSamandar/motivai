@@ -3,13 +3,19 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.db.database import connect_db, close_db, cleanup_unverified_users
+from app.db.database import (
+    connect_db,
+    close_db,
+    cleanup_unverified_users,
+    merge_duplicate_emails,
+)
 from app.api.router import api_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_db()
     await cleanup_unverified_users()
+    await merge_duplicate_emails()
     yield
     await close_db()
 

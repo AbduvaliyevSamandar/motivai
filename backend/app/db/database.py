@@ -1,4 +1,5 @@
 # app/db/database.py
+from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient
 from app.core.config import settings
 import logging
@@ -59,6 +60,112 @@ async def create_indexes():
         await db.db.leaderboard.create_index([("period", 1), ("xp", -1)])
     except Exception as e:
         logger.warning(f"⚠️ Could not create indexes: {e}")
+
+
+async def merge_duplicate_emails() -> None:
+    """One-shot migration that collapses any users sharing the same
+    (case-insensitive) email into a single record.
+
+    Picks the "winner" as the account with the most XP. Ties are broken
+    by earliest ``created_at``. Re-points related collections (plans,
+    progress, chat_messages, leaderboard) from the loser ids to the
+    winner id, then deletes the losers. Idempotent — gated by a marker
+    in ``migrations``.
+    """
+    try:
+        marker = await db.db.migrations.find_one({"name": "merge_duplicate_emails_v1"})
+        if marker:
+            return
+
+        from bson import ObjectId
+
+        # Group by lowercase email
+        pipeline = [
+            {"$group": {
+                "_id": {"$toLower": "$email"},
+                "count": {"$sum": 1},
+                "ids": {"$push": "$_id"},
+            }},
+            {"$match": {"count": {"$gt": 1}}},
+        ]
+        merged = 0
+        async for group in db.db.users.aggregate(pipeline):
+            ids = group["ids"]
+            # Pull full docs to pick winner
+            docs = []
+            async for d in db.db.users.find({"_id": {"$in": ids}}):
+                docs.append(d)
+            if len(docs) < 2:
+                continue
+
+            def score(d):
+                created = d.get("created_at") or datetime.max
+                ts = created.timestamp() if hasattr(created, "timestamp") else 0
+                return (d.get("xp", 0), -ts)
+
+            winner = max(docs, key=score)
+            losers = [d for d in docs if d["_id"] != winner["_id"]]
+
+            winner_id_str = str(winner["_id"])
+            loser_id_objs = [d["_id"] for d in losers]
+            loser_id_strs = [str(x) for x in loser_id_objs]
+
+            # Re-point ownership in related collections
+            for coll_name in ("plans", "chat_messages", "progress", "leaderboard"):
+                try:
+                    await db.db[coll_name].update_many(
+                        {"user_id": {"$in": loser_id_strs + loser_id_objs}},
+                        {"$set": {"user_id": winner_id_str}},
+                    )
+                except Exception:
+                    pass
+
+            # Merge useful fields onto winner if missing
+            patch = {}
+            if not winner.get("avatar"):
+                for d in losers:
+                    if d.get("avatar"):
+                        patch["avatar"] = d["avatar"]
+                        break
+            if not winner.get("google_sub"):
+                for d in losers:
+                    if d.get("google_sub"):
+                        patch["google_sub"] = d["google_sub"]
+                        break
+            # Aggregate stats
+            extra_xp = sum(d.get("xp", 0) for d in losers)
+            extra_tasks = sum(d.get("total_tasks_completed", 0) for d in losers)
+            if extra_xp:
+                patch["xp"] = winner.get("xp", 0) + extra_xp
+            if extra_tasks:
+                patch["total_tasks_completed"] = (
+                    winner.get("total_tasks_completed", 0) + extra_tasks
+                )
+            patch["email_verified"] = True
+            patch["is_verified"] = True
+            patch["updated_at"] = datetime.utcnow()
+
+            await db.db.users.update_one(
+                {"_id": winner["_id"]},
+                {"$set": patch},
+            )
+
+            # Drop the duplicates
+            await db.db.users.delete_many({"_id": {"$in": loser_id_objs}})
+            merged += len(losers)
+            logger.info(
+                "🔗 Merged %d duplicate(s) into %s",
+                len(losers),
+                winner.get("email"),
+            )
+
+        await db.db.migrations.insert_one({
+            "name": "merge_duplicate_emails_v1",
+            "merged": merged,
+        })
+        logger.info("🔗 merge_duplicate_emails complete — %d duplicates collapsed", merged)
+    except Exception as e:
+        logger.warning(f"⚠️ merge_duplicate_emails failed: {e}")
 
 
 async def cleanup_unverified_users() -> None:
