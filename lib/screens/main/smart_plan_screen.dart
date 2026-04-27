@@ -80,7 +80,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           ).createShader(b),
           blendMode: BlendMode.srcIn,
           child: Text('Aqlli reja',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -161,7 +161,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Qancha vaqtingiz bor?',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
@@ -193,7 +193,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                 child: Text(
                   '${_hours.round()} soat',
                   textAlign: TextAlign.right,
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -204,7 +204,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           ),
           const SizedBox(height: 12),
           Text('Yo\'nalish:',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
@@ -315,7 +315,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     style: GoogleFonts.poppins(
                         color: AppColors.sub, fontSize: 11)),
                 Text('$total min',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                         color: AppColors.txt,
                         fontSize: 18,
                         fontWeight: FontWeight.w700)),
@@ -339,7 +339,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     style: GoogleFonts.poppins(
                         color: AppColors.sub, fontSize: 11)),
                 Text('$focus min',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                         color: AppColors.success,
                         fontSize: 18,
                         fontWeight: FontWeight.w700)),
@@ -398,7 +398,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
             ),
           ),
           Text('${b.minutes}m',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: c,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

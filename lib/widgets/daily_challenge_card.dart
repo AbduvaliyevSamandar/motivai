@@ -93,13 +93,13 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
+                        gradient: LinearGradient(
                             colors: AppColors.gradGold),
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
                         '+${c.bonusXP} XP',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: const Color(0xFF0F1028),
                           fontSize: 9,
                           fontWeight: FontWeight.w800,
@@ -111,7 +111,7 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                 const SizedBox(height: 4),
                 Text(
                   c.title,
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -142,7 +142,7 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                     const SizedBox(width: 8),
                     Text(
                       '$_progress/${c.target}',
-                      style: GoogleFonts.spaceGrotesk(
+                      style: GoogleFonts.poppins(
                         color: _completed
                             ? AppColors.success
                             : AppColors.sub,

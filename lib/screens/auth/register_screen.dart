@@ -202,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         blendMode: BlendMode.srcIn,
                         child: Text(
                           S.get('register'),
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 26,
                             fontWeight: FontWeight.w700,
@@ -550,7 +550,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(width: 10),
         Text(
           title,
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
             color: AppColors.txt,
             fontSize: 18,
             fontWeight: FontWeight.w700,

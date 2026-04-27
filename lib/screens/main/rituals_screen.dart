@@ -88,7 +88,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   const SizedBox(height: 16),
                   Text(
                     existing == null ? 'Yangi ritual' : 'Ritualni tahrirlash',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -314,7 +314,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
               style: GoogleFonts.poppins(
                   color: AppColors.sub, fontSize: 10)),
           Text(fmt(value),
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -364,7 +364,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
           ).createShader(b),
           blendMode: BlendMode.srcIn,
           child: Text('Rituallar',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -409,7 +409,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
             Text('\u{1F9D8}', style: const TextStyle(fontSize: 56)),
             const SizedBox(height: 14),
             Text('Rituallar yo\'q',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -494,7 +494,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                 Text(r.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,

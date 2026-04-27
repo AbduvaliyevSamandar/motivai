@@ -46,7 +46,7 @@ class _StreakFreezeBadgeState extends State<StreakFreezeBadge> {
             const SizedBox(width: 4),
             Text(
               '$_count/${StreakStorage.maxFreezes}',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.secondary,
                 fontSize: 11,
                 fontWeight: FontWeight.w700,

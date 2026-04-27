@@ -81,7 +81,7 @@ class TaskMentorSheet extends StatelessWidget {
                           blendMode: BlendMode.srcIn,
                           child: Text(
                             'AI mentor',
-                            style: GoogleFonts.spaceGrotesk(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 19,
                               fontWeight: FontWeight.w800,
@@ -148,7 +148,7 @@ class TaskMentorSheet extends StatelessWidget {
                       const SizedBox(width: 6),
                       Text(
                         '${plan.totalMinutes} daqiqa • ${plan.steps.length} qadam',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.sub,
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -229,7 +229,7 @@ class TaskMentorSheet extends StatelessWidget {
             ),
             child: Text(
               '$index',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -246,7 +246,7 @@ class TaskMentorSheet extends StatelessWidget {
                     Expanded(
                       child: Text(
                         s.title,
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.txt,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -263,7 +263,7 @@ class TaskMentorSheet extends StatelessWidget {
                       ),
                       child: Text(
                         '${s.minutes}m',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.primary,
                           fontSize: 10,
                           fontWeight: FontWeight.w700,

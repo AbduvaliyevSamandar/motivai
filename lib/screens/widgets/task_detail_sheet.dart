@@ -150,7 +150,7 @@ class _TaskDetailSheet extends StatelessWidget {
             // Title
             Text(
               task.title,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -433,7 +433,7 @@ class _TaskDetailSheet extends StatelessWidget {
         ),
         Text(
           value,
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
             color: AppColors.txt,
             fontSize: 14,
             fontWeight: FontWeight.w700,

@@ -38,7 +38,7 @@ class BigNumber extends StatelessWidget {
             children: [
               TextSpan(
                 text: value,
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   fontSize: size,
                   fontWeight: FontWeight.w700,
                   height: 1.0,
@@ -52,7 +52,7 @@ class BigNumber extends StatelessWidget {
               if (unit != null)
                 TextSpan(
                   text: ' $unit',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     fontSize: size * 0.35,
                     fontWeight: FontWeight.w500,
                     color: AppColors.sub,

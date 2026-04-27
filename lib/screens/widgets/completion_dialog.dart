@@ -146,7 +146,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                       blendMode: BlendMode.srcIn,
                       child: Text(
                         levelUp ? 'DARAJA O\'SDI!' : 'VAZIFA BAJARILDI!',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 22,
                           fontWeight: FontWeight.w800,
@@ -225,7 +225,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                             const SizedBox(width: 8),
                             Text(
                               'Daraja $newLevel',
-                              style: GoogleFonts.spaceGrotesk(
+                              style: GoogleFonts.poppins(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,

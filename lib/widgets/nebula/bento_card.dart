@@ -212,7 +212,7 @@ class _BentoCardState extends State<BentoCard>
             blendMode: BlendMode.srcIn,
             child: Text(
               widget.value!,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 fontSize: 32,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,

@@ -59,37 +59,41 @@ class AppColors {
       ? ThemePresets.current.hintDark
       : ThemePresets.current.hintLight;
 
-  // ─── GRADIENTS (theme-aware) ──────────────────────────────
+  // ─── GRADIENTS ──────────────────────────────────────────
+  // We collapsed everything to two-stop gradients on the same hue so the
+  // app stops looking like a Lisa Frank tribute. Most surfaces are flat
+  // now; gradients only show up on the primary CTA + the XP ring.
   static List<Color> get gradPrimary => ThemePresets.current.gradPrimary;
   static List<Color> get gradCosmic => ThemePresets.current.gradCosmic;
   static List<Color> get gradAurora => ThemePresets.current.gradAurora;
-  static const gradStellar = [Color(0xFFFCD34D), Color(0xFFF59E0B)];
-  static const gradGold = [Color(0xFFFCD34D), Color(0xFFF59E0B)];
-  static const gradSuccess = [Color(0xFF34D399), Color(0xFF10B981)];
-  static const gradWarning = [Color(0xFFF59E0B), Color(0xFFF87171)];
-  static List<Color> get gradAccent => [pink, primary];
-  static const gradCyan = [Color(0xFF00D9FF), Color(0xFF0891B2)];
-  static const gradFire = [Color(0xFFFCD34D), Color(0xFFF87171)];
+  static List<Color> get gradStellar => [accent, accent];
+  static List<Color> get gradGold    => [accent, accent];
+  static List<Color> get gradSuccess => [success, success];
+  static List<Color> get gradWarning => [accent, danger];
+  static List<Color> get gradAccent  => [accent, accent];
+  static List<Color> get gradCyan    => [info, info];
+  static List<Color> get gradFire    => [accent, danger];
 
-  // ─── CATEGORY COLORS ──────────────────────────────────────
+  // ─── CATEGORY COLORS — restrained palette (single accent per kind) ─
   static const cat = <String, Color>{
-    'study': Color(0xFFA855F7),
-    'exercise': Color(0xFF34D399),
-    'reading': Color(0xFFF472B6),
-    'meditation': Color(0xFF00D9FF),
-    'social': Color(0xFFFCD34D),
-    'creative': Color(0xFFF87171),
-    'productivity': Color(0xFF60A5FA),
-    'challenge': Color(0xFFEC4899),
+    'study':        Color(0xFF7C3AED),
+    'exercise':     Color(0xFF10B981),
+    'reading':      Color(0xFFEC4899),
+    'meditation':   Color(0xFF3B82F6),
+    'social':       Color(0xFFF59E0B),
+    'creative':     Color(0xFFEF4444),
+    'productivity': Color(0xFF3B82F6),
+    'challenge':    Color(0xFF7C3AED),
   };
 
-  // ─── GLOW ─────────────────────────────────────────────────
-  static Color get glowPrimary => primary.withOpacity(0.35);
-  static Color get glowGold => accent.withOpacity(0.35);
-  static Color get glowCyan => secondary.withOpacity(0.35);
+  // ─── GLOW (used very rarely now) ──────────────────────
+  static Color get glowPrimary => primary.withOpacity(0.20);
+  static Color get glowGold    => accent.withOpacity(0.20);
+  static Color get glowCyan    => secondary.withOpacity(0.20);
 
-  // ─── ADAPTIVE TITLE GRADIENT ──────────────────────────────
-  static List<Color> get titleGradient => _dark
-      ? [Colors.white, primary.withOpacity(0.6)]
-      : [primary, primaryDark];
+  // ─── TITLE TEXT — solid, no rainbow ───────────────────
+  // Kept for back-compat: callers using ShaderMask + titleGradient now
+  // get a flat near-foreground color in both stops, which renders
+  // visually identical to plain Text(color: AppColors.txt).
+  static List<Color> get titleGradient => [txt, txt];
 }

@@ -92,7 +92,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
           ).createShader(b),
           blendMode: BlendMode.srcIn,
           child: Text('Mahsuldorlik',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -176,7 +176,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
               style: GoogleFonts.poppins(
                   color: AppColors.sub, fontSize: 10)),
           Text(value,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -204,7 +204,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
                   color: AppColors.pink, size: 18),
               const SizedBox(width: 6),
               Text('Soat × kun',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -231,7 +231,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
                         child: h % 3 == 0
                             ? Text(
                                 h.toString(),
-                                style: GoogleFonts.spaceGrotesk(
+                                style: GoogleFonts.poppins(
                                   color: AppColors.sub,
                                   fontSize: 8,
                                 ),
@@ -248,7 +248,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
                         width: 28,
                         child: Text(
                           _dayNames[d],
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: AppColors.sub,
                             fontSize: 10,
                             fontWeight: FontWeight.w600,

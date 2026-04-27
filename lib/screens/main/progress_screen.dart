@@ -74,7 +74,7 @@ class _ProgState extends State<ProgressScreen> {
                                 blendMode: BlendMode.srcIn,
                                 child: Text(
                                   S.get('analytics'),
-                                  style: GoogleFonts.spaceGrotesk(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontSize: 28,
                                     fontWeight: FontWeight.w700,
@@ -372,7 +372,7 @@ class _CosmicLineChart extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 S.get('weekly_points'),
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -550,7 +550,7 @@ class _HeatmapCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
+                  gradient: LinearGradient(
                       colors: AppColors.gradCyan),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
@@ -566,7 +566,7 @@ class _HeatmapCard extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 'Faollik (35 kun)',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -757,7 +757,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
               const SizedBox(width: 12),
               Text(
                 S.get('cat_breakdown'),
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -865,7 +865,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                             ),
                             Text(
                               '${e.value}',
-                              style: GoogleFonts.spaceGrotesk(
+                              style: GoogleFonts.poppins(
                                 color: AppColors.sub,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,

@@ -75,7 +75,7 @@ class _Header extends StatelessWidget {
             blendMode: BlendMode.srcIn,
             child: Text(
               'Bildirishnomalar',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -378,7 +378,7 @@ class _EmptyFeed extends StatelessWidget {
               blendMode: BlendMode.srcIn,
               child: Text(
                 'Bildirishnomalar yo\'q',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 20,
                   fontWeight: FontWeight.w700,

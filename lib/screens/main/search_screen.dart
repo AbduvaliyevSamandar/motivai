@@ -239,7 +239,7 @@ class _SearchScreenState extends State<SearchScreen> {
           const SizedBox(width: 6),
           Text(
             '($count)',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: AppColors.primary,
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -274,7 +274,7 @@ class _SearchScreenState extends State<SearchScreen> {
             const SizedBox(height: 18),
             Text(
               'Nimani qidiryapsiz?',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,

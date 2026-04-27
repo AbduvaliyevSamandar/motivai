@@ -73,7 +73,7 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
                 children: [
                   Text(
                     done ? 'Bugungi maqsad' : 'Kun boshi rituali',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -215,7 +215,7 @@ class _RitualSheetState extends State<_RitualSheet> {
               blendMode: BlendMode.srcIn,
               child: Text(
                 'Kun boshi rituali',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.w700,

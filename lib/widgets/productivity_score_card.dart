@@ -48,7 +48,7 @@ class ProductivityScoreCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(
                 'Samaradorlik',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
@@ -68,7 +68,7 @@ class ProductivityScoreCard extends StatelessWidget {
                 blendMode: BlendMode.srcIn,
                 child: Text(
                   '$score',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 56,
                     fontWeight: FontWeight.w800,
@@ -177,7 +177,7 @@ class ProductivityScoreCard extends StatelessWidget {
                 ),
                 Text(
                   value,
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,

@@ -93,7 +93,7 @@ class _FocusScreenState extends State<FocusScreen> {
             const SizedBox(height: 16),
             Text(
               'Fon ovozi',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -201,7 +201,7 @@ class _FocusScreenState extends State<FocusScreen> {
         ),
         title: Text(
           'Sessiyani to\'xtatilsinmi?',
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
             color: AppColors.txt,
             fontWeight: FontWeight.w700,
             letterSpacing: -0.3,
@@ -337,7 +337,7 @@ class _FocusScreenState extends State<FocusScreen> {
                     child: Text(
                       widget.taskTitle,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.spaceGrotesk(
+                      style: GoogleFonts.poppins(
                         color: Colors.white.withOpacity(0.85),
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -365,7 +365,7 @@ class _FocusScreenState extends State<FocusScreen> {
                         children: [
                           Text(
                             _formatTime(_session.remaining),
-                            style: GoogleFonts.spaceGrotesk(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 72,
                               fontWeight: FontWeight.w800,
@@ -540,7 +540,7 @@ class _StatPill extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             value,
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 12,
               fontWeight: FontWeight.w700,

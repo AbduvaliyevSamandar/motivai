@@ -45,7 +45,7 @@ class _CoinsBadgeState extends State<CoinsBadge> {
             const SizedBox(width: 4),
             Text(
               '$_coins',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.accent,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

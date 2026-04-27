@@ -71,7 +71,7 @@ class _OtpSheetState extends State<_OtpSheet> {
               blendMode: BlendMode.srcIn,
               child: Text(
                 widget.title,
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.w700,

@@ -82,7 +82,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             blendMode: BlendMode.srcIn,
             child: Text(
               'Kalendar',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -148,7 +148,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Center(
               child: Text(
                 '${monthNames[_visibleMonth.month - 1]} ${_visibleMonth.year}',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 17,
                   fontWeight: FontWeight.w700,
@@ -374,7 +374,7 @@ class _CalendarCell extends StatelessWidget {
           children: [
             Text(
               '$day',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: isSelected
                     ? Colors.white
                     : (isToday ? AppColors.primary : AppColors.txt),
@@ -485,7 +485,7 @@ class _CalTaskItem extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           task.timeLabel,
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: AppColors.sub,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,

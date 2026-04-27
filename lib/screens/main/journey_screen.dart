@@ -74,7 +74,7 @@ class _JourneyScreenState extends State<JourneyScreen>
           blendMode: BlendMode.srcIn,
           child: Text(
             'Sayohat',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.w700,
@@ -153,7 +153,7 @@ class _JourneyScreenState extends State<JourneyScreen>
               const SizedBox(width: 8),
               Text(
                 stageName,
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -163,7 +163,7 @@ class _JourneyScreenState extends State<JourneyScreen>
               const Spacer(),
               Text(
                 '$_productive / 30',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.sub,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -229,7 +229,7 @@ class _JourneyScreenState extends State<JourneyScreen>
           Icon(i, color: c, size: 20),
           const SizedBox(height: 6),
           Text(v,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -256,7 +256,7 @@ class _JourneyScreenState extends State<JourneyScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Oxirgi 30 kun',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 14,
                   fontWeight: FontWeight.w700)),

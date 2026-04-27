@@ -221,7 +221,7 @@ class _SlideView extends StatelessWidget {
             child: Text(
               slide.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 28,
                 fontWeight: FontWeight.w800,
@@ -269,7 +269,7 @@ class _GoalPicker extends StatelessWidget {
             child: Text(
               'Asosiy maqsadingiz?',
               textAlign: TextAlign.center,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 26,
                 fontWeight: FontWeight.w800,
@@ -345,7 +345,7 @@ class _GoalPicker extends StatelessWidget {
                                     CrossAxisAlignment.start,
                                 children: [
                                   Text(o.name,
-                                      style: GoogleFonts.spaceGrotesk(
+                                      style: GoogleFonts.poppins(
                                         color: Colors.white,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,

@@ -3,17 +3,18 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 
-/// Nebula premium button — gradient + outer glow + inner highlight + scale
+/// Primary call-to-action button. Solid brand color, tiny shadow,
+/// 12dp radius, simple scale on press. Same API as before.
 class NebulaButton extends StatefulWidget {
   final String label;
   final VoidCallback? onTap;
   final bool loading;
   final IconData? icon;
   final bool disabled;
-  final List<Color>? gradient;
+  final List<Color>? gradient; // back-compat — uses first color only
   final double height;
   final bool expand;
-  final bool glow;
+  final bool glow; // back-compat — ignored
 
   const NebulaButton({
     super.key,
@@ -23,7 +24,7 @@ class NebulaButton extends StatefulWidget {
     this.icon,
     this.disabled = false,
     this.gradient,
-    this.height = 56,
+    this.height = 52,
     this.expand = true,
     this.glow = true,
   });
@@ -42,13 +43,11 @@ class _NebulaButtonState extends State<NebulaButton>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 140),
+      duration: const Duration(milliseconds: 110),
     );
-    _scale =
-        Tween<double>(begin: 1.0, end: 0.96).animate(CurvedAnimation(
-      parent: _ctrl,
-      curve: Curves.easeOut,
-    ));
+    _scale = Tween<double>(begin: 1.0, end: 0.97).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
+    );
   }
 
   @override
@@ -61,117 +60,73 @@ class _NebulaButtonState extends State<NebulaButton>
 
   @override
   Widget build(BuildContext context) {
-    final grad = widget.gradient ?? AppColors.gradCosmic;
-    final isDark = AppColors.isDark;
-    final glowA = isDark ? 0.45 : 0.22;
-    final glowB = isDark ? 0.30 : 0.14;
+    // Use the first color of the supplied gradient (if any) so callers
+    // that still pass [gradient] keep their accent.
+    final base = (widget.gradient != null && widget.gradient!.isNotEmpty)
+        ? widget.gradient!.first
+        : AppColors.primary;
 
     Widget body = Container(
       height: widget.height,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: grad,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(widget.height / 2),
-        boxShadow: _disabled || !widget.glow
-            ? null
-            : [
-                BoxShadow(
-                  color: grad.first.withOpacity(glowA),
-                  blurRadius: isDark ? 24 : 16,
-                  offset: const Offset(0, 6),
-                ),
-                BoxShadow(
-                  color: grad.last.withOpacity(glowB),
-                  blurRadius: isDark ? 40 : 22,
-                  offset: const Offset(0, 10),
+        color: _disabled
+            ? base.withOpacity(0.3)
+            : base,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: widget.loading
+          ? const SizedBox(
+              width: 22,
+              height: 22,
+              child: CircularProgressIndicator(
+                strokeWidth: 2.4,
+                valueColor:
+                    AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            )
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (widget.icon != null) ...[
+                  Icon(widget.icon, color: Colors.white, size: 18),
+                  const SizedBox(width: 8),
+                ],
+                Text(
+                  widget.label,
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                    letterSpacing: 0.1,
+                  ),
                 ),
               ],
-      ),
-      child: Stack(
-        children: [
-          // Inner highlight (top gloss)
-          Positioned(
-            top: 0,
-            left: 12,
-            right: 12,
-            child: Container(
-              height: widget.height / 2.2,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.white.withOpacity(0.25),
-                    Colors.white.withOpacity(0.0),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                borderRadius:
-                    BorderRadius.vertical(top: Radius.circular(widget.height / 2)),
-              ),
             ),
-          ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: _disabled
-                  ? null
-                  : () {
-                      HapticFeedback.lightImpact();
-                      widget.onTap?.call();
-                    },
-              onTapDown: _disabled ? null : (_) => _ctrl.forward(),
-              onTapUp: _disabled ? null : (_) => _ctrl.reverse(),
-              onTapCancel: _ctrl.reverse,
-              borderRadius: BorderRadius.circular(widget.height / 2),
-              splashColor: Colors.white.withOpacity(0.15),
-              highlightColor: Colors.white.withOpacity(0.08),
-              child: Container(
-                alignment: Alignment.center,
-                height: widget.height,
-                child: widget.loading
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.5,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (widget.icon != null) ...[
-                            Icon(widget.icon, color: Colors.white, size: 20),
-                            const SizedBox(width: 10),
-                          ],
-                          Text(
-                            widget.label,
-                            style: GoogleFonts.poppins(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                              letterSpacing: 0.3,
-                            ),
-                          ),
-                        ],
-                      ),
-              ),
-            ),
-          ),
-        ],
+    );
+
+    body = Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: _disabled
+            ? null
+            : () {
+                HapticFeedback.selectionClick();
+                widget.onTap?.call();
+              },
+        onTapDown: _disabled ? null : (_) => _ctrl.forward(),
+        onTapUp: _disabled ? null : (_) => _ctrl.reverse(),
+        onTapCancel: _ctrl.reverse,
+        splashColor: Colors.white.withOpacity(0.08),
+        highlightColor: Colors.white.withOpacity(0.05),
+        child: body,
       ),
     );
 
-    body = AnimatedOpacity(
-      duration: const Duration(milliseconds: 200),
-      opacity: _disabled ? 0.55 : 1.0,
-      child: ScaleTransition(scale: _scale, child: body),
-    );
-
+    body = ScaleTransition(scale: _scale, child: body);
     return widget.expand ? SizedBox(width: double.infinity, child: body) : body;
   }
 }

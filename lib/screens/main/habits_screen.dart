@@ -61,7 +61,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
         ),
         title: Text(
           'Odatni o\'chirish?',
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
             color: AppColors.txt,
             fontWeight: FontWeight.w700,
           ),
@@ -146,7 +146,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                         blendMode: BlendMode.srcIn,
                         child: Text(
                           'Kundalik odatlar',
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -207,7 +207,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
             const SizedBox(height: 18),
             Text(
               'Hali odat yo\'q',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -299,7 +299,7 @@ class _HabitCard extends StatelessWidget {
                   height: 44,
                   decoration: BoxDecoration(
                     gradient: done
-                        ? const LinearGradient(
+                        ? LinearGradient(
                             colors: AppColors.gradSuccess)
                         : null,
                     color: done
@@ -337,7 +337,7 @@ class _HabitCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             '$streak kun',
-                            style: GoogleFonts.spaceGrotesk(
+                            style: GoogleFonts.poppins(
                               color: AppColors.sub,
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -354,7 +354,7 @@ class _HabitCard extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     gradient: done
-                        ? const LinearGradient(
+                        ? LinearGradient(
                             colors: AppColors.gradSuccess)
                         : null,
                     color: done
@@ -437,7 +437,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
           const SizedBox(height: 18),
           Text(
             'Yangi odat',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: AppColors.txt,
               fontSize: 20,
               fontWeight: FontWeight.w700,

@@ -98,7 +98,7 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               maxLength: 1,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 22,
                 fontWeight: FontWeight.w800,

@@ -1,21 +1,24 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 
-/// Frosted glass card with inner glow border and optional gradient stroke.
-/// The signature surface of Nebula design system.
+/// Container with a flat surface color and a thin border.
+///
+/// The original implementation layered a backdrop-filter blur, a gradient
+/// stroke and outer glow shadows on every card. That gave the app the
+/// AI-generated "premium" look the user wanted to drop. The new card is
+/// the same shape and same API but flat.
 class GlassCard extends StatefulWidget {
   final Widget child;
   final EdgeInsetsGeometry? padding;
   final EdgeInsetsGeometry? margin;
   final double? borderRadius;
   final VoidCallback? onTap;
-  final List<Color>? glowColors;
-  final double glowIntensity;
-  final bool gradientBorder;
-  final double blurStrength;
+  final List<Color>? glowColors;     // back-compat — ignored
+  final double glowIntensity;        // back-compat — ignored
+  final bool gradientBorder;         // back-compat — ignored
+  final double blurStrength;         // back-compat — ignored
   final Color? tint;
 
   const GlassCard({
@@ -26,9 +29,9 @@ class GlassCard extends StatefulWidget {
     this.borderRadius,
     this.onTap,
     this.glowColors,
-    this.glowIntensity = 0.25,
-    this.gradientBorder = true,
-    this.blurStrength = 16,
+    this.glowIntensity = 0,
+    this.gradientBorder = false,
+    this.blurStrength = 0,
     this.tint,
   });
 
@@ -46,9 +49,9 @@ class _GlassCardState extends State<GlassCard>
     super.initState();
     _ctrl = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 140),
+      duration: const Duration(milliseconds: 120),
     );
-    _scale = Tween<double>(begin: 1.0, end: 0.98).animate(
+    _scale = Tween<double>(begin: 1.0, end: 0.985).animate(
       CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
     );
   }
@@ -61,102 +64,28 @@ class _GlassCardState extends State<GlassCard>
 
   @override
   Widget build(BuildContext context) {
-    final radius = widget.borderRadius ?? 20;
-    final glowColors = widget.glowColors ??
-        [AppColors.primary, AppColors.secondary];
+    final radius = widget.borderRadius ?? 16;
+    final dark = AppColors.isDark;
+    final bg = widget.tint != null
+        ? widget.tint!.withOpacity(dark ? 0.10 : 0.06)
+        : AppColors.surface;
+    final borderColor = widget.tint != null
+        ? widget.tint!.withOpacity(dark ? 0.25 : 0.15)
+        : AppColors.border;
 
-    Widget card = ClipRRect(
-      borderRadius: BorderRadius.circular(radius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(
-          sigmaX: widget.blurStrength,
-          sigmaY: widget.blurStrength,
-        ),
-        child: Container(
-          padding: widget.padding ?? const EdgeInsets.all(D.sp16),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: widget.tint != null
-                  ? [
-                      widget.tint!.withOpacity(0.18),
-                      widget.tint!.withOpacity(0.08),
-                    ]
-                  : [
-                      Colors.white.withOpacity(AppColors.isDark ? 0.06 : 0.5),
-                      Colors.white.withOpacity(AppColors.isDark ? 0.02 : 0.3),
-                    ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(radius),
-          ),
-          child: widget.child,
-        ),
-      ),
-    );
-
-    if (widget.gradientBorder) {
-      final borderA = AppColors.isDark ? 0.5 : 0.25;
-      final borderB = AppColors.isDark ? 0.2 : 0.10;
-      card = Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(radius),
-          gradient: LinearGradient(
-            colors: [
-              glowColors.first.withOpacity(borderA),
-              glowColors.last.withOpacity(borderB),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        padding: const EdgeInsets.all(1.2),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(radius - 1.2),
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColors.isDark
-                  ? AppColors.bg.withOpacity(0.5)
-                  : AppColors.surface,
-              borderRadius: BorderRadius.circular(radius - 1.2),
-            ),
-            child: card,
-          ),
-        ),
-      );
-    }
-
-    // Glow shadow (softer in light mode to avoid border bleed)
-    final glowScale = AppColors.isDark ? 1.0 : 0.45;
-    card = Container(
+    Widget card = Container(
+      padding: widget.padding ?? const EdgeInsets.all(D.sp16),
       decoration: BoxDecoration(
+        color: bg,
         borderRadius: BorderRadius.circular(radius),
-        boxShadow: AppColors.isDark
-            ? [
-                BoxShadow(
-                  color: glowColors.first
-                      .withOpacity(widget.glowIntensity * 0.5 * glowScale),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
-                ),
-                BoxShadow(
-                  color: glowColors.last
-                      .withOpacity(widget.glowIntensity * 0.3 * glowScale),
-                  blurRadius: 40,
-                  offset: const Offset(0, 16),
-                ),
-              ]
-            : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 18,
-                  offset: const Offset(0, 6),
-                ),
-              ],
+        border: Border.all(color: borderColor, width: 1),
       ),
-      margin: widget.margin,
-      child: card,
+      child: widget.child,
     );
+
+    if (widget.margin != null) {
+      card = Padding(padding: widget.margin!, child: card);
+    }
 
     if (widget.onTap != null) {
       card = GestureDetector(
@@ -164,7 +93,7 @@ class _GlassCardState extends State<GlassCard>
         onTapUp: (_) => _ctrl.reverse(),
         onTapCancel: () => _ctrl.reverse(),
         onTap: () {
-          HapticFeedback.lightImpact();
+          HapticFeedback.selectionClick();
           widget.onTap?.call();
         },
         child: ScaleTransition(scale: _scale, child: card),

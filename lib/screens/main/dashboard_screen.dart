@@ -416,7 +416,7 @@ class _HeaderRow extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 name.isEmpty ? 'User' : name,
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
@@ -565,7 +565,7 @@ class _HeaderRow extends StatelessWidget {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 4),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
+                              gradient: LinearGradient(
                                   colors: AppColors.gradWarning),
                               borderRadius: BorderRadius.circular(8),
                               boxShadow: [
@@ -706,7 +706,7 @@ class _HeroXPRing extends StatelessWidget {
               children: [
                 Text(
                   '$completedToday',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 38,
                     fontWeight: FontWeight.w700,
@@ -750,7 +750,7 @@ class _HeroXPRing extends StatelessWidget {
                   blendMode: BlendMode.srcIn,
                   child: Text(
                     '${(dailyProgress * 100).toInt()}%',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 42,
                       fontWeight: FontWeight.w700,
@@ -913,7 +913,7 @@ class _StatChip extends StatelessWidget {
                   value,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
@@ -1046,7 +1046,7 @@ class _StreakCustomState extends State<_StreakCustom>
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
+                    gradient: LinearGradient(
                       colors: AppColors.gradFire,
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -1095,13 +1095,13 @@ class _StreakCustomState extends State<_StreakCustom>
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             ShaderMask(
-              shaderCallback: (b) => const LinearGradient(
+              shaderCallback: (b) => LinearGradient(
                 colors: AppColors.gradFire,
               ).createShader(b),
               blendMode: BlendMode.srcIn,
               child: Text(
                 '${widget.streak}',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   fontSize: 54,
                   fontWeight: FontWeight.w700,
                   height: 1,
@@ -1177,7 +1177,7 @@ class _SectionBanner extends StatelessWidget {
         const SizedBox(width: 12),
         Text(
           title,
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
             color: AppColors.txt,
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -1361,7 +1361,7 @@ class _EmptyStateState extends State<_EmptyState>
             const SizedBox(height: 20),
             Text(
               title,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -1490,7 +1490,7 @@ class _TaskToggle extends StatelessWidget {
                 ),
                 child: Text(
                   '$count',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: active ? Colors.white : AppColors.sub,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
@@ -1549,7 +1549,7 @@ class _SmartPlanShortcut extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Aqlli reja',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.txt,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -1628,7 +1628,7 @@ class _MitChip extends StatelessWidget {
                       active
                           ? 'MIT rejim: eng muhim 3 vazifa'
                           : 'MIT rejim — faqat 3 vazifaga fokuslaning',
-                      style: GoogleFonts.spaceGrotesk(
+                      style: GoogleFonts.poppins(
                         color: AppColors.txt,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,

@@ -111,7 +111,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                         blendMode: BlendMode.srcIn,
                         child: Text(
                           'Flashcards',
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -182,7 +182,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
             const SizedBox(height: 18),
             Text(
               'Hali flashcards yo\'q',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -275,7 +275,7 @@ class _DeckCard extends StatelessWidget {
                     children: [
                       Text(
                         deck.name,
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.txt,
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -304,13 +304,13 @@ class _DeckCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                gradient: const LinearGradient(
+                                gradient: LinearGradient(
                                     colors: AppColors.gradFire),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: Text(
                                 '$dueCards ta takror',
-                                style: GoogleFonts.spaceGrotesk(
+                                style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
@@ -386,7 +386,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
           const SizedBox(height: 18),
           Text(
             'Yangi deck',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: AppColors.txt,
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -567,7 +567,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                       Expanded(
                         child: Text(
                           widget.deck.name,
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: AppColors.txt,
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -605,7 +605,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                 const SizedBox(height: 14),
                                 Text(
                                   'Hali karta yo\'q',
-                                  style: GoogleFonts.spaceGrotesk(
+                                  style: GoogleFonts.poppins(
                                     color: AppColors.txt,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
@@ -763,7 +763,7 @@ class _AddCardSheetState extends State<_AddCardSheet> {
           const SizedBox(height: 18),
           Text(
             'Yangi karta',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: AppColors.txt,
               fontSize: 20,
               fontWeight: FontWeight.w700,
@@ -890,7 +890,7 @@ class _StudyScreenState extends State<StudyScreen>
                       const Spacer(),
                       Text(
                         '${_idx + 1} / ${_queue.length}',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -974,7 +974,7 @@ class _StudyScreenState extends State<StudyScreen>
                                             : card.front,
                                         textAlign: TextAlign.center,
                                         style:
-                                            GoogleFonts.spaceGrotesk(
+                                            GoogleFonts.poppins(
                                           color: Colors.white,
                                           fontSize: 22,
                                           fontWeight: FontWeight.w700,

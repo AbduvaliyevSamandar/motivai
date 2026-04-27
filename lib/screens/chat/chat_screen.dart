@@ -181,7 +181,7 @@ class _ChatState extends State<ChatScreen> {
                           blendMode: BlendMode.srcIn,
                           child: Text(
                             'MotivAI',
-                            style: GoogleFonts.spaceGrotesk(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
@@ -427,7 +427,7 @@ class _ChatState extends State<ChatScreen> {
         ),
         title: Text(
           S.get('clear_chat'),
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
             color: AppColors.txt,
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -558,7 +558,7 @@ class _EmptyChat extends StatelessWidget {
             blendMode: BlendMode.srcIn,
             child: Text(
               'Salom! Men MotivAI',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -943,7 +943,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     children: [
                       Text(
                         'AI tavsiya etgan vazifalar',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.txt,
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
@@ -972,7 +972,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                   ),
                   child: Text(
                     '${widget.tasks.length} ta',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.primary,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -1036,7 +1036,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     const SizedBox(width: 6),
                     Text(
                       '$_totalXP XP',
-                      style: GoogleFonts.spaceGrotesk(
+                      style: GoogleFonts.poppins(
                         color: AppColors.accent,
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -1057,7 +1057,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     const Spacer(),
                     Text(
                       '$_selectedCount / ${widget.tasks.length}',
-                      style: GoogleFonts.spaceGrotesk(
+                      style: GoogleFonts.poppins(
                         color: AppColors.txt,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,

@@ -298,7 +298,7 @@ class _SlideView extends StatelessWidget {
           Text(
             slide.title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.w700,
@@ -313,7 +313,7 @@ class _SlideView extends StatelessWidget {
             child: Text(
               slide.highlight,
               textAlign: TextAlign.center,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: slide.highlight.length > 6 ? 52 : 84,
                 fontWeight: FontWeight.w800,

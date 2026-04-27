@@ -154,7 +154,7 @@ class _ProfileState extends State<ProfileScreen> {
                           blendMode: BlendMode.srcIn,
                           child: Text(
                             auth.name.isEmpty ? 'User' : auth.name,
-                            style: GoogleFonts.spaceGrotesk(
+                            style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
@@ -210,13 +210,13 @@ class _ProfileState extends State<ProfileScreen> {
                                 ),
                               ),
                               ShaderMask(
-                                shaderCallback: (b) => const LinearGradient(
+                                shaderCallback: (b) => LinearGradient(
                                         colors: AppColors.gradGold)
                                     .createShader(b),
                                 blendMode: BlendMode.srcIn,
                                 child: Text(
                                   '${auth.points} XP',
-                                  style: GoogleFonts.spaceGrotesk(
+                                  style: GoogleFonts.poppins(
                                     color: Colors.white,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
@@ -624,7 +624,7 @@ class _ProfileState extends State<ProfileScreen> {
                           const SizedBox(height: 10),
                           Text(
                             'MotivAI v2.2.0',
-                            style: GoogleFonts.spaceGrotesk(
+                            style: GoogleFonts.poppins(
                               color: AppColors.txt,
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
@@ -721,7 +721,7 @@ class _ProfileState extends State<ProfileScreen> {
         blendMode: BlendMode.srcIn,
         child: Text(
           letter,
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
             color: Colors.white,
             fontSize: 42,
             fontWeight: FontWeight.w700,
@@ -878,7 +878,7 @@ class _ProfileState extends State<ProfileScreen> {
             const SizedBox(height: 24),
             Text(
               S.get('change_pass'),
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -1024,7 +1024,7 @@ class _ProfileState extends State<ProfileScreen> {
                 blendMode: BlendMode.srcIn,
                 child: Text(
                   'Rang mavzusi',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -1118,7 +1118,7 @@ class _ProfileState extends State<ProfileScreen> {
                             children: [
                               Text(
                                 p.name,
-                                style: GoogleFonts.spaceGrotesk(
+                                style: GoogleFonts.poppins(
                                   color: AppColors.txt,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
@@ -1193,7 +1193,7 @@ class _ProfileState extends State<ProfileScreen> {
               const SizedBox(height: 18),
               Text(
                 'Titrash kuchi',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 20,
                   fontWeight: FontWeight.w700,
@@ -1251,7 +1251,7 @@ class _ProfileState extends State<ProfileScreen> {
                                     CrossAxisAlignment.start,
                                 children: [
                                   Text(info.name,
-                                      style: GoogleFonts.spaceGrotesk(
+                                      style: GoogleFonts.poppins(
                                         color: AppColors.txt,
                                         fontSize: 14,
                                         fontWeight: active
@@ -1318,7 +1318,7 @@ class _ProfileState extends State<ProfileScreen> {
                 blendMode: BlendMode.srcIn,
                 child: Text(
                   'Tovush pachkasi',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -1382,7 +1382,7 @@ class _ProfileState extends State<ProfileScreen> {
                                 children: [
                                   Text(
                                     info.name,
-                                    style: GoogleFonts.spaceGrotesk(
+                                    style: GoogleFonts.poppins(
                                       color: AppColors.txt,
                                       fontSize: 14,
                                       fontWeight: active
@@ -1428,7 +1428,7 @@ class _ProfileState extends State<ProfileScreen> {
         ),
         title: Text(
           S.get('select_lang'),
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
               color: AppColors.txt,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3),
@@ -1516,7 +1516,7 @@ class _ProfileState extends State<ProfileScreen> {
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(S.get('clear_cache'),
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
                 color: AppColors.txt, fontWeight: FontWeight.w700)),
         content: Text(
           S.get('clear_cache'),
@@ -1610,7 +1610,7 @@ class _ProfileState extends State<ProfileScreen> {
                 blendMode: BlendMode.srcIn,
                 child: Text(
                   'Template import',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -1817,7 +1817,7 @@ class _ProfileState extends State<ProfileScreen> {
                 blendMode: BlendMode.srcIn,
                 child: Text(
                   'MotivAI',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     fontSize: 28,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
@@ -1827,7 +1827,7 @@ class _ProfileState extends State<ProfileScreen> {
               ),
               Text(
                 'v2.2.0',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.sub,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -1936,7 +1936,7 @@ class _ProfileState extends State<ProfileScreen> {
               blendMode: BlendMode.srcIn,
               child: Text(
                 "Qo'llanma",
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
@@ -2031,7 +2031,7 @@ class _ProfileState extends State<ProfileScreen> {
             Expanded(
               child: Text(
                 'Akkauntni o\'chirish',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.danger,
                   fontWeight: FontWeight.w800,
                 ),
@@ -2104,7 +2104,7 @@ class _ProfileState extends State<ProfileScreen> {
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(S.get('logout'),
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
                 color: AppColors.txt, fontWeight: FontWeight.w700)),
         content: Text(
           S.get('logout_confirm'),
@@ -2164,7 +2164,7 @@ class _ProfileState extends State<ProfileScreen> {
             const SizedBox(height: 20),
             Text(
               'Eslatma vaqti',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,

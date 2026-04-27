@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen>
                           blendMode: BlendMode.srcIn,
                           child: Text(
                             'Xush kelibsiz',
-                            style: GoogleFonts.spaceGrotesk(
+                            style: GoogleFonts.poppins(
                               fontSize: 32,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -1,
@@ -609,7 +609,7 @@ class _AuthSheet extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             title,
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: AppColors.txt,
               fontSize: 22,
               fontWeight: FontWeight.w700,

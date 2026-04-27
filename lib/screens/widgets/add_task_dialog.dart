@@ -210,7 +210,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                     blendMode: BlendMode.srcIn,
                     child: Text(
                       _isEdit ? 'Vazifani tahrirlash' : S.get('add_task'),
-                      style: GoogleFonts.spaceGrotesk(
+                      style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.w700,

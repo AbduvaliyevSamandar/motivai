@@ -162,7 +162,7 @@ class _SplashScreenState extends State<SplashScreen>
                       blendMode: BlendMode.srcIn,
                       child: Text(
                         'MotivAI',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           fontSize: 56,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -2,
@@ -264,7 +264,7 @@ class _LoadingBar extends StatelessWidget {
             final pct = (ctrl.value * 100).floor();
             return Text(
               '$pct%',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.white.withOpacity(0.7),

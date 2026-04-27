@@ -85,7 +85,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   const SizedBox(height: 18),
                   Text(
                     'Yangi chellenj',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
@@ -212,7 +212,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                     style: GoogleFonts.poppins(
                         color: AppColors.sub, fontSize: 11)),
                 Text('$value',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
@@ -256,7 +256,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           side: BorderSide(color: AppColors.border),
         ),
         title: Text('Bugungi ball',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: AppColors.txt,
               fontWeight: FontWeight.w700,
             )),
@@ -337,7 +337,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           ).createShader(b),
           blendMode: BlendMode.srcIn,
           child: Text('Chellenjlar',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: Colors.white,
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
@@ -381,7 +381,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             Text('\u{1F3C6}', style: const TextStyle(fontSize: 56)),
             const SizedBox(height: 14),
             Text('Chellenj yo\'q',
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: AppColors.txt,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -438,7 +438,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(c.title,
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -447,7 +447,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               ),
               if (c.isActive)
                 Text('${c.daysLeft} kun',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.accent,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
@@ -540,7 +540,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         ),
         const SizedBox(width: 8),
         Text('$value/$goal',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: color,
               fontSize: 11,
               fontWeight: FontWeight.w700,

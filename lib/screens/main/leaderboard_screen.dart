@@ -235,7 +235,7 @@ class _MyRankHeader extends StatelessWidget {
                 child: Center(
                   child: Text(
                     initials.toUpperCase(),
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -251,7 +251,7 @@ class _MyRankHeader extends StatelessWidget {
                 children: [
                   Text(
                     auth.name.isEmpty ? 'User' : auth.name,
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -288,7 +288,7 @@ class _MyRankHeader extends StatelessWidget {
                   blendMode: BlendMode.srcIn,
                   child: Text(
                     '#$r',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: Colors.white,
                       fontSize: 36,
                       fontWeight: FontWeight.w800,
@@ -355,7 +355,7 @@ class _LbTab extends StatelessWidget {
                 const SizedBox(height: 18),
                 Text(
                   S.get('empty_board'),
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -528,7 +528,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
                 child: Center(
                   child: Text(
                     initials,
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 22,
                       fontWeight: FontWeight.w700,
@@ -552,7 +552,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
             ),
             Text(
               '${e.points}',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.accent,
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
@@ -581,7 +581,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
               child: Center(
                 child: Text(
                   '#${widget.rank}',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 30,
                     fontWeight: FontWeight.w800,
@@ -645,7 +645,7 @@ class _LbTile extends StatelessWidget {
           child: Center(
             child: Text(
               '#${entry.rank}',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 fontSize: 14,
                 fontWeight: FontWeight.w700,
                 color: isMe ? AppColors.primary : AppColors.sub,
@@ -674,7 +674,7 @@ class _LbTile extends StatelessWidget {
               entry.fullName.isNotEmpty
                   ? entry.fullName[0].toUpperCase()
                   : 'U',
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: isMe ? Colors.white : AppColors.primary,
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
@@ -740,13 +740,13 @@ class _LbTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             ShaderMask(
-              shaderCallback: (b) => const LinearGradient(
+              shaderCallback: (b) => LinearGradient(
                       colors: AppColors.gradGold)
                   .createShader(b),
               blendMode: BlendMode.srcIn,
               child: Text(
                 _fmt(entry.points),
-                style: GoogleFonts.spaceGrotesk(
+                style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 17,
                   fontWeight: FontWeight.w700,

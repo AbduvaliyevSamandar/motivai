@@ -61,7 +61,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                         blendMode: BlendMode.srcIn,
                         child: Text(
                           'Yutuqlar',
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 22,
                             fontWeight: FontWeight.w700,
@@ -80,7 +80,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                         ),
                         child: Text(
                           '$unlockedCount / $total',
-                          style: GoogleFonts.spaceGrotesk(
+                          style: GoogleFonts.poppins(
                             color: Colors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -195,7 +195,7 @@ class _AchCard extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: unlocked ? AppColors.txt : AppColors.sub,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
@@ -282,7 +282,7 @@ class _AchDialog extends StatelessWidget {
             Text(
               def.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.spaceGrotesk(
+              style: GoogleFonts.poppins(
                 color: AppColors.txt,
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
@@ -336,7 +336,7 @@ class _AchDialog extends StatelessWidget {
                       const SizedBox(width: 2),
                       Text(
                         '+${def.bonusXP}',
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.accent,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,

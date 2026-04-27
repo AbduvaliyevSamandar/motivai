@@ -121,7 +121,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                 children: [
                   Text(
                     '\u201C${q.text}\u201D',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,

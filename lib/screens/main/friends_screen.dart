@@ -89,7 +89,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 const SizedBox(height: 18),
                 Text(
                   'Do\'st qo\'shish',
-                  style: GoogleFonts.spaceGrotesk(
+                  style: GoogleFonts.poppins(
                     color: AppColors.txt,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
@@ -198,7 +198,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
         title: Text(
           '${f.emoji} ${f.name} ga sovg\'a',
-          style: GoogleFonts.spaceGrotesk(
+          style: GoogleFonts.poppins(
               color: AppColors.txt, fontWeight: FontWeight.w700),
         ),
         content: Column(
@@ -298,7 +298,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
           blendMode: BlendMode.srcIn,
           child: Text(
             'Do\'stlar',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.w700,
@@ -377,7 +377,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     children: [
                       Text(
                         _myCode,
-                        style: GoogleFonts.spaceGrotesk(
+                        style: GoogleFonts.poppins(
                           color: AppColors.txt,
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
@@ -430,7 +430,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     color: Colors.white, size: 16),
                 const SizedBox(width: 6),
                 Text('$_myCoins tanga',
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 12,
                         fontWeight: FontWeight.w700)),
@@ -456,7 +456,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
           const SizedBox(height: 12),
           Text(
             'Hali do\'stlar yo\'q',
-            style: GoogleFonts.spaceGrotesk(
+            style: GoogleFonts.poppins(
               color: AppColors.txt,
               fontSize: 16,
               fontWeight: FontWeight.w700,
@@ -508,7 +508,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(f.name,
-                    style: GoogleFonts.spaceGrotesk(
+                    style: GoogleFonts.poppins(
                       color: AppColors.txt,
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
