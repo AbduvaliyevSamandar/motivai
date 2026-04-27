@@ -28,6 +28,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   double _strength = 0;
   String _strengthLabel = '';
   Color _strengthColor = AppColors.border;
+  String? _formError;
 
   static const _subjects = [
     ('Matematika', Icons.calculate_rounded),
@@ -89,6 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_form.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
     HapticFeedback.lightImpact();
+    setState(() => _formError = null);
     final auth = context.read<AuthProvider>();
     final email = _email.text.trim();
 
@@ -104,7 +106,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final code = await showOtpSheet(
       context,
       email: email,
-      onResend: () => auth.sendOtp(email),
       title: 'Tasdiq kodi',
     );
     if (code == null || code.length != 6 || !mounted) return;
@@ -119,28 +120,38 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!ok && mounted) _showError(auth.error);
   }
 
-  void _showError(String? msg) {
+  void _showError(String? raw) {
     if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(children: [
-          const Icon(Icons.error_outline,
-              color: Colors.white, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-              child: Text(msg ?? S.get('error'),
-                  style: GoogleFonts.poppins())),
-        ]),
-        backgroundColor: AppColors.danger,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14)),
-      ),
-    );
+    setState(() => _formError = _humanize(raw));
+  }
+
+  String _humanize(String? raw) {
+    if (raw == null || raw.isEmpty) {
+      return 'Xato yuz berdi. Qayta urinib ko\'ring.';
+    }
+    var msg = raw;
+    if (msg.startsWith('Exception:')) msg = msg.substring(10).trim();
+    if (msg.contains('Tarmoq xatosi')) {
+      return 'Internet aloqasini tekshiring va qayta urinib ko\'ring';
+    }
+    if (msg.contains('Email already registered')) {
+      return 'Bu email allaqachon ro\'yxatdan o\'tgan';
+    }
+    if (msg.contains('Invalid or expired code')) {
+      return 'Kod noto\'g\'ri yoki muddati o\'tgan. Yangi kod oling.';
+    }
+    if (msg.contains('Vaqtinchalik') || msg.contains('fake email')) {
+      return 'Bu email vaqtinchalik/soxta. Real email kiriting.';
+    }
+    if (msg.contains('Too many requests')) {
+      return 'Juda ko\'p urinish — biroz kuting va qayta urining';
+    }
+    return msg;
   }
 
   Future<void> _googleSignIn() async {
     HapticFeedback.lightImpact();
+    setState(() => _formError = null);
     final auth = context.read<AuthProvider>();
     final idToken = await GoogleAuth.signIn();
     if (idToken == null) return;
@@ -429,7 +440,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               );
                             }).toList(),
                           ),
-                          const SizedBox(height: 36),
+                          const SizedBox(height: 24),
+                          if (_formError != null) ...[
+                            _RegErrorBanner(message: _formError!),
+                            const SizedBox(height: 12),
+                          ],
                           Consumer<AuthProvider>(
                             builder: (_, auth, __) =>
                                 NebulaButton(
@@ -615,6 +630,43 @@ class _GoogleButton extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+
+class _RegErrorBanner extends StatelessWidget {
+  final String message;
+  const _RegErrorBanner({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.danger.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.danger.withOpacity(0.5)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.error_outline_rounded,
+              color: AppColors.danger, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.poppins(
+                color: AppColors.txt,
+                fontSize: 13,
+                height: 1.5,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

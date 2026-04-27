@@ -23,6 +23,7 @@ class _LoginScreenState extends State<LoginScreen>
   final _pass = TextEditingController();
   final _form = GlobalKey<FormState>();
   bool _obscure = true;
+  String? _formError;
   late final AnimationController _animCtrl;
   late final Animation<double> _fade;
   late final Animation<Offset> _slideUp;
@@ -54,33 +55,33 @@ class _LoginScreenState extends State<LoginScreen>
     if (!_form.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
     HapticFeedback.lightImpact();
+    setState(() => _formError = null);
     final auth = context.read<AuthProvider>();
     final ok = await auth.login(_email.text.trim(), _pass.text);
     if (!ok && mounted) {
-      _errorToast(auth.error ?? S.get('error'));
+      setState(() => _formError = _humanize(auth.error));
     }
   }
 
-  void _errorToast(String msg) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.error_outline,
-                color: Colors.white, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(msg, style: GoogleFonts.poppins()),
-            ),
-          ],
-        ),
-        backgroundColor: AppColors.danger,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14)),
-        margin: const EdgeInsets.all(16),
-      ),
-    );
+  /// Strip the leading "Exception: " or noise so the user sees a clean
+  /// one-liner instead of stack-trace fragments.
+  String _humanize(String? raw) {
+    if (raw == null || raw.isEmpty) return 'Xato yuz berdi. Qayta urinib ko\'ring.';
+    var msg = raw;
+    if (msg.startsWith('Exception:')) msg = msg.substring(10).trim();
+    if (msg.contains('Tarmoq xatosi')) {
+      return 'Internet aloqasini tekshiring va qayta urinib ko\'ring';
+    }
+    if (msg.contains('Invalid email or password')) {
+      return 'Email yoki parol noto\'g\'ri';
+    }
+    if (msg.contains('Email tasdiqlanmagan')) {
+      return 'Bu akkaunt tasdiqlanmagan. "Parolni unutdingizmi?" tugmasini bosing';
+    }
+    if (msg.contains('Account deactivated')) {
+      return 'Hisob bloklangan';
+    }
+    return msg;
   }
 
   @override
@@ -227,6 +228,11 @@ class _LoginScreenState extends State<LoginScreen>
                         ),
 
                         const SizedBox(height: D.sp16),
+
+                        if (_formError != null) ...[
+                          _ErrorBanner(message: _formError!),
+                          const SizedBox(height: D.sp12),
+                        ],
 
                         Consumer<AuthProvider>(
                           builder: (_, auth, __) => NebulaButton(
@@ -625,6 +631,43 @@ class _AuthSheet extends StatelessWidget {
             onTap: onAction,
           ),
           const SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _ErrorBanner extends StatelessWidget {
+  final String message;
+  const _ErrorBanner({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding:
+          const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: AppColors.danger.withOpacity(0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.danger.withOpacity(0.5)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.error_outline_rounded,
+              color: AppColors.danger, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: GoogleFonts.poppins(
+                color: AppColors.txt,
+                fontSize: 13,
+                height: 1.5,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
         ],
       ),
     );
