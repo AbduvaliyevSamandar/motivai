@@ -1976,125 +1976,81 @@ class _ProfileState extends State<ProfileScreen> {
   }
 
   void _confirmDeleteAccount(AuthProvider auth) {
-    final confirmCtrl = TextEditingController();
     showDialog(
       context: context,
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setS) => AlertDialog(
-          backgroundColor: AppColors.card,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(22),
-            side: BorderSide(color: AppColors.danger.withOpacity(0.4)),
-          ),
-          title: Row(
-            children: [
-              Icon(Icons.warning_amber_rounded,
-                  color: AppColors.danger, size: 24),
-              const SizedBox(width: 8),
-              Text(
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.card,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(22),
+          side: BorderSide(color: AppColors.danger.withOpacity(0.4)),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded,
+                color: AppColors.danger, size: 24),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
                 'Akkauntni o\'chirish',
                 style: GoogleFonts.spaceGrotesk(
                   color: AppColors.danger,
                   fontWeight: FontWeight.w800,
                 ),
               ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Bu amal **qaytarib bo\'lmaydi**. Hamma vazifalar, '
-                'XP, tangalar, do\'stlar va chat tarix butunlay o\'chiriladi.\n\n'
-                'Tasdiqlash uchun pastga **O\'CHIRISH** deb yozing:',
-                style: GoogleFonts.poppins(
-                  color: AppColors.sub,
-                  fontSize: 13,
-                  height: 1.5,
-                ),
-              ),
-              const SizedBox(height: 14),
-              TextField(
-                controller: confirmCtrl,
-                onChanged: (_) => setS(() {}),
-                style: GoogleFonts.spaceGrotesk(
-                  color: AppColors.txt,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1,
-                ),
-                decoration: InputDecoration(
-                  hintText: "O'CHIRISH",
-                  hintStyle: GoogleFonts.spaceGrotesk(
-                    color: AppColors.hint,
-                    letterSpacing: 1,
-                  ),
-                  filled: true,
-                  fillColor: AppColors.bg,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: AppColors.border),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: AppColors.border),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide:
-                        BorderSide(color: AppColors.danger, width: 1.5),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text('Bekor',
-                  style: GoogleFonts.poppins(color: AppColors.sub)),
-            ),
-            ElevatedButton(
-              onPressed: confirmCtrl.text.trim().toUpperCase() ==
-                      'O\'CHIRISH'
-                  ? () async {
-                      Navigator.pop(ctx);
-                      final ok = await auth.deleteAccount();
-                      if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor:
-                              ok ? AppColors.success : AppColors.danger,
-                          content: Text(
-                            ok
-                                ? 'Akkaunt o\'chirildi'
-                                : 'Xato: ${auth.error ?? 'qayta urining'}',
-                            style: GoogleFonts.poppins(),
-                          ),
-                        ),
-                      );
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.danger,
-                disabledBackgroundColor:
-                    AppColors.danger.withOpacity(0.3),
-                minimumSize: const Size(80, 40),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: Text(
-                "O'chirish",
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
             ),
           ],
         ),
+        content: Text(
+          'Bu amal qaytarib bo\'lmaydi. Hamma vazifalar, XP, '
+          'tangalar, do\'stlar va chat tarix butunlay o\'chiriladi.',
+          style: GoogleFonts.poppins(
+            color: AppColors.sub,
+            fontSize: 13,
+            height: 1.5,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Bekor',
+                style: GoogleFonts.poppins(color: AppColors.sub)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(ctx);
+              HapticFeedback.heavyImpact();
+              final ok = await auth.deleteAccount();
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor:
+                      ok ? AppColors.success : AppColors.danger,
+                  content: Text(
+                    ok
+                        ? 'Akkaunt o\'chirildi'
+                        : 'Xato: ${auth.error ?? 'qayta urining'}',
+                    style: GoogleFonts.poppins(),
+                  ),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.danger,
+              minimumSize: const Size(100, 40),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              "O'chirish",
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
