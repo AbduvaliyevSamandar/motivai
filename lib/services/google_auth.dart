@@ -8,13 +8,23 @@ class GoogleAuth {
   static GoogleSignIn? _instance;
 
   static GoogleSignIn _signIn() {
-    _instance ??= GoogleSignIn(
-      // The clientId is required on web; Android/iOS pick it up from
-      // platform configuration files (google-services.json / Info.plist).
-      clientId: K.googleClientId.isEmpty ? null : K.googleClientId,
-      serverClientId: K.googleClientId.isEmpty ? null : K.googleClientId,
-      scopes: const ['email', 'profile', 'openid'],
-    );
+    if (_instance != null) return _instance!;
+    final id = K.googleClientId.isEmpty ? null : K.googleClientId;
+    if (kIsWeb) {
+      // Web: Google Identity Services needs the OAuth client ID.
+      _instance = GoogleSignIn(
+        clientId: id,
+        scopes: const ['email', 'profile', 'openid'],
+      );
+    } else {
+      // Android/iOS: package + SHA-1 (or bundle id) authorize the
+      // platform client; we only set serverClientId so the issued ID
+      // token's audience matches the Web client our backend verifies.
+      _instance = GoogleSignIn(
+        serverClientId: id,
+        scopes: const ['email', 'profile', 'openid'],
+      );
+    }
     return _instance!;
   }
 

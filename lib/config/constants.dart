@@ -14,9 +14,11 @@ class K {
   static const resetPass  = '/auth/reset-password';
   static const googleAuth = '/auth/google';
 
-  // Google OAuth — paste your Web client ID from Cloud Console here.
-  // Leaving it empty disables the Google button on the client.
-  static const googleClientId = '';
+  // Google OAuth — Web client ID from Cloud Console. Same value goes
+  // into the backend's GOOGLE_OAUTH_CLIENT_ID env var so it can verify
+  // the audience claim of issued ID tokens.
+  static const googleClientId =
+      '815399791454-4jme84tp3umt0l58uti61umn7esik3nk.apps.googleusercontent.com';
 
   // Plans (backend task tizimi plans orqali ishlaydi)
   static const plans        = '/plans';
