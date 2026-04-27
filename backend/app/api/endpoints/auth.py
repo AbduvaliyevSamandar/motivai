@@ -30,27 +30,15 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/register", response_model=dict)
 async def register(data: RegisterRequest):
-    try:
-        validate_email(data.email)
-    except EmailValidationError as exc:
-        raise HTTPException(status_code=400, detail=str(exc))
-
-    existing = await get_user_by_email(data.email)
-    if existing:
-        raise HTTPException(status_code=409, detail="Email already registered")
-
-    user = await create_user(data.model_dump())
-    token = create_access_token({"sub": user["_id"]})
-    
-    return {
-        "success": True,
-        "message": "Registration successful",
-        "data": {
-            "token": token,
-            "token_type": "bearer",
-            "user": await safe_user_dict(user)
-        }
-    }
+    """Legacy direct-register endpoint — DISABLED. Email accounts must
+    now go through /auth/send-otp + /auth/register-with-otp so we can
+    confirm the email belongs to the user before creating the account.
+    """
+    raise HTTPException(
+        status_code=410,
+        detail="Direct registration is disabled. Use /auth/send-otp + "
+               "/auth/register-with-otp instead.",
+    )
 
 @router.post("/login", response_model=dict)
 async def login(data: LoginRequest):
@@ -59,7 +47,16 @@ async def login(data: LoginRequest):
         raise HTTPException(status_code=401, detail="Invalid email or password")
     if not user.get("is_active"):
         raise HTTPException(status_code=403, detail="Account deactivated")
-    
+
+    # Reject accounts that never confirmed their email. The only way to
+    # mark an account verified is through OTP flow or Google sign-in.
+    if not user.get("email_verified") and user.get("auth_provider") != "google":
+        raise HTTPException(
+            status_code=403,
+            detail="Email tasdiqlanmagan. Iltimos, parolni tiklash orqali "
+                   "yangilang yoki yangi akkaunt yarating.",
+        )
+
     await update_streak_and_xp(user["_id"], xp_gained=5)
     token = create_access_token({"sub": user["_id"]})
     
@@ -208,9 +205,17 @@ async def reset_password(data: ResetPasswordRequest):
         raise HTTPException(status_code=400, detail="Invalid or expired code")
 
     db = get_db()
+    # Reset password also confirms the email (they received the code), so
+    # mark the account as verified — useful for accounts created before
+    # we required OTP verification.
     await db.users.update_one(
         {"_id": ObjectId(user["_id"])},
-        {"$set": {"hashed_password": get_password_hash(data.new_password), "updated_at": datetime.utcnow()}},
+        {"$set": {
+            "hashed_password": get_password_hash(data.new_password),
+            "email_verified": True,
+            "is_verified": True,
+            "updated_at": datetime.utcnow(),
+        }},
     )
     return {"success": True, "message": "Password reset successful"}
 

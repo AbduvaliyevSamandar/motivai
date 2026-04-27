@@ -60,5 +60,77 @@ async def create_indexes():
     except Exception as e:
         logger.warning(f"⚠️ Could not create indexes: {e}")
 
+
+async def cleanup_unverified_users() -> None:
+    """One-shot migration that purges all pre-existing demo / fake accounts.
+
+    Runs at startup. Gated by a marker document in ``migrations`` so it
+    only fires once. Strategy:
+      1. Mark every existing user as ``email_verified=False`` if the field
+         is missing — these were created before the OTP flow existed.
+      2. Delete every user that is still ``email_verified=False`` after
+         step 1, plus their plans + chat messages + progress + leaderboard
+         entries to avoid dangling references.
+
+    The user explicitly asked for a clean slate ("hammasini tozalash") so
+    we drop unverified accounts hard rather than asking them to re-verify.
+    """
+    try:
+        marker = await db.db.migrations.find_one({"name": "cleanup_unverified_v1"})
+        if marker:
+            return
+
+        # Step 1: backfill the field so the next stage sees consistent data.
+        await db.db.users.update_many(
+            {"email_verified": {"$exists": False}},
+            {"$set": {"email_verified": False, "is_verified": False}},
+        )
+
+        # Step 2: collect ids of unverified accounts (skip Google-authed).
+        cursor = db.db.users.find(
+            {
+                "$and": [
+                    {"$or": [
+                        {"email_verified": False},
+                        {"email_verified": {"$exists": False}},
+                    ]},
+                    {"$or": [
+                        {"auth_provider": {"$ne": "google"}},
+                        {"auth_provider": {"$exists": False}},
+                    ]},
+                ]
+            },
+            {"_id": 1, "email": 1},
+        )
+        ids = []
+        emails = []
+        async for u in cursor:
+            ids.append(u["_id"])
+            emails.append(u.get("email"))
+
+        if ids:
+            from bson import ObjectId
+            id_strs = [str(i) for i in ids]
+            await db.db.plans.delete_many({"user_id": {"$in": id_strs + ids}})
+            await db.db.chat_messages.delete_many({"user_id": {"$in": id_strs + ids}})
+            await db.db.progress.delete_many({"user_id": {"$in": id_strs + ids}})
+            await db.db.leaderboard.delete_many({"user_id": {"$in": id_strs + ids}})
+            await db.db.users.delete_many({"_id": {"$in": ids}})
+            logger.info(
+                "🧹 Cleanup: removed %d unverified accounts: %s",
+                len(ids),
+                ", ".join([e for e in emails if e][:10]),
+            )
+        else:
+            logger.info("🧹 Cleanup: no unverified accounts to remove")
+
+        await db.db.migrations.insert_one({
+            "name": "cleanup_unverified_v1",
+            "removed": len(ids),
+        })
+    except Exception as e:
+        logger.warning(f"⚠️ cleanup_unverified_users failed: {e}")
+
+
 def get_db():
     return db.db

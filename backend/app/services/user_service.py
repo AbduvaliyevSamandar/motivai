@@ -42,11 +42,16 @@ async def get_user_by_email(email: str) -> dict:
 async def create_user(data: dict) -> dict:
     db = get_db()
     now = datetime.utcnow()
+    avatar = data.get("avatar")
+    auth_provider = data.get("auth_provider") or "email"
+    # Email accounts are only marked verified after a successful OTP flow.
+    # Google accounts are verified by Google itself.
+    email_verified = auth_provider == "google"
     user_doc = {
         "name": data["name"],
         "email": data["email"].lower(),
         "hashed_password": get_password_hash(data["password"]),
-        "avatar": None,
+        "avatar": avatar,
         "country": data.get("country", "UZ"),
         "language": data.get("language", "uz"),
         "role": "student",
@@ -62,7 +67,10 @@ async def create_user(data: dict) -> dict:
         "ai_messages_count": 0,
         "notifications": {"push": True, "email_notif": True, "reminder_time": "09:00"},
         "fcm_token": None,
-        "is_verified": False,
+        "auth_provider": auth_provider,
+        "google_sub": data.get("google_sub"),
+        "email_verified": email_verified,
+        "is_verified": email_verified,
         "is_active": True,
         "created_at": now,
         "updated_at": now
