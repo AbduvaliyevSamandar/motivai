@@ -1882,9 +1882,18 @@ class _ProfileState extends State<ProfileScreen> {
   Future<void> _openUrl(String url) async {
     HapticFeedback.selectionClick();
     final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
-    } else if (mounted) {
+    // Don't gate on canLaunchUrl — on Android 11+ it returns false unless
+    // the queries entry is registered, even though the URL is valid.
+    bool launched = false;
+    try {
+      launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {}
+    if (!launched) {
+      try {
+        launched = await launchUrl(uri, mode: LaunchMode.platformDefault);
+      } catch (_) {}
+    }
+    if (!launched && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: AppColors.danger,
         behavior: SnackBarBehavior.floating,
