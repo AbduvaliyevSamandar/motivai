@@ -117,7 +117,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
       password: _pass.text,
       code: code,
     );
-    if (!ok && mounted) _showError(auth.error);
+    if (!mounted) return;
+    if (ok) {
+      // We're authenticated — close the register screen so the App's
+      // Consumer<AuthProvider> can swap the home to MainShell.
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } else {
+      _showError(auth.error);
+    }
   }
 
   void _showError(String? raw) {
@@ -156,7 +163,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final idToken = await GoogleAuth.signIn();
     if (idToken == null) return;
     final ok = await auth.loginWithGoogleIdToken(idToken);
-    if (!ok && mounted) _showError(auth.error);
+    if (!mounted) return;
+    if (ok) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } else {
+      _showError(auth.error);
+    }
   }
 
   @override
