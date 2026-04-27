@@ -30,3 +30,37 @@ class UpdateProfileRequest(BaseModel):
     profile: Optional[dict] = None
     notifications: Optional[dict] = None
     fcm_token: Optional[str] = None
+
+
+# ── Email OTP flows ────────────────────────────────────────
+class SendOtpRequest(BaseModel):
+    email: EmailStr
+    purpose: str = Field(default="register", pattern="^(register|reset|login)$")
+
+
+class VerifyOtpRequest(BaseModel):
+    email: EmailStr
+    purpose: str = Field(default="register", pattern="^(register|reset|login)$")
+    code: str = Field(..., min_length=6, max_length=6)
+
+
+class RegisterWithOtpRequest(BaseModel):
+    name: str = Field(..., min_length=2, max_length=50)
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+    code: str = Field(..., min_length=6, max_length=6)
+    language: str = "uz"
+    country: str = "UZ"
+
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    code: str = Field(..., min_length=6, max_length=6)
+    new_password: str = Field(..., min_length=6)
+
+
+# ── Google OAuth ───────────────────────────────────────────
+class GoogleAuthRequest(BaseModel):
+    id_token: str
+    language: str = "uz"
+    country: str = "UZ"

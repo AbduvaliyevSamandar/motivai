@@ -7,6 +7,16 @@ class K {
   static const me       = '/auth/me';
   static const logout   = '/auth/logout';
   static const profile  = '/auth/profile';
+  static const sendOtp  = '/auth/send-otp';
+  static const verifyOtp = '/auth/verify-otp';
+  static const registerOtp = '/auth/register-with-otp';
+  static const forgotPass = '/auth/forgot-password';
+  static const resetPass  = '/auth/reset-password';
+  static const googleAuth = '/auth/google';
+
+  // Google OAuth — paste your Web client ID from Cloud Console here.
+  // Leaving it empty disables the Google button on the client.
+  static const googleClientId = '';
 
   // Plans (backend task tizimi plans orqali ishlaydi)
   static const plans        = '/plans';

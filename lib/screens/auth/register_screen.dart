@@ -6,7 +6,9 @@ import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/google_auth.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../../widgets/otp_sheet.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -88,30 +90,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
     FocusScope.of(context).unfocus();
     HapticFeedback.lightImpact();
     final auth = context.read<AuthProvider>();
-    final ok = await auth.register(
-      fullName: _name.text.trim(),
-      username: _username.text.trim(),
-      email: _email.text.trim(),
-      password: _pass.text,
-    );
-    if (!ok && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Row(children: [
-            const Icon(Icons.error_outline,
-                color: Colors.white, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-                child: Text(auth.error ?? S.get('error'),
-                    style: GoogleFonts.poppins())),
-          ]),
-          backgroundColor: AppColors.danger,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14)),
-        ),
-      );
+    final email = _email.text.trim();
+
+    // Step 1: send OTP to email
+    final sent = await auth.sendOtp(email);
+    if (!sent) {
+      _showError(auth.error);
+      return;
     }
+    if (!mounted) return;
+
+    // Step 2: collect code via bottom sheet
+    final code = await showOtpSheet(
+      context,
+      email: email,
+      onResend: () => auth.sendOtp(email),
+      title: 'Tasdiq kodi',
+    );
+    if (code == null || code.length != 6 || !mounted) return;
+
+    // Step 3: complete registration with code
+    final ok = await auth.registerWithOtp(
+      name: _name.text.trim(),
+      email: email,
+      password: _pass.text,
+      code: code,
+    );
+    if (!ok && mounted) _showError(auth.error);
+  }
+
+  void _showError(String? msg) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(children: [
+          const Icon(Icons.error_outline,
+              color: Colors.white, size: 20),
+          const SizedBox(width: 10),
+          Expanded(
+              child: Text(msg ?? S.get('error'),
+                  style: GoogleFonts.poppins())),
+        ]),
+        backgroundColor: AppColors.danger,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14)),
+      ),
+    );
+  }
+
+  Future<void> _googleSignIn() async {
+    HapticFeedback.lightImpact();
+    final auth = context.read<AuthProvider>();
+    final idToken = await GoogleAuth.signIn();
+    if (idToken == null) return;
+    final ok = await auth.loginWithGoogleIdToken(idToken);
+    if (!ok && mounted) _showError(auth.error);
   }
 
   @override
@@ -406,6 +440,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               onTap: _register,
                             ),
                           ),
+                          if (GoogleAuth.available) ...[
+                            const SizedBox(height: 14),
+                            const _OrDivider(),
+                            const SizedBox(height: 14),
+                            _GoogleButton(onTap: _googleSignIn),
+                          ],
                           const SizedBox(height: D.sp24),
                           Center(
                             child: Row(
@@ -490,6 +530,92 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _OrDivider extends StatelessWidget {
+  const _OrDivider();
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: AppColors.border, thickness: 1)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Text(
+            'yoki',
+            style: GoogleFonts.poppins(
+                color: AppColors.sub, fontSize: 11),
+          ),
+        ),
+        Expanded(child: Divider(color: AppColors.border, thickness: 1)),
+      ],
+    );
+  }
+}
+
+class _GoogleButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _GoogleButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(28),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(28),
+          onTap: onTap,
+          child: Container(
+            height: 52,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: AppColors.border),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 22,
+                  height: 22,
+                  alignment: Alignment.center,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Text(
+                    'G',
+                    style: TextStyle(
+                      color: Color(0xFF4285F4),
+                      fontWeight: FontWeight.w900,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Text(
+                  'Google bilan kirish',
+                  style: GoogleFonts.poppins(
+                    color: const Color(0xFF1F2937),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

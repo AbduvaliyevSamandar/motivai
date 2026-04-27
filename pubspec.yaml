@@ -45,6 +45,9 @@ dependencies:
   # Network status (offline detection)
   connectivity_plus: ^6.0.0
 
+  # Google Sign-In
+  google_sign_in: ^6.2.1
+
   cupertino_icons: ^1.0.6
 
 dev_dependencies:

@@ -28,6 +28,20 @@ class Settings(BaseSettings):
     ANTHROPIC_API_KEY: str = ""
     FIREBASE_CREDENTIALS_PATH: str = "firebase-credentials.json"
 
+    # Email (SMTP) for OTP delivery
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM_NAME: str = "MotivAI"
+    SMTP_FROM_EMAIL: str = ""  # if empty falls back to SMTP_USER
+
+    # Google OAuth — Web client ID issued by Google Cloud Console
+    GOOGLE_OAUTH_CLIENT_ID: str = ""
+    # Comma-separated list of additional accepted audiences
+    # (e.g. iOS / Android client IDs).
+    GOOGLE_OAUTH_AUDIENCES: str = ""
+
     # CORS
     ALLOWED_ORIGINS: str = "*"
 

@@ -212,6 +212,133 @@ class AuthProvider extends ChangeNotifier {
   // ── REFRESH ───────────────────────────────────────────
   Future<void> refresh() async => _refreshProfile();
 
+  // ── EMAIL OTP ─────────────────────────────────────────
+  Future<bool> sendOtp(String email, {String purpose = 'register'}) async {
+    _error = null;
+    try {
+      await _api.post(
+        K.sendOtp,
+        {'email': email, 'purpose': purpose},
+        auth: false,
+      );
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> verifyOtp(String email, String code,
+      {String purpose = 'register'}) async {
+    _error = null;
+    try {
+      await _api.post(
+        K.verifyOtp,
+        {'email': email, 'purpose': purpose, 'code': code},
+        auth: false,
+      );
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> registerWithOtp({
+    required String name,
+    required String email,
+    required String password,
+    required String code,
+  }) async {
+    _error = null;
+    _loading = true;
+    notifyListeners();
+    try {
+      final res = await _api.post(
+        K.registerOtp,
+        {
+          'name': name,
+          'email': email,
+          'password': password,
+          'code': code,
+          'language': 'uz',
+          'country': 'UZ',
+        },
+        auth: false,
+      );
+      final data = res['data'] as Map;
+      _token = data['token']?.toString();
+      if (_token == null) throw ApiError('Token olinmadi');
+      final userMap = data['user'] as Map?;
+      _user = userMap?.cast<String, dynamic>();
+      await _store.saveToken(_token!);
+      if (_user != null) await _store.saveUser(_user!);
+      _loading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _loading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> resetPassword({
+    required String email,
+    required String code,
+    required String newPassword,
+  }) async {
+    _error = null;
+    try {
+      await _api.post(
+        K.resetPass,
+        {
+          'email': email,
+          'code': code,
+          'new_password': newPassword,
+        },
+        auth: false,
+      );
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      notifyListeners();
+      return false;
+    }
+  }
+
+  // ── GOOGLE ────────────────────────────────────────────
+  Future<bool> loginWithGoogleIdToken(String idToken) async {
+    _error = null;
+    _loading = true;
+    notifyListeners();
+    try {
+      final res = await _api.post(
+        K.googleAuth,
+        {'id_token': idToken, 'language': 'uz', 'country': 'UZ'},
+        auth: false,
+      );
+      final data = res['data'] as Map;
+      _token = data['token']?.toString();
+      if (_token == null) throw ApiError('Token olinmadi');
+      final userMap = data['user'] as Map?;
+      _user = userMap?.cast<String, dynamic>();
+      await _store.saveToken(_token!);
+      if (_user != null) await _store.saveUser(_user!);
+      _loading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      _loading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   // ── UPDATE LOCAL ──────────────────────────────────────
   void updateLocal(Map<String, dynamic> patch) {
     _user = {...?_user, ...patch};

@@ -6,7 +6,9 @@ import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
+import '../../services/google_auth.dart';
 import '../../widgets/nebula/nebula.dart';
+import '../../widgets/otp_sheet.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -241,33 +243,20 @@ class _LoginScreenState extends State<LoginScreen>
 
                         const SizedBox(height: D.sp16),
 
-                        _socialBtn(
-                          label: S.get('login_google'),
-                          iconBg: const Color(0xFF4285F4),
-                          iconChild: Text(
-                            'G',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w800,
+                        if (GoogleAuth.available)
+                          _socialBtn(
+                            label: S.get('login_google'),
+                            iconBg: const Color(0xFF4285F4),
+                            iconChild: Text(
+                              'G',
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w800,
+                              ),
                             ),
+                            onTap: _googleSignIn,
                           ),
-                          onTap: () {
-                            HapticFeedback.selectionClick();
-                            _errorToast(S.get('coming_soon'));
-                          },
-                        ),
-                        const SizedBox(height: D.sp12),
-                        _socialBtn(
-                          label: S.get('login_phone'),
-                          iconBg: AppColors.success,
-                          iconChild: const Icon(
-                            Icons.phone_android_rounded,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          onTap: _phoneAuth,
-                        ),
 
                         const SizedBox(height: D.sp32),
 
@@ -431,9 +420,10 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  void _forgotPassword() {
-    final emailCtrl = TextEditingController(text: _email.text);
-    showModalBottomSheet(
+  Future<void> _forgotPassword() async {
+    final emailCtrl =
+        TextEditingController(text: _email.text.trim());
+    final email = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -448,55 +438,94 @@ class _LoginScreenState extends State<LoginScreen>
           prefixIcon: Icons.email_outlined,
           keyboardType: TextInputType.emailAddress,
         ),
-        actionLabel: S.get('send_sms'),
+        actionLabel: 'Kod yuborish',
         onAction: () {
-          Navigator.pop(ctx);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(S.get('reset_sent'),
-                  style: GoogleFonts.poppins()),
-              backgroundColor: AppColors.success,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          if (emailCtrl.text.trim().isEmpty) {
+            Navigator.pop(ctx);
+            return;
+          }
+          Navigator.pop(ctx, emailCtrl.text.trim());
         },
       ),
     );
-  }
+    if (email == null || email.isEmpty || !mounted) return;
 
-  void _phoneAuth() {
-    final phoneCtrl = TextEditingController(text: '+998');
-    showModalBottomSheet(
+    final auth = context.read<AuthProvider>();
+    final sent = await auth.sendOtp(email, purpose: 'reset');
+    if (!sent || !mounted) {
+      _showSnack(auth.error ?? 'Kod yuborilmadi', isError: true);
+      return;
+    }
+    final code = await showOtpSheet(
+      context,
+      email: email,
+      onResend: () => auth.sendOtp(email, purpose: 'reset'),
+      title: 'Parolni tiklash',
+      purpose: 'reset',
+    );
+    if (code == null || code.length != 6 || !mounted) return;
+
+    // Ask for new password
+    final newPassCtrl = TextEditingController();
+    final newPass = await showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => _AuthSheet(
-        icon: Icons.phone_android_rounded,
+        icon: Icons.password_rounded,
         accent: AppColors.success,
-        title: S.get('login_phone'),
-        subtitle: S.get('phone_number'),
+        title: 'Yangi parol',
+        subtitle: 'Kamida 6 belgi',
         child: GlassTextField(
-          controller: phoneCtrl,
-          label: S.get('phone_number'),
-          hint: '+998 90 123 45 67',
-          prefixIcon: Icons.phone_outlined,
-          keyboardType: TextInputType.phone,
+          controller: newPassCtrl,
+          label: 'Yangi parol',
+          prefixIcon: Icons.lock_outline_rounded,
+          obscureText: true,
         ),
-        actionLabel: S.get('send_sms'),
+        actionLabel: 'Saqlash',
         onAction: () {
-          Navigator.pop(ctx);
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(S.get('coming_soon'),
-                  style: GoogleFonts.poppins()),
-              backgroundColor: AppColors.accent,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          if (newPassCtrl.text.length < 6) return;
+          Navigator.pop(ctx, newPassCtrl.text);
         },
       ),
     );
+    if (newPass == null || newPass.isEmpty || !mounted) return;
+
+    final ok = await auth.resetPassword(
+      email: email,
+      code: code,
+      newPassword: newPass,
+    );
+    if (!mounted) return;
+    if (ok) {
+      _showSnack('Parol yangilandi! Endi kiring.', isError: false);
+    } else {
+      _showSnack(auth.error ?? 'Xatolik', isError: true);
+    }
   }
+
+  Future<void> _googleSignIn() async {
+    HapticFeedback.lightImpact();
+    final auth = context.read<AuthProvider>();
+    final idToken = await GoogleAuth.signIn();
+    if (idToken == null) return;
+    final ok = await auth.loginWithGoogleIdToken(idToken);
+    if (!ok && mounted) {
+      _showSnack(auth.error ?? 'Google kirish xatosi', isError: true);
+    }
+  }
+
+  void _showSnack(String msg, {required bool isError}) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(msg, style: GoogleFonts.poppins()),
+      backgroundColor: isError ? AppColors.danger : AppColors.success,
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14)),
+    ));
+  }
+
 }
 
 class _AuthSheet extends StatelessWidget {
