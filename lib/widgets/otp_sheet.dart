@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,10 +7,13 @@ import 'otp_code_field.dart';
 
 /// Bottom sheet that asks the user to enter the 6-digit code we just sent.
 /// Returns the entered code (string) on success, null on cancel.
+///
+/// If the user wants a new code, they cancel and re-trigger the signup
+/// form — keeps this sheet single-purpose with no timer.
 Future<String?> showOtpSheet(
   BuildContext context, {
   required String email,
-  required Future<bool> Function() onResend,
+  Future<bool> Function()? onResend,
   String title = 'Tasdiq kodini kiriting',
   String purpose = 'register',
 }) {
@@ -19,26 +21,14 @@ Future<String?> showOtpSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _OtpSheet(
-      email: email,
-      onResend: onResend,
-      title: title,
-      purpose: purpose,
-    ),
+    builder: (_) => _OtpSheet(email: email, title: title),
   );
 }
 
 class _OtpSheet extends StatefulWidget {
   final String email;
-  final Future<bool> Function() onResend;
   final String title;
-  final String purpose;
-  const _OtpSheet({
-    required this.email,
-    required this.onResend,
-    required this.title,
-    required this.purpose,
-  });
+  const _OtpSheet({required this.email, required this.title});
 
   @override
   State<_OtpSheet> createState() => _OtpSheetState();
@@ -46,56 +36,6 @@ class _OtpSheet extends StatefulWidget {
 
 class _OtpSheetState extends State<_OtpSheet> {
   String _code = '';
-  int _cooldown = 30;
-  Timer? _timer;
-  bool _resending = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _startCooldown();
-  }
-
-  void _startCooldown() {
-    _timer?.cancel();
-    setState(() => _cooldown = 30);
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (!mounted) {
-        t.cancel();
-        return;
-      }
-      if (_cooldown <= 1) {
-        t.cancel();
-        setState(() => _cooldown = 0);
-      } else {
-        setState(() => _cooldown--);
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  Future<void> _resend() async {
-    if (_cooldown > 0 || _resending) return;
-    HapticFeedback.lightImpact();
-    setState(() => _resending = true);
-    final ok = await widget.onResend();
-    if (!mounted) return;
-    setState(() => _resending = false);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: ok ? AppColors.success : AppColors.danger,
-      behavior: SnackBarBehavior.floating,
-      content: Text(
-        ok ? 'Yangi kod yuborildi' : 'Yuborib bo\'lmadi',
-        style: GoogleFonts.poppins(),
-      ),
-    ));
-    if (ok) _startCooldown();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,24 +103,12 @@ class _OtpSheetState extends State<_OtpSheet> {
                 Navigator.pop(context, _code);
               },
             ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed:
-                  (_cooldown == 0 && !_resending) ? _resend : null,
-              child: Text(
-                _resending
-                    ? 'Yuborilmoqda...'
-                    : _cooldown == 0
-                        ? 'Kodni qayta yuborish'
-                        : 'Qayta yuborish ($_cooldown s)',
-                style: GoogleFonts.poppins(
-                  color: _cooldown == 0
-                      ? AppColors.primary
-                      : AppColors.sub,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
+            const SizedBox(height: 8),
+            Text(
+              'Kod kelmasa, oynani yopib qaytadan boshlang',
+              style: GoogleFonts.poppins(
+                  color: AppColors.sub.withOpacity(0.7), fontSize: 11),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
