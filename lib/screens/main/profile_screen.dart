@@ -340,7 +340,7 @@ class _ProfileState extends State<ProfileScreen> {
                     ),
                     _tile(
                       icon: LucideIcons.palette,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.pink,
                       title: 'Rang mavzusi',
                       subtitle:
                           '${ThemePresets.current.emoji}  ${ThemePresets.current.name}',
@@ -514,7 +514,7 @@ class _ProfileState extends State<ProfileScreen> {
                         if (np.enabled)
                           _tile(
                             icon: LucideIcons.bell,
-                            iconColor: AppColors.sub,
+                            iconColor: AppColors.accent,
                             title: 'Bildirishnomani sinash',
                             subtitle: '5 soniyadan keyin test keladi',
                             onTap: _testNotification,
@@ -560,14 +560,14 @@ class _ProfileState extends State<ProfileScreen> {
                     ),
                     _tile(
                       icon: LucideIcons.share2,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.pink,
                       title: 'Template ulashish',
                       subtitle: 'Odatlar + kartalar — do\'stga yuboring',
                       onTap: _shareTemplate,
                     ),
                     _tile(
                       icon: LucideIcons.upload,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.success,
                       title: 'Template import',
                       subtitle: 'JSON yopishtiring — odat/kartalarga qo\'shiladi',
                       onTap: _importTemplate,
@@ -598,13 +598,13 @@ class _ProfileState extends State<ProfileScreen> {
                     const SizedBox(height: 12),
                     _tile(
                       icon: LucideIcons.info,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.info,
                       title: 'MotivAI haqida',
                       onTap: _showAbout,
                     ),
                     _tile(
                       icon: LucideIcons.helpCircle,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.secondary,
                       title: 'Yordam',
                       subtitle: 'Qo\'llanma va savollar',
                       onTap: _showHelp,
@@ -809,22 +809,19 @@ class _ProfileState extends State<ProfileScreen> {
                 },
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(children: [
+              // iOS Settings-style filled square: solid accent bg + white icon
               Container(
-                width: 40,
-                height: 40,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    iconColor.withOpacity(0.22),
-                    iconColor.withOpacity(0.08),
-                  ]),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: iconColor.withOpacity(0.3)),
+                  color: iconColor,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(icon, color: iconColor, size: 20),
+                child: Icon(icon, color: Colors.white, size: 18),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -834,11 +831,11 @@ class _ProfileState extends State<ProfileScreen> {
                       style: GoogleFonts.poppins(
                         color: color ?? AppColors.txt,
                         fontSize: 13,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                     if (subtitle != null) ...[
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 1),
                       Text(
                         subtitle,
                         style: GoogleFonts.poppins(
@@ -852,7 +849,7 @@ class _ProfileState extends State<ProfileScreen> {
                 trailing
               else if (onTap != null)
                 Icon(LucideIcons.chevronRight,
-                    color: AppColors.sub.withOpacity(0.5), size: 22),
+                    color: AppColors.sub.withOpacity(0.4), size: 18),
             ]),
           ),
         ),

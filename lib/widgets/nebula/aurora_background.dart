@@ -17,14 +17,21 @@ class AuroraBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final dark = AppColors.isDark;
+    // A whisper of the active theme accent at the top of the screen so
+    // switching between presets is visible — but barely. 4% in light
+    // mode, 7% in dark; never enough to read as a colored background.
+    final accent = AppColors.primary.withOpacity(dark ? 0.07 : 0.04);
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: dark
-              ? [AppColors.bg, AppColors.bgDeep]
-              : [AppColors.bg, AppColors.bgDeep],
+          stops: const [0, 0.4, 1],
+          colors: [
+            Color.alphaBlend(accent, AppColors.bg),
+            AppColors.bg,
+            AppColors.bgDeep,
+          ],
         ),
       ),
       child: child,
