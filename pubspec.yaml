@@ -60,6 +60,11 @@ dependencies:
   # (streak flame, XP star, trophy, target, book, rocket).
   iconsax_flutter: ^1.0.0
 
+  # Hugeicons — 2024-vintage icon library with extremely refined,
+  # multi-stroke designs; used selectively where Lucide/Iconsax don't
+  # have the right aesthetic.
+  hugeicons: ^0.0.11
+
   cupertino_icons: ^1.0.6
 
 dev_dependencies:

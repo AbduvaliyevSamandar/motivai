@@ -114,32 +114,10 @@ class _RingPainter extends CustomPainter {
 
     if (progress <= 0) return;
 
-    // Outer glow
-    final glowPaint = Paint()
-      ..shader = SweepGradient(
-        startAngle: -math.pi / 2,
-        endAngle: -math.pi / 2 + 2 * math.pi,
-        colors: gradientColors,
-      ).createShader(rect)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = strokeWidth + 8
-      ..strokeCap = StrokeCap.round
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10);
-    canvas.drawArc(
-      rect,
-      -math.pi / 2,
-      2 * math.pi * progress,
-      false,
-      glowPaint,
-    );
-
-    // Main ring with gradient stroke
+    // Main ring with single solid stroke (no outer glow, no end dot —
+    // the user wanted shadows toned down everywhere).
     final mainPaint = Paint()
-      ..shader = SweepGradient(
-        startAngle: -math.pi / 2,
-        endAngle: -math.pi / 2 + 2 * math.pi,
-        colors: gradientColors,
-      ).createShader(rect)
+      ..color = gradientColors.first
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round;
@@ -150,19 +128,6 @@ class _RingPainter extends CustomPainter {
       false,
       mainPaint,
     );
-
-    // End dot for visual accent
-    final endAngle = -math.pi / 2 + 2 * math.pi * progress;
-    final endPos = Offset(
-      center.dx + radius * math.cos(endAngle),
-      center.dy + radius * math.sin(endAngle),
-    );
-    final dotPaint = Paint()..color = Colors.white;
-    final dotGlow = Paint()
-      ..color = gradientColors.last.withOpacity(0.6)
-      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
-    canvas.drawCircle(endPos, strokeWidth / 2 + 2, dotGlow);
-    canvas.drawCircle(endPos, strokeWidth / 2 - 1, dotPaint);
   }
 
   @override

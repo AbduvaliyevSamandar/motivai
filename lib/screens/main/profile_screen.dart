@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
+import 'package:hugeicons/hugeicons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -247,28 +248,28 @@ class _ProfileState extends State<ProfileScreen> {
                     childAspectRatio: 1.35,
                     children: [
                       BentoCard(
-                        icon: Iconsax.star_1,
+                        icon: HugeIcons.strokeRoundedStar,
                         value: '${auth.points}',
                         label: 'XP',
                         gradient: AppColors.gradGold,
                         accent: AppColors.accent,
                       ),
                       BentoCard(
-                        icon: Iconsax.flash_1,
+                        icon: HugeIcons.strokeRoundedFire,
                         value: '${auth.streak}',
                         label: S.get('streak'),
                         gradient: AppColors.gradFire,
                         accent: AppColors.accent,
                       ),
                       BentoCard(
-                        icon: LucideIcons.checkCircle2,
+                        icon: HugeIcons.strokeRoundedCheckmarkCircle02,
                         value: '${auth.totalTasks}',
                         label: S.get('tasks_label'),
                         gradient: AppColors.gradSuccess,
                         accent: AppColors.success,
                       ),
                       BentoCard(
-                        icon: Iconsax.cup,
+                        icon: HugeIcons.strokeRoundedChampion,
                         value: '${auth.achiev.length}',
                         label: S.get('achievements'),
                         gradient: AppColors.gradCosmic,
