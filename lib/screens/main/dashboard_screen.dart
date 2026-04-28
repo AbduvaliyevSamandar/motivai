@@ -372,7 +372,7 @@ class _HeaderRow extends StatelessWidget {
                 name.isEmpty ? 'User' : name,
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.5,
                 ),
@@ -386,7 +386,7 @@ class _HeaderRow extends StatelessWidget {
         Builder(builder: (ctx) {
           return Material(
             color: AppColors.card.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: () {
                 HapticFeedback.selectionClick();
@@ -399,13 +399,13 @@ class _HeaderRow extends StatelessWidget {
                   ),
                 );
               },
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 width: 44,
                 height: 44,
                 margin: const EdgeInsets.only(right: 6),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Icon(
@@ -426,7 +426,7 @@ class _HeaderRow extends StatelessWidget {
         Builder(builder: (ctx) {
           return Material(
             color: AppColors.card.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: () {
                 HapticFeedback.selectionClick();
@@ -447,13 +447,13 @@ class _HeaderRow extends StatelessWidget {
                   ),
                 );
               },
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 width: 44,
                 height: 44,
                 margin: const EdgeInsets.only(right: 6),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Icon(
@@ -470,7 +470,7 @@ class _HeaderRow extends StatelessWidget {
             final unread = np.unreadCount;
             return Material(
               color: AppColors.card.withOpacity(0.6),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               child: InkWell(
                 onTap: () {
                   HapticFeedback.selectionClick();
@@ -492,12 +492,12 @@ class _HeaderRow extends StatelessWidget {
                     ),
                   );
                 },
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
                 child: Container(
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(color: AppColors.border),
                   ),
                   child: Stack(
@@ -535,7 +535,7 @@ class _HeaderRow extends StatelessWidget {
                                 unread > 9 ? '9+' : '$unread',
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   fontWeight: FontWeight.w800,
                                 ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -658,7 +658,7 @@ class _HeroXPRing extends StatelessWidget {
                     maxLines: 1,
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 38,
+                      fontSize: 32,
                       fontWeight: FontWeight.w700,
                       height: 1,
                       letterSpacing: -1.5,
@@ -672,7 +672,7 @@ class _HeroXPRing extends StatelessWidget {
                     maxLines: 1,
                     style: GoogleFonts.poppins(
                       color: AppColors.sub,
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -708,7 +708,7 @@ class _HeroXPRing extends StatelessWidget {
                       color: allDone
                           ? AppColors.success
                           : AppColors.txt,
-                      fontSize: 36,
+                      fontSize: 32,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -2,
                       height: 1,
@@ -746,7 +746,7 @@ class _HeroXPRing extends StatelessWidget {
                           '$points XP',
                           style: GoogleFonts.poppins(
                             color: AppColors.txt,
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w600,
                           ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -758,7 +758,7 @@ class _HeroXPRing extends StatelessWidget {
                           horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
                         color: AppColors.primary.withOpacity(0.12),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         'Lvl $level',
@@ -881,7 +881,7 @@ class _StatChip extends StatelessWidget {
                     maxLines: 1,
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w700,
                       height: 1.1,
                       letterSpacing: -0.3,
@@ -894,7 +894,7 @@ class _StatChip extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
-                    fontSize: 9,
+                    fontSize: 10,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -1026,7 +1026,7 @@ class _StreakCustomState extends State<_StreakCustom>
                     ],
                   ),
                   child: const Text('\u{1F525}',
-                      style: TextStyle(fontSize: 20)),
+                      style: TextStyle(fontSize: 18)),
                 ),
               ),
             ),
@@ -1069,7 +1069,7 @@ class _StreakCustomState extends State<_StreakCustom>
               child: Text(
                 '${widget.streak}',
                 style: GoogleFonts.poppins(
-                  fontSize: 54,
+                  fontSize: 32,
                   fontWeight: FontWeight.w700,
                   height: 1,
                   letterSpacing: -3,
@@ -1085,7 +1085,7 @@ class _StreakCustomState extends State<_StreakCustom>
                 S.get('day'),
                 style: GoogleFonts.poppins(
                   color: AppColors.sub,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1131,7 +1131,7 @@ class _SectionBanner extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             gradient: LinearGradient(colors: gradient),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
                 color: gradient.first.withOpacity(0.4),
@@ -1147,7 +1147,7 @@ class _SectionBanner extends StatelessWidget {
           title,
           style: GoogleFonts.poppins(
             color: AppColors.txt,
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w700,
             letterSpacing: -0.5,
           ),
@@ -1165,7 +1165,7 @@ class _SectionBanner extends StatelessWidget {
               badge!,
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -1321,7 +1321,7 @@ class _EmptyStateState extends State<_EmptyState>
                     ],
                   ),
                   child: Center(
-                    child: Text(emoji, style: const TextStyle(fontSize: 48)),
+                    child: Text(emoji, style: const TextStyle(fontSize: 32)),
                   ),
                 ),
               ),
@@ -1331,7 +1331,7 @@ class _EmptyStateState extends State<_EmptyState>
               title,
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               ),
@@ -1394,7 +1394,7 @@ class _TaskToggle extends StatelessWidget {
       height: 44,
       decoration: BoxDecoration(
         color: AppColors.card.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
@@ -1423,7 +1423,7 @@ class _TaskToggle extends StatelessWidget {
             gradient: active
                 ? LinearGradient(colors: AppColors.gradCosmic)
                 : null,
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(12),
             boxShadow: active
                 ? [
                     BoxShadow(
@@ -1454,7 +1454,7 @@ class _TaskToggle extends StatelessWidget {
                   color: active
                       ? Colors.white.withOpacity(0.22)
                       : AppColors.border.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   '$count',
@@ -1483,9 +1483,9 @@ class _MitChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         onTap: onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
@@ -1499,7 +1499,7 @@ class _MitChip extends StatelessWidget {
                   ])
                 : null,
             color: active ? null : AppColors.card.withOpacity(0.4),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: active
                   ? AppColors.accent
@@ -1530,7 +1530,7 @@ class _MitChip extends StatelessWidget {
                           : 'MIT rejim — faqat 3 vazifaga fokuslaning',
                       style: GoogleFonts.poppins(
                         color: AppColors.txt,
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                       ),
                     ),

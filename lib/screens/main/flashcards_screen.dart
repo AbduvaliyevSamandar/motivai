@@ -114,7 +114,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                           'Flashcards',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 22,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
@@ -177,7 +177,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Text('\u{1F4D2}', style: TextStyle(fontSize: 48)),
+                child: Text('\u{1F4D2}', style: TextStyle(fontSize: 32)),
               ),
             ),
             const SizedBox(height: 18),
@@ -185,7 +185,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
               'Hali flashcards yo\'q',
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -224,15 +224,15 @@ class _DeckCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.card.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: dueCards > 0
                     ? AppColors.accent.withOpacity(0.5)
@@ -256,7 +256,7 @@ class _DeckCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                         colors: AppColors.gradCosmic),
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primary.withOpacity(0.35),
@@ -266,7 +266,7 @@ class _DeckCard extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(deck.emoji,
-                        style: const TextStyle(fontSize: 28)),
+                        style: const TextStyle(fontSize: 24)),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -278,7 +278,7 @@ class _DeckCard extends StatelessWidget {
                         deck.name,
                         style: GoogleFonts.poppins(
                           color: AppColors.txt,
-                          fontSize: 16,
+                          fontSize: 15,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.3,
                         ),
@@ -308,7 +308,7 @@ class _DeckCard extends StatelessWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                     colors: AppColors.gradFire),
-                                borderRadius: BorderRadius.circular(6),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
                                 '$dueCards ta takror',
@@ -367,7 +367,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
+            const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       padding: EdgeInsets.only(
         left: 20,
@@ -383,7 +383,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
             height: 5,
             decoration: BoxDecoration(
               color: AppColors.border,
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           const SizedBox(height: 18),
@@ -391,7 +391,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
             'Yangi deck',
             style: GoogleFonts.poppins(
               color: AppColors.txt,
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
@@ -431,7 +431,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
                     ),
                   ),
                   child: Center(
-                    child: Text(e, style: const TextStyle(fontSize: 20)),
+                    child: Text(e, style: const TextStyle(fontSize: 18)),
                   ),
                 ),
               );
@@ -565,7 +565,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                       ),
                       const SizedBox(width: 4),
                       Text(widget.deck.emoji,
-                          style: const TextStyle(fontSize: 20)),
+                          style: const TextStyle(fontSize: 18)),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
@@ -604,7 +604,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 const Text('\u{1F4D6}',
-                                    style: TextStyle(fontSize: 44)),
+                                    style: TextStyle(fontSize: 32)),
                                 const SizedBox(height: 14),
                                 Text(
                                   'Hali karta yo\'q',
@@ -692,7 +692,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                           color: AppColors.info
                                               .withOpacity(0.15),
                                           borderRadius:
-                                              BorderRadius.circular(6),
+                                              BorderRadius.circular(8),
                                         ),
                                         child: Text(
                                           '${c.reviews}x',
@@ -745,7 +745,7 @@ class _AddCardSheetState extends State<_AddCardSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
+            const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       padding: EdgeInsets.only(
         left: 20,
@@ -761,7 +761,7 @@ class _AddCardSheetState extends State<_AddCardSheet> {
             height: 5,
             decoration: BoxDecoration(
               color: AppColors.border,
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           const SizedBox(height: 18),
@@ -769,7 +769,7 @@ class _AddCardSheetState extends State<_AddCardSheet> {
             'Yangi karta',
             style: GoogleFonts.poppins(
               color: AppColors.txt,
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
@@ -896,7 +896,7 @@ class _StudyScreenState extends State<StudyScreen>
                         '${_idx + 1} / ${_queue.length}',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w700,
                         ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -941,7 +941,7 @@ class _StudyScreenState extends State<StudyScreen>
                                       : AppColors.gradCosmic,
                                 ),
                                 borderRadius:
-                                    BorderRadius.circular(22),
+                                    BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
                                     color: AppColors.primary
@@ -981,7 +981,7 @@ class _StudyScreenState extends State<StudyScreen>
                                         style:
                                             GoogleFonts.poppins(
                                           color: Colors.white,
-                                          fontSize: 22,
+                                          fontSize: 24,
                                           fontWeight: FontWeight.w700,
                                           height: 1.3,
                                           letterSpacing: -0.3,
@@ -1053,7 +1053,7 @@ class _StudyScreenState extends State<StudyScreen>
                 label,
                 style: GoogleFonts.poppins(
                   color: color,
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),
               ),

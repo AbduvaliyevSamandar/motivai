@@ -95,7 +95,7 @@ class AppTheme {
         foregroundColor: txt,
         centerTitle: false,
         titleTextStyle: GoogleFonts.poppins(
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: FontWeight.w700,
           color: txt,
         ),
@@ -107,15 +107,15 @@ class AppTheme {
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: borderColor),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: borderColor),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: AppColors.primary, width: 2),
         ),
         labelStyle: TextStyle(color: sub),

@@ -67,7 +67,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(28)),
+                  const BorderRadius.vertical(top: Radius.circular(16)),
               border: Border(
                 top:
                     BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -83,7 +83,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                     height: 5,
                     decoration: BoxDecoration(
                       color: AppColors.border,
-                      borderRadius: BorderRadius.circular(3),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -91,7 +91,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                     existing == null ? 'Yangi ritual' : 'Ritualni tahrirlash',
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
                     ),
@@ -128,7 +128,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                             ),
                             child: Center(
                               child: Text(e,
-                                  style: const TextStyle(fontSize: 22)),
+                                  style: const TextStyle(fontSize: 24)),
                             ),
                           ),
                         );
@@ -186,7 +186,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                     child: Text('Kunlar',
                         style: GoogleFonts.poppins(
                           color: AppColors.sub,
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w600,
                         )),
                   ),
@@ -232,7 +232,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                                 color: active
                                     ? Colors.white
                                     : AppColors.sub,
-                                fontSize: 12,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -317,7 +317,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
           Text(fmt(value),
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
               )),
           Row(
@@ -367,7 +367,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
           child: Text('Rituallar',
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
@@ -407,7 +407,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('\u{1F9D8}', style: const TextStyle(fontSize: 56)),
+            Text('\u{1F9D8}', style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 14),
             Text('Rituallar yo\'q',
                 style: GoogleFonts.poppins(
@@ -484,7 +484,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
             ),
             child: Center(
               child: Text(r.emoji,
-                  style: const TextStyle(fontSize: 22)),
+                  style: const TextStyle(fontSize: 24)),
             ),
           ),
           const SizedBox(width: 12),
@@ -497,7 +497,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                     overflow: TextOverflow.ellipsis,
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w700,
                     )),
                 const SizedBox(height: 2),

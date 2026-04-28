@@ -100,7 +100,7 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
               maxLength: 1,
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w800,
               ),
               inputFormatters: [

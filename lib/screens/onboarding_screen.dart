@@ -103,7 +103,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               color: i == _page
                                   ? Colors.white
                                   : Colors.white.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(3),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                         ),
@@ -212,7 +212,7 @@ class _SlideView extends StatelessWidget {
             ),
             child: Center(
               child: Text(slide.emoji,
-                  style: const TextStyle(fontSize: 100)),
+                  style: const TextStyle(fontSize: 32)),
             ),
           ),
           const SizedBox(height: 32),
@@ -225,7 +225,7 @@ class _SlideView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 28,
+                fontSize: 24,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.8,
                 height: 1.2,
@@ -261,7 +261,7 @@ class _GoalPicker extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 20),
-          Text('\u{1F3AF}', style: const TextStyle(fontSize: 56)),
+          Text('\u{1F3AF}', style: const TextStyle(fontSize: 32)),
           const SizedBox(height: 14),
           ShaderMask(
             shaderCallback: (b) => LinearGradient(
@@ -273,7 +273,7 @@ class _GoalPicker extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 26,
+                fontSize: 24,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.8,
               ),
@@ -338,7 +338,7 @@ class _GoalPicker extends StatelessWidget {
                               ),
                               child: Text(o.emoji,
                                   style:
-                                      const TextStyle(fontSize: 22)),
+                                      const TextStyle(fontSize: 24)),
                             ),
                             const SizedBox(width: 12),
                             Expanded(
@@ -349,7 +349,7 @@ class _GoalPicker extends StatelessWidget {
                                   Text(o.name,
                                       style: GoogleFonts.poppins(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.w700,
                                       )),
                                   Text(o.desc,

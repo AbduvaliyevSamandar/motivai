@@ -85,7 +85,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               'Kalendar',
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.5,
               ),
@@ -115,7 +115,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   'Bugun',
                   style: GoogleFonts.poppins(
                     color: AppColors.primary,
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -151,7 +151,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 '${monthNames[_visibleMonth.month - 1]} ${_visibleMonth.year}',
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -176,18 +176,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _arrow(IconData icon, VoidCallback onTap) {
     return Material(
       color: AppColors.card.withOpacity(0.5),
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
         },
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           width: 34,
           height: 34,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(color: AppColors.border),
           ),
           child: Icon(icon, color: AppColors.sub, size: 18),
@@ -293,7 +293,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 ),
                 child: const Center(
                   child: Text('\u{1F4C5}',
-                      style: TextStyle(fontSize: 34)),
+                      style: TextStyle(fontSize: 32)),
                 ),
               ),
               const SizedBox(height: 12),
@@ -353,7 +353,7 @@ class _CalendarCell extends StatelessWidget {
               : (isToday
                   ? AppColors.primary.withOpacity(0.15)
                   : Colors.transparent),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected
                 ? Colors.transparent
@@ -438,15 +438,15 @@ class _CalTaskItem extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: AppColors.card.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: done
                     ? AppColors.success.withOpacity(0.3)
@@ -460,7 +460,7 @@ class _CalTaskItem extends StatelessWidget {
                   height: 36,
                   decoration: BoxDecoration(
                     color: task.color.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Text(task.emoji,

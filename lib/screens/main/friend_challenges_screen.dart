@@ -65,7 +65,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(28)),
+                  const BorderRadius.vertical(top: Radius.circular(16)),
               border: Border(
                 top:
                     BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -81,7 +81,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                     height: 5,
                     decoration: BoxDecoration(
                       color: AppColors.border,
-                      borderRadius: BorderRadius.circular(3),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                   const SizedBox(height: 18),
@@ -89,7 +89,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                     'Yangi chellenj',
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 20,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.3,
                     ),
@@ -125,7 +125,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                                     Text(f.name,
                                         style: GoogleFonts.poppins(
                                           color: AppColors.txt,
-                                          fontSize: 14,
+                                          fontSize: 13,
                                         )),
                                   ],
                                 ),
@@ -216,7 +216,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                 Text('$value',
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 17,
+                      fontSize: 18,
                       fontWeight: FontWeight.w700,
                     ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -256,7 +256,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text('Bugungi ball',
@@ -270,7 +270,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             Text(
               '${c.friendName} ning bugun bajargan vazifalari sonini kiriting',
               style: GoogleFonts.poppins(
-                  color: AppColors.sub, fontSize: 12),
+                  color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 12),
@@ -315,7 +315,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(8)),
             ),
             child: Text('Saqlash',
                 style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
@@ -344,7 +344,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           child: Text('Chellenjlar',
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
@@ -383,7 +383,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('\u{1F3C6}', style: const TextStyle(fontSize: 56)),
+            Text('\u{1F3C6}', style: const TextStyle(fontSize: 32)),
             const SizedBox(height: 14),
             Text('Chellenj yo\'q',
                 style: GoogleFonts.poppins(
@@ -423,7 +423,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           AppColors.primary.withOpacity(0.15),
           AppColors.secondary.withOpacity(0.08),
         ]),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.3)),
       ),
       child: Column(
@@ -454,7 +454,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                 Text('${c.daysLeft} kun',
                     style: GoogleFonts.poppins(
                       color: AppColors.accent,
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w700,
                     ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -465,7 +465,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                       color: winning
                           ? AppColors.accent
                           : AppColors.sub,
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w700,
                     )),
             ],
@@ -531,14 +531,14 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           child: Text(name,
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight:
                     leading ? FontWeight.w700 : FontWeight.w500,
               )),
         ),
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(6),
+            borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: pct,
               minHeight: 8,

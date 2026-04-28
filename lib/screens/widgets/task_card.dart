@@ -74,7 +74,7 @@ class _TaskCardState extends State<TaskCard>
           margin: const EdgeInsets.only(bottom: D.sp12),
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: overdue
                   ? AppColors.danger.withOpacity(0.4)
@@ -96,8 +96,8 @@ class _TaskCardState extends State<TaskCard>
                               ? AppColors.accent
                               : t.color,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(14),
-                    topRight: Radius.circular(14),
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
                   ),
                 ),
               ),
@@ -297,7 +297,7 @@ class _TaskCardState extends State<TaskCard>
             label,
             style: GoogleFonts.poppins(
               color: color,
-              fontSize: 14,
+              fontSize: 13,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -340,7 +340,7 @@ class _MoreMenu extends StatelessWidget {
       ),
       color: AppColors.card,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: AppColors.border),
       ),
       itemBuilder: (_) => [
@@ -575,7 +575,7 @@ class _TimeTag extends StatelessWidget {
           color.withOpacity(0.2),
           color.withOpacity(0.08),
         ]),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withOpacity(0.4)),
       ),
       child: Row(

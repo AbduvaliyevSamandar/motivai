@@ -160,7 +160,7 @@ class _ProfileState extends State<ProfileScreen> {
                             auth.name.isEmpty ? 'User' : auth.name,
                             style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 26,
+                              fontSize: 24,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.5,
                             ),
@@ -183,7 +183,7 @@ class _ProfileState extends State<ProfileScreen> {
                               AppColors.primary.withOpacity(0.25),
                               AppColors.secondary.withOpacity(0.15),
                             ]),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color:
                                   AppColors.primary.withOpacity(0.4),
@@ -193,7 +193,7 @@ class _ProfileState extends State<ProfileScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(auth.levelEmoji,
-                                  style: const TextStyle(fontSize: 16)),
+                                  style: const TextStyle(fontSize: 15)),
                               const SizedBox(width: 6),
                               Text(
                                 '${S.get('level')} ${auth.level}',
@@ -646,7 +646,7 @@ class _ProfileState extends State<ProfileScreen> {
                             'MotivAI v2.2.0',
                             style: GoogleFonts.poppins(
                               color: AppColors.txt,
-                              fontSize: 14,
+                              fontSize: 13,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.3,
                             ),
@@ -743,7 +743,7 @@ class _ProfileState extends State<ProfileScreen> {
           letter,
           style: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 42,
+            fontSize: 32,
             fontWeight: FontWeight.w700,
           ),
         ),
@@ -763,7 +763,7 @@ class _ProfileState extends State<ProfileScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
         const SizedBox(width: 8),
@@ -833,7 +833,7 @@ class _ProfileState extends State<ProfileScreen> {
                       title,
                       style: GoogleFonts.poppins(
                         color: color ?? AppColors.txt,
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -875,7 +875,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+                const BorderRadius.vertical(top: Radius.circular(16)),
             border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5),
             ),
@@ -892,7 +892,7 @@ class _ProfileState extends State<ProfileScreen> {
               height: 5,
               decoration: BoxDecoration(
                 color: AppColors.border,
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             const SizedBox(height: 24),
@@ -900,7 +900,7 @@ class _ProfileState extends State<ProfileScreen> {
               S.get('change_pass'),
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               ),
@@ -1018,7 +1018,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+                const BorderRadius.vertical(top: Radius.circular(16)),
             border: Border(
               top:
                   BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -1033,7 +1033,7 @@ class _ProfileState extends State<ProfileScreen> {
                 height: 5,
                 decoration: BoxDecoration(
                   color: AppColors.border,
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               const SizedBox(height: 18),
@@ -1046,7 +1046,7 @@ class _ProfileState extends State<ProfileScreen> {
                   'Rang mavzusi',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
@@ -1057,7 +1057,7 @@ class _ProfileState extends State<ProfileScreen> {
                 'Ilovaning rang palitrasini tanlang',
                 style: GoogleFonts.poppins(
                   color: AppColors.sub,
-                  fontSize: 12,
+                  fontSize: 11,
                 ),
               ),
               const SizedBox(height: 20),
@@ -1088,7 +1088,7 @@ class _ProfileState extends State<ProfileScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: active
                               ? p.primary
@@ -1115,7 +1115,7 @@ class _ProfileState extends State<ProfileScreen> {
                                 MainAxisAlignment.spaceBetween,
                             children: [
                               Text(p.emoji,
-                                  style: const TextStyle(fontSize: 22)),
+                                  style: const TextStyle(fontSize: 24)),
                               if (active)
                                 Container(
                                   width: 20,
@@ -1193,7 +1193,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+                const BorderRadius.vertical(top: Radius.circular(16)),
             border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5),
             ),
@@ -1207,7 +1207,7 @@ class _ProfileState extends State<ProfileScreen> {
                 height: 5,
                 decoration: BoxDecoration(
                   color: AppColors.border,
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               const SizedBox(height: 18),
@@ -1215,7 +1215,7 @@ class _ProfileState extends State<ProfileScreen> {
                 'Titrash kuchi',
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -1223,7 +1223,7 @@ class _ProfileState extends State<ProfileScreen> {
               const SizedBox(height: 4),
               Text('Tanlang va darhol sinab ko\'ring',
                   style: GoogleFonts.poppins(
-                      color: AppColors.sub, fontSize: 12)),
+                      color: AppColors.sub, fontSize: 11)),
               const SizedBox(height: 20),
               ...HapticLevel.values.map((l) {
                 final info = Haptics.info(l);
@@ -1232,9 +1232,9 @@ class _ProfileState extends State<ProfileScreen> {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Material(
                     color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       onTap: () async {
                         await Haptics.set(l);
                         Haptics.medium();
@@ -1252,7 +1252,7 @@ class _ProfileState extends State<ProfileScreen> {
                                 ])
                               : null,
                           color: active ? null : AppColors.bg,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: active
                                 ? AppColors.primary
@@ -1263,7 +1263,7 @@ class _ProfileState extends State<ProfileScreen> {
                         child: Row(
                           children: [
                             Text(info.emoji,
-                                style: const TextStyle(fontSize: 22)),
+                                style: const TextStyle(fontSize: 24)),
                             const SizedBox(width: 14),
                             Expanded(
                               child: Column(
@@ -1273,7 +1273,7 @@ class _ProfileState extends State<ProfileScreen> {
                                   Text(info.name,
                                       style: GoogleFonts.poppins(
                                         color: AppColors.txt,
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight: active
                                             ? FontWeight.w700
                                             : FontWeight.w600,
@@ -1313,7 +1313,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+                const BorderRadius.vertical(top: Radius.circular(16)),
             border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5),
             ),
@@ -1327,7 +1327,7 @@ class _ProfileState extends State<ProfileScreen> {
                 height: 5,
                 decoration: BoxDecoration(
                   color: AppColors.border,
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               const SizedBox(height: 18),
@@ -1340,7 +1340,7 @@ class _ProfileState extends State<ProfileScreen> {
                   'Tovush pachkasi',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
@@ -1351,7 +1351,7 @@ class _ProfileState extends State<ProfileScreen> {
                 'Bildirishnoma uslubini tanlang',
                 style: GoogleFonts.poppins(
                   color: AppColors.sub,
-                  fontSize: 12,
+                  fontSize: 11,
                 ),
               ),
               const SizedBox(height: 20),
@@ -1362,9 +1362,9 @@ class _ProfileState extends State<ProfileScreen> {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Material(
                     color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(12),
                       onTap: () async {
                         HapticFeedback.selectionClick();
                         await SoundPackStore.set(s);
@@ -1382,7 +1382,7 @@ class _ProfileState extends State<ProfileScreen> {
                                 ])
                               : null,
                           color: active ? null : AppColors.bg,
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: active
                                 ? AppColors.primary
@@ -1404,7 +1404,7 @@ class _ProfileState extends State<ProfileScreen> {
                                     info.name,
                                     style: GoogleFonts.poppins(
                                       color: AppColors.txt,
-                                      fontSize: 14,
+                                      fontSize: 13,
                                       fontWeight: active
                                           ? FontWeight.w700
                                           : FontWeight.w600,
@@ -1443,7 +1443,7 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
@@ -1469,7 +1469,7 @@ class _ProfileState extends State<ProfileScreen> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         onTap: () async {
           HapticFeedback.selectionClick();
           await context.read<ThemeProvider>().setLang(code);
@@ -1488,14 +1488,14 @@ class _ProfileState extends State<ProfileScreen> {
                     AppColors.secondary.withOpacity(0.08),
                   ])
                 : null,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isActive ? AppColors.primary : AppColors.border,
               width: isActive ? 1.5 : 1,
             ),
           ),
           child: Row(children: [
-            Text(flag, style: const TextStyle(fontSize: 22)),
+            Text(flag, style: const TextStyle(fontSize: 24)),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
@@ -1532,7 +1532,7 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(S.get('clear_cache'),
@@ -1565,7 +1565,7 @@ class _ProfileState extends State<ProfileScreen> {
               foregroundColor: const Color(0xFF0F1028),
               minimumSize: const Size(80, 40),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(S.get('clear_cache'),
@@ -1605,7 +1605,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(28)),
+                const BorderRadius.vertical(top: Radius.circular(16)),
             border: Border(
               top:
                   BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -1620,7 +1620,7 @@ class _ProfileState extends State<ProfileScreen> {
                 height: 5,
                 decoration: BoxDecoration(
                   color: AppColors.border,
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               const SizedBox(height: 18),
@@ -1633,7 +1633,7 @@ class _ProfileState extends State<ProfileScreen> {
                   'Template import',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
@@ -1643,7 +1643,7 @@ class _ProfileState extends State<ProfileScreen> {
               Text(
                 'Do\'stingizdan olgan JSON ni yopishtiring',
                 style: GoogleFonts.poppins(
-                    color: AppColors.sub, fontSize: 12),
+                    color: AppColors.sub, fontSize: 11),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -1651,11 +1651,11 @@ class _ProfileState extends State<ProfileScreen> {
                 minLines: 5,
                 maxLines: 10,
                 style: GoogleFonts.poppins(
-                    color: AppColors.txt, fontSize: 12),
+                    color: AppColors.txt, fontSize: 11),
                 decoration: InputDecoration(
                   hintText: '{"app":"MotivAI", ...}',
                   hintStyle: GoogleFonts.poppins(
-                      color: AppColors.hint, fontSize: 12),
+                      color: AppColors.hint, fontSize: 11),
                   filled: true,
                   fillColor: AppColors.bg,
                   border: OutlineInputBorder(
@@ -1800,7 +1800,7 @@ class _ProfileState extends State<ProfileScreen> {
               AppColors.card,
               Color.lerp(AppColors.card, AppColors.primary, 0.08)!,
             ]),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: AppColors.primary.withOpacity(0.4),
               width: 1.5,
@@ -1841,7 +1841,7 @@ class _ProfileState extends State<ProfileScreen> {
                 child: Text(
                   'MotivAI',
                   style: GoogleFonts.poppins(
-                    fontSize: 28,
+                    fontSize: 24,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
                     letterSpacing: -0.5,
@@ -1862,7 +1862,7 @@ class _ProfileState extends State<ProfileScreen> {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 14,
+                  fontSize: 13,
                   height: 1.5,
                 ),
               ),
@@ -1887,14 +1887,14 @@ class _ProfileState extends State<ProfileScreen> {
   Widget _aboutRow(String emoji, String label) {
     return Row(
       children: [
-        Text(emoji, style: const TextStyle(fontSize: 16)),
+        Text(emoji, style: const TextStyle(fontSize: 15)),
         const SizedBox(width: 10),
         Expanded(
           child: Text(
             label,
             style: GoogleFonts.poppins(
               color: AppColors.sub,
-              fontSize: 12,
+              fontSize: 11,
             ),
           ),
         ),
@@ -1935,7 +1935,7 @@ class _ProfileState extends State<ProfileScreen> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(28)),
+              const BorderRadius.vertical(top: Radius.circular(16)),
           border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5)),
         ),
@@ -1948,7 +1948,7 @@ class _ProfileState extends State<ProfileScreen> {
               height: 5,
               decoration: BoxDecoration(
                 color: AppColors.border,
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             const SizedBox(height: 20),
@@ -1961,7 +1961,7 @@ class _ProfileState extends State<ProfileScreen> {
                 "Qo'llanma",
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -2001,7 +2001,7 @@ class _ProfileState extends State<ProfileScreen> {
                 AppColors.primary.withOpacity(0.22),
                 AppColors.secondary.withOpacity(0.12),
               ]),
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                   color: AppColors.primary.withOpacity(0.3)),
             ),
@@ -2016,7 +2016,7 @@ class _ProfileState extends State<ProfileScreen> {
                   title,
                   style: GoogleFonts.poppins(
                     color: AppColors.txt,
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -2025,7 +2025,7 @@ class _ProfileState extends State<ProfileScreen> {
                   body,
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
-                    fontSize: 12,
+                    fontSize: 11,
                     height: 1.4,
                   ),
                 ),
@@ -2043,7 +2043,7 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.danger.withOpacity(0.4)),
         ),
         title: Row(
@@ -2102,7 +2102,7 @@ class _ProfileState extends State<ProfileScreen> {
               backgroundColor: AppColors.danger,
               minimumSize: const Size(100, 40),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(
@@ -2124,7 +2124,7 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(S.get('logout'),
@@ -2132,7 +2132,7 @@ class _ProfileState extends State<ProfileScreen> {
                 color: AppColors.txt, fontWeight: FontWeight.w700)),
         content: Text(
           S.get('logout_confirm'),
-          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 14),
+          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
         ),
         actions: [
           TextButton(
@@ -2149,7 +2149,7 @@ class _ProfileState extends State<ProfileScreen> {
               backgroundColor: AppColors.danger,
               minimumSize: const Size(80, 40),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(S.get('logout'), style: GoogleFonts.poppins()),
@@ -2169,7 +2169,7 @@ class _ProfileState extends State<ProfileScreen> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(28)),
+              const BorderRadius.vertical(top: Radius.circular(16)),
           border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5)),
         ),
@@ -2182,7 +2182,7 @@ class _ProfileState extends State<ProfileScreen> {
               height: 5,
               decoration: BoxDecoration(
                 color: AppColors.border,
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             const SizedBox(height: 20),
@@ -2190,7 +2190,7 @@ class _ProfileState extends State<ProfileScreen> {
               'Eslatma vaqti',
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               ),
@@ -2212,9 +2212,9 @@ class _ProfileState extends State<ProfileScreen> {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Material(
                   color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     onTap: () {
                       HapticFeedback.selectionClick();
                       np.setDefaultReminderMinutes(m);
@@ -2231,7 +2231,7 @@ class _ProfileState extends State<ProfileScreen> {
                               ])
                             : null,
                         color: active ? null : AppColors.bg,
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: active
                               ? AppColors.primary
@@ -2254,7 +2254,7 @@ class _ProfileState extends State<ProfileScreen> {
                               label,
                               style: GoogleFonts.poppins(
                                 color: AppColors.txt,
-                                fontSize: 14,
+                                fontSize: 13,
                                 fontWeight: active
                                     ? FontWeight.w700
                                     : FontWeight.w500,

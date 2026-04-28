@@ -57,7 +57,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
@@ -83,7 +83,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.danger,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(8)),
             ),
             child: Text("O'chirish", style: GoogleFonts.poppins()),
           ),
@@ -150,7 +150,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                           'Kundalik odatlar',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 22,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
@@ -203,7 +203,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Text('\u{1F331}', style: TextStyle(fontSize: 48)),
+                child: Text('\u{1F331}', style: TextStyle(fontSize: 32)),
               ),
             ),
             const SizedBox(height: 18),
@@ -211,7 +211,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
               'Hali odat yo\'q',
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -312,7 +312,7 @@ class _HabitCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       habit.emoji,
-                      style: const TextStyle(fontSize: 22),
+                      style: const TextStyle(fontSize: 24),
                     ),
                   ),
                 ),
@@ -325,7 +325,7 @@ class _HabitCard extends StatelessWidget {
                         habit.title,
                         style: GoogleFonts.poppins(
                           color: AppColors.txt,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
@@ -415,7 +415,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
+            const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -434,7 +434,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
             height: 5,
             decoration: BoxDecoration(
               color: AppColors.border,
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           const SizedBox(height: 18),
@@ -442,7 +442,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
             'Yangi odat',
             style: GoogleFonts.poppins(
               color: AppColors.txt,
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
@@ -492,7 +492,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
                     ),
                   ),
                   child: Center(
-                    child: Text(e, style: const TextStyle(fontSize: 20)),
+                    child: Text(e, style: const TextStyle(fontSize: 18)),
                   ),
                 ),
               );

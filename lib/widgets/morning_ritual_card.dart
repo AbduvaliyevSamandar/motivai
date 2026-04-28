@@ -91,7 +91,7 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
                         : '1 daqiqa — kayfiyat, maqsad, minnatdorlik',
                     style: GoogleFonts.poppins(
                       color: AppColors.sub,
-                      fontSize: 12,
+                      fontSize: 11,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -186,7 +186,7 @@ class _RitualSheetState extends State<_RitualSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
+            const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -206,7 +206,7 @@ class _RitualSheetState extends State<_RitualSheet> {
               height: 5,
               decoration: BoxDecoration(
                 color: AppColors.border,
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             const SizedBox(height: 18),
@@ -219,7 +219,7 @@ class _RitualSheetState extends State<_RitualSheet> {
                 'Kun boshi rituali',
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -230,7 +230,7 @@ class _RitualSheetState extends State<_RitualSheet> {
               '1 daqiqa — o\'z kuningizni asoslang',
               style: GoogleFonts.poppins(
                 color: AppColors.sub,
-                fontSize: 12,
+                fontSize: 11,
               ),
             ),
             const SizedBox(height: 20),
@@ -312,7 +312,7 @@ class _RitualSheetState extends State<_RitualSheet> {
           t,
           style: GoogleFonts.poppins(
             color: AppColors.sub,
-            fontSize: 12,
+            fontSize: 11,
             fontWeight: FontWeight.w600,
           ),
         ),

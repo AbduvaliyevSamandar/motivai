@@ -36,7 +36,7 @@ class ProductivityScoreCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                       colors: AppColors.gradCosmic),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary.withOpacity(0.45),
@@ -52,7 +52,7 @@ class ProductivityScoreCard extends StatelessWidget {
                 'Samaradorlik',
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -72,7 +72,7 @@ class ProductivityScoreCard extends StatelessWidget {
                   '$score',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 56,
+                    fontSize: 32,
                     fontWeight: FontWeight.w800,
                     height: 1,
                     letterSpacing: -2,
@@ -87,7 +87,7 @@ class ProductivityScoreCard extends StatelessWidget {
                   '/ 100',
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -101,13 +101,13 @@ class ProductivityScoreCard extends StatelessWidget {
             _scoreLabel(score),
             style: GoogleFonts.poppins(
               color: AppColors.sub,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
             ),
           ),
           const SizedBox(height: 14),
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: score / 100,
               minHeight: 6,
@@ -156,13 +156,13 @@ class ProductivityScoreCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
         color: AppColors.bg,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 14)),
+          Text(emoji, style: const TextStyle(fontSize: 13)),
           const SizedBox(width: 6),
           Expanded(
             child: Column(
@@ -173,7 +173,7 @@ class ProductivityScoreCard extends StatelessWidget {
                   label,
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
-                    fontSize: 9,
+                    fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.6,
                   ),
@@ -182,7 +182,7 @@ class ProductivityScoreCard extends StatelessWidget {
                   value,
                   style: GoogleFonts.poppins(
                     color: AppColors.txt,
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.2,
                   ),
@@ -205,7 +205,7 @@ class ProductivityScoreCard extends StatelessWidget {
             : score >= 30
                 ? '\u{1F680}'
                 : '\u{1F331}';
-    return Text(emoji, style: const TextStyle(fontSize: 28));
+    return Text(emoji, style: const TextStyle(fontSize: 24));
   }
 
   String _scoreLabel(int score) {

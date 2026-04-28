@@ -205,7 +205,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           S.get('register'),
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 26,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
@@ -299,7 +299,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 Expanded(
                                   child: ClipRRect(
                                     borderRadius:
-                                        BorderRadius.circular(4),
+                                        BorderRadius.circular(8),
                                     child: AnimatedContainer(
                                       duration: const Duration(
                                           milliseconds: 300),
@@ -323,7 +323,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   _strengthLabel,
                                   style: GoogleFonts.poppins(
                                     color: _strengthColor,
-                                    fontSize: 12,
+                                    fontSize: 11,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -369,8 +369,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             : AppColors.card
                                                 .withOpacity(0.5),
                                         borderRadius:
-                                            BorderRadius.circular(
-                                                14),
+                                            BorderRadius.circular(12),
                                         border: Border.all(
                                           color: isActive
                                               ? d.$3
@@ -486,7 +485,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   S.get('has_account'),
                                   style: GoogleFonts.poppins(
                                     color: AppColors.sub,
-                                    fontSize: 14,
+                                    fontSize: 13,
                                   ),
                                 ),
                                 const SizedBox(width: 6),
@@ -504,7 +503,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       S.get('login'),
                                       style: GoogleFonts.poppins(
                                         color: Colors.white,
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight:
                                             FontWeight.w700,
                                       ),
@@ -540,7 +539,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
-            borderRadius: BorderRadius.circular(2),
+            borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
                 color: AppColors.primary.withOpacity(0.6),
@@ -595,15 +594,15 @@ class _GoogleButton extends StatelessWidget {
       width: double.infinity,
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(16),
         child: InkWell(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(16),
           onTap: onTap,
           child: Container(
             height: 52,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: AppColors.border),
               boxShadow: [
                 BoxShadow(
@@ -622,7 +621,7 @@ class _GoogleButton extends StatelessWidget {
                   'Google bilan kirish',
                   style: GoogleFonts.poppins(
                     color: const Color(0xFF1F2937),
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -646,7 +645,7 @@ class _RegErrorBanner extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.danger.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.danger.withOpacity(0.5)),
       ),
       child: Row(

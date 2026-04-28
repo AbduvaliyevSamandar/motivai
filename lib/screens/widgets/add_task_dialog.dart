@@ -160,7 +160,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
+            const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -179,7 +179,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   height: 5,
                   decoration: BoxDecoration(
                     color: AppColors.border,
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
               ),
@@ -213,7 +213,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                       _isEdit ? 'Vazifani tahrirlash' : S.get('add_task'),
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 22,
+                        fontSize: 24,
                         fontWeight: FontWeight.w700,
                         letterSpacing: -0.5,
                       ),
@@ -380,10 +380,10 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         Expanded(
           child: Material(
             color: Colors.transparent,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: _pickDateTime,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 14, vertical: 14),
@@ -391,7 +391,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   color: _scheduledAt != null
                       ? AppColors.primary.withOpacity(0.1)
                       : AppColors.bg,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                     color: _scheduledAt != null
                         ? AppColors.primary.withOpacity(0.5)
@@ -437,18 +437,18 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
           const SizedBox(width: 8),
           Material(
             color: AppColors.bg,
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: () {
                 HapticFeedback.selectionClick();
                 setState(() => _scheduledAt = null);
               },
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Icon(LucideIcons.x,
@@ -607,7 +607,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       backgroundColor: err ? AppColors.danger : AppColors.success,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14)),
+          borderRadius: BorderRadius.circular(12)),
     ));
   }
 

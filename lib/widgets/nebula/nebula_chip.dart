@@ -47,7 +47,7 @@ class NebulaChip extends StatelessWidget {
           color: selected
               ? null
               : AppColors.card.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: selected
                 ? Colors.transparent
@@ -68,7 +68,7 @@ class NebulaChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (emoji != null) ...[
-              Text(emoji!, style: const TextStyle(fontSize: 14)),
+              Text(emoji!, style: const TextStyle(fontSize: 13)),
               const SizedBox(width: 6),
             ] else if (icon != null) ...[
               Icon(

@@ -39,7 +39,7 @@ class LevelBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(_emoji, style: const TextStyle(fontSize: 14)),
+          Text(_emoji, style: const TextStyle(fontSize: 13)),
           const SizedBox(width: D.sp4),
           Text(
             'Daraja $level',

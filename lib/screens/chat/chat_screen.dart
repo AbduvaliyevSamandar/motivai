@@ -97,7 +97,7 @@ class _ChatState extends State<ChatScreen> {
         backgroundColor: err ? AppColors.danger : AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
         ),
         margin: const EdgeInsets.all(12),
       ),
@@ -142,7 +142,7 @@ class _ChatState extends State<ChatScreen> {
               height: 36,
               decoration: BoxDecoration(
                 color: AppColors.primary.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 Iconsax.magicpen,
@@ -160,7 +160,7 @@ class _ChatState extends State<ChatScreen> {
                     'MotivAI',
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 16,
+                      fontSize: 15,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -0.2,
                     ),
@@ -258,14 +258,14 @@ class _ChatState extends State<ChatScreen> {
                   children: [
                     Expanded(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(26),
+                        borderRadius: BorderRadius.circular(16),
                         child: BackdropFilter(
                           filter: ImageFilter.blur(
                               sigmaX: 16, sigmaY: 16),
                           child: Container(
                             decoration: BoxDecoration(
                               color: AppColors.card.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(26),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                   color: AppColors.border),
                             ),
@@ -279,7 +279,7 @@ class _ChatState extends State<ChatScreen> {
                               onSubmitted: (_) => _send(),
                               style: GoogleFonts.poppins(
                                 color: AppColors.txt,
-                                fontSize: 14,
+                                fontSize: 13,
                               ),
                               decoration: InputDecoration(
                                 hintText: busy
@@ -390,7 +390,7 @@ class _ChatState extends State<ChatScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
@@ -421,7 +421,7 @@ class _ChatState extends State<ChatScreen> {
               backgroundColor: AppColors.danger,
               minimumSize: const Size(80, 40),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             child: Text(S.get('delete'), style: GoogleFonts.poppins()),
@@ -541,7 +541,7 @@ class _EmptyChat extends StatelessWidget {
           textAlign: TextAlign.center,
           style: GoogleFonts.poppins(
             color: AppColors.sub,
-            fontSize: 14,
+            fontSize: 13,
           ),
         ),
         const SizedBox(height: 32),
@@ -552,7 +552,7 @@ class _EmptyChat extends StatelessWidget {
                 glowIntensity: 0.15,
                 child: Row(
                   children: [
-                    Text(p.$1, style: const TextStyle(fontSize: 22),
+                    Text(p.$1, style: const TextStyle(fontSize: 24),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
                     const SizedBox(width: 12),
@@ -561,7 +561,7 @@ class _EmptyChat extends StatelessWidget {
                         p.$2,
                         style: GoogleFonts.poppins(
                           color: AppColors.txt,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -612,7 +612,7 @@ class _ChatBubble extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: AppColors.gradCosmic),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(Iconsax.magicpen,
                           color: Colors.white, size: 10),
@@ -660,10 +660,10 @@ class _ChatBubble extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(18),
-          topRight: Radius.circular(4),
-          bottomLeft: Radius.circular(18),
-          bottomRight: Radius.circular(18),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(8),
+          bottomLeft: Radius.circular(16),
+          bottomRight: Radius.circular(16),
         ),
         boxShadow: [
           BoxShadow(
@@ -682,10 +682,10 @@ class _ChatBubble extends StatelessWidget {
   Widget _aiBubble() {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
-        topLeft: Radius.circular(4),
-        topRight: Radius.circular(18),
-        bottomLeft: Radius.circular(18),
-        bottomRight: Radius.circular(18),
+        topLeft: Radius.circular(8),
+        topRight: Radius.circular(16),
+        bottomLeft: Radius.circular(16),
+        bottomRight: Radius.circular(16),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
@@ -695,10 +695,10 @@ class _ChatBubble extends StatelessWidget {
                 ? AppColors.danger.withOpacity(0.1)
                 : AppColors.card.withOpacity(0.7),
             borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(4),
-              topRight: Radius.circular(18),
-              bottomLeft: Radius.circular(18),
-              bottomRight: Radius.circular(18),
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(16),
+              bottomLeft: Radius.circular(16),
+              bottomRight: Radius.circular(16),
             ),
             border: Border.all(
               color: msg.isError
@@ -720,7 +720,7 @@ class _ChatBubble extends StatelessWidget {
       context: context,
       backgroundColor: AppColors.card,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (ctx) => SafeArea(
         child: Column(
@@ -732,7 +732,7 @@ class _ChatBubble extends StatelessWidget {
               height: 4,
               decoration: BoxDecoration(
                 color: AppColors.border,
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             const SizedBox(height: 16),
@@ -824,7 +824,7 @@ class _RichText extends StatelessWidget {
       text: TextSpan(
         style: GoogleFonts.poppins(
           color: color,
-          fontSize: 14,
+          fontSize: 13,
           height: 1.5,
         ),
         children: spans,
@@ -896,7 +896,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                         colors: AppColors.gradCosmic),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
                         color: AppColors.primary.withOpacity(0.45),
@@ -945,7 +945,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     '${widget.tasks.length} ta',
                     style: GoogleFonts.poppins(
                       color: AppColors.primary,
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w700,
                     ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -1023,7 +1023,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                       '${_totalMinutes} min',
                       style: GoogleFonts.poppins(
                         color: AppColors.sub,
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w600,
                       ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -1033,7 +1033,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                       '$_selectedCount / ${widget.tasks.length}',
                       style: GoogleFonts.poppins(
                         color: AppColors.txt,
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                       ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -1059,7 +1059,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                       side: BorderSide(color: AppColors.border),
                       minimumSize: const Size(0, 48),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                     child: Text(
@@ -1113,10 +1113,10 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
     return Expanded(
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
             padding: const EdgeInsets.symmetric(
                 horizontal: 10, vertical: 8),
@@ -1128,7 +1128,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     ])
                   : null,
               color: active ? null : AppColors.card.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: active
                     ? AppColors.primary.withOpacity(0.5)
@@ -1191,7 +1191,7 @@ class _SuggestItem extends StatelessWidget {
           color: task.isSelected
               ? null
               : AppColors.card.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: task.isSelected
                 ? AppColors.primary.withOpacity(0.5)
@@ -1293,10 +1293,10 @@ class _TypingIndicatorState extends State<_TypingIndicator>
         padding: const EdgeInsets.only(bottom: 10, left: 8),
         child: ClipRRect(
           borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(18),
-            bottomLeft: Radius.circular(18),
-            bottomRight: Radius.circular(18),
+            topLeft: Radius.circular(8),
+            topRight: Radius.circular(16),
+            bottomLeft: Radius.circular(16),
+            bottomRight: Radius.circular(16),
           ),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
@@ -1306,10 +1306,10 @@ class _TypingIndicatorState extends State<_TypingIndicator>
               decoration: BoxDecoration(
                 color: AppColors.card.withOpacity(0.7),
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(4),
-                  topRight: Radius.circular(18),
-                  bottomLeft: Radius.circular(18),
-                  bottomRight: Radius.circular(18),
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(16),
+                  bottomLeft: Radius.circular(16),
+                  bottomRight: Radius.circular(16),
                 ),
                 border: Border.all(color: AppColors.glassBorder),
               ),

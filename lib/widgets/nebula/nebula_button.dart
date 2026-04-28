@@ -96,7 +96,7 @@ class _NebulaButtonState extends State<NebulaButton>
                 Text(
                   widget.label,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,
                     letterSpacing: 0.1,

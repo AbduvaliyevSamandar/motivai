@@ -122,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen>
                           height: 72,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.2),
                             ),
@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen>
                             ],
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(16),
                             child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Image.asset(
@@ -169,7 +169,7 @@ class _LoginScreenState extends State<LoginScreen>
                           S.get('motto'),
                           style: GoogleFonts.poppins(
                             color: AppColors.sub,
-                            fontSize: 14,
+                            fontSize: 13,
                             height: 1.4,
                           ),
                           textAlign: TextAlign.center,
@@ -277,7 +277,7 @@ class _LoginScreenState extends State<LoginScreen>
                               S.get('no_account'),
                               style: GoogleFonts.poppins(
                                 color: AppColors.sub,
-                                fontSize: 14,
+                                fontSize: 13,
                               ),
                             ),
                             const SizedBox(width: 6),
@@ -312,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   S.get('register'),
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
@@ -353,7 +353,7 @@ class _LoginScreenState extends State<LoginScreen>
             S.get('or'),
             style: GoogleFonts.poppins(
               color: AppColors.sub,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
               letterSpacing: 1.5,
             ),
@@ -419,7 +419,7 @@ class _LoginScreenState extends State<LoginScreen>
                 label,
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -532,7 +532,7 @@ class _LoginScreenState extends State<LoginScreen>
       backgroundColor: isError ? AppColors.danger : AppColors.success,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14)),
+          borderRadius: BorderRadius.circular(12)),
     ));
   }
 
@@ -563,7 +563,7 @@ class _AuthSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
+            const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -582,7 +582,7 @@ class _AuthSheet extends StatelessWidget {
             height: 5,
             decoration: BoxDecoration(
               color: AppColors.border,
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
           const SizedBox(height: 24),
@@ -596,7 +596,7 @@ class _AuthSheet extends StatelessWidget {
                   accent.withOpacity(0.05),
                 ],
               ),
-              borderRadius: BorderRadius.circular(22),
+              borderRadius: BorderRadius.circular(16),
               border: Border.all(color: accent.withOpacity(0.4)),
               boxShadow: [
                 BoxShadow(
@@ -612,7 +612,7 @@ class _AuthSheet extends StatelessWidget {
             title,
             style: GoogleFonts.poppins(
               color: AppColors.txt,
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
             ),
@@ -652,7 +652,7 @@ class _ErrorBanner extends StatelessWidget {
           const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.danger.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.danger.withOpacity(0.5)),
       ),
       child: Row(

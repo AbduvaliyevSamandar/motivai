@@ -114,7 +114,7 @@ class _SplashScreenState extends State<SplashScreen>
                             height: 140,
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.04),
-                              borderRadius: BorderRadius.circular(32),
+                              borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                 color: Colors.white.withOpacity(0.2),
                                 width: 1.5,
@@ -129,7 +129,7 @@ class _SplashScreenState extends State<SplashScreen>
                               ],
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(32),
+                              borderRadius: BorderRadius.circular(16),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Image.asset(
@@ -163,7 +163,7 @@ class _SplashScreenState extends State<SplashScreen>
                       child: Text(
                         'MotivAI',
                         style: GoogleFonts.poppins(
-                          fontSize: 56,
+                          fontSize: 32,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -2,
                           color: Colors.white,
@@ -186,7 +186,7 @@ class _SplashScreenState extends State<SplashScreen>
                         S.get('motto'),
                         style: GoogleFonts.poppins(
                           color: AppColors.sub,
-                          fontSize: 14,
+                          fontSize: 13,
                           fontWeight: FontWeight.w400,
                           height: 1.5,
                           letterSpacing: 0.3,
@@ -232,7 +232,7 @@ class _LoadingBar extends StatelessWidget {
                   height: 4,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 FractionallySizedBox(
@@ -243,7 +243,7 @@ class _LoadingBar extends StatelessWidget {
                       gradient: LinearGradient(
                         colors: AppColors.gradAurora,
                       ),
-                      borderRadius: BorderRadius.circular(3),
+                      borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
                           color: AppColors.primary.withOpacity(0.6),

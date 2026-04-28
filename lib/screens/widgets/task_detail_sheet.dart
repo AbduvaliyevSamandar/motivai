@@ -61,7 +61,7 @@ class _TaskDetailSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(28)),
+            const BorderRadius.vertical(top: Radius.circular(16)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -82,7 +82,7 @@ class _TaskDetailSheet extends StatelessWidget {
                 height: 5,
                 decoration: BoxDecoration(
                   color: AppColors.border,
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),
@@ -106,7 +106,7 @@ class _TaskDetailSheet extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(task.emoji,
-                        style: const TextStyle(fontSize: 28)),
+                        style: const TextStyle(fontSize: 24)),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -168,7 +168,7 @@ class _TaskDetailSheet extends StatelessWidget {
                 task.description,
                 style: GoogleFonts.poppins(
                   color: AppColors.sub,
-                  fontSize: 14,
+                  fontSize: 13,
                   height: 1.5,
                 ),
               ),
@@ -202,7 +202,7 @@ class _TaskDetailSheet extends StatelessWidget {
                         task.planTitle!,
                         style: GoogleFonts.poppins(
                           color: AppColors.sub,
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w500,
                         ),
                         overflow: TextOverflow.ellipsis,
@@ -298,7 +298,7 @@ class _TaskDetailSheet extends StatelessWidget {
                     AppColors.success.withOpacity(0.22),
                     AppColors.success.withOpacity(0.08),
                   ]),
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                       color: AppColors.success.withOpacity(0.45)),
                 ),
@@ -343,7 +343,7 @@ class _TaskDetailSheet extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
       decoration: BoxDecoration(
         color: color.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: color.withOpacity(0.4)),
       ),
       child: Row(
@@ -417,7 +417,7 @@ class _TaskDetailSheet extends StatelessWidget {
           height: 36,
           decoration: BoxDecoration(
             color: color.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(color: color.withOpacity(0.3)),
           ),
           child: Icon(icon, color: color, size: 18),
@@ -437,7 +437,7 @@ class _TaskDetailSheet extends StatelessWidget {
           value,
           style: GoogleFonts.poppins(
             color: AppColors.txt,
-            fontSize: 14,
+            fontSize: 13,
             fontWeight: FontWeight.w700,
             letterSpacing: -0.3,
           ),
@@ -454,18 +454,18 @@ class _TaskDetailSheet extends StatelessWidget {
   }) {
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
         },
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         child: Container(
           height: 50,
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             border: Border.all(color: color.withOpacity(0.4)),
           ),
           child: Row(
@@ -477,7 +477,7 @@ class _TaskDetailSheet extends StatelessWidget {
                 label,
                 style: GoogleFonts.poppins(
                   color: color,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -591,7 +591,7 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                     'Izoh qo\'shish (reflection)',
                     style: GoogleFonts.poppins(
                       color: AppColors.sub,
-                      fontSize: 12,
+                      fontSize: 11,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -652,7 +652,7 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                   hintText: 'Nima o\'rgandingiz? Qanday borish mumkin?',
                   hintStyle: GoogleFonts.poppins(
                     color: AppColors.hint,
-                    fontSize: 12,
+                    fontSize: 11,
                   ),
                   border: InputBorder.none,
                   isDense: true,
@@ -672,14 +672,14 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                     },
                     child: Text('Bekor',
                         style: GoogleFonts.poppins(
-                            color: AppColors.sub, fontSize: 12)),
+                            color: AppColors.sub, fontSize: 11)),
                   ),
                   TextButton(
                     onPressed: _save,
                     child: Text('Saqlash',
                         style: GoogleFonts.poppins(
                             color: AppColors.primary,
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700)),
                   ),
                 ],

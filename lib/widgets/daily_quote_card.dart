@@ -144,7 +144,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                         q.author,
                         style: GoogleFonts.poppins(
                           color: AppColors.sub,
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w600,
                           fontStyle: FontStyle.italic,
                         ),

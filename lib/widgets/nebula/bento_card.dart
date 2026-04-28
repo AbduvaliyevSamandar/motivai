@@ -110,13 +110,13 @@ class _BentoCardState extends State<BentoCard>
         Row(
           children: [
             if (widget.emoji != null)
-              Text(widget.emoji!, style: const TextStyle(fontSize: 20)),
+              Text(widget.emoji!, style: const TextStyle(fontSize: 18)),
             if (widget.icon != null)
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   color: accent.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(9),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(widget.icon, color: accent, size: 16),
               ),
@@ -131,7 +131,7 @@ class _BentoCardState extends State<BentoCard>
                             ? AppColors.success
                             : AppColors.danger)
                         .withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -152,7 +152,7 @@ class _BentoCardState extends State<BentoCard>
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.poppins(
-                            fontSize: 9,
+                            fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: widget.trendPositive
                                 ? AppColors.success
@@ -178,7 +178,7 @@ class _BentoCardState extends State<BentoCard>
                   widget.value!,
                   maxLines: 1,
                   style: GoogleFonts.poppins(
-                    fontSize: 26,
+                    fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: AppColors.txt,
                     height: 1.1,

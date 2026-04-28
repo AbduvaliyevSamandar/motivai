@@ -10,7 +10,7 @@ class AppText {
       );
 
   static TextStyle get displayMedium => GoogleFonts.poppins(
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: FontWeight.w700,
         color: AppColors.txt,
       );
@@ -22,7 +22,7 @@ class AppText {
       );
 
   static TextStyle get headlineMedium => GoogleFonts.poppins(
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: FontWeight.w600,
         color: AppColors.txt,
       );
@@ -34,31 +34,31 @@ class AppText {
       );
 
   static TextStyle get titleMedium => GoogleFonts.poppins(
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w500,
         color: AppColors.txt,
       );
 
   static TextStyle get bodyLarge => GoogleFonts.poppins(
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: FontWeight.w400,
         color: AppColors.txt,
       );
 
   static TextStyle get bodyMedium => GoogleFonts.poppins(
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.w400,
         color: AppColors.txt,
       );
 
   static TextStyle get bodySmall => GoogleFonts.poppins(
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: FontWeight.w400,
         color: AppColors.txt,
       );
 
   static TextStyle get labelLarge => GoogleFonts.poppins(
-        fontSize: 14,
+        fontSize: 13,
         fontWeight: FontWeight.w500,
         color: AppColors.txt,
       );

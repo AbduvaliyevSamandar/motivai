@@ -130,7 +130,7 @@ class _WrappedScreenState extends State<WrappedScreen> {
                               color: i == _slide
                                   ? Colors.white
                                   : Colors.white.withOpacity(0.3),
-                              borderRadius: BorderRadius.circular(3),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           );
                         }),
@@ -168,7 +168,7 @@ class _WrappedScreenState extends State<WrappedScreen> {
                               side: BorderSide(
                                   color: Colors.white.withOpacity(0.3)),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
+                                borderRadius: BorderRadius.circular(12),
                               ),
                             ),
                             child: Text(
@@ -281,7 +281,7 @@ class _SlideView extends StatelessWidget {
             ),
             child: Center(
               child: Text(slide.emoji,
-                  style: const TextStyle(fontSize: 80)),
+                  style: const TextStyle(fontSize: 32)),
             ),
           ),
           const SizedBox(height: 24),
@@ -301,7 +301,7 @@ class _SlideView extends StatelessWidget {
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
               color: Colors.white,
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.5,
             ),

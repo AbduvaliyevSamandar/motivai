@@ -113,7 +113,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
-                  borderRadius: BorderRadius.circular(26),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
                     color: levelUp
                         ? AppColors.accent.withOpacity(0.6)
@@ -150,7 +150,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                         levelUp ? 'DARAJA O\'SDI!' : 'VAZIFA BAJARILDI!',
                         style: GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 22,
+                          fontSize: 24,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 1,
                         ),
@@ -163,7 +163,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: AppColors.txt.withOpacity(0.9),
-                        fontSize: 14,
+                        fontSize: 13,
                         fontWeight: FontWeight.w500,
                         height: 1.3,
                       ),
@@ -210,7 +210,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                               colors: AppColors.gradCosmic),
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
                               color:
@@ -359,7 +359,7 @@ class _PulseIconState extends State<_PulseIcon>
           child: Center(
             child: Text(
               widget.levelUp ? '\u{1F451}' : '\u{2705}',
-              style: const TextStyle(fontSize: 38),
+              style: const TextStyle(fontSize: 32),
             ),
           ),
         ),

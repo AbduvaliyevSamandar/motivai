@@ -78,7 +78,7 @@ class _JourneyScreenState extends State<JourneyScreen>
             'Sayohat',
             style: GoogleFonts.poppins(
               color: Colors.white,
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
@@ -191,7 +191,7 @@ class _JourneyScreenState extends State<JourneyScreen>
                 : 'Yana ${30 - _productive} kun ish qilib daraxtni gullattring.',
             style: GoogleFonts.poppins(
               color: AppColors.sub,
-              fontSize: 12,
+              fontSize: 11,
             ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
@@ -225,7 +225,7 @@ class _JourneyScreenState extends State<JourneyScreen>
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
       decoration: BoxDecoration(
         color: AppColors.card.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: c.withOpacity(0.3)),
       ),
       child: Column(
@@ -235,7 +235,7 @@ class _JourneyScreenState extends State<JourneyScreen>
           Text(v,
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
               )),
           Text(l,
@@ -253,7 +253,7 @@ class _JourneyScreenState extends State<JourneyScreen>
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.card.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -262,7 +262,7 @@ class _JourneyScreenState extends State<JourneyScreen>
           Text('Oxirgi 30 kun',
               style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 14,
+                  fontSize: 13,
                   fontWeight: FontWeight.w700)),
           const SizedBox(height: 12),
           Wrap(
@@ -282,7 +282,7 @@ class _JourneyScreenState extends State<JourneyScreen>
                 height: 26,
                 decoration: BoxDecoration(
                   color: c,
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               );
             }).toList(),
@@ -307,7 +307,7 @@ class _JourneyScreenState extends State<JourneyScreen>
           AppColors.primary.withOpacity(0.2),
           AppColors.secondary.withOpacity(0.1),
         ]),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.35)),
       ),
       child: Row(
@@ -415,7 +415,7 @@ class _TreePainter extends CustomPainter {
     if (stage < 3) {
       final tp = TextPainter(
         text: const TextSpan(
-            text: '\u{1F331}', style: TextStyle(fontSize: 40)),
+            text: '\u{1F331}', style: TextStyle(fontSize: 32)),
         textDirection: TextDirection.ltr,
       )..layout();
       tp.paint(canvas,

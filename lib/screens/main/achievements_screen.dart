@@ -65,7 +65,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                           'Yutuqlar',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 22,
+                            fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
@@ -78,13 +78,13 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                               colors: AppColors.gradCosmic),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           '$unlockedCount / $total',
                           style: GoogleFonts.poppins(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: FontWeight.w700,
                           ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -149,7 +149,7 @@ class _AchCard extends StatelessWidget {
                 ])
               : null,
           color: unlocked ? null : AppColors.card.withOpacity(0.4),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: unlocked
                 ? accent.withOpacity(0.5)
@@ -187,7 +187,7 @@ class _AchCard extends StatelessWidget {
                 child: Center(
                   child: Text(
                     unlocked ? def.emoji : '\u{1F512}',
-                    style: const TextStyle(fontSize: 30),
+                    style: const TextStyle(fontSize: 32),
                   ),
                 ),
               ),
@@ -200,7 +200,7 @@ class _AchCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.poppins(
                 color: unlocked ? AppColors.txt : AppColors.sub,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.2,
               ),
@@ -211,13 +211,13 @@ class _AchCard extends StatelessWidget {
                   const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: accent.withOpacity(unlocked ? 0.2 : 0.08),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 def.rarity.toUpperCase(),
                 style: GoogleFonts.poppins(
                   color: unlocked ? accent : AppColors.sub,
-                  fontSize: 8,
+                  fontSize: 10,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.8,
                 ),
@@ -248,7 +248,7 @@ class _AchDialog extends StatelessWidget {
             AppColors.card,
             Color.lerp(AppColors.card, accent, 0.08)!,
           ]),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: accent.withOpacity(0.5), width: 1.5),
           boxShadow: [
             BoxShadow(
@@ -276,7 +276,7 @@ class _AchDialog extends StatelessWidget {
                 child: Center(
                   child: Text(
                     unlocked ? def.emoji : '\u{1F512}',
-                    style: const TextStyle(fontSize: 44),
+                    style: const TextStyle(fontSize: 32),
                   ),
                 ),
               ),
@@ -287,7 +287,7 @@ class _AchDialog extends StatelessWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               ),

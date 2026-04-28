@@ -86,7 +86,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           child: Text('Aqlli reja',
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
@@ -109,7 +109,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: AppColors.card.withOpacity(0.4),
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: AppColors.border),
                       ),
                       child: Row(
@@ -122,7 +122,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                               'Soat va yo\'nalishni belgilab, reja yarating. AI shu vaqtni optimal bloklarga bo\'ladi.',
                               style: GoogleFonts.poppins(
                                 color: AppColors.sub,
-                                fontSize: 12,
+                                fontSize: 11,
                                 height: 1.5,
                               ),
                             ),
@@ -158,7 +158,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           AppColors.primary.withOpacity(0.18),
           AppColors.secondary.withOpacity(0.08),
         ]),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primary.withOpacity(0.3)),
       ),
       child: Column(
@@ -167,7 +167,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           Text('Qancha vaqtingiz bor?',
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w700,
               )),
           const SizedBox(height: 6),
@@ -199,7 +199,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                   textAlign: TextAlign.right,
                   style: GoogleFonts.poppins(
                     color: AppColors.txt,
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.w700,
                   ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -211,7 +211,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           Text('Yo\'nalish:',
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w700,
               )),
           const SizedBox(height: 10),
@@ -237,7 +237,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                           ])
                         : null,
                     color: active ? null : AppColors.bg,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: active
                           ? AppColors.primary
@@ -249,13 +249,13 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(a.emoji,
-                          style: const TextStyle(fontSize: 14)),
+                          style: const TextStyle(fontSize: 13)),
                       const SizedBox(width: 6),
                       Text(
                         a.name,
                         style: GoogleFonts.poppins(
                           color: AppColors.txt,
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: active
                               ? FontWeight.w700
                               : FontWeight.w500,
@@ -281,7 +281,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                   'Pomodoro tanaffuslar',
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
-                    fontSize: 12,
+                    fontSize: 11,
                   ),
                 ),
               ),
@@ -310,7 +310,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: AppColors.card.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.primary.withOpacity(0.3)),
             ),
             child: Column(
@@ -336,7 +336,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               color: AppColors.card.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.success.withOpacity(0.3)),
             ),
             child: Column(
@@ -372,7 +372,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.card.withOpacity(focus ? 0.6 : 0.3),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: c.withOpacity(0.35)),
       ),
       child: Row(
@@ -385,7 +385,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                 c.withOpacity(0.3),
                 c.withOpacity(0.1),
               ]),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
               child: Text(

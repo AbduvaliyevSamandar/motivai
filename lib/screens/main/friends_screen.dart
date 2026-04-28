@@ -69,7 +69,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(28)),
+                  const BorderRadius.vertical(top: Radius.circular(16)),
               border: Border(
                 top:
                     BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -84,7 +84,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   height: 5,
                   decoration: BoxDecoration(
                     color: AppColors.border,
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -92,7 +92,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   'Do\'st qo\'shish',
                   style: GoogleFonts.poppins(
                     color: AppColors.txt,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
@@ -130,7 +130,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           child: Center(
                             child: Text(e,
                                 style:
-                                    const TextStyle(fontSize: 22)),
+                                    const TextStyle(fontSize: 24)),
                           ),
                         ),
                       );
@@ -194,7 +194,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
@@ -274,7 +274,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(8)),
             ),
             child: Text('Yuborish',
                 style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
@@ -305,7 +305,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             'Do\'stlar',
             style: GoogleFonts.poppins(
               color: Colors.white,
-              fontSize: 22,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
@@ -384,7 +384,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         _myCode,
                         style: GoogleFonts.poppins(
                           color: AppColors.txt,
-                          fontSize: 22,
+                          fontSize: 24,
                           fontWeight: FontWeight.w700,
                           letterSpacing: 4,
                         ),
@@ -426,7 +426,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
               gradient: LinearGradient(colors: AppColors.gradGold),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -437,7 +437,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 Text('$_myCoins tanga',
                     style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: 11,
                         fontWeight: FontWeight.w700),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
@@ -454,18 +454,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: AppColors.card.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         children: [
-          Text('\u{1F46F}', style: const TextStyle(fontSize: 44)),
+          Text('\u{1F46F}', style: const TextStyle(fontSize: 32)),
           const SizedBox(height: 12),
           Text(
             'Hali do\'stlar yo\'q',
             style: GoogleFonts.poppins(
               color: AppColors.txt,
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -474,7 +474,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             'Yuqoridagi "+" tugmasi orqali do\'st qo\'shing',
             textAlign: TextAlign.center,
             style: GoogleFonts.poppins(
-                color: AppColors.sub, fontSize: 12),
+                color: AppColors.sub, fontSize: 11),
           ),
         ],
       ),
@@ -506,7 +506,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             ),
             child: Center(
               child: Text(f.emoji,
-                  style: const TextStyle(fontSize: 22)),
+                  style: const TextStyle(fontSize: 24)),
             ),
           ),
           const SizedBox(width: 12),
@@ -517,7 +517,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 Text(f.name,
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w700,
                     )),
                 const SizedBox(height: 2),

@@ -95,7 +95,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
           child: Text('Mahsuldorlik',
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
@@ -165,7 +165,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.card.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Column(
@@ -179,7 +179,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
           Text(value,
               style: GoogleFonts.poppins(
                 color: AppColors.txt,
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
               )),
         ],
@@ -193,7 +193,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.card.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -207,7 +207,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
               Text('Soat × kun',
                   style: GoogleFonts.poppins(
                     color: AppColors.txt,
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w700,
                   )),
               const Spacer(),
@@ -234,7 +234,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
                                 h.toString(),
                                 style: GoogleFonts.poppins(
                                   color: AppColors.sub,
-                                  fontSize: 8,
+                                  fontSize: 10,
                                 ),
                               )
                             : const SizedBox.shrink(),
@@ -280,7 +280,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
       decoration: BoxDecoration(
         color: c,
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(8),
       ),
     );
   }
@@ -299,7 +299,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
             margin: const EdgeInsets.symmetric(horizontal: 2),
             decoration: BoxDecoration(
               color: AppColors.primary.withOpacity(op),
-              borderRadius: BorderRadius.circular(3),
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
         const SizedBox(width: 8),

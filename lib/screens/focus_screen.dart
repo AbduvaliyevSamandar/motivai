@@ -74,7 +74,7 @@ class _FocusScreenState extends State<FocusScreen> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(24)),
+              top: Radius.circular(16)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
         child: Column(
@@ -87,7 +87,7 @@ class _FocusScreenState extends State<FocusScreen> {
                 height: 5,
                 decoration: BoxDecoration(
                   color: AppColors.border,
-                  borderRadius: BorderRadius.circular(3),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),
@@ -138,13 +138,13 @@ class _FocusScreenState extends State<FocusScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(s.emoji,
-                            style: const TextStyle(fontSize: 14)),
+                            style: const TextStyle(fontSize: 13)),
                         const SizedBox(width: 6),
                         Text(
                           s.name,
                           style: GoogleFonts.poppins(
                             color: sel ? s.color : AppColors.txt,
-                            fontSize: 12,
+                            fontSize: 11,
                             fontWeight: sel
                                 ? FontWeight.w700
                                 : FontWeight.w500,
@@ -197,7 +197,7 @@ class _FocusScreenState extends State<FocusScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: BorderRadius.circular(16),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
@@ -305,7 +305,7 @@ class _FocusScreenState extends State<FocusScreen> {
                                 children: [
                                   Text(_ambient.emoji,
                                       style: const TextStyle(
-                                          fontSize: 14)),
+                                          fontSize: 13)),
                                   const SizedBox(width: 6),
                                   Text(
                                     _ambient.name,
@@ -341,7 +341,7 @@ class _FocusScreenState extends State<FocusScreen> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         color: Colors.white.withOpacity(0.85),
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.w600,
                         letterSpacing: -0.3,
                         height: 1.3,
@@ -369,7 +369,7 @@ class _FocusScreenState extends State<FocusScreen> {
                             _formatTime(_session.remaining),
                             style: GoogleFonts.poppins(
                               color: Colors.white,
-                              fontSize: 72,
+                              fontSize: 32,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -3,
                               height: 1,
@@ -481,7 +481,7 @@ class _PhaseBadge extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(colors: gradient),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
             color: gradient.first.withOpacity(0.5),
@@ -498,7 +498,7 @@ class _PhaseBadge extends StatelessWidget {
             '$label \u2022 #$cycle',
             style: GoogleFonts.poppins(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
             ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -545,7 +545,7 @@ class _StatPill extends StatelessWidget {
             value,
             style: GoogleFonts.poppins(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.2,
             ),
@@ -593,7 +593,7 @@ class _ControlBtn extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     color: Colors.white.withOpacity(0.85),
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -55,7 +55,7 @@ class _EmptyStateState extends State<EmptyState>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(widget.emoji, style: const TextStyle(fontSize: 64)),
+              Text(widget.emoji, style: const TextStyle(fontSize: 32)),
               const SizedBox(height: D.sp16),
               Text(
                 widget.title,
@@ -71,7 +71,7 @@ class _EmptyStateState extends State<EmptyState>
                 Text(
                   widget.subtitle!,
                   style: GoogleFonts.poppins(
-                    fontSize: 14,
+                    fontSize: 13,
                     color: AppColors.sub,
                   ),
                   textAlign: TextAlign.center,
@@ -93,7 +93,7 @@ class _EmptyStateState extends State<EmptyState>
                   child: Text(
                     widget.actionLabel!,
                     style: GoogleFonts.poppins(
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

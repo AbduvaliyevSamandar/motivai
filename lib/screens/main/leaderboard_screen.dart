@@ -134,7 +134,7 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
                 indicator: BoxDecoration(
                   gradient: LinearGradient(
                       colors: AppColors.gradCosmic),
-                  borderRadius: BorderRadius.circular(13),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary.withOpacity(0.5),
@@ -166,15 +166,15 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
           const SizedBox(width: 8),
           Material(
             color: AppColors.card.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: onRefresh,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               child: Container(
                 width: 46,
                 height: 46,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Icon(LucideIcons.refreshCw,
@@ -238,7 +238,7 @@ class _MyRankHeader extends StatelessWidget {
                     initials.toUpperCase(),
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 22,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -264,7 +264,7 @@ class _MyRankHeader extends StatelessWidget {
                     '${auth.levelEmoji} Lvl ${auth.level}  \u2022  \u2B50 ${auth.points}',
                     style: GoogleFonts.poppins(
                       color: AppColors.sub,
-                      fontSize: 12,
+                      fontSize: 11,
                     ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
@@ -293,7 +293,7 @@ class _MyRankHeader extends StatelessWidget {
                     '#$r',
                     style: GoogleFonts.poppins(
                       color: Colors.white,
-                      fontSize: 36,
+                      fontSize: 32,
                       fontWeight: FontWeight.w800,
                       letterSpacing: -1.5,
                       height: 1,
@@ -353,7 +353,7 @@ class _LbTab extends StatelessWidget {
                   ),
                   child: const Center(
                     child:
-                        Text('\u{1F680}', style: TextStyle(fontSize: 48)),
+                        Text('\u{1F680}', style: TextStyle(fontSize: 32)),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -361,7 +361,7 @@ class _LbTab extends StatelessWidget {
                   S.get('empty_board'),
                   style: GoogleFonts.poppins(
                     color: AppColors.txt,
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
@@ -535,7 +535,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
                     initials,
                     style: GoogleFonts.poppins(
                       color: AppColors.txt,
-                      fontSize: 22,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -551,7 +551,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
                 color: widget.isMe
                     ? AppColors.primary
                     : AppColors.txt,
-                fontSize: 12,
+                fontSize: 11,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -559,7 +559,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
               '${e.points}',
               style: GoogleFonts.poppins(
                 color: AppColors.accent,
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               ),
@@ -575,7 +575,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
                   end: Alignment.bottomCenter,
                 ),
                 borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(14)),
+                    top: Radius.circular(12)),
                 boxShadow: [
                   BoxShadow(
                     color: widget.gradient.last.withOpacity(0.4),
@@ -589,7 +589,7 @@ class _PodiumSlotState extends State<_PodiumSlot>
                   '#${widget.rank}',
                   style: GoogleFonts.poppins(
                     color: Colors.white,
-                    fontSize: 30,
+                    fontSize: 32,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -1,
                     shadows: [
@@ -653,7 +653,7 @@ class _LbTile extends StatelessWidget {
             child: Text(
               '#${entry.rank}',
               style: GoogleFonts.poppins(
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: FontWeight.w700,
                 color: isMe ? AppColors.primary : AppColors.sub,
                 letterSpacing: -0.3,
@@ -684,7 +684,7 @@ class _LbTile extends StatelessWidget {
                   : 'U',
               style: GoogleFonts.poppins(
                 color: isMe ? Colors.white : AppColors.primary,
-                fontSize: 17,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -701,7 +701,7 @@ class _LbTile extends StatelessWidget {
                     entry.fullName,
                     style: GoogleFonts.poppins(
                       color: isMe ? AppColors.primary : AppColors.txt,
-                      fontSize: 14,
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),
                     maxLines: 1,
@@ -716,13 +716,13 @@ class _LbTile extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                           colors: AppColors.gradCosmic),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       'SIZ',
                       style: GoogleFonts.poppins(
                         color: Colors.white,
-                        fontSize: 9,
+                        fontSize: 10,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -759,7 +759,7 @@ class _LbTile extends StatelessWidget {
                 _fmt(entry.points),
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 17,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),

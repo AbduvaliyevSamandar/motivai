@@ -42,7 +42,7 @@ class _StreakFreezeBadgeState extends State<StreakFreezeBadge> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('\u2744\uFE0F', style: TextStyle(fontSize: 12)),
+            const Text('\u2744\uFE0F', style: TextStyle(fontSize: 11)),
             const SizedBox(width: 4),
             Text(
               '$_count/${StreakStorage.maxFreezes}',

@@ -119,7 +119,7 @@ class _GradientButtonState extends State<GradientButton>
                         Text(
                           widget.label,
                           style: GoogleFonts.poppins(
-                            fontSize: 16,
+                            fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,
                           ),

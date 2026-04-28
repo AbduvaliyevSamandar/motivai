@@ -79,7 +79,7 @@ class _Header extends StatelessWidget {
               'Bildirishnomalar',
               style: GoogleFonts.poppins(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.5,
               ),
@@ -93,13 +93,13 @@ class _Header extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                     colors: AppColors.gradCosmic),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 '${np.unreadCount}',
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w700,
                 ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -113,7 +113,7 @@ class _Header extends StatelessWidget {
                   color: AppColors.sub),
               color: AppColors.card,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
                 side: BorderSide(color: AppColors.border),
               ),
               itemBuilder: (_) => [
@@ -283,7 +283,7 @@ class _NotifTile extends StatelessWidget {
                                 notif.title,
                                 style: GoogleFonts.poppins(
                                   color: AppColors.txt,
-                                  fontSize: 14,
+                                  fontSize: 13,
                                   fontWeight: notif.read
                                       ? FontWeight.w500
                                       : FontWeight.w700,
@@ -316,7 +316,7 @@ class _NotifTile extends StatelessWidget {
                           notif.body,
                           style: GoogleFonts.poppins(
                             color: AppColors.sub,
-                            fontSize: 12,
+                            fontSize: 11,
                           ),
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -383,7 +383,7 @@ class _EmptyFeed extends StatelessWidget {
                 'Bildirishnomalar yo\'q',
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),

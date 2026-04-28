@@ -93,7 +93,7 @@ class StatCard extends StatelessWidget {
           Text(
             value,
             style: GoogleFonts.poppins(
-              fontSize: 28,
+              fontSize: 24,
               fontWeight: FontWeight.w700,
               color: hasGradient ? Colors.white : AppColors.txt,
             ),

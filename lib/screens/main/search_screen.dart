@@ -103,7 +103,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           height: 46,
                           decoration: BoxDecoration(
                             color: AppColors.card.withOpacity(0.6),
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: AppColors.border),
                           ),
                           child: TextField(
@@ -112,13 +112,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             onChanged: (v) => setState(() => _query = v),
                             style: GoogleFonts.poppins(
                               color: AppColors.txt,
-                              fontSize: 14,
+                              fontSize: 13,
                             ),
                             decoration: InputDecoration(
                               hintText: 'Qidirish...',
                               hintStyle: GoogleFonts.poppins(
                                 color: AppColors.hint,
-                                fontSize: 14,
+                                fontSize: 13,
                               ),
                               prefixIcon: Icon(LucideIcons.search,
                                   color: AppColors.sub, size: 20),
@@ -271,7 +271,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Text('\u{1F50D}', style: TextStyle(fontSize: 44)),
+                child: Text('\u{1F50D}', style: TextStyle(fontSize: 32)),
               ),
             ),
             const SizedBox(height: 18),
@@ -303,13 +303,13 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('\u{1F614}', style: TextStyle(fontSize: 48)),
+          const Text('\u{1F614}', style: TextStyle(fontSize: 32)),
           const SizedBox(height: 10),
           Text(
             'Hech narsa topilmadi',
             style: GoogleFonts.poppins(
               color: AppColors.sub,
-              fontSize: 14,
+              fontSize: 13,
             ),
           ),
         ],
@@ -329,18 +329,18 @@ class _TaskHit extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(12),
         child: InkWell(
           onTap: () {
             HapticFeedback.selectionClick();
             onTap();
           },
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: AppColors.card.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
                   color: task.color.withOpacity(0.3)),
             ),
@@ -351,11 +351,11 @@ class _TaskHit extends StatelessWidget {
                   height: 40,
                   decoration: BoxDecoration(
                     color: task.color.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Text(task.emoji,
-                        style: const TextStyle(fontSize: 20)),
+                        style: const TextStyle(fontSize: 18)),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -421,12 +421,12 @@ class _SimpleHit extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.card.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.border),
         ),
         child: Row(
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 22)),
+            Text(emoji, style: const TextStyle(fontSize: 24)),
             const SizedBox(width: 12),
             Expanded(
               child: Column(

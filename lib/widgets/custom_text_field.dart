@@ -82,7 +82,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         onChanged: widget.onChanged,
         textInputAction: widget.textInputAction,
         style: GoogleFonts.poppins(
-          fontSize: 14,
+          fontSize: 13,
           color: AppColors.txt,
         ),
         decoration: InputDecoration(
@@ -113,11 +113,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderSide: BorderSide(color: AppColors.danger),
           ),
           labelStyle: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 13,
             color: AppColors.sub,
           ),
           hintStyle: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 13,
             color: AppColors.hint,
           ),
         ),

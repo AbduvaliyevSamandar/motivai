@@ -68,7 +68,7 @@ class OfflineBanner extends StatelessWidget {
                                 : '${q.pendingCount} ta amal navbatda — bosing',
                         style: GoogleFonts.poppins(
                           color: AppColors.txt,
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
               maxLines: 1, overflow: TextOverflow.ellipsis,

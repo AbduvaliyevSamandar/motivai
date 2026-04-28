@@ -47,7 +47,7 @@ class _OtpSheetState extends State<_OtpSheet> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(28)),
+              const BorderRadius.vertical(top: Radius.circular(16)),
           border: Border(
             top: BorderSide(color: AppColors.glassBorder, width: 1.5),
           ),
@@ -61,7 +61,7 @@ class _OtpSheetState extends State<_OtpSheet> {
               height: 5,
               decoration: BoxDecoration(
                 color: AppColors.border,
-                borderRadius: BorderRadius.circular(3),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
             const SizedBox(height: 18),
@@ -74,7 +74,7 @@ class _OtpSheetState extends State<_OtpSheet> {
                 widget.title,
                 style: GoogleFonts.poppins(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: 24,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -85,7 +85,7 @@ class _OtpSheetState extends State<_OtpSheet> {
             Text(
               '${widget.email} ga 6 xonali kod yuborildi',
               style: GoogleFonts.poppins(
-                  color: AppColors.sub, fontSize: 12),
+                  color: AppColors.sub, fontSize: 11),
               textAlign: TextAlign.center,
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),

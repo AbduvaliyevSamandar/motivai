@@ -69,7 +69,7 @@ class CustomChip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (emoji != null) ...[
-              Text(emoji!, style: const TextStyle(fontSize: 14)),
+              Text(emoji!, style: const TextStyle(fontSize: 13)),
               const SizedBox(width: 6),
             ] else if (icon != null) ...[
               Icon(

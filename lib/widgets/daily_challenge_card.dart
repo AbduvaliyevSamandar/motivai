@@ -53,7 +53,7 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                     ? AppColors.gradSuccess
                     : AppColors.gradFire,
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: (_completed
@@ -83,7 +83,7 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                       'KUNLIK CHALLENGE',
                       style: GoogleFonts.poppins(
                         color: AppColors.sub,
-                        fontSize: 9,
+                        fontSize: 10,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.5,
                       ),
@@ -95,13 +95,13 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: AppColors.gradGold),
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         '+${c.bonusXP} XP',
                         style: GoogleFonts.poppins(
                           color: const Color(0xFF0F1028),
-                          fontSize: 9,
+                          fontSize: 10,
                           fontWeight: FontWeight.w800,
                         ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -126,7 +126,7 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                   children: [
                     Expanded(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(4),
+                        borderRadius: BorderRadius.circular(8),
                         child: LinearProgressIndicator(
                           value: pct,
                           minHeight: 5,

@@ -92,7 +92,7 @@ class _ShellState extends State<MainShell> {
         backgroundColor: AppColors.card,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           side: BorderSide(color: AppColors.border),
         ),
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 100),

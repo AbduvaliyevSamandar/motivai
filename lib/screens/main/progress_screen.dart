@@ -78,7 +78,7 @@ class _ProgState extends State<ProgressScreen> {
                                   S.get('analytics'),
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
-                                    fontSize: 28,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: -0.5,
                                   ),
@@ -256,7 +256,7 @@ class _LevelHero extends StatelessWidget {
             gradientColors: AppColors.gradCosmic,
             center: Text(
               auth.levelEmoji,
-              style: const TextStyle(fontSize: 36),
+              style: const TextStyle(fontSize: 32),
             ),
           ),
           const SizedBox(width: 20),
@@ -286,7 +286,7 @@ class _LevelHero extends StatelessWidget {
                   '${S.get("next_level")}: $ptsNext XP',
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
-                    fontSize: 12,
+                    fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -361,7 +361,7 @@ class _CosmicLineChart extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                       colors: AppColors.gradCosmic),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primary.withOpacity(0.5),
@@ -377,7 +377,7 @@ class _CosmicLineChart extends StatelessWidget {
                 S.get('weekly_points'),
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -399,7 +399,7 @@ class _CosmicLineChart extends StatelessWidget {
                         '${s.y.toInt()} XP',
                         GoogleFonts.poppins(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
                         ),
                       );
@@ -555,7 +555,7 @@ class _HeatmapCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                       colors: AppColors.gradCyan),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.secondary.withOpacity(0.5),
@@ -571,7 +571,7 @@ class _HeatmapCard extends StatelessWidget {
                 'Faollik (35 kun)',
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -637,7 +637,7 @@ class _HeatmapCard extends StatelessWidget {
                         AppColors.primary.withOpacity(0.1 + i * 0.18),
                         AppColors.secondary.withOpacity(0.1 + i * 0.15),
                       ]),
-                      borderRadius: BorderRadius.circular(3),
+                      borderRadius: BorderRadius.circular(8),
                     ),
                   ),
                 );
@@ -681,7 +681,7 @@ class _HeatCell extends StatelessWidget {
             AppColors.primary.withOpacity(op),
             AppColors.secondary.withOpacity(op * 0.8),
           ]),
-          borderRadius: BorderRadius.circular(4),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: intensity > 0.5
               ? [
                   BoxShadow(
@@ -746,7 +746,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                       colors: AppColors.gradAccent),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.pink.withOpacity(0.5),
@@ -762,7 +762,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                 S.get('cat_breakdown'),
                 style: GoogleFonts.poppins(
                   color: AppColors.txt,
-                  fontSize: 16,
+                  fontSize: 15,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
@@ -845,7 +845,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                               height: 10,
                               decoration: BoxDecoration(
                                 color: color,
-                                borderRadius: BorderRadius.circular(3),
+                                borderRadius: BorderRadius.circular(8),
                                 boxShadow: [
                                   BoxShadow(
                                     color: color.withOpacity(0.6),
@@ -860,7 +860,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                                 info?.$2 ?? e.key,
                                 style: GoogleFonts.poppins(
                                   color: AppColors.txt,
-                                  fontSize: 12,
+                                  fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -870,7 +870,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                               '${e.value}',
                               style: GoogleFonts.poppins(
                                 color: AppColors.sub,
-                                fontSize: 12,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w700,
                               ),
               maxLines: 1, overflow: TextOverflow.ellipsis,

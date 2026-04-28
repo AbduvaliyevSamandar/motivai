@@ -29,7 +29,7 @@ class StreakBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('\u{1F525}', style: TextStyle(fontSize: 16)),
+          const Text('\u{1F525}', style: TextStyle(fontSize: 15)),
           const SizedBox(width: D.sp4),
           Text(
             '$streak',
@@ -44,7 +44,7 @@ class StreakBadge extends StatelessWidget {
           Text(
             'kun',
             style: GoogleFonts.poppins(
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w500,
               color: Colors.white.withOpacity(0.85),
             ),

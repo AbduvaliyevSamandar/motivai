@@ -104,13 +104,13 @@ class _GlassTextFieldState extends State<GlassTextField>
           ),
           padding: const EdgeInsets.all(1.3),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(14.7),
+            borderRadius: BorderRadius.circular(12),
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.card.withOpacity(0.7),
-                  borderRadius: BorderRadius.circular(14.7),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: child,
               ),
@@ -129,7 +129,7 @@ class _GlassTextFieldState extends State<GlassTextField>
         onChanged: widget.onChanged,
         textInputAction: widget.textInputAction,
         style: GoogleFonts.poppins(
-          fontSize: 14,
+          fontSize: 13,
           color: AppColors.txt,
         ),
         decoration: InputDecoration(
@@ -153,7 +153,7 @@ class _GlassTextFieldState extends State<GlassTextField>
             fontWeight: FontWeight.w500,
           ),
           hintStyle: GoogleFonts.poppins(
-            fontSize: 14,
+            fontSize: 13,
             color: AppColors.hint,
           ),
           errorStyle: GoogleFonts.poppins(
