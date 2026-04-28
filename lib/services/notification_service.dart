@@ -78,7 +78,7 @@ class NotificationService {
     return NotificationDetails(
       android: AndroidNotificationDetails(
         info.channel,
-        'MotivAI \u{2022} ${info.name}',
+        'MotivAI ${info.name}',
         channelDescription: info.desc,
         importance: pack == SoundPack.urgent
             ? Importance.max

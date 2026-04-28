@@ -274,7 +274,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                     if (newBadges.isNotEmpty) ...[
                       const SizedBox(height: 14),
                       Text(
-                        '\u{1F3C6} Yangi yutuqlar: ${newBadges.length}',
+                        'Yangi yutuqlar: ${newBadges.length}',
                         style: GoogleFonts.poppins(
                           color: AppColors.secondary,
                           fontSize: 13,

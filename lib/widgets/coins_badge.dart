@@ -41,7 +41,7 @@ class _CoinsBadgeState extends State<CoinsBadge> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('\u{1FA99}', style: TextStyle(fontSize: 13)),
+            const Text('', style: TextStyle(fontSize: 13)),
             const SizedBox(width: 4),
             Text(
               '$_coins',

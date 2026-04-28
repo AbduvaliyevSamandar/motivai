@@ -44,8 +44,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   bool get _isEdit => widget.editTask != null;
 
   static const _categories = [
-    ('study', '\u{1F4DA}', 'study'),
-    ('exercise', '\u{1F4AA}', 'exercise'),
+    ('study', '', 'study'),
+    ('exercise', '', 'exercise'),
     ('reading', '\u{1F4D6}', 'reading'),
     ('meditation', '\u{1F9D8}', 'meditation'),
     ('social', '\u{1F465}', 'social'),

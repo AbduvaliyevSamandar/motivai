@@ -86,7 +86,7 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
                   Text(
                     done
                         ? (_today!.mainGoal.isEmpty
-                            ? '\u{1F4AB} ${_today!.gratitude}'
+                            ? '${_today!.gratitude}'
                             : _today!.mainGoal)
                         : '1 daqiqa — kayfiyat, maqsad, minnatdorlik',
                     style: GoogleFonts.poppins(
@@ -176,7 +176,7 @@ class _RitualSheetState extends State<_RitualSheet> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: AppColors.success,
       behavior: SnackBarBehavior.floating,
-      content: Text('Ritual saqlandi \u{1F31F}', style: GoogleFonts.poppins()),
+      content: Text('Ritual saqlandi', style: GoogleFonts.poppins()),
     ));
   }
 

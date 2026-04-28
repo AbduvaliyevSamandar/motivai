@@ -710,7 +710,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
   int _touchedIndex = -1;
 
   static const _labels = {
-    'study': ('\u{1F4DA}', "O'qish"),
+    'study': ('', "O'qish"),
     'exercise': ('\u{1F4AA}', 'Jismoniy'),
     'reading': ('\u{1F4D6}', 'Kitob'),
     'meditation': ('\u{1F9D8}', 'Meditatsiya'),

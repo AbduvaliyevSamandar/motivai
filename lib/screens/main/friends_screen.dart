@@ -265,7 +265,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: AppColors.success,
                 content: Text(
-                  '${f.name} ga $amount tanga yuborildi \u{1F381}',
+                  '${f.name} ga $amount tanga yuborildi',
                   style: GoogleFonts.poppins(),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),

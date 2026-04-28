@@ -84,7 +84,7 @@ class _ChatState extends State<ChatScreen> {
       // Add a confirmation message to chat
       await context.read<ChatProvider>().confirmAdded(sel.length);
       _toBottom();
-      _snack('${sel.length} ta vazifa qo\'shildi \u{1F389}');
+      _snack('${sel.length} ta vazifa qo\'shildi');
     } else {
       _snack(tasks.error ?? "Xatolik yuz berdi", err: true);
     }
@@ -355,9 +355,9 @@ class _ChatState extends State<ChatScreen> {
 
   Widget _buildQuickPrompts() {
     final prompts = [
-      ('\u{1F3AF}', S.get('ai_suggest')),
-      ('\u{1F4AA}', S.get('streak')),
-      ('\u{1F4DA}', S.get('tasks_label')),
+      ('', S.get('ai_suggest')),
+      ('', S.get('streak')),
+      ('', S.get('tasks_label')),
       ('\u{1F525}', S.get('today_goal')),
     ];
     return SizedBox(
@@ -488,9 +488,9 @@ class _EmptyChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prompts = [
-      ('\u{1F3AF}', 'Bugun nima qilsam yaxshi?'),
-      ('\u{1F4AA}', 'Meni motivatsiya qil'),
-      ('\u{1F4DA}', 'Matematika bo\'yicha vazifa ber'),
+      ('', 'Bugun nima qilsam yaxshi?'),
+      ('', 'Meni motivatsiya qil'),
+      ('', 'Matematika bo\'yicha vazifa ber'),
     ];
     return ListView(
       padding: const EdgeInsets.all(24),

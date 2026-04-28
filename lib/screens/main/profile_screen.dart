@@ -1763,7 +1763,7 @@ class _ProfileState extends State<ProfileScreen> {
     await NotificationService.instance.scheduleAt(
       id: 99999,
       title: 'MotivAI test',
-      body: 'Bu sinov bildirishnomasi — hammasi ishlayapti! \u{1F389}',
+      body: 'Bu sinov bildirishnomasi — hammasi ishlayapti!',
       at: when,
     );
     // Also add to in-app feed
@@ -1777,7 +1777,7 @@ class _ProfileState extends State<ProfileScreen> {
               color: Colors.white, size: 18),
           const SizedBox(width: 8),
           Text(
-            '5 soniyadan keyin keladi \u{1F514}',
+            '5 soniyadan keyin keladi',
             style: GoogleFonts.poppins(),
           ),
         ],
@@ -1871,7 +1871,7 @@ class _ProfileState extends State<ProfileScreen> {
               const SizedBox(height: 8),
               _aboutRow('\u{1F3A8}', 'Nebula Premium design'),
               const SizedBox(height: 8),
-              _aboutRow('\u{1F680}', 'Open source, \u{1F1FA}\u{1F1FF} Uzbekistan'),
+              _aboutRow('\u{1F680}', 'Open source, Uzbekistan'),
               const SizedBox(height: 20),
               NebulaButton(
                 label: 'Yopish',

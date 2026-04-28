@@ -130,7 +130,7 @@ class ChatProvider extends ChangeNotifier {
         fallbackTasks = TaskTemplates.suggestFor(text);
         if (fallbackTasks.isEmpty) fallbackTasks = TaskTemplates.starter();
         content =
-            '\u{1F4A1} AI servisi vaqtincha ishlamayapti.'
+            'AI servisi vaqtincha ishlamayapti.'
             '\n\nSiz uchun tayyor shablonlar tanladim — kerakli vazifalarni belgilang va qo\'shing.';
       }
 

@@ -150,7 +150,7 @@ class _TaskCardState extends State<TaskCard>
                                 children: [
                                   if (widget.pinned)
                                     _InfoTag(
-                                      text: '\u{1F4CC} Pin',
+                                      text: 'Pin',
                                       color: AppColors.accent,
                                     ),
                                   if (t.hasSchedule)

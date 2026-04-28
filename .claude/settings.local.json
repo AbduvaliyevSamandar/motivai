@@ -33,7 +33,8 @@
       "Bash(nslookup motivai-20s9.onrender.com 8.8.8.8)",
       "Bash(keytool -list -v -keystore __TRACKED_VAR__/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android)",
       "Bash(flutter clean *)",
-      "Bash(keytool -list -v -keystore \"C:/Users/Samandar/Desktop/motivai/android/app/upload-keystore.jks\" -alias upload -storepass \"MotivAI@2026!Keystore#bX7kP9wQ\")"
+      "Bash(keytool -list -v -keystore \"C:/Users/Samandar/Desktop/motivai/android/app/upload-keystore.jks\" -alias upload -storepass \"MotivAI@2026!Keystore#bX7kP9wQ\")",
+      "Bash(grep -rn \"\\\\\\\\\\\\\\\\u{1F\" lib/)"
     ]
   }
 }

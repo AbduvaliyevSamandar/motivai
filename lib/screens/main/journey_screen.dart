@@ -132,15 +132,15 @@ class _JourneyScreenState extends State<JourneyScreen>
     final pct = (_productive / 30).clamp(0.0, 1.0);
     String stageName;
     if (_productive < 3) {
-      stageName = 'Urug\' \u{1F331}';
+      stageName = 'Urug\'';
     } else if (_productive < 7) {
-      stageName = 'Niholcha \u{1F343}';
+      stageName = 'Niholcha';
     } else if (_productive < 14) {
-      stageName = 'Yosh daraxt \u{1F333}';
+      stageName = 'Yosh daraxt';
     } else if (_productive < 21) {
-      stageName = 'Gullagan \u{1F338}';
+      stageName = 'Gullagan';
     } else {
-      stageName = 'Mevali daraxt \u{1F332}';
+      stageName = 'Mevali daraxt';
     }
     return GlassCard(
       padding: const EdgeInsets.all(18),

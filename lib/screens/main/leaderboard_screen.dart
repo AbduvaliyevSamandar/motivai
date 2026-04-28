@@ -157,8 +157,8 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
                   fontSize: 13,
                 ),
                 tabs: [
-                  Tab(text: '\u{1F30D} ${S.get("all_time")}'),
-                  Tab(text: '\u{1F4C5} ${S.get("this_week")}'),
+                  Tab(text: '${S.get("all_time")}'),
+                  Tab(text: '${S.get("this_week")}'),
                 ],
               ),
             ),
@@ -738,7 +738,7 @@ class _LbTile extends StatelessWidget {
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
                 const SizedBox(width: 10),
-                Text('\u{1F525} ${entry.streak}',
+                Text('${entry.streak}',
                     style: GoogleFonts.poppins(
                         color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,

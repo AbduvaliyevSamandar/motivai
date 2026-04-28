@@ -460,7 +460,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               maxLines: 1, overflow: TextOverflow.ellipsis,
             )
               else
-                Text(winning ? '\u{1F3C6} G\'olib' : '\u{1F948} 2-o\'rin',
+                Text(winning ? 'G\'olib' : '2-o\'rin',
                     style: GoogleFonts.poppins(
                       color: winning
                           ? AppColors.accent

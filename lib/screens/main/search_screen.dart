@@ -172,7 +172,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   16, 0, 16, 80),
                               children: [
                                 if (matchedTasks.isNotEmpty)
-                                  _section('\u{1F3AF} Vazifalar',
+                                  _section('Vazifalar',
                                       matchedTasks.length),
                                 ...matchedTasks.map((t) => _TaskHit(
                                       task: t,
@@ -181,7 +181,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                     )),
                                 if (matchedHabits.isNotEmpty) ...[
                                   const SizedBox(height: 12),
-                                  _section('\u{1F331} Odatlar',
+                                  _section('Odatlar',
                                       matchedHabits.length),
                                 ],
                                 ...matchedHabits.map(
@@ -193,7 +193,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         )),
                                 if (matchedDecks.isNotEmpty) ...[
                                   const SizedBox(height: 12),
-                                  _section('\u{1F4D2} Flashcards',
+                                  _section('Flashcards',
                                       matchedDecks.length),
                                 ],
                                 ...matchedDecks.map(
@@ -204,7 +204,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                         )),
                                 if (matchedCards.isNotEmpty) ...[
                                   const SizedBox(height: 12),
-                                  _section('\u{1F4C7} Kartalar',
+                                  _section('Kartalar',
                                       matchedCards.length),
                                 ],
                                 ...matchedCards.map(

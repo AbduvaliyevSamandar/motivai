@@ -201,7 +201,7 @@ class ProductivityScoreCard extends StatelessWidget {
     final emoji = score >= 85
         ? '\u{1F525}'
         : score >= 60
-            ? '\u{1F4AA}'
+            ? ''
             : score >= 30
                 ? '\u{1F680}'
                 : '\u{1F331}';

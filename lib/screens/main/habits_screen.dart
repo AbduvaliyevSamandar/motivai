@@ -396,11 +396,11 @@ class _AddHabitSheet extends StatefulWidget {
 
 class _AddHabitSheetState extends State<_AddHabitSheet> {
   final _ctrl = TextEditingController();
-  String _emoji = '\u{1F3AF}';
+  String _emoji = '';
   static const _emojis = [
-    '\u{1F3AF}', '\u{1F4DA}', '\u{1F4AA}', '\u{1F9D8}',
+    '', '', '', '\u{1F9D8}',
     '\u{1F3C3}', '\u{1F4A7}', '\u{1F331}', '\u{1F3A8}',
-    '\u{1F3B5}', '\u{1F373}', '\u{1F6CC}', '\u{1F4AC}',
+    '\u{1F3B5}', '\u{1F373}', '', '',
   ];
 
   @override

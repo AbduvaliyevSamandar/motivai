@@ -36,7 +36,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           gradient: AppColors.gradCosmic,
         ),
         _OSlide(
-          emoji: '\u{1F3AF}',
+          emoji: '',
           title: 'Vazifa qo\'shing',
           body: 'Vaqti, qiyinligi va eslatma bilan. Bajarsa XP oling.',
           gradient: AppColors.gradGold,
@@ -48,7 +48,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           gradient: AppColors.gradFire,
         ),
         _OSlide(
-          emoji: '\u{1F4AB}',
+          emoji: '',
           title: 'Reytingda yuqorilang',
           body: 'Pomodoro, flashcards, yutuqlar — hamma sizni kuchli qiladi.',
           gradient: AppColors.gradAurora,

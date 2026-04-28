@@ -215,8 +215,8 @@ class _WrappedScreenState extends State<WrappedScreen> {
   }
 
   String _catEmoji(String c) => {
-        'study': '\u{1F4DA}',
-        'exercise': '\u{1F4AA}',
+        'study': '',
+        'exercise': '',
         'reading': '\u{1F4D6}',
         'meditation': '\u{1F9D8}',
         'social': '\u{1F465}',
@@ -224,7 +224,7 @@ class _WrappedScreenState extends State<WrappedScreen> {
         'productivity': '\u26A1',
         'challenge': '\u{1F3C6}',
       }[c] ??
-      '\u{1F4CC}';
+      '';
 
   String _catLabel(String c) => {
         'study': "O'qish",

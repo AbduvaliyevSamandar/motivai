@@ -350,9 +350,9 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
   final _ctrl = TextEditingController();
   String _emoji = '\u{1F4D2}';
   static const _emojis = [
-    '\u{1F4D2}', '\u{1F4DA}', '\u{1F4D8}', '\u{1F1EC}\u{1F1E7}',
-    '\u{1F1FA}\u{1F1FF}', '\u{1F1F7}\u{1F1FA}', '\u{1F5FA}\u{FE0F}',
-    '\u{1F9EA}', '\u{1F4BB}', '\u{1F680}', '\u{1F52C}', '\u{1F3A8}',
+    '\u{1F4D2}', '', '\u{1F4D8}', '',
+    '', '', '',
+    '', '', '\u{1F680}', '\u{1F52C}', '\u{1F3A8}',
   ];
 
   @override

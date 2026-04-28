@@ -34,13 +34,13 @@ class _RitualsScreenState extends State<RitualsScreen> {
 
   static const _dayShort = ['', 'Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
   static const _emojis = [
-    '\u{1F4DA}',
+    '',
     '\u{1F310}',
-    '\u{1F4AA}',
+    '',
     '\u{1F9D8}',
     '\u{270D}',
     '\u{1F393}',
-    '\u{1F4BB}',
+    '',
     '\u{1F3A8}',
     '\u{1F3C3}',
     '\u{1F305}',

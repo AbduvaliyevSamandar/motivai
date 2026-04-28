@@ -44,7 +44,7 @@ class Habit {
   factory Habit.fromJson(Map<String, dynamic> j) => Habit(
         id: j['id'] ?? '',
         title: j['title'] ?? '',
-        emoji: j['emoji'] ?? '\u{1F3AF}',
+        emoji: j['emoji'] ?? '',
         createdAt: DateTime.tryParse(j['createdAt'] ?? '') ??
             DateTime.now(),
         completedDays:
@@ -80,7 +80,7 @@ class HabitStorage {
         _key, jsonEncode(habits.map((h) => h.toJson()).toList()));
   }
 
-  static Future<Habit> add({required String title, String emoji = '\u{1F3AF}'}) async {
+  static Future<Habit> add({required String title, String emoji = ''}) async {
     final habits = await load();
     final h = Habit(
       id: 'h_${DateTime.now().millisecondsSinceEpoch}',

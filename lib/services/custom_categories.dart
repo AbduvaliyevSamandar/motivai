@@ -27,7 +27,7 @@ class CustomCategory {
       CustomCategory(
         id: j['id'] ?? '',
         name: j['name'] ?? '',
-        emoji: j['emoji'] ?? '\u{1F4CC}',
+        emoji: j['emoji'] ?? '',
         color: Color(j['color'] as int? ?? 0xFFA855F7),
       );
 }
