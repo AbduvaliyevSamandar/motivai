@@ -179,7 +179,7 @@ class _JourneyScreenState extends State<JourneyScreen>
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: pct,
-              minHeight: 10,
+              minHeight: 5,
               backgroundColor: AppColors.border,
               valueColor: AlwaysStoppedAnimation(AppColors.success),
             ),

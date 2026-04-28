@@ -74,17 +74,23 @@ class AppColors {
   static List<Color> get gradCyan    => [info, info];
   static List<Color> get gradFire    => [accent, danger];
 
-  // ─── CATEGORY COLORS — restrained palette (single accent per kind) ─
-  static const cat = <String, Color>{
-    'study':        Color(0xFF7C3AED),
-    'exercise':     Color(0xFF10B981),
-    'reading':      Color(0xFFEC4899),
-    'meditation':   Color(0xFF3B82F6),
-    'social':       Color(0xFFF59E0B),
-    'creative':     Color(0xFFEF4444),
-    'productivity': Color(0xFF3B82F6),
-    'challenge':    Color(0xFF7C3AED),
-  };
+  // ─── CATEGORY COLORS — single neutral accent for every category ─
+  // Categories are still distinguishable by icon + label; using one
+  // muted gray for all of them keeps the task list reading as a clean
+  // list rather than a rainbow scatter (this is how Things 3, Apple
+  // Reminders, and Notion handle categories).
+  static Color get _catTint => _dark ? const Color(0xFF8B8B9A)
+                                     : const Color(0xFF6E6E78);
+  static Map<String, Color> get cat => {
+        'study':        _catTint,
+        'exercise':     _catTint,
+        'reading':      _catTint,
+        'meditation':   _catTint,
+        'social':       _catTint,
+        'creative':     _catTint,
+        'productivity': _catTint,
+        'challenge':    _catTint,
+      };
 
   // ─── GLOW (used very rarely now) ──────────────────────
   static Color get glowPrimary => primary.withOpacity(0.20);

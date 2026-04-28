@@ -541,7 +541,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             borderRadius: BorderRadius.circular(8),
             child: LinearProgressIndicator(
               value: pct,
-              minHeight: 8,
+              minHeight: 5,
               backgroundColor: AppColors.border,
               valueColor: AlwaysStoppedAnimation(color),
             ),

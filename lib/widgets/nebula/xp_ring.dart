@@ -16,7 +16,7 @@ class XPRing extends StatefulWidget {
     super.key,
     required this.progress,
     this.size = 180,
-    this.strokeWidth = 14,
+    this.strokeWidth = 6,
     this.gradientColors,
     this.center,
     this.animDuration = const Duration(milliseconds: 1400),
