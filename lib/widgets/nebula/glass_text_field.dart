@@ -109,7 +109,7 @@ class _GlassTextFieldState extends State<GlassTextField>
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.card.withOpacity(0.7),
+                  color: AppColors.surface,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: child,

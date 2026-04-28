@@ -246,7 +246,7 @@ class _NotifTile extends StatelessWidget {
                         _accent.withOpacity(0.08),
                         _accent.withOpacity(0.02),
                       ]),
-                color: notif.read ? AppColors.card.withOpacity(0.5) : null,
+                color: notif.read ? AppColors.surface : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: notif.read

@@ -455,7 +455,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: AppColors.card.withOpacity(0.5),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: r.enabled

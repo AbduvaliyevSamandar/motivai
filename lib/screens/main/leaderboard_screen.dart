@@ -125,7 +125,7 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
             child: Container(
               height: 46,
               decoration: BoxDecoration(
-                color: AppColors.card.withOpacity(0.6),
+                color: AppColors.surface,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.border),
               ),
@@ -165,7 +165,7 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
           ),
           const SizedBox(width: 8),
           Material(
-            color: AppColors.card.withOpacity(0.6),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: onRefresh,
@@ -628,7 +628,7 @@ class _LbTile extends StatelessWidget {
                 AppColors.secondary.withOpacity(0.1),
               ])
             : null,
-        color: isMe ? null : AppColors.card.withOpacity(0.5),
+        color: isMe ? null : AppColors.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
           color: isMe

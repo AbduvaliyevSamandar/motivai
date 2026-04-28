@@ -264,7 +264,7 @@ class _ChatState extends State<ChatScreen> {
                               sigmaX: 16, sigmaY: 16),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: AppColors.card.withOpacity(0.7),
+                              color: AppColors.surface,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
                                   color: AppColors.border),
@@ -693,7 +693,7 @@ class _ChatBubble extends StatelessWidget {
           decoration: BoxDecoration(
             color: msg.isError
                 ? AppColors.danger.withOpacity(0.1)
-                : AppColors.card.withOpacity(0.7),
+                : AppColors.surface,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(8),
               topRight: Radius.circular(16),
@@ -1127,7 +1127,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                       AppColors.secondary.withOpacity(0.12),
                     ])
                   : null,
-              color: active ? null : AppColors.card.withOpacity(0.5),
+              color: active ? null : AppColors.surface,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: active
@@ -1190,7 +1190,7 @@ class _SuggestItem extends StatelessWidget {
               : null,
           color: task.isSelected
               ? null
-              : AppColors.card.withOpacity(0.5),
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: task.isSelected
@@ -1304,7 +1304,7 @@ class _TypingIndicatorState extends State<_TypingIndicator>
               padding: const EdgeInsets.symmetric(
                   horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: AppColors.card.withOpacity(0.7),
+                color: AppColors.surface,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(16),

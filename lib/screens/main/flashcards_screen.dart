@@ -231,7 +231,7 @@ class _DeckCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.card.withOpacity(0.5),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: dueCards > 0
@@ -640,7 +640,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                 padding: const EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color:
-                                      AppColors.card.withOpacity(0.5),
+                                      AppColors.surface,
                                   borderRadius:
                                       BorderRadius.circular(12),
                                   border: Border.all(

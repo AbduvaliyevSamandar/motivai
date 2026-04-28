@@ -86,7 +86,7 @@ class _ProgState extends State<ProgressScreen> {
                               ),
                               const Spacer(),
                               Material(
-                                color: AppColors.card.withOpacity(0.5),
+                                color: AppColors.surface,
                                 borderRadius: BorderRadius.circular(12),
                                 child: InkWell(
                                   onTap: () {

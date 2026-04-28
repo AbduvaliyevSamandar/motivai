@@ -385,7 +385,7 @@ class _HeaderRow extends StatelessWidget {
         // Search button
         Builder(builder: (ctx) {
           return Material(
-            color: AppColors.card.withOpacity(0.6),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: () {
@@ -425,7 +425,7 @@ class _HeaderRow extends StatelessWidget {
         // Calendar button
         Builder(builder: (ctx) {
           return Material(
-            color: AppColors.card.withOpacity(0.6),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: () {
@@ -469,7 +469,7 @@ class _HeaderRow extends StatelessWidget {
           builder: (ctx, np, __) {
             final unread = np.unreadCount;
             return Material(
-              color: AppColors.card.withOpacity(0.6),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
               child: InkWell(
                 onTap: () {
@@ -1393,7 +1393,7 @@ class _TaskToggle extends StatelessWidget {
     return Container(
       height: 44,
       decoration: BoxDecoration(
-        color: AppColors.card.withOpacity(0.5),
+        color: AppColors.surface,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColors.border),
       ),
@@ -1416,23 +1416,12 @@ class _TaskToggle extends StatelessWidget {
           onTap();
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 220),
+          duration: const Duration(milliseconds: 180),
           curve: Curves.easeOut,
           margin: const EdgeInsets.all(3),
           decoration: BoxDecoration(
-            gradient: active
-                ? LinearGradient(colors: AppColors.gradCosmic)
-                : null,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: active
-                ? [
-                    BoxShadow(
-                      color: AppColors.primary.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 3),
-                    ),
-                  ]
-                : null,
+            color: active ? AppColors.bg : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1440,31 +1429,22 @@ class _TaskToggle extends StatelessWidget {
               Text(
                 label,
                 style: GoogleFonts.poppins(
-                  color: active ? Colors.white : AppColors.sub,
+                  color: active ? AppColors.txt : AppColors.sub,
                   fontSize: 13,
                   fontWeight:
-                      active ? FontWeight.w700 : FontWeight.w500,
+                      active ? FontWeight.w600 : FontWeight.w500,
                 ),
               ),
               const SizedBox(width: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: active
-                      ? Colors.white.withOpacity(0.22)
-                      : AppColors.border.withOpacity(0.5),
-                  borderRadius: BorderRadius.circular(8),
+              Text(
+                '$count',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: GoogleFonts.poppins(
+                  color: active ? AppColors.sub : AppColors.hint,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
-                child: Text(
-                  '$count',
-                  style: GoogleFonts.poppins(
-                    color: active ? Colors.white : AppColors.sub,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w700,
-                  ),
-              maxLines: 1, overflow: TextOverflow.ellipsis,
-            ),
               ),
             ],
           ),
@@ -1498,7 +1478,7 @@ class _MitChip extends StatelessWidget {
                     AppColors.pink.withOpacity(0.18),
                   ])
                 : null,
-            color: active ? null : AppColors.card.withOpacity(0.4),
+            color: active ? null : AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: active

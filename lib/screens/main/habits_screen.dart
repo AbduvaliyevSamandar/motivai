@@ -277,7 +277,7 @@ class _HabitCard extends StatelessWidget {
                       AppColors.success.withOpacity(0.06),
                     ])
                   : null,
-              color: done ? null : AppColors.card.withOpacity(0.5),
+              color: done ? null : AppColors.surface,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: done
@@ -362,7 +362,7 @@ class _HabitCard extends StatelessWidget {
                         : null,
                     color: done
                         ? null
-                        : AppColors.card.withOpacity(0.5),
+                        : AppColors.surface,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: done

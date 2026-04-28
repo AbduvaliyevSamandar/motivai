@@ -46,7 +46,7 @@ class NebulaChip extends StatelessWidget {
               : null,
           color: selected
               ? null
-              : AppColors.card.withOpacity(0.5),
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: selected

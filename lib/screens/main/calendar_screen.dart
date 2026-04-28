@@ -93,7 +93,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           ),
           const Spacer(),
           Material(
-            color: AppColors.card.withOpacity(0.5),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             child: InkWell(
               onTap: () {
@@ -175,7 +175,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget _arrow(IconData icon, VoidCallback onTap) {
     return Material(
-      color: AppColors.card.withOpacity(0.5),
+      color: AppColors.surface,
       borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: () {
@@ -445,7 +445,7 @@ class _CalTaskItem extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.card.withOpacity(0.5),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: done

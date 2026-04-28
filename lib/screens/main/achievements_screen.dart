@@ -148,7 +148,7 @@ class _AchCard extends StatelessWidget {
                   accent.withOpacity(0.08),
                 ])
               : null,
-          color: unlocked ? null : AppColors.card.withOpacity(0.4),
+          color: unlocked ? null : AppColors.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: unlocked

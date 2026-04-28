@@ -171,7 +171,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
           width: 26,
           height: 26,
           decoration: BoxDecoration(
-            color: AppColors.card.withOpacity(0.6),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(8),
             border: Border.all(color: AppColors.border),
           ),

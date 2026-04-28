@@ -108,7 +108,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppColors.card.withOpacity(0.4),
+                        color: AppColors.surface,
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(color: AppColors.border),
                       ),
@@ -309,7 +309,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.card.withOpacity(0.5),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.primary.withOpacity(0.3)),
             ),
@@ -335,7 +335,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: AppColors.card.withOpacity(0.5),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.success.withOpacity(0.3)),
             ),

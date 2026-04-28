@@ -331,7 +331,7 @@ class _MoreMenu extends StatelessWidget {
         height: 32,
         margin: const EdgeInsets.only(right: 4),
         decoration: BoxDecoration(
-          color: AppColors.card.withOpacity(0.6),
+          color: AppColors.surface,
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.border),
         ),

@@ -102,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         child: Container(
                           height: 46,
                           decoration: BoxDecoration(
-                            color: AppColors.card.withOpacity(0.6),
+                            color: AppColors.surface,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: AppColors.border),
                           ),
@@ -339,7 +339,7 @@ class _TaskHit extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: AppColors.card.withOpacity(0.5),
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                   color: task.color.withOpacity(0.3)),
@@ -420,7 +420,7 @@ class _SimpleHit extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: AppColors.card.withOpacity(0.5),
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.border),
         ),

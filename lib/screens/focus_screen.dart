@@ -265,7 +265,7 @@ class _FocusScreenState extends State<FocusScreen> {
                     child: Row(
                       children: [
                         Material(
-                          color: AppColors.card.withOpacity(0.5),
+                          color: AppColors.surface,
                           borderRadius: BorderRadius.circular(12),
                           child: InkWell(
                             onTap: _confirmExit,
@@ -577,7 +577,7 @@ class _ControlBtn extends StatelessWidget {
         child: Container(
           height: 52,
           decoration: BoxDecoration(
-            color: AppColors.card.withOpacity(0.5),
+            color: AppColors.surface,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: AppColors.border),
           ),
