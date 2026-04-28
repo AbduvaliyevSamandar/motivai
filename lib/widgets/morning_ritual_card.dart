@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../services/morning_ritual.dart';
 import 'nebula/nebula.dart';
@@ -99,8 +100,8 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
             ),
             Icon(
               done
-                  ? Icons.check_circle_rounded
-                  : Icons.arrow_forward_rounded,
+                  ? LucideIcons.checkCircle2
+                  : LucideIcons.arrowRight,
               color: done ? AppColors.success : AppColors.accent,
               size: 22,
             ),
@@ -281,7 +282,7 @@ class _RitualSheetState extends State<_RitualSheet> {
             GlassTextField(
               controller: _goal,
               label: 'Masalan: 3 vazifani tugatish',
-              prefixIcon: Icons.flag_rounded,
+              prefixIcon: LucideIcons.flag,
             ),
             const SizedBox(height: 16),
             _label('3. Nima uchun minnatdorsiz?'),
@@ -289,12 +290,12 @@ class _RitualSheetState extends State<_RitualSheet> {
             GlassTextField(
               controller: _grat,
               label: 'Bir narsa yozing…',
-              prefixIcon: Icons.favorite_rounded,
+              prefixIcon: LucideIcons.heart,
             ),
             const SizedBox(height: 24),
             NebulaButton(
               label: 'Saqlash',
-              icon: Icons.check_rounded,
+              icon: LucideIcons.check,
               onTap: _save,
             ),
             const SizedBox(height: 4),

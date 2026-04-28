@@ -51,10 +51,9 @@ dependencies:
   # External URLs (privacy / terms)
   url_launcher: ^6.2.6
 
-  # Icon libraries — Lucide for line icons, Phosphor for richer
-  # variants (regular / duotone) used by design-system apps like Notion.
+  # Lucide icon library — same set Linear / Vercel / Notion / Supabase
+  # ship with. Single line-stroke style for the entire app.
   lucide_icons: ^0.257.0
-  phosphor_flutter: ^2.1.0
 
   cupertino_icons: ^1.0.6
 

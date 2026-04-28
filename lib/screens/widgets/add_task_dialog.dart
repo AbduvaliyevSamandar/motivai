@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
@@ -199,7 +200,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.add_task_rounded,
+                    child: const Icon(LucideIcons.plus,
                         color: Colors.white, size: 22),
                   ),
                   const SizedBox(width: 12),
@@ -226,7 +227,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               GlassTextField(
                 controller: _titleCtrl,
                 hint: S.get('task_title'),
-                prefixIcon: Icons.edit_rounded,
+                prefixIcon: LucideIcons.pencil,
                 suffixIcon: Padding(
                   padding: const EdgeInsets.only(right: 6),
                   child: VoiceInputButton(controller: _titleCtrl),
@@ -238,7 +239,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               GlassTextField(
                 controller: _descCtrl,
                 hint: S.get('task_desc'),
-                prefixIcon: Icons.description_rounded,
+                prefixIcon: LucideIcons.fileText,
                 maxLines: 3,
                 suffixIcon: Padding(
                   padding: const EdgeInsets.only(right: 6),
@@ -350,7 +351,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               const SizedBox(height: 24),
               NebulaButton(
                 label: _isEdit ? 'Saqlash' : S.get('add_task'),
-                icon: _isEdit ? Icons.check_rounded : Icons.add_rounded,
+                icon: _isEdit ? LucideIcons.check : LucideIcons.plus,
                 loading: _loading,
                 onTap: _submit,
               ),
@@ -401,7 +402,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   children: [
                     Icon(
                       _scheduledAt != null
-                          ? Icons.event_rounded
+                          ? LucideIcons.calendar
                           : Icons.schedule_rounded,
                       color: _scheduledAt != null
                           ? AppColors.primary
@@ -449,7 +450,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: AppColors.border),
                 ),
-                child: Icon(Icons.close_rounded,
+                child: Icon(LucideIcons.x,
                     color: AppColors.danger.withOpacity(0.8), size: 18),
               ),
             ),
@@ -595,7 +596,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   void _toast(String msg, {bool err = false}) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(children: [
-        Icon(err ? Icons.error_outline : Icons.check_circle_rounded,
+        Icon(err ? Icons.error_outline : LucideIcons.checkCircle2,
             color: Colors.white, size: 20),
         const SizedBox(width: 8),
         Expanded(

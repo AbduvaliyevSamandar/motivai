@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -179,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen>
                         GlassTextField(
                           controller: _email,
                           label: S.get('email'),
-                          prefixIcon: Icons.email_outlined,
+                          prefixIcon: LucideIcons.mail,
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           validator: (v) {
@@ -200,14 +201,14 @@ class _LoginScreenState extends State<LoginScreen>
                         GlassTextField(
                           controller: _pass,
                           label: S.get('password'),
-                          prefixIcon: Icons.lock_outline_rounded,
+                          prefixIcon: LucideIcons.lock,
                           obscureText: _obscure,
                           textInputAction: TextInputAction.done,
                           suffixIcon: IconButton(
                             icon: Icon(
                               _obscure
-                                  ? Icons.visibility_off_rounded
-                                  : Icons.visibility_rounded,
+                                  ? LucideIcons.eyeOff
+                                  : LucideIcons.eye,
                               color: AppColors.sub,
                               size: 20,
                             ),
@@ -247,7 +248,7 @@ class _LoginScreenState extends State<LoginScreen>
                         Consumer<AuthProvider>(
                           builder: (_, auth, __) => NebulaButton(
                             label: S.get('login'),
-                            icon: Icons.arrow_forward_rounded,
+                            icon: LucideIcons.arrowRight,
                             loading: auth.isLoading,
                             onTap: _login,
                           ),
@@ -437,14 +438,14 @@ class _LoginScreenState extends State<LoginScreen>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => _AuthSheet(
-        icon: Icons.lock_reset_rounded,
+        icon: LucideIcons.keyRound,
         accent: AppColors.primary,
         title: S.get('reset_pass'),
         subtitle: S.get('enter_email'),
         child: GlassTextField(
           controller: emailCtrl,
           label: S.get('email'),
-          prefixIcon: Icons.email_outlined,
+          prefixIcon: LucideIcons.mail,
           keyboardType: TextInputType.emailAddress,
         ),
         actionLabel: 'Kod yuborish',
@@ -481,14 +482,14 @@ class _LoginScreenState extends State<LoginScreen>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (ctx) => _AuthSheet(
-        icon: Icons.password_rounded,
+        icon: LucideIcons.key,
         accent: AppColors.success,
         title: 'Yangi parol',
         subtitle: 'Kamida 6 belgi',
         child: GlassTextField(
           controller: newPassCtrl,
           label: 'Yangi parol',
-          prefixIcon: Icons.lock_outline_rounded,
+          prefixIcon: LucideIcons.lock,
           obscureText: true,
         ),
         actionLabel: 'Saqlash',
@@ -657,7 +658,7 @@ class _ErrorBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.error_outline_rounded,
+          Icon(LucideIcons.alertCircle,
               color: AppColors.danger, size: 20),
           const SizedBox(width: 10),
           Expanded(

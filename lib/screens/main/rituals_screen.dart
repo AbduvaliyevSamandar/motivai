@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/rituals_storage.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -138,7 +139,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   GlassTextField(
                     controller: titleCtrl,
                     label: 'Ritual nomi',
-                    prefixIcon: Icons.edit_rounded,
+                    prefixIcon: LucideIcons.pencil,
                   ),
                   const SizedBox(height: 14),
                   Row(
@@ -243,7 +244,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   const SizedBox(height: 20),
                   NebulaButton(
                     label: existing == null ? 'Saqlash' : 'Yangilash',
-                    icon: Icons.check_rounded,
+                    icon: LucideIcons.check,
                     onTap: () async {
                       final title = titleCtrl.text.trim();
                       if (title.isEmpty || weekdays.isEmpty) {
@@ -328,7 +329,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   final n = value - step;
                   if (n >= min) onChange(n);
                 },
-                child: Icon(Icons.keyboard_arrow_down_rounded,
+                child: Icon(LucideIcons.chevronDown,
                     color: AppColors.primary, size: 22),
               ),
               GestureDetector(
@@ -337,7 +338,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   final n = value + step;
                   if (n <= max) onChange(n);
                 },
-                child: Icon(Icons.keyboard_arrow_up_rounded,
+                child: Icon(LucideIcons.chevronUp,
                     color: AppColors.primary, size: 22),
               ),
             ],
@@ -355,7 +356,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: AppColors.txt),
+          icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
         title: ShaderMask(
@@ -373,7 +374,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_rounded, color: AppColors.primary),
+            icon: Icon(LucideIcons.plus, color: AppColors.primary),
             onPressed: () => _showEditor(),
           ),
         ],
@@ -424,7 +425,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
             const SizedBox(height: 20),
             NebulaButton(
               label: 'Yangi ritual',
-              icon: Icons.add_rounded,
+              icon: LucideIcons.plus,
               expand: false,
               onTap: () => _showEditor(),
             ),
@@ -523,12 +524,12 @@ class _RitualsScreenState extends State<RitualsScreen> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.edit_rounded,
+            icon: Icon(LucideIcons.pencil,
                 color: AppColors.sub, size: 18),
             onPressed: () => _showEditor(existing: r),
           ),
           IconButton(
-            icon: Icon(Icons.delete_outline_rounded,
+            icon: Icon(LucideIcons.trash2,
                 color: AppColors.danger.withOpacity(0.7), size: 18),
             onPressed: () async {
               HapticFeedback.lightImpact();

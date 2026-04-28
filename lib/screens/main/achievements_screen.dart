@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/achievements.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -49,7 +50,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        icon: Icon(LucideIcons.chevronLeft,
                             color: AppColors.txt, size: 20),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -331,7 +332,7 @@ class _AchDialog extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.star_rounded,
+                      Icon(LucideIcons.star,
                           color: AppColors.accent, size: 12),
                       const SizedBox(width: 2),
                       Text(
@@ -351,8 +352,8 @@ class _AchDialog extends StatelessWidget {
             NebulaButton(
               label: unlocked ? 'Ajoyib!' : 'Qulflangan',
               icon: unlocked
-                  ? Icons.check_rounded
-                  : Icons.lock_outline_rounded,
+                  ? LucideIcons.check
+                  : LucideIcons.lock,
               disabled: !unlocked,
               gradient: unlocked
                   ? AppColors.gradSuccess

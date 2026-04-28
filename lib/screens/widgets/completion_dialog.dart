@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../widgets/nebula/nebula.dart';
 
@@ -186,7 +187,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.star_rounded,
+                            Icon(LucideIcons.star,
                                 color: AppColors.accent, size: 28),
                             const SizedBox(width: 10),
                             BigNumber(
@@ -220,7 +221,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.trending_up_rounded,
+                            const Icon(LucideIcons.trendingUp,
                                 color: Colors.white, size: 20),
                             const SizedBox(width: 8),
                             Text(
@@ -283,7 +284,7 @@ class _CompletionDialogState extends State<CompletionDialog>
 
                     NebulaButton(
                       label: "Davom etish",
-                      icon: Icons.arrow_forward_rounded,
+                      icon: LucideIcons.arrowRight,
                       onTap: () => Navigator.pop(context),
                     ),
                   ],

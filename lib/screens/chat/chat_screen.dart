@@ -2,7 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -144,7 +144,7 @@ class _ChatState extends State<ChatScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
-                PhosphorIcons.sparkle(PhosphorIconsStyle.fill),
+                LucideIcons.sparkles,
                 color: AppColors.primary,
                 size: 18,
               ),
@@ -187,7 +187,7 @@ class _ChatState extends State<ChatScreen> {
             ),
             IconButton(
               icon: Icon(
-                PhosphorIcons.trash(PhosphorIconsStyle.regular),
+                LucideIcons.trash2,
                 color: AppColors.sub,
                 size: 18,
               ),
@@ -334,7 +334,7 @@ class _ChatState extends State<ChatScreen> {
                                 ],
                         ),
                         child: Icon(
-                          Icons.send_rounded,
+                          LucideIcons.send,
                           color: busy
                               ? AppColors.sub.withOpacity(0.5)
                               : Colors.white,
@@ -512,7 +512,7 @@ class _EmptyChat extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(Icons.auto_awesome_rounded,
+            child: const Icon(LucideIcons.sparkles,
                 color: Colors.white, size: 52),
           ),
         ),
@@ -563,7 +563,7 @@ class _EmptyChat extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Icon(Icons.arrow_forward_ios_rounded,
+                    Icon(LucideIcons.chevronRight,
                         color: AppColors.sub, size: 14),
                   ],
                 ),
@@ -610,7 +610,7 @@ class _ChatBubble extends StatelessWidget {
                             colors: AppColors.gradCosmic),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Icon(Icons.auto_awesome_rounded,
+                      child: const Icon(LucideIcons.sparkles,
                           color: Colors.white, size: 10),
                     ),
                     const SizedBox(width: 6),
@@ -733,7 +733,7 @@ class _ChatBubble extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             ListTile(
-              leading: Icon(Icons.copy_rounded,
+              leading: Icon(LucideIcons.copy,
                   color: AppColors.primary),
               title: Text(
                 'Nusxa olish',
@@ -900,7 +900,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.auto_awesome_rounded,
+                  child: const Icon(LucideIcons.sparkles,
                       color: Colors.white, size: 16),
                 ),
                 const SizedBox(width: 10),
@@ -998,7 +998,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.star_rounded,
+                    Icon(LucideIcons.star,
                         color: AppColors.accent, size: 16),
                     const SizedBox(width: 6),
                     Text(
@@ -1070,7 +1070,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     label: anySelected
                         ? 'Qo\'shish ($_selectedCount)'
                         : 'Vazifa tanlang',
-                    icon: Icons.add_task_rounded,
+                    icon: LucideIcons.plus,
                     height: 48,
                     disabled: !anySelected,
                     loading: _submitting,
@@ -1196,7 +1196,7 @@ class _SuggestItem extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             child: Icon(
               task.isSelected
-                  ? Icons.check_circle_rounded
+                  ? LucideIcons.checkCircle2
                   : Icons.radio_button_unchecked_rounded,
               key: ValueKey(task.isSelected),
               color: task.isSelected
@@ -1229,7 +1229,7 @@ class _SuggestItem extends StatelessWidget {
                         color: AppColors.sub, fontSize: 11),
                   ),
                   const SizedBox(width: 12),
-                  Icon(Icons.star_rounded,
+                  Icon(LucideIcons.star,
                       color: AppColors.accent, size: 12),
                   const SizedBox(width: 4),
                   Text(

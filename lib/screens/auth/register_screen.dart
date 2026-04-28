@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -32,14 +33,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String? _formError;
 
   static const _subjects = [
-    ('Matematika', Icons.calculate_rounded),
-    ('Fizika', Icons.science_rounded),
-    ('Dasturlash', Icons.code_rounded),
-    ('Ingliz tili', Icons.translate_rounded),
-    ('Tarix', Icons.history_edu_rounded),
-    ('Kimyo', Icons.biotech_rounded),
-    ('Biologiya', Icons.eco_rounded),
-    ('Iqtisodiyot', Icons.trending_up_rounded),
+    ('Matematika', LucideIcons.calculator),
+    ('Fizika', LucideIcons.flaskConical),
+    ('Dasturlash', LucideIcons.code2),
+    ('Ingliz tili', LucideIcons.languages),
+    ('Tarix', LucideIcons.scroll),
+    ('Kimyo', LucideIcons.flaskConical),
+    ('Biologiya', LucideIcons.leaf),
+    ('Iqtisodiyot', LucideIcons.trendingUp),
   ];
 
   static const _diffs = [
@@ -189,7 +190,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     children: [
                       IconButton(
                         icon: Icon(
-                            Icons.arrow_back_ios_new_rounded,
+                            LucideIcons.chevronLeft,
                             color: AppColors.txt,
                             size: 20),
                         onPressed: () => Navigator.pop(context),
@@ -229,7 +230,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _name,
                             label: S.get('full_name'),
                             prefixIcon:
-                                Icons.person_outline_rounded,
+                                LucideIcons.user,
                             textInputAction: TextInputAction.next,
                             validator: (v) => (v == null ||
                                     v.trim().length < 2)
@@ -251,7 +252,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           GlassTextField(
                             controller: _email,
                             label: S.get('email'),
-                            prefixIcon: Icons.email_outlined,
+                            prefixIcon: LucideIcons.mail,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.next,
                             validator: (v) {
@@ -271,15 +272,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _pass,
                             label: S.get('password'),
                             prefixIcon:
-                                Icons.lock_outline_rounded,
+                                LucideIcons.lock,
                             obscureText: _obscure,
                             textInputAction: TextInputAction.done,
                             onChanged: _onPasswordChange,
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscure
-                                    ? Icons.visibility_off_rounded
-                                    : Icons.visibility_rounded,
+                                    ? LucideIcons.eyeOff
+                                    : LucideIcons.eye,
                                 color: AppColors.sub,
                                 size: 20,
                               ),
@@ -650,7 +651,7 @@ class _RegErrorBanner extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.error_outline_rounded,
+          Icon(LucideIcons.alertCircle,
               color: AppColors.danger, size: 20),
           const SizedBox(width: 10),
           Expanded(

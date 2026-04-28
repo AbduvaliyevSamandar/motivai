@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../models/models.dart';
@@ -60,7 +61,7 @@ class _Header extends StatelessWidget {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded,
+            icon: Icon(LucideIcons.chevronLeft,
                 color: AppColors.txt, size: 20),
             onPressed: () {
               HapticFeedback.selectionClick();
@@ -106,7 +107,7 @@ class _Header extends StatelessWidget {
           const Spacer(),
           if (np.feed.isNotEmpty)
             PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert_rounded,
+              icon: Icon(LucideIcons.moreVertical,
                   color: AppColors.sub),
               color: AppColors.card,
               shape: RoundedRectangleBorder(
@@ -132,7 +133,7 @@ class _Header extends StatelessWidget {
                 PopupMenuItem(
                   value: 'clear',
                   child: Row(children: [
-                    Icon(Icons.delete_outline_rounded,
+                    Icon(LucideIcons.trash2,
                         color: AppColors.danger, size: 18),
                     const SizedBox(width: 10),
                     Text(
@@ -184,13 +185,13 @@ class _NotifTile extends StatelessWidget {
   IconData get _icon {
     switch (notif.type) {
       case AppNotifType.reminder:
-        return Icons.notifications_active_rounded;
+        return LucideIcons.bell;
       case AppNotifType.overdue:
-        return Icons.error_outline_rounded;
+        return LucideIcons.alertCircle;
       case AppNotifType.achievement:
-        return Icons.emoji_events_rounded;
+        return LucideIcons.trophy;
       case AppNotifType.info:
-        return Icons.info_outline_rounded;
+        return LucideIcons.info;
     }
   }
 
@@ -217,7 +218,7 @@ class _NotifTile extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         child:
-            Icon(Icons.delete_outline_rounded, color: AppColors.danger),
+            Icon(LucideIcons.trash2, color: AppColors.danger),
       ),
       onDismissed: (_) {
         HapticFeedback.mediumImpact();

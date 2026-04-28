@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -136,7 +137,7 @@ class _ProfileState extends State<ProfileScreen> {
                                       ],
                                     ),
                                     child: const Icon(
-                                      Icons.camera_alt_rounded,
+                                      LucideIcons.camera,
                                       color: Colors.white,
                                       size: 14,
                                     ),
@@ -243,28 +244,28 @@ class _ProfileState extends State<ProfileScreen> {
                     childAspectRatio: 1.55,
                     children: [
                       BentoCard(
-                        icon: Icons.star_rounded,
+                        icon: LucideIcons.star,
                         value: '${auth.points}',
                         label: 'XP',
                         gradient: AppColors.gradGold,
                         accent: AppColors.accent,
                       ),
                       BentoCard(
-                        icon: Icons.local_fire_department_rounded,
+                        icon: LucideIcons.flame,
                         value: '${auth.streak}',
                         label: S.get('streak'),
                         gradient: AppColors.gradFire,
                         accent: AppColors.accent,
                       ),
                       BentoCard(
-                        icon: Icons.check_circle_rounded,
+                        icon: LucideIcons.checkCircle2,
                         value: '${auth.totalTasks}',
                         label: S.get('tasks_label'),
                         gradient: AppColors.gradSuccess,
                         accent: AppColors.success,
                       ),
                       BentoCard(
-                        icon: Icons.emoji_events_rounded,
+                        icon: LucideIcons.trophy,
                         value: '${auth.achiev.length}',
                         label: S.get('achievements'),
                         gradient: AppColors.gradCosmic,
@@ -295,8 +296,8 @@ class _ProfileState extends State<ProfileScreen> {
                   delegate: SliverChildListDelegate([
                     _tile(
                       icon: theme.isDark
-                          ? Icons.dark_mode_rounded
-                          : Icons.light_mode_rounded,
+                          ? LucideIcons.moon
+                          : LucideIcons.sun,
                       iconColor: AppColors.primary,
                       title: theme.auto
                           ? 'Avto rejim'
@@ -318,7 +319,7 @@ class _ProfileState extends State<ProfileScreen> {
                       ),
                     ),
                     _tile(
-                      icon: Icons.brightness_auto_rounded,
+                      icon: LucideIcons.sunMoon,
                       iconColor: AppColors.info,
                       title: 'Avto tema',
                       subtitle:
@@ -333,7 +334,7 @@ class _ProfileState extends State<ProfileScreen> {
                       ),
                     ),
                     _tile(
-                      icon: Icons.palette_rounded,
+                      icon: LucideIcons.palette,
                       iconColor: AppColors.pink,
                       title: 'Rang mavzusi',
                       subtitle:
@@ -341,13 +342,13 @@ class _ProfileState extends State<ProfileScreen> {
                       onTap: _showThemePicker,
                     ),
                     _tile(
-                      icon: Icons.lock_outline_rounded,
+                      icon: LucideIcons.lock,
                       iconColor: AppColors.info,
                       title: S.get('change_pass'),
                       onTap: _showChangePassword,
                     ),
                     _tile(
-                      icon: Icons.credit_card_rounded,
+                      icon: LucideIcons.creditCard,
                       iconColor: AppColors.info,
                       title: 'Flashcards',
                       subtitle: 'Spaced repetition bilan yodlash',
@@ -362,7 +363,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.eco_rounded,
+                      icon: LucideIcons.leaf,
                       iconColor: AppColors.success,
                       title: 'Kundalik odatlar',
                       subtitle: 'Streak orqali o\'z-o\'zingizni rivojlantiring',
@@ -377,7 +378,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.auto_awesome_rounded,
+                      icon: LucideIcons.sparkles,
                       iconColor: AppColors.pink,
                       title: 'Haftalik xulosa',
                       subtitle: 'Bu haftangiz natijalari',
@@ -395,7 +396,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.park_rounded,
+                      icon: LucideIcons.trees,
                       iconColor: AppColors.success,
                       title: 'Sayohat',
                       subtitle: '30 kunlik daraxt o\'sishi',
@@ -409,7 +410,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.grid_view_rounded,
+                      icon: LucideIcons.grid,
                       iconColor: AppColors.info,
                       title: 'Mahsuldorlik xaritasi',
                       subtitle: 'Qaysi soatda eng faol ekanligi',
@@ -423,7 +424,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.self_improvement_rounded,
+                      icon: LucideIcons.flower2,
                       iconColor: AppColors.accent,
                       title: 'Rituallar',
                       subtitle: 'Takroriy mashg\'ulotlar uchun eslatma',
@@ -437,7 +438,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.group_rounded,
+                      icon: LucideIcons.users,
                       iconColor: AppColors.pink,
                       title: 'Do\'stlar',
                       subtitle: 'Taklif kodi bilan guruhlash',
@@ -451,7 +452,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.emoji_events_rounded,
+                      icon: LucideIcons.trophy,
                       iconColor: AppColors.accent,
                       title: 'Chellenjlar',
                       subtitle: 'Do\'st bilan 7 kunlik turnir',
@@ -466,7 +467,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Icons.translate_rounded,
+                      icon: LucideIcons.languages,
                       iconColor: AppColors.secondary,
                       title: S.get('language'),
                       subtitle: _langName(S.lang),
@@ -475,7 +476,7 @@ class _ProfileState extends State<ProfileScreen> {
                     Consumer<NotificationProvider>(
                       builder: (_, np, __) => Column(children: [
                         _tile(
-                          icon: Icons.notifications_outlined,
+                          icon: LucideIcons.bell,
                           iconColor: AppColors.accent,
                           title: S.get('notifications'),
                           subtitle: np.enabled
@@ -493,7 +494,7 @@ class _ProfileState extends State<ProfileScreen> {
                         ),
                         if (np.enabled)
                           _tile(
-                            icon: Icons.notifications_active_rounded,
+                            icon: LucideIcons.bell,
                             iconColor: AppColors.success,
                             title: 'Bildirishnomani sinash',
                             subtitle: '5 soniyadan keyin test keladi',
@@ -501,7 +502,7 @@ class _ProfileState extends State<ProfileScreen> {
                           ),
                         if (np.enabled)
                           _tile(
-                            icon: Icons.music_note_rounded,
+                            icon: LucideIcons.music,
                             iconColor: AppColors.pink,
                             title: 'Tovush pachkasi',
                             subtitle:
@@ -511,7 +512,7 @@ class _ProfileState extends State<ProfileScreen> {
                       ]),
                     ),
                     _tile(
-                      icon: Icons.vibration_rounded,
+                      icon: LucideIcons.vibrate,
                       iconColor: AppColors.secondary,
                       title: 'Titrash kuchi',
                       subtitle:
@@ -532,41 +533,41 @@ class _ProfileState extends State<ProfileScreen> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     _tile(
-                      icon: Icons.download_rounded,
+                      icon: LucideIcons.download,
                       iconColor: AppColors.info,
                       title: 'Ma\'lumotlarni eksport',
                       subtitle: 'Vazifalar, odatlar, kartalar — JSON',
                       onTap: _exportData,
                     ),
                     _tile(
-                      icon: Icons.share_rounded,
+                      icon: LucideIcons.share2,
                       iconColor: AppColors.pink,
                       title: 'Template ulashish',
                       subtitle: 'Odatlar + kartalar — do\'stga yuboring',
                       onTap: _shareTemplate,
                     ),
                     _tile(
-                      icon: Icons.file_upload_rounded,
+                      icon: LucideIcons.upload,
                       iconColor: AppColors.success,
                       title: 'Template import',
                       subtitle: 'JSON yopishtiring — odat/kartalarga qo\'shiladi',
                       onTap: _importTemplate,
                     ),
                     _tile(
-                      icon: Icons.cleaning_services_outlined,
+                      icon: LucideIcons.sparkles,
                       iconColor: AppColors.accent,
                       title: S.get('clear_cache'),
                       onTap: () => _clearCache(auth),
                     ),
                     _tile(
-                      icon: Icons.logout_rounded,
+                      icon: LucideIcons.logOut,
                       iconColor: AppColors.danger,
                       title: S.get('logout'),
                       color: AppColors.danger,
                       onTap: () => _confirmLogout(auth),
                     ),
                     _tile(
-                      icon: Icons.delete_forever_rounded,
+                      icon: LucideIcons.trash2,
                       iconColor: AppColors.danger,
                       title: 'Akkauntni o\'chirish',
                       subtitle: 'Hamma ma\'lumotlar bilan birga',
@@ -577,27 +578,27 @@ class _ProfileState extends State<ProfileScreen> {
                     _section('Ilova haqida'),
                     const SizedBox(height: 12),
                     _tile(
-                      icon: Icons.info_outline_rounded,
+                      icon: LucideIcons.info,
                       iconColor: AppColors.info,
                       title: 'MotivAI haqida',
                       onTap: _showAbout,
                     ),
                     _tile(
-                      icon: Icons.help_outline_rounded,
+                      icon: LucideIcons.helpCircle,
                       iconColor: AppColors.secondary,
                       title: 'Yordam',
                       subtitle: 'Qo\'llanma va savollar',
                       onTap: _showHelp,
                     ),
                     _tile(
-                      icon: Icons.shield_outlined,
+                      icon: LucideIcons.shield,
                       iconColor: AppColors.success,
                       title: 'Maxfiylik siyosati',
                       onTap: () => _openUrl(
                           'https://abduvaliyevsamandar.github.io/motivai/privacy.html'),
                     ),
                     _tile(
-                      icon: Icons.description_outlined,
+                      icon: LucideIcons.fileText,
                       iconColor: AppColors.info,
                       title: 'Foydalanish shartlari',
                       onTap: () => _openUrl(
@@ -618,7 +619,7 @@ class _ProfileState extends State<ProfileScreen> {
                               ]),
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(Icons.bolt_rounded,
+                            child: Icon(LucideIcons.zap,
                                 color: AppColors.primary, size: 28),
                           ),
                           const SizedBox(height: 10),
@@ -831,7 +832,7 @@ class _ProfileState extends State<ProfileScreen> {
               if (trailing != null)
                 trailing
               else if (onTap != null)
-                Icon(Icons.chevron_right_rounded,
+                Icon(LucideIcons.chevronRight,
                     color: AppColors.sub.withOpacity(0.5), size: 22),
             ]),
           ),
@@ -889,13 +890,13 @@ class _ProfileState extends State<ProfileScreen> {
             GlassTextField(
               controller: current,
               label: S.get('current_pass'),
-              prefixIcon: Icons.lock_outline_rounded,
+              prefixIcon: LucideIcons.lock,
               obscureText: obs1,
               suffixIcon: IconButton(
                 icon: Icon(
                   obs1
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
+                      ? LucideIcons.eyeOff
+                      : LucideIcons.eye,
                   color: AppColors.sub,
                 ),
                 onPressed: () => setS(() => obs1 = !obs1),
@@ -905,13 +906,13 @@ class _ProfileState extends State<ProfileScreen> {
             GlassTextField(
               controller: newPass,
               label: S.get('new_pass'),
-              prefixIcon: Icons.lock_outline_rounded,
+              prefixIcon: LucideIcons.lock,
               obscureText: obs2,
               suffixIcon: IconButton(
                 icon: Icon(
                   obs2
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
+                      ? LucideIcons.eyeOff
+                      : LucideIcons.eye,
                   color: AppColors.sub,
                 ),
                 onPressed: () => setS(() => obs2 = !obs2),
@@ -921,13 +922,13 @@ class _ProfileState extends State<ProfileScreen> {
             GlassTextField(
               controller: confirm,
               label: S.get('confirm_pass'),
-              prefixIcon: Icons.lock_outline_rounded,
+              prefixIcon: LucideIcons.lock,
               obscureText: obs3,
               suffixIcon: IconButton(
                 icon: Icon(
                   obs3
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
+                      ? LucideIcons.eyeOff
+                      : LucideIcons.eye,
                   color: AppColors.sub,
                 ),
                 onPressed: () => setS(() => obs3 = !obs3),
@@ -936,7 +937,7 @@ class _ProfileState extends State<ProfileScreen> {
             const SizedBox(height: 24),
             NebulaButton(
               label: S.get('save'),
-              icon: Icons.check_rounded,
+              icon: LucideIcons.check,
               onTap: () async {
                 if (newPass.text.length < 6) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -1105,7 +1106,7 @@ class _ProfileState extends State<ProfileScreen> {
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(
-                                    Icons.check_rounded,
+                                    LucideIcons.check,
                                     color: Colors.white,
                                     size: 14,
                                   ),
@@ -1267,7 +1268,7 @@ class _ProfileState extends State<ProfileScreen> {
                               ),
                             ),
                             if (active)
-                              Icon(Icons.check_circle_rounded,
+                              Icon(LucideIcons.checkCircle2,
                                   color: AppColors.primary, size: 20),
                           ],
                         ),
@@ -1401,7 +1402,7 @@ class _ProfileState extends State<ProfileScreen> {
                               ),
                             ),
                             if (active)
-                              Icon(Icons.check_circle_rounded,
+                              Icon(LucideIcons.checkCircle2,
                                   color: AppColors.primary, size: 20),
                           ],
                         ),
@@ -1489,7 +1490,7 @@ class _ProfileState extends State<ProfileScreen> {
               ),
             ),
             if (isActive)
-              Icon(Icons.check_circle_rounded,
+              Icon(LucideIcons.checkCircle2,
                   color: AppColors.primary, size: 22),
           ]),
         ),
@@ -1664,7 +1665,7 @@ class _ProfileState extends State<ProfileScreen> {
                           ctrl.text = clip!.text!;
                         }
                       },
-                      icon: Icon(Icons.paste_rounded,
+                      icon: Icon(LucideIcons.clipboardPaste,
                           color: AppColors.sub, size: 18),
                       label: Text('Clipboard',
                           style: GoogleFonts.poppins(
@@ -1681,7 +1682,7 @@ class _ProfileState extends State<ProfileScreen> {
               const SizedBox(height: 12),
               NebulaButton(
                 label: 'Import qilish',
-                icon: Icons.file_upload_rounded,
+                icon: LucideIcons.upload,
                 onTap: () async {
                   final raw = ctrl.text.trim();
                   if (raw.isEmpty) return;
@@ -1716,7 +1717,7 @@ class _ProfileState extends State<ProfileScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(
         children: [
-          const Icon(Icons.check_circle_rounded,
+          const Icon(LucideIcons.checkCircle2,
               color: Colors.white, size: 18),
           const SizedBox(width: 8),
           Expanded(
@@ -1750,7 +1751,7 @@ class _ProfileState extends State<ProfileScreen> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(
         children: [
-          const Icon(Icons.check_circle_rounded,
+          const Icon(LucideIcons.checkCircle2,
               color: Colors.white, size: 18),
           const SizedBox(width: 8),
           Text(
@@ -1806,7 +1807,7 @@ class _ProfileState extends State<ProfileScreen> {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.bolt_rounded,
+                child: const Icon(LucideIcons.zap,
                     color: Colors.white, size: 36),
               ),
               const SizedBox(height: 16),
@@ -1945,17 +1946,17 @@ class _ProfileState extends State<ProfileScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            _helpItem(Icons.add_rounded, 'Vazifa qo\'shish',
+            _helpItem(LucideIcons.plus, 'Vazifa qo\'shish',
                 "'+' tugmasi orqali nom, vaqt, eslatma bilan qo'shing"),
-            _helpItem(Icons.check_circle_rounded, 'Bajarish',
+            _helpItem(LucideIcons.checkCircle2, 'Bajarish',
                 "Davra tugmasini bosing yoki o'ngga swipe qiling"),
-            _helpItem(Icons.swipe_left_rounded, 'O\'chirish',
+            _helpItem(LucideIcons.moveLeft, 'O\'chirish',
                 "Chapga swipe qiling yoki 3-nuqta menyu"),
-            _helpItem(Icons.touch_app_rounded, 'Tafsilot',
+            _helpItem(LucideIcons.pointer, 'Tafsilot',
                 "Vazifani bosing — tafsilot oynasi ochiladi"),
-            _helpItem(Icons.auto_awesome_rounded, 'AI Chat',
+            _helpItem(LucideIcons.sparkles, 'AI Chat',
                 "AI'dan tavsiya so'rang — tanlab ro'yxatga qo'shing"),
-            _helpItem(Icons.notifications_active_rounded, 'Bildirishnoma',
+            _helpItem(LucideIcons.bell, 'Bildirishnoma',
                 "Vazifaga vaqt qo'ying — oldindan eslatadi"),
             const SizedBox(height: 14),
           ],
@@ -2025,7 +2026,7 @@ class _ProfileState extends State<ProfileScreen> {
         ),
         title: Row(
           children: [
-            Icon(Icons.warning_amber_rounded,
+            Icon(LucideIcons.alertTriangle,
                 color: AppColors.danger, size: 24),
             const SizedBox(width: 8),
             Expanded(
@@ -2218,7 +2219,7 @@ class _ProfileState extends State<ProfileScreen> {
                       child: Row(
                         children: [
                           Icon(
-                            Icons.notifications_active_rounded,
+                            LucideIcons.bell,
                             color: active
                                 ? AppColors.primary
                                 : AppColors.sub,
@@ -2238,7 +2239,7 @@ class _ProfileState extends State<ProfileScreen> {
                             ),
                           ),
                           if (active)
-                            Icon(Icons.check_circle_rounded,
+                            Icon(LucideIcons.checkCircle2,
                                 color: AppColors.primary, size: 20),
                         ],
                       ),

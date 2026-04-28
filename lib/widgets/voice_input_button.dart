@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 
 /// Circular mic button — tap to start, tap again to stop.
@@ -154,7 +155,7 @@ class _VoiceInputButtonState extends State<VoiceInputButton>
                 : null,
           ),
           child: Icon(
-            _listening ? Icons.stop_rounded : Icons.mic_rounded,
+            _listening ? LucideIcons.square : LucideIcons.mic,
             color: Colors.white,
             size: 22,
           ),

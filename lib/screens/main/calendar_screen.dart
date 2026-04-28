@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../providers/task_provider.dart';
 import '../../models/models.dart';
@@ -70,7 +71,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       child: Row(
         children: [
           IconButton(
-            icon: Icon(Icons.arrow_back_ios_new_rounded,
+            icon: Icon(LucideIcons.chevronLeft,
                 color: AppColors.txt, size: 20),
             onPressed: () => Navigator.pop(context),
           ),
@@ -135,7 +136,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       padding: const EdgeInsets.fromLTRB(24, 4, 24, 4),
       child: Row(
         children: [
-          _arrow(Icons.chevron_left_rounded, () {
+          _arrow(LucideIcons.chevronLeft, () {
             setState(() {
               _visibleMonth = DateTime(
                 _visibleMonth.year,
@@ -157,7 +158,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               ),
             ),
           ),
-          _arrow(Icons.chevron_right_rounded, () {
+          _arrow(LucideIcons.chevronRight, () {
             setState(() {
               _visibleMonth = DateTime(
                 _visibleMonth.year,
@@ -497,8 +498,8 @@ class _CalTaskItem extends StatelessWidget {
                 ),
                 Icon(
                   done
-                      ? Icons.check_circle_rounded
-                      : Icons.chevron_right_rounded,
+                      ? LucideIcons.checkCircle2
+                      : LucideIcons.chevronRight,
                   color: done ? AppColors.success : AppColors.sub,
                   size: done ? 20 : 18,
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../models/models.dart';
 import '../services/task_mentor.dart';
@@ -66,7 +67,7 @@ class TaskMentorSheet extends StatelessWidget {
                           colors: AppColors.gradCosmic),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.psychology_rounded,
+                    child: const Icon(LucideIcons.brain,
                         color: Colors.white, size: 22),
                   ),
                   const SizedBox(width: 12),
@@ -143,7 +144,7 @@ class TaskMentorSheet extends StatelessWidget {
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      Icon(Icons.timer_rounded,
+                      Icon(LucideIcons.timer,
                           color: AppColors.accent, size: 16),
                       const SizedBox(width: 6),
                       Text(
@@ -191,7 +192,7 @@ class TaskMentorSheet extends StatelessWidget {
                   const SizedBox(height: 16),
                   NebulaButton(
                     label: 'Yaxshi, boshlayman',
-                    icon: Icons.rocket_launch_rounded,
+                    icon: LucideIcons.rocket,
                     onTap: () {
                       HapticFeedback.mediumImpact();
                       Navigator.pop(context);

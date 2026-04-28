@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/journey_storage.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -83,7 +84,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: AppColors.txt),
+          icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
         title: ShaderMask(
@@ -135,7 +136,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
       children: [
         Expanded(
           child: _insightCard(
-            icon: Icons.access_time_filled_rounded,
+            icon: LucideIcons.clock,
             color: AppColors.primary,
             label: 'Eng faol soat',
             value: bestH.avg == 0 ? '—' : hourLabel,
@@ -144,7 +145,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
         const SizedBox(width: 10),
         Expanded(
           child: _insightCard(
-            icon: Icons.calendar_today_rounded,
+            icon: LucideIcons.calendar,
             color: AppColors.success,
             label: 'Eng mahsuldor kun',
             value: bestD.count == 0 ? '—' : dayLabel,
@@ -200,7 +201,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.grid_view_rounded,
+              Icon(LucideIcons.grid,
                   color: AppColors.pink, size: 18),
               const SizedBox(width: 6),
               Text('Soat × kun',

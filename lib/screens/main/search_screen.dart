@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../providers/task_provider.dart';
 import '../../services/habit_storage.dart';
@@ -92,7 +93,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        icon: Icon(LucideIcons.chevronLeft,
                             color: AppColors.txt, size: 20),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -119,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 color: AppColors.hint,
                                 fontSize: 14,
                               ),
-                              prefixIcon: Icon(Icons.search_rounded,
+                              prefixIcon: Icon(LucideIcons.search,
                                   color: AppColors.sub, size: 20),
                               border: InputBorder.none,
                               enabledBorder: InputBorder.none,
@@ -389,7 +390,7 @@ class _TaskHit extends StatelessWidget {
                   ),
                 ),
                 if (task.isCompleted)
-                  Icon(Icons.check_circle_rounded,
+                  Icon(LucideIcons.checkCircle2,
                       color: AppColors.success, size: 18),
               ],
             ),

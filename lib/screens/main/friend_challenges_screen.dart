@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/friends_storage.dart';
 import '../../services/friend_challenge.dart';
@@ -96,7 +97,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   GlassTextField(
                     controller: titleCtrl,
                     label: 'Sarlavha',
-                    prefixIcon: Icons.emoji_events_rounded,
+                    prefixIcon: LucideIcons.trophy,
                   ),
                   const SizedBox(height: 12),
                   Container(
@@ -162,7 +163,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   const SizedBox(height: 18),
                   NebulaButton(
                     label: 'Chellenj boshlash',
-                    icon: Icons.rocket_launch_rounded,
+                    icon: LucideIcons.rocket,
                     onTap: () async {
                       if (friend == null) return;
                       await FriendChallenges.create(
@@ -227,7 +228,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   HapticFeedback.selectionClick();
                   if (value < max) onChange(value + 1);
                 },
-                child: Icon(Icons.keyboard_arrow_up_rounded,
+                child: Icon(LucideIcons.chevronUp,
                     color: AppColors.primary, size: 22),
               ),
               GestureDetector(
@@ -235,7 +236,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   HapticFeedback.selectionClick();
                   if (value > min) onChange(value - 1);
                 },
-                child: Icon(Icons.keyboard_arrow_down_rounded,
+                child: Icon(LucideIcons.chevronDown,
                     color: AppColors.primary, size: 22),
               ),
             ],
@@ -328,7 +329,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: AppColors.txt),
+          icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
         title: ShaderMask(
@@ -346,7 +347,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_rounded, color: AppColors.primary),
+            icon: Icon(LucideIcons.plus, color: AppColors.primary),
             onPressed: _showCreateSheet,
           ),
         ],
@@ -396,7 +397,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             const SizedBox(height: 20),
             NebulaButton(
               label: 'Yangisini yaratish',
-              icon: Icons.add_rounded,
+              icon: LucideIcons.plus,
               expand: false,
               onTap: _showCreateSheet,
             ),
@@ -428,8 +429,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             children: [
               Icon(
                 c.isActive
-                    ? Icons.timer_rounded
-                    : Icons.check_circle_rounded,
+                    ? LucideIcons.timer
+                    : LucideIcons.checkCircle2,
                 color: c.isActive
                     ? AppColors.primary
                     : AppColors.success,
@@ -479,7 +480,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () => _reportFriendScore(c),
-                  icon: Icon(Icons.edit_rounded,
+                  icon: Icon(LucideIcons.pencil,
                       color: AppColors.accent, size: 16),
                   label: Text('Do\'st ballini kiritish',
                       style: GoogleFonts.poppins(
@@ -497,7 +498,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               ),
               const SizedBox(width: 8),
               IconButton(
-                icon: Icon(Icons.delete_outline_rounded,
+                icon: Icon(LucideIcons.trash2,
                     color: AppColors.danger.withOpacity(0.7)),
                 onPressed: () async {
                   HapticFeedback.lightImpact();

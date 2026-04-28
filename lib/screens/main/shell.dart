@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -133,30 +133,12 @@ class _FloatingGlassNav extends StatelessWidget {
   const _FloatingGlassNav({required this.index, required this.onChanged});
 
   static const _items = [
-    'home',
-    'chat',
-    'rating',
-    'analytics',
-    'profile',
+    (LucideIcons.home, 'home'),
+    (LucideIcons.sparkles, 'chat'),
+    (LucideIcons.trophy, 'rating'),
+    (LucideIcons.lineChart, 'analytics'),
+    (LucideIcons.user, 'profile'),
   ];
-
-  IconData _iconFor(int i, bool active) {
-    final style = active ? PhosphorIconsStyle.fill : PhosphorIconsStyle.regular;
-    switch (i) {
-      case 0:
-        return PhosphorIcons.house(style);
-      case 1:
-        return PhosphorIcons.sparkle(style);
-      case 2:
-        return PhosphorIcons.trophy(style);
-      case 3:
-        return PhosphorIcons.chartLine(style);
-      case 4:
-        return PhosphorIcons.user(style);
-      default:
-        return PhosphorIcons.circle(style);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +156,7 @@ class _FloatingGlassNav extends StatelessWidget {
           child: Row(
             children: List.generate(_items.length, (i) {
               final active = index == i;
+              final (icon, label) = _items[i];
               return Expanded(
                 child: InkWell(
                   onTap: () => onChanged(i),
@@ -181,13 +164,13 @@ class _FloatingGlassNav extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        _iconFor(i, active),
+                        icon,
                         color: active ? AppColors.txt : AppColors.sub,
                         size: 22,
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        S.get(_items[i]),
+                        S.get(label),
                         style: GoogleFonts.poppins(
                           fontSize: 10,
                           fontWeight:

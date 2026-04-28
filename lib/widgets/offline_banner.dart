@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../services/action_queue.dart';
 
@@ -48,10 +49,10 @@ class OfflineBanner extends StatelessWidget {
                   children: [
                     Icon(
                       danger
-                          ? Icons.cloud_off_rounded
+                          ? LucideIcons.cloudOff
                           : (q.syncing
-                              ? Icons.cloud_sync_rounded
-                              : Icons.cloud_upload_rounded),
+                              ? LucideIcons.refreshCw
+                              : LucideIcons.uploadCloud),
                       color: danger
                           ? AppColors.danger
                           : AppColors.accent,
@@ -73,7 +74,7 @@ class OfflineBanner extends StatelessWidget {
                       ),
                     ),
                     if (!danger)
-                      Icon(Icons.sync_rounded,
+                      Icon(LucideIcons.refreshCw,
                           color: AppColors.accent, size: 16),
                   ],
                 ),

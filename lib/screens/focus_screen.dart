@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../services/pomodoro.dart';
 import '../services/ambient_sounds.dart';
@@ -276,7 +277,7 @@ class _FocusScreenState extends State<FocusScreen> {
                                 border:
                                     Border.all(color: AppColors.border),
                               ),
-                              child: const Icon(Icons.close_rounded,
+                              child: const Icon(LucideIcons.x,
                                   color: Colors.white, size: 18),
                             ),
                           ),
@@ -401,7 +402,7 @@ class _FocusScreenState extends State<FocusScreen> {
                       ),
                       const SizedBox(width: 10),
                       _StatPill(
-                        icon: Icons.timer_rounded,
+                        icon: LucideIcons.timer,
                         label: 'Fokus',
                         value: '${_session.totalFocusedMinutes} min',
                       ),
@@ -417,7 +418,7 @@ class _FocusScreenState extends State<FocusScreen> {
                       children: [
                         Expanded(
                           child: _ControlBtn(
-                            icon: Icons.skip_next_rounded,
+                            icon: LucideIcons.skipForward,
                             label: "O'tkazib yuborish",
                             onTap: () {
                               HapticFeedback.selectionClick();
@@ -433,8 +434,8 @@ class _FocusScreenState extends State<FocusScreen> {
                                 ? 'Davom etish'
                                 : 'Pauza',
                             icon: _session.isPaused
-                                ? Icons.play_arrow_rounded
-                                : Icons.pause_rounded,
+                                ? LucideIcons.play
+                                : LucideIcons.pause,
                             gradient: gradient,
                             onTap: () {
                               HapticFeedback.mediumImpact();
@@ -490,7 +491,7 @@ class _PhaseBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.timer_rounded, color: Colors.white, size: 14),
+          const Icon(LucideIcons.timer, color: Colors.white, size: 14),
           const SizedBox(width: 6),
           Text(
             '$label \u2022 #$cycle',

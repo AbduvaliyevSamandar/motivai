@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/friends_storage.dart';
@@ -140,18 +141,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 GlassTextField(
                   controller: nameCtrl,
                   label: 'Ism',
-                  prefixIcon: Icons.person_rounded,
+                  prefixIcon: LucideIcons.user,
                 ),
                 const SizedBox(height: 10),
                 GlassTextField(
                   controller: codeCtrl,
                   label: 'Taklif kodi (6 belgi)',
-                  prefixIcon: Icons.key_rounded,
+                  prefixIcon: LucideIcons.key,
                 ),
                 const SizedBox(height: 18),
                 NebulaButton(
                   label: 'Qo\'shish',
-                  icon: Icons.person_add_rounded,
+                  icon: LucideIcons.userPlus,
                   onTap: () async {
                     final ok = await FriendsStorage.add(
                       name: nameCtrl.text,
@@ -288,7 +289,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: AppColors.txt),
+          icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
         title: ShaderMask(
@@ -308,7 +309,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.person_add_rounded, color: AppColors.primary),
+            icon: Icon(LucideIcons.userPlus, color: AppColors.primary),
             onPressed: _showAddSheet,
           ),
         ],
@@ -346,7 +347,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         children: [
           Row(
             children: [
-              Icon(Icons.qr_code_rounded, color: AppColors.primary),
+              Icon(LucideIcons.qrCode, color: AppColors.primary),
               const SizedBox(width: 8),
               Text('Sizning taklif kodingiz',
                   style: GoogleFonts.poppins(
@@ -386,7 +387,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       ),
                       const Spacer(),
                       IconButton(
-                        icon: Icon(Icons.copy_rounded,
+                        icon: Icon(LucideIcons.copy,
                             color: AppColors.primary, size: 20),
                         onPressed: () {
                           Clipboard.setData(ClipboardData(
@@ -426,7 +427,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.monetization_on_rounded,
+                const Icon(LucideIcons.circleDollarSign,
                     color: Colors.white, size: 16),
                 const SizedBox(width: 6),
                 Text('$_myCoins tanga',
@@ -527,12 +528,12 @@ class _FriendsScreenState extends State<FriendsScreen> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.card_giftcard_rounded,
+            icon: Icon(LucideIcons.gift,
                 color: AppColors.accent),
             onPressed: () => _sendCoins(f),
           ),
           IconButton(
-            icon: Icon(Icons.delete_outline_rounded,
+            icon: Icon(LucideIcons.trash2,
                 color: AppColors.danger.withOpacity(0.7)),
             onPressed: () async {
               HapticFeedback.lightImpact();

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -104,7 +105,7 @@ class _ProgState extends State<ProgressScreen> {
                                           color: AppColors.border),
                                     ),
                                     child: Icon(
-                                        Icons.refresh_rounded,
+                                        LucideIcons.refreshCw,
                                         color: AppColors.sub,
                                         size: 18),
                                   ),
@@ -193,7 +194,7 @@ class _StatsGrid extends StatelessWidget {
       childAspectRatio: 1.55,
       children: [
         BentoCard(
-          icon: Icons.star_rounded,
+          icon: LucideIcons.star,
           value: '${auth.points}',
           label: S.get('total_points'),
           gradient: AppColors.gradGold,
@@ -201,21 +202,21 @@ class _StatsGrid extends StatelessWidget {
           trend: '+8%',
         ),
         BentoCard(
-          icon: Icons.trending_up_rounded,
+          icon: LucideIcons.trendingUp,
           value: '${auth.level}',
           label: S.get('level'),
           gradient: AppColors.gradCosmic,
           accent: AppColors.primary,
         ),
         BentoCard(
-          icon: Icons.local_fire_department_rounded,
+          icon: LucideIcons.flame,
           value: '${auth.streak}',
           label: S.get('streak'),
           gradient: AppColors.gradFire,
           accent: AppColors.accent,
         ),
         BentoCard(
-          icon: Icons.check_circle_rounded,
+          icon: LucideIcons.checkCircle2,
           value: '${auth.totalTasks}',
           label: S.get('tasks_label'),
           gradient: AppColors.gradSuccess,
@@ -366,7 +367,7 @@ class _CosmicLineChart extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.show_chart_rounded,
+                child: const Icon(LucideIcons.lineChart,
                     color: Colors.white, size: 18),
               ),
               const SizedBox(width: 12),
@@ -560,7 +561,7 @@ class _HeatmapCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.calendar_month_rounded,
+                child: const Icon(LucideIcons.calendarDays,
                     color: Colors.white, size: 18),
               ),
               const SizedBox(width: 12),
@@ -751,7 +752,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.pie_chart_rounded,
+                child: const Icon(LucideIcons.pieChart,
                     color: Colors.white, size: 18),
               ),
               const SizedBox(width: 12),

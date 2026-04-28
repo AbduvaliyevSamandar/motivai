@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -176,7 +177,7 @@ class _TabsDelegate extends SliverPersistentHeaderDelegate {
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: AppColors.border),
                 ),
-                child: Icon(Icons.refresh_rounded,
+                child: Icon(LucideIcons.refreshCw,
                     color: AppColors.sub, size: 20),
               ),
             ),

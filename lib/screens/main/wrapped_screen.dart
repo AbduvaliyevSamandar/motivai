@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
@@ -111,7 +112,7 @@ class _WrappedScreenState extends State<WrappedScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.close_rounded,
+                        icon: const Icon(LucideIcons.x,
                             color: Colors.white, size: 22),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -187,8 +188,8 @@ class _WrappedScreenState extends State<WrappedScreen> {
                               ? 'Yopish'
                               : 'Keyingi',
                           icon: _slide == slides.length - 1
-                              ? Icons.check_rounded
-                              : Icons.arrow_forward_rounded,
+                              ? LucideIcons.check
+                              : LucideIcons.arrowRight,
                           onTap: () {
                             if (_slide == slides.length - 1) {
                               Navigator.pop(context);

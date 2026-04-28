@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../models/models.dart';
 import '../../services/task_notes.dart';
@@ -126,18 +127,18 @@ class _TaskDetailSheet extends StatelessWidget {
                         children: [
                           if (task.isFromChat) ...[
                             _miniBadge('AI', AppColors.primary,
-                                Icons.auto_awesome_rounded),
+                                LucideIcons.sparkles),
                             const SizedBox(width: 6),
                           ],
                           if (task.isOverdue)
                             _miniBadge("O'tkazilgan",
-                                AppColors.danger, Icons.error_outline_rounded)
+                                AppColors.danger, LucideIcons.alertCircle)
                           else if (task.isUpcomingSoon)
                             _miniBadge('Yaqinlashmoqda',
-                                AppColors.accent, Icons.notifications_active_rounded)
+                                AppColors.accent, LucideIcons.bell)
                           else if (task.isCompleted)
                             _miniBadge('Bajarilgan',
-                                AppColors.success, Icons.check_circle_rounded),
+                                AppColors.success, LucideIcons.checkCircle2),
                         ],
                       ),
                     ],
@@ -192,7 +193,7 @@ class _TaskDetailSheet extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.folder_outlined,
+                    Icon(LucideIcons.folder,
                         size: 16, color: AppColors.sub),
                     const SizedBox(width: 8),
                     Expanded(
@@ -217,7 +218,7 @@ class _TaskDetailSheet extends StatelessWidget {
             if (!task.isCompleted) ...[
               NebulaButton(
                 label: 'AI yordam',
-                icon: Icons.psychology_rounded,
+                icon: LucideIcons.brain,
                 gradient: AppColors.gradCosmic,
                 onTap: () async {
                   HapticFeedback.selectionClick();
@@ -233,7 +234,7 @@ class _TaskDetailSheet extends StatelessWidget {
               const SizedBox(height: 10),
               NebulaButton(
                 label: 'Fokus (Pomodoro)',
-                icon: Icons.timer_rounded,
+                icon: LucideIcons.timer,
                 glow: false,
                 onTap: () async {
                   Navigator.pop(context);
@@ -247,7 +248,7 @@ class _TaskDetailSheet extends StatelessWidget {
               const SizedBox(height: 10),
               NebulaButton(
                 label: 'Bajardim',
-                icon: Icons.check_rounded,
+                icon: LucideIcons.check,
                 gradient: AppColors.gradSuccess,
                 onTap: onComplete == null
                     ? null
@@ -262,7 +263,7 @@ class _TaskDetailSheet extends StatelessWidget {
                   if (onEdit != null)
                     Expanded(
                       child: _secondaryBtn(
-                        icon: Icons.edit_outlined,
+                        icon: LucideIcons.pencil,
                         label: 'Tahrirlash',
                         color: AppColors.primary,
                         onTap: () {
@@ -276,7 +277,7 @@ class _TaskDetailSheet extends StatelessWidget {
                   if (onDelete != null)
                     Expanded(
                       child: _secondaryBtn(
-                        icon: Icons.delete_outline_rounded,
+                        icon: LucideIcons.trash2,
                         label: "O'chirish",
                         color: AppColors.danger,
                         onTap: () {
@@ -366,7 +367,7 @@ class _TaskDetailSheet extends StatelessWidget {
     return Column(
       children: [
         _detailRow(
-          Icons.star_rounded,
+          LucideIcons.star,
           AppColors.accent,
           'XP',
           '+${task.points}',
@@ -388,7 +389,7 @@ class _TaskDetailSheet extends StatelessWidget {
         if (task.hasSchedule) ...[
           const SizedBox(height: 10),
           _detailRow(
-            Icons.event_rounded,
+            LucideIcons.calendar,
             AppColors.primary,
             'Vaqt',
             task.timeLabel,
@@ -396,7 +397,7 @@ class _TaskDetailSheet extends StatelessWidget {
           if (task.reminderMinutes > 0) ...[
             const SizedBox(height: 10),
             _detailRow(
-              Icons.notifications_active_rounded,
+              LucideIcons.bell,
               AppColors.pink,
               'Eslatma',
               '${task.reminderMinutes} daqiqa oldin',
@@ -488,8 +489,8 @@ class _TaskDetailSheet extends StatelessWidget {
 
   IconData _diffIcon(String d) => {
         'easy': Icons.flash_on_rounded,
-        'medium': Icons.fitness_center_rounded,
-        'hard': Icons.local_fire_department_rounded,
+        'medium': LucideIcons.dumbbell,
+        'hard': LucideIcons.flame,
         'expert': Icons.workspace_premium_rounded,
       }[d] ??
       Icons.label_rounded;
@@ -630,7 +631,7 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                 if (!_editing)
                   GestureDetector(
                     onTap: () => setState(() => _editing = true),
-                    child: Icon(Icons.edit_outlined,
+                    child: Icon(LucideIcons.pencil,
                         color: AppColors.sub, size: 14),
                   ),
               ],

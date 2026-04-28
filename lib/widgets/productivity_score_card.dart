@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../models/models.dart';
 import 'nebula/nebula.dart';
@@ -42,7 +43,7 @@ class ProductivityScoreCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.bolt_rounded,
+                child: const Icon(LucideIcons.zap,
                     color: Colors.white, size: 16),
               ),
               const SizedBox(width: 10),

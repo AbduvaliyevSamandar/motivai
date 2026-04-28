@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../services/user_goal.dart';
 import '../widgets/nebula/nebula.dart';
@@ -149,8 +150,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: NebulaButton(
                     label: isLast ? 'Boshlash' : 'Keyingi',
                     icon: isLast
-                        ? Icons.rocket_launch_rounded
-                        : Icons.arrow_forward_rounded,
+                        ? LucideIcons.rocket
+                        : LucideIcons.arrowRight,
                     disabled: !canAdvance,
                     onTap: () {
                       if (isLast) {
@@ -360,7 +361,7 @@ class _GoalPicker extends StatelessWidget {
                               ),
                             ),
                             if (active)
-                              const Icon(Icons.check_circle_rounded,
+                              const Icon(LucideIcons.checkCircle2,
                                   color: Colors.white, size: 22),
                           ],
                         ),

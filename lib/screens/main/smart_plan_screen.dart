@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../providers/task_provider.dart';
 import '../../models/models.dart';
@@ -71,7 +72,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: AppColors.txt),
+          icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
         title: ShaderMask(
@@ -110,7 +111,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.lightbulb_outline_rounded,
+                          Icon(LucideIcons.lightbulb,
                               color: AppColors.accent, size: 22),
                           const SizedBox(width: 12),
                           Expanded(
@@ -133,7 +134,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     const SizedBox(height: 16),
                     NebulaButton(
                       label: 'Vazifalarga qo\'shish',
-                      icon: Icons.playlist_add_rounded,
+                      icon: LucideIcons.listPlus,
                       onTap: _addToTasks,
                     ),
                   ],
@@ -285,7 +286,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           const SizedBox(height: 6),
           NebulaButton(
             label: _plan == null ? 'Yaratish' : 'Qayta yaratish',
-            icon: Icons.auto_awesome_rounded,
+            icon: LucideIcons.sparkles,
             onTap: _generate,
           ),
         ],

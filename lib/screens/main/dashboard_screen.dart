@@ -157,7 +157,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         D.sp20, D.sp24, D.sp20, D.sp12),
                     sliver: SliverToBoxAdapter(
                       child: _SectionBanner(
-                        icon: Icons.rocket_launch_rounded,
+                        icon: LucideIcons.rocket,
                         title: 'Vazifalar',
                         badge: '${tasks.completedToday}/${tasks.totalToday}',
                         gradient: AppColors.gradCosmic,
@@ -251,7 +251,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       messenger.showSnackBar(SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.delete_outline_rounded,
+            const Icon(LucideIcons.trash2,
                 color: Colors.white, size: 18),
             const SizedBox(width: 8),
             Expanded(
@@ -434,7 +434,7 @@ class _HeaderRow extends StatelessWidget {
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Icon(
-                  Icons.search_rounded,
+                  LucideIcons.search,
                   color: AppColors.sub,
                   size: 20,
                 ),
@@ -482,7 +482,7 @@ class _HeaderRow extends StatelessWidget {
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Icon(
-                  Icons.calendar_month_rounded,
+                  LucideIcons.calendarDays,
                   color: AppColors.sub,
                   size: 20,
                 ),
@@ -528,7 +528,7 @@ class _HeaderRow extends StatelessWidget {
                   child: Stack(
                     children: [
                       Center(
-                        child: Icon(Icons.notifications_outlined,
+                        child: Icon(LucideIcons.bell,
                             color: unread > 0
                                 ? AppColors.primary
                                 : AppColors.sub,
@@ -745,7 +745,7 @@ class _HeroXPRing extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Icon(Icons.star_rounded,
+                    Icon(LucideIcons.star,
                         color: AppColors.accent, size: 14),
                     const SizedBox(width: 4),
                     Text(
@@ -809,7 +809,7 @@ class _QuickStats extends StatelessWidget {
         children: [
           Expanded(
             child: _StatChip(
-              icon: Icons.star_rounded,
+              icon: LucideIcons.star,
               value: _fmt(points),
               label: 'XP',
               gradient: AppColors.gradGold,
@@ -818,7 +818,7 @@ class _QuickStats extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: _StatChip(
-              icon: Icons.local_fire_department_rounded,
+              icon: LucideIcons.flame,
               value: '$streak',
               label: 'streak',
               gradient: AppColors.gradFire,
@@ -827,7 +827,7 @@ class _QuickStats extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: _StatChip(
-              icon: Icons.check_circle_rounded,
+              icon: LucideIcons.checkCircle2,
               value: '$tasksDone',
               label: 'bajarildi',
               gradient: AppColors.gradSuccess,
@@ -945,7 +945,7 @@ class _BentoGrid extends StatelessWidget {
               child: Column(
                 children: [
                   BentoCard(
-                    icon: Icons.star_rounded,
+                    icon: LucideIcons.star,
                     value: _fmt(points),
                     label: 'XP',
                     gradient: AppColors.gradGold,
@@ -955,7 +955,7 @@ class _BentoGrid extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   BentoCard(
-                    icon: Icons.check_circle_rounded,
+                    icon: LucideIcons.checkCircle2,
                     value: '$tasksDone',
                     label: S.get('tasks_label'),
                     gradient: AppColors.gradSuccess,
@@ -1044,7 +1044,7 @@ class _StreakCustomState extends State<_StreakCustom>
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.trending_up_rounded,
+                  Icon(LucideIcons.trendingUp,
                       size: 11, color: AppColors.success),
                   const SizedBox(width: 2),
                   Text(
@@ -1510,7 +1510,7 @@ class _SmartPlanShortcut extends StatelessWidget {
                       colors: AppColors.gradCosmic),
                   borderRadius: BorderRadius.circular(11),
                 ),
-                child: const Icon(Icons.auto_awesome_rounded,
+                child: const Icon(LucideIcons.sparkles,
                     color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
@@ -1534,7 +1534,7 @@ class _SmartPlanShortcut extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_rounded,
+              Icon(LucideIcons.arrowRight,
                   color: AppColors.primary, size: 18),
             ],
           ),
@@ -1581,8 +1581,8 @@ class _MitChip extends StatelessWidget {
             children: [
               Icon(
                 active
-                    ? Icons.filter_3_rounded
-                    : Icons.filter_list_rounded,
+                    ? LucideIcons.filter
+                    : LucideIcons.filter,
                 color: active
                     ? AppColors.accent
                     : AppColors.sub,
@@ -1615,8 +1615,8 @@ class _MitChip extends StatelessWidget {
               ),
               Icon(
                 active
-                    ? Icons.toggle_on_rounded
-                    : Icons.toggle_off_rounded,
+                    ? LucideIcons.toggleRight
+                    : LucideIcons.toggleLeft,
                 color: active ? AppColors.accent : AppColors.sub,
                 size: 24,
               ),

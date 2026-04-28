@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -245,13 +246,13 @@ class _TaskCardState extends State<TaskCard>
         background: _swipeBg(
           align: Alignment.centerLeft,
           color: AppColors.success,
-          icon: Icons.check_circle_rounded,
+          icon: LucideIcons.checkCircle2,
           label: 'Bajardim',
         ),
         secondaryBackground: _swipeBg(
           align: Alignment.centerRight,
           color: AppColors.danger,
-          icon: Icons.delete_outline_rounded,
+          icon: LucideIcons.trash2,
           label: "O'chirish",
         ),
         child: tappable,
@@ -334,7 +335,7 @@ class _MoreMenu extends StatelessWidget {
           shape: BoxShape.circle,
           border: Border.all(color: AppColors.border),
         ),
-        child: Icon(Icons.more_vert_rounded,
+        child: Icon(LucideIcons.moreVertical,
             size: 16, color: AppColors.sub),
       ),
       color: AppColors.card,
@@ -371,7 +372,7 @@ class _MoreMenu extends StatelessWidget {
             value: 'edit',
             child: Row(
               children: [
-                Icon(Icons.edit_outlined,
+                Icon(LucideIcons.pencil,
                     color: AppColors.primary, size: 18),
                 const SizedBox(width: 10),
                 Text(
@@ -389,7 +390,7 @@ class _MoreMenu extends StatelessWidget {
             value: 'delete',
             child: Row(
               children: [
-                Icon(Icons.delete_outline_rounded,
+                Icon(LucideIcons.trash2,
                     color: AppColors.danger, size: 18),
                 const SizedBox(width: 10),
                 Text(
@@ -451,7 +452,7 @@ class _CompleteButton extends StatelessWidget {
           ),
         ),
         child: Icon(
-          Icons.check_rounded,
+          LucideIcons.check,
           color: done ? AppColors.success : AppColors.sub,
           size: 18,
         ),
@@ -584,8 +585,8 @@ class _TimeTag extends StatelessWidget {
             overdue
                 ? Icons.event_busy_rounded
                 : upcoming
-                    ? Icons.notifications_active_rounded
-                    : Icons.event_rounded,
+                    ? LucideIcons.bell
+                    : LucideIcons.calendar,
             color: color,
             size: 12,
           ),
@@ -624,7 +625,7 @@ class _OverdueBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.error_outline_rounded,
+          Icon(LucideIcons.alertCircle,
               size: 12, color: AppColors.danger),
           const SizedBox(width: D.sp4),
           Text(
@@ -689,7 +690,7 @@ class _UpcomingBadgeState extends State<_UpcomingBadge>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.notifications_active_rounded,
+            Icon(LucideIcons.bell,
                 size: 12, color: AppColors.accent),
             const SizedBox(width: D.sp4),
             Text(

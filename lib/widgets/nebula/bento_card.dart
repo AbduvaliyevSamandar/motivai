@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 
@@ -132,8 +133,8 @@ class _BentoCardState extends State<BentoCard>
                   children: [
                     Icon(
                       widget.trendPositive
-                          ? Icons.trending_up_rounded
-                          : Icons.trending_down_rounded,
+                          ? LucideIcons.trendingUp
+                          : LucideIcons.trendingDown,
                       size: 11,
                       color: widget.trendPositive
                           ? AppColors.success

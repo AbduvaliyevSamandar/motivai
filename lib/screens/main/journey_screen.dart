@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/journey_storage.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -64,7 +65,7 @@ class _JourneyScreenState extends State<JourneyScreen>
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: AppColors.txt),
+          icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
         title: ShaderMask(
@@ -148,7 +149,7 @@ class _JourneyScreenState extends State<JourneyScreen>
         children: [
           Row(
             children: [
-              Icon(Icons.eco_rounded,
+              Icon(LucideIcons.leaf,
                   color: AppColors.success, size: 20),
               const SizedBox(width: 8),
               Text(
@@ -201,17 +202,17 @@ class _JourneyScreenState extends State<JourneyScreen>
       children: [
         Expanded(
             child: _statBox(
-                '$_tasksTotal', 'Vazifa', Icons.check_circle_rounded,
+                '$_tasksTotal', 'Vazifa', LucideIcons.checkCircle2,
                 AppColors.primary)),
         const SizedBox(width: 10),
         Expanded(
             child: _statBox(
-                '${_focusTotal}m', 'Fokus', Icons.timer_rounded,
+                '${_focusTotal}m', 'Fokus', LucideIcons.timer,
                 AppColors.secondary)),
         const SizedBox(width: 10),
         Expanded(
             child: _statBox('$_productive', 'Faol kun',
-                Icons.local_fire_department_rounded, AppColors.accent)),
+                LucideIcons.flame, AppColors.accent)),
       ],
     );
   }
@@ -315,7 +316,7 @@ class _JourneyScreenState extends State<JourneyScreen>
               color: AppColors.primary.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.auto_awesome_rounded,
+            child: Icon(LucideIcons.sparkles,
                 color: AppColors.accent, size: 20),
           ),
           const SizedBox(width: 12),

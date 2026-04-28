@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/flashcards_storage.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -83,7 +84,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
               ),
             ],
           ),
-          child: const Icon(Icons.add_rounded,
+          child: const Icon(LucideIcons.plus,
               color: Colors.white, size: 26),
         ),
       ),
@@ -99,7 +100,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        icon: Icon(LucideIcons.chevronLeft,
                             color: AppColors.txt, size: 20),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -287,7 +288,7 @@ class _DeckCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Row(
                         children: [
-                          Icon(Icons.credit_card_rounded,
+                          Icon(LucideIcons.creditCard,
                               color: AppColors.sub, size: 12),
                           const SizedBox(width: 4),
                           Text(
@@ -323,7 +324,7 @@ class _DeckCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(Icons.chevron_right_rounded,
+                Icon(LucideIcons.chevronRight,
                     color: AppColors.sub, size: 22),
               ],
             ),
@@ -398,7 +399,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
             controller: _ctrl,
             label: 'Deck nomi',
             hint: 'Masalan: Ingliz tili so\'zlari',
-            prefixIcon: Icons.edit_rounded,
+            prefixIcon: LucideIcons.pencil,
           ),
           const SizedBox(height: 14),
           Wrap(
@@ -437,7 +438,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
           const SizedBox(height: 24),
           NebulaButton(
             label: 'Yaratish',
-            icon: Icons.add_rounded,
+            icon: LucideIcons.plus,
             onTap: () {
               final t = _ctrl.text.trim();
               if (t.isEmpty) return;
@@ -541,7 +542,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
               ),
             ],
           ),
-          child: const Icon(Icons.add_rounded,
+          child: const Icon(LucideIcons.plus,
               color: Colors.white, size: 26),
         ),
       ),
@@ -556,7 +557,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        icon: Icon(LucideIcons.chevronLeft,
                             color: AppColors.txt, size: 20),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -587,7 +588,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                       label: due > 0
                           ? "$due ta takrorlash"
                           : 'Barchasi ko\'rib chiqilgan',
-                      icon: Icons.school_rounded,
+                      icon: LucideIcons.graduationCap,
                       disabled: due == 0,
                       onTap: _study,
                     ),
@@ -774,20 +775,20 @@ class _AddCardSheetState extends State<_AddCardSheet> {
           GlassTextField(
             controller: _front,
             label: 'Old tomon (savol)',
-            prefixIcon: Icons.help_outline_rounded,
+            prefixIcon: LucideIcons.helpCircle,
             maxLines: 2,
           ),
           const SizedBox(height: 12),
           GlassTextField(
             controller: _back,
             label: 'Orqa tomon (javob)',
-            prefixIcon: Icons.lightbulb_outline_rounded,
+            prefixIcon: LucideIcons.lightbulb,
             maxLines: 3,
           ),
           const SizedBox(height: 24),
           NebulaButton(
             label: "Qo'shish",
-            icon: Icons.add_rounded,
+            icon: LucideIcons.plus,
             onTap: () {
               final f = _front.text.trim();
               final b = _back.text.trim();
@@ -883,7 +884,7 @@ class _StudyScreenState extends State<StudyScreen>
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.close_rounded,
+                        icon: const Icon(LucideIcons.x,
                             color: Colors.white, size: 22),
                         onPressed: () => Navigator.pop(context),
                       ),

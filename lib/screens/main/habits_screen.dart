@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/habit_storage.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -118,7 +119,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
               ),
             ],
           ),
-          child: const Icon(Icons.add_rounded,
+          child: const Icon(LucideIcons.plus,
               color: Colors.white, size: 26),
         ),
       ),
@@ -134,7 +135,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        icon: Icon(LucideIcons.chevronLeft,
                             color: AppColors.txt, size: 20),
                         onPressed: () => Navigator.pop(context),
                       ),
@@ -257,7 +258,7 @@ class _HabitCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
           ),
           alignment: Alignment.centerRight,
-          child: Icon(Icons.delete_outline_rounded,
+          child: Icon(LucideIcons.trash2,
               color: AppColors.danger),
         ),
         confirmDismiss: (_) async {
@@ -369,7 +370,7 @@ class _HabitCard extends StatelessWidget {
                   ),
                   child: Icon(
                     done
-                        ? Icons.check_rounded
+                        ? LucideIcons.check
                         : Icons.radio_button_unchecked_rounded,
                     color:
                         done ? Colors.white : AppColors.sub,
@@ -449,7 +450,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
             controller: _ctrl,
             label: 'Odat nomi',
             hint: 'Masalan: 30 daqiqa o\'qish',
-            prefixIcon: Icons.edit_rounded,
+            prefixIcon: LucideIcons.pencil,
           ),
           const SizedBox(height: 14),
           Text(
@@ -498,7 +499,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
           const SizedBox(height: 24),
           NebulaButton(
             label: "Qo'shish",
-            icon: Icons.add_rounded,
+            icon: LucideIcons.plus,
             onTap: () {
               final t = _ctrl.text.trim();
               if (t.isEmpty) return;

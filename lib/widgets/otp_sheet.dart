@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import 'nebula/nebula.dart';
 import 'otp_code_field.dart';
@@ -96,7 +97,7 @@ class _OtpSheetState extends State<_OtpSheet> {
             const SizedBox(height: 20),
             NebulaButton(
               label: 'Tasdiqlash',
-              icon: Icons.check_rounded,
+              icon: LucideIcons.check,
               disabled: _code.length != 6,
               onTap: () {
                 HapticFeedback.lightImpact();

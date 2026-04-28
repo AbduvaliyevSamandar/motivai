@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../services/daily_quotes.dart';
 import 'nebula/nebula.dart';
@@ -74,7 +75,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                       ),
                     ],
                   ),
-                  child: const Icon(Icons.format_quote_rounded,
+                  child: const Icon(LucideIcons.quote,
                       color: Colors.white, size: 14),
                 ),
                 const SizedBox(width: 8),
@@ -94,9 +95,9 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                     key: ValueKey(_index),
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      _navBtn(Icons.chevron_left_rounded, _prev),
+                      _navBtn(LucideIcons.chevronLeft, _prev),
                       const SizedBox(width: 4),
-                      _navBtn(Icons.chevron_right_rounded, _next),
+                      _navBtn(LucideIcons.chevronRight, _next),
                     ],
                   ),
                 ),
