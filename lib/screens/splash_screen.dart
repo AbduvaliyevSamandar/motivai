@@ -71,19 +71,24 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    // Splash stays dark regardless of theme — brand presentation.
+    // Splash adopts the active theme — preset switch is visible from
+    // the very first frame.
+    final dark = AppColors.isDark;
     return Scaffold(
-      backgroundColor: const Color(0xFF08091A),
+      backgroundColor: AppColors.bgDeep,
       body: Stack(
         children: [
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: RadialGradient(
-                center: Alignment(-0.3, -0.6),
+                center: const Alignment(-0.3, -0.6),
                 radius: 1.4,
                 colors: [
-                  Color(0xFF1A1340),
-                  Color(0xFF08091A),
+                  Color.alphaBlend(
+                    AppColors.primary.withOpacity(dark ? 0.35 : 0.15),
+                    AppColors.bg,
+                  ),
+                  AppColors.bgDeep,
                 ],
               ),
             ),

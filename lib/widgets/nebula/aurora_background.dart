@@ -20,8 +20,8 @@ class AuroraBackground extends StatelessWidget {
     // Theme-aware ambient tint at the top of the screen — strong enough
     // to read at a glance ('this is Indigo / Forest / Mono'), still
     // calm enough to keep dark mode dark.
-    final topTint = AppColors.primary.withOpacity(dark ? 0.18 : 0.08);
-    final midTint = AppColors.primary.withOpacity(dark ? 0.06 : 0.03);
+    final topTint = AppColors.primary.withOpacity(dark ? 0.32 : 0.14);
+    final midTint = AppColors.primary.withOpacity(dark ? 0.14 : 0.06);
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(

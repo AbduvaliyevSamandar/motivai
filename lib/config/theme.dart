@@ -49,7 +49,7 @@ class AppTheme {
     // Background gets a faint tint of the primary so the preset switch
     // is visible behind every screen, even ones without AuroraBackground.
     final scaffoldBg = Color.alphaBlend(
-      AppColors.primary.withOpacity(isDark ? 0.04 : 0.025),
+      AppColors.primary.withOpacity(isDark ? 0.10 : 0.05),
       AppColors.bg,
     );
     final bg = scaffoldBg;

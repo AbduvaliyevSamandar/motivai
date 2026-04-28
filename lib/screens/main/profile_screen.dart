@@ -811,15 +811,26 @@ class _ProfileState extends State<ProfileScreen> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(children: [
-              // iOS Settings-style filled square: solid accent bg + white icon
+              // iOS Settings-style filled square — slight gradient gives
+              // the icon a 3D / illustrated feel instead of flat-mono.
               Container(
-                width: 32,
-                height: 32,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
-                  color: iconColor,
-                  borderRadius: BorderRadius.circular(8),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      iconColor,
+                      Color.alphaBlend(
+                        Colors.black.withOpacity(0.18),
+                        iconColor,
+                      ),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(icon, color: Colors.white, size: 18),
+                child: Icon(icon, color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),
               Expanded(
