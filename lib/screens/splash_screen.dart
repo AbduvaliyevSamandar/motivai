@@ -270,6 +270,7 @@ class _LoadingBar extends StatelessWidget {
                 color: Colors.white.withOpacity(0.7),
                 letterSpacing: 2,
               ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
             );
           },
         ),

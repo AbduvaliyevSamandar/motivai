@@ -70,7 +70,8 @@ class _HabitsScreenState extends State<HabitsScreen> {
         content: Text(
           '"${h.title}" — ${h.completedDays.length} kunlik tarix yo\'qoladi.',
           style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
-        ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -343,7 +344,8 @@ class _HabitCard extends StatelessWidget {
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
                             ),
-                          ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                         ],
                       ),
                     ],

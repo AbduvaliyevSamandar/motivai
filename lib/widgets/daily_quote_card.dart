@@ -129,7 +129,8 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                       height: 1.4,
                       letterSpacing: -0.2,
                     ),
-                  ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                   const SizedBox(height: 8),
                   Row(
                     children: [

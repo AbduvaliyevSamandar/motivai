@@ -564,7 +564,8 @@ class _HeaderRow extends StatelessWidget {
                                   fontSize: 9,
                                   fontWeight: FontWeight.w800,
                                 ),
-                              ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                             ),
                           ),
                         ),
@@ -674,29 +675,38 @@ class _HeroXPRing extends StatelessWidget {
                 : AppColors.gradCosmic,
             center: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  '$completedToday',
-                  style: GoogleFonts.poppins(
-                    color: AppColors.txt,
-                    fontSize: 38,
-                    fontWeight: FontWeight.w700,
-                    height: 1,
-                    letterSpacing: -1.5,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '$completedToday',
+                    maxLines: 1,
+                    style: GoogleFonts.poppins(
+                      color: AppColors.txt,
+                      fontSize: 38,
+                      fontWeight: FontWeight.w700,
+                      height: 1,
+                      letterSpacing: -1.5,
+                    ),
                   ),
                 ),
-                Text(
-                  '/ $totalToday',
-                  style: GoogleFonts.poppins(
-                    color: AppColors.sub,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    '/ $totalToday',
+                    maxLines: 1,
+                    style: GoogleFonts.poppins(
+                      color: AppColors.sub,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(width: D.sp20),
+          const SizedBox(width: D.sp16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -704,6 +714,8 @@ class _HeroXPRing extends StatelessWidget {
               children: [
                 Text(
                   S.get('today_goal').toUpperCase(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     color: AppColors.sub,
                     fontSize: 11,
@@ -712,18 +724,17 @@ class _HeroXPRing extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                ShaderMask(
-                  shaderCallback: (b) => LinearGradient(
-                    colors: allDone
-                        ? AppColors.gradSuccess
-                        : AppColors.gradCosmic,
-                  ).createShader(b),
-                  blendMode: BlendMode.srcIn,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
                   child: Text(
                     '${(dailyProgress * 100).toInt()}%',
+                    maxLines: 1,
                     style: GoogleFonts.poppins(
-                      color: Colors.white,
-                      fontSize: 42,
+                      color: allDone
+                          ? AppColors.success
+                          : AppColors.txt,
+                      fontSize: 36,
                       fontWeight: FontWeight.w700,
                       letterSpacing: -2,
                       height: 1,
@@ -735,6 +746,8 @@ class _HeroXPRing extends StatelessWidget {
                   allDone
                       ? '${S.get("all_done")} 🎉'
                       : S.get('completed'),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: GoogleFonts.poppins(
                     color: allDone
                         ? AppColors.success
@@ -744,29 +757,34 @@ class _HeroXPRing extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
-                Row(
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 6,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Icon(Iconsax.star_1,
-                        color: AppColors.accent, size: 14),
-                    const SizedBox(width: 4),
-                    Text(
-                      '$points XP',
-                      style: GoogleFonts.poppins(
-                        color: AppColors.txt,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Iconsax.star_1,
+                            color: AppColors.accent, size: 14),
+                        const SizedBox(width: 4),
+                        Text(
+                          '$points XP',
+                          style: GoogleFonts.poppins(
+                            color: AppColors.txt,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 8, vertical: 2),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withOpacity(0.15),
+                        color: AppColors.primary.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(
-                          color: AppColors.primary.withOpacity(0.3),
-                        ),
                       ),
                       child: Text(
                         'Lvl $level',
@@ -775,7 +793,8 @@ class _HeroXPRing extends StatelessWidget {
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
                         ),
-                      ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                     ),
                   ],
                 ),
@@ -1082,7 +1101,8 @@ class _StreakCustomState extends State<_StreakCustom>
                   letterSpacing: -3,
                   color: Colors.white,
                 ),
-              ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
             ),
             const SizedBox(width: 6),
             Padding(
@@ -1469,7 +1489,8 @@ class _TaskToggle extends StatelessWidget {
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                   ),
-                ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ),
             ],
           ),

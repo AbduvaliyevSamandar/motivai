@@ -201,12 +201,15 @@ class _FriendsScreenState extends State<FriendsScreen> {
           '${f.emoji} ${f.name} ga sovg\'a',
           style: GoogleFonts.poppins(
               color: AppColors.txt, fontWeight: FontWeight.w700),
-        ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text('Balansingiz: $_myCoins',
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+                style: GoogleFonts.poppins(color: AppColors.sub),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
             const SizedBox(height: 12),
             TextField(
               controller: ctrl,
@@ -264,7 +267,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 content: Text(
                   '${f.name} ga $amount tanga yuborildi \u{1F381}',
                   style: GoogleFonts.poppins(),
-                ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ));
             },
             style: ElevatedButton.styleFrom(
@@ -434,7 +438,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: 12,
-                        fontWeight: FontWeight.w700)),
+                        fontWeight: FontWeight.w700),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ],
             ),
           ),
@@ -521,7 +527,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                       '${f.code} • yuborgan ${f.coinsSent}',
                       style: GoogleFonts.poppins(
                           color: AppColors.sub, fontSize: 11),
-                    ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                   ],
                 ),
               ],

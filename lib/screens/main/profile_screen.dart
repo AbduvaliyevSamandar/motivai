@@ -200,7 +200,8 @@ class _ProfileState extends State<ProfileScreen> {
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
                                 ),
-                              ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                               Container(
                                 margin: const EdgeInsets.symmetric(
                                     horizontal: 8),
@@ -223,7 +224,8 @@ class _ProfileState extends State<ProfileScreen> {
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                   ),
-                                ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                               ),
                             ],
                           ),
@@ -1566,7 +1568,8 @@ class _ProfileState extends State<ProfileScreen> {
       content: Text(
         'Template nusxa olindi ($bytes bayt). Endi do\'stingizga yuboring.',
         style: GoogleFonts.poppins(),
-      ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
       backgroundColor: AppColors.success,
       behavior: SnackBarBehavior.floating,
     ));
@@ -1700,7 +1703,8 @@ class _ProfileState extends State<ProfileScreen> {
                           ? 'Qo\'shildi: ${r.habits} odat, ${r.decks} kolod, ${r.cards} karta'
                           : (r.error ?? 'Xatolik'),
                       style: GoogleFonts.poppins(),
-                    ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                   ));
                 },
               ),
@@ -1725,6 +1729,7 @@ class _ProfileState extends State<ProfileScreen> {
             child: Text(
               'Nusxa olindi ($bytes bayt)',
               style: GoogleFonts.poppins(),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
@@ -2072,7 +2077,8 @@ class _ProfileState extends State<ProfileScreen> {
                         ? 'Akkaunt o\'chirildi'
                         : 'Xato: ${auth.error ?? 'qayta urining'}',
                     style: GoogleFonts.poppins(),
-                  ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                 ),
               );
             },

@@ -426,7 +426,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                   : FontWeight
                                                       .w500,
                                             ),
-                                          ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                                         ],
                                       ),
                                     ),

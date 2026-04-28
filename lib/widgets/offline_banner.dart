@@ -71,7 +71,8 @@ class OfflineBanner extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
                         ),
-                      ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                     ),
                     if (!danger)
                       Icon(LucideIcons.refreshCw,

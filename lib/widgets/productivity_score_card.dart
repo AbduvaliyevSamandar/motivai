@@ -77,7 +77,8 @@ class ProductivityScoreCard extends StatelessWidget {
                     height: 1,
                     letterSpacing: -2,
                   ),
-                ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ),
               const SizedBox(width: 6),
               Padding(

@@ -50,6 +50,7 @@ class _CoinsBadgeState extends State<CoinsBadge> {
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
               ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
           ],
         ),

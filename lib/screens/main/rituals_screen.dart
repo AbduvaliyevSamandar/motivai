@@ -505,7 +505,8 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   '${r.hour.toString().padLeft(2, '0')}:${r.minute.toString().padLeft(2, '0')} • ${r.durationMin} min • $daysLabel',
                   style: GoogleFonts.poppins(
                       color: AppColors.sub, fontSize: 11),
-                ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                 Text(nextLabel,
                     style: GoogleFonts.poppins(
                         color: AppColors.primary,

@@ -87,6 +87,7 @@ class _OtpSheetState extends State<_OtpSheet> {
               style: GoogleFonts.poppins(
                   color: AppColors.sub, fontSize: 12),
               textAlign: TextAlign.center,
+              maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 22),
             OtpCodeField(

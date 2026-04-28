@@ -38,7 +38,8 @@ class StreakBadge extends StatelessWidget {
               fontWeight: FontWeight.w700,
               color: Colors.white,
             ),
-          ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
           const SizedBox(width: 2),
           Text(
             'kun',

@@ -218,7 +218,9 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                       color: AppColors.txt,
                       fontSize: 17,
                       fontWeight: FontWeight.w700,
-                    )),
+                    ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ],
             ),
           ),
@@ -269,6 +271,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               '${c.friendName} ning bugun bajargan vazifalari sonini kiriting',
               style: GoogleFonts.poppins(
                   color: AppColors.sub, fontSize: 12),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 12),
             TextField(
@@ -453,7 +456,9 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                       color: AppColors.accent,
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                    ))
+                    ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            )
               else
                 Text(winning ? '\u{1F3C6} G\'olib' : '\u{1F948} 2-o\'rin',
                     style: GoogleFonts.poppins(
@@ -468,7 +473,9 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           const SizedBox(height: 4),
           Text('${c.goalTasksPerDay} vazifa/kun × ${c.days} kun',
               style: GoogleFonts.poppins(
-                  color: AppColors.sub, fontSize: 11)),
+                  color: AppColors.sub, fontSize: 11),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
           const SizedBox(height: 14),
           _progressRow('Siz', c.myTotal, c.goalTotal, myPct,
               AppColors.primary, winning),
@@ -546,7 +553,9 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               color: color,
               fontSize: 11,
               fontWeight: FontWeight.w700,
-            )),
+            ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
       ],
     );
   }

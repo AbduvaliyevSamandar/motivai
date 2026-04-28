@@ -48,7 +48,8 @@ class LevelBadge extends StatelessWidget {
               fontWeight: FontWeight.w600,
               color: Colors.white,
             ),
-          ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
         ],
       ),
     );

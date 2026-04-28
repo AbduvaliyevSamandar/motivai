@@ -155,7 +155,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
-              ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
             ),
           ),
           _arrow(LucideIcons.chevronRight, () {
@@ -383,6 +384,7 @@ class _CalendarCell extends StatelessWidget {
                 fontWeight:
                     (isSelected || isToday) ? FontWeight.w700 : FontWeight.w500,
               ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
             if (hasPending || hasDone)
               Positioned(

@@ -61,7 +61,9 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
       backgroundColor: AppColors.success,
       behavior: SnackBarBehavior.floating,
       content: Text('${suggestions.length} vazifa qo\'shildi!',
-          style: GoogleFonts.poppins()),
+          style: GoogleFonts.poppins(),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
     ));
   }
 
@@ -200,7 +202,8 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                   ),
-                ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ),
             ],
           ),
@@ -320,7 +323,9 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     style: GoogleFonts.poppins(
                         color: AppColors.txt,
                         fontSize: 18,
-                        fontWeight: FontWeight.w700)),
+                        fontWeight: FontWeight.w700),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ],
             ),
           ),
@@ -344,7 +349,9 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     style: GoogleFonts.poppins(
                         color: AppColors.success,
                         fontSize: 18,
-                        fontWeight: FontWeight.w700)),
+                        fontWeight: FontWeight.w700),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
               ],
             ),
           ),
@@ -404,7 +411,9 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                 color: c,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
-              )),
+              ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
         ],
       ),
     );

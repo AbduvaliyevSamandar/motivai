@@ -330,7 +330,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                                       ? FontWeight.w700
                                       : FontWeight.w500,
                                 ),
-                              ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
                             ],
                           ),
                         ),

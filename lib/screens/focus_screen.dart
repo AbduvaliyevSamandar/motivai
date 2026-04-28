@@ -212,7 +212,8 @@ class _FocusScreenState extends State<FocusScreen> {
           '${_session.totalFocusedMinutes} daqiqa fokuslangansiz. '
           'Bu vaqt saqlanadi.',
           style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
-        ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -500,7 +501,8 @@ class _PhaseBadge extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w700,
             ),
-          ),
+              maxLines: 1, overflow: TextOverflow.ellipsis,
+            ),
         ],
       ),
     );
