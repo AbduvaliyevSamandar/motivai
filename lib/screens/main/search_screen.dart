@@ -261,17 +261,18 @@ class _SearchScreenState extends State<SearchScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  AppColors.primary.withOpacity(0.2),
-                  AppColors.secondary.withOpacity(0.1),
-                ]),
+                color: AppColors.primary.withOpacity(0.12),
                 shape: BoxShape.circle,
               ),
-              child: const Center(
-                child: Text('\u{1F50D}', style: TextStyle(fontSize: 32)),
+              child: Center(
+                child: Icon(
+                  LucideIcons.search,
+                  color: AppColors.primary,
+                  size: 28,
+                ),
               ),
             ),
             const SizedBox(height: 18),

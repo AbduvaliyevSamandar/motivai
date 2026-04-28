@@ -343,32 +343,16 @@ class _CalendarCell extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+        duration: const Duration(milliseconds: 160),
         decoration: BoxDecoration(
-          gradient: isSelected
-              ? LinearGradient(colors: AppColors.gradCosmic)
-              : null,
           color: isSelected
-              ? null
+              ? AppColors.primary
               : (isToday
-                  ? AppColors.primary.withOpacity(0.15)
+                  ? AppColors.primary.withOpacity(0.12)
                   : Colors.transparent),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: isSelected
-                ? Colors.transparent
-                : (isToday
-                    ? AppColors.primary.withOpacity(0.5)
-                    : AppColors.border.withOpacity(0.3)),
-            width: isToday ? 1.2 : 1,
-          ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.4),
-                    blurRadius: 10,
-                  ),
-                ]
+          border: isToday && !isSelected
+              ? Border.all(color: AppColors.primary, width: 1)
               : null,
         ),
         child: Stack(
