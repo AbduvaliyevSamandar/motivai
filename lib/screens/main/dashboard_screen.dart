@@ -382,175 +382,108 @@ class _HeaderRow extends StatelessWidget {
             ],
           ),
         ),
-        // Search button
-        Builder(builder: (ctx) {
-          return Material(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            child: InkWell(
-              onTap: () {
-                HapticFeedback.selectionClick();
-                Navigator.push(
-                  ctx,
-                  PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => const SearchScreen(),
-                    transitionsBuilder: (_, a, __, c) =>
-                        FadeTransition(opacity: a, child: c),
-                  ),
-                );
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                width: 44,
-                height: 44,
-                margin: const EdgeInsets.only(right: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: Icon(
-                  LucideIcons.search,
-                  color: AppColors.sub,
-                  size: 20,
-                ),
-              ),
+        // Search
+        _HeaderIconBtn(
+          icon: LucideIcons.search,
+          onTap: () => Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (_, __, ___) => const SearchScreen(),
+              transitionsBuilder: (_, a, __, c) =>
+                  FadeTransition(opacity: a, child: c),
             ),
-          );
-        }),
-        // Coins badge
-        Padding(
-          padding: const EdgeInsets.only(right: 6),
-          child: CoinsBadge(),
+          ),
         ),
-        // Calendar button
-        Builder(builder: (ctx) {
-          return Material(
-            color: AppColors.surface,
-            borderRadius: BorderRadius.circular(12),
-            child: InkWell(
-              onTap: () {
-                HapticFeedback.selectionClick();
-                Navigator.push(
-                  ctx,
-                  PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => const CalendarScreen(),
-                    transitionsBuilder: (_, a, __, c) => FadeTransition(
-                      opacity: a,
-                      child: SlideTransition(
-                        position: Tween<Offset>(
-                          begin: const Offset(0, 0.05),
-                          end: Offset.zero,
-                        ).animate(a),
-                        child: c,
-                      ),
-                    ),
-                  ),
-                );
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                width: 44,
-                height: 44,
-                margin: const EdgeInsets.only(right: 6),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.border),
-                ),
-                child: Icon(
-                  LucideIcons.calendarDays,
-                  color: AppColors.sub,
-                  size: 20,
-                ),
-              ),
-            ),
-          );
-        }),
+        const SizedBox(width: 6),
+        const CoinsBadge(),
+        const SizedBox(width: 6),
+        // Calendar
+        _HeaderIconBtn(
+          icon: LucideIcons.calendarDays,
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const CalendarScreen()),
+          ),
+        ),
+        const SizedBox(width: 6),
+        // Notifications
         Consumer<NotificationProvider>(
-          builder: (ctx, np, __) {
-            final unread = np.unreadCount;
-            return Material(
-              color: AppColors.surface,
-              borderRadius: BorderRadius.circular(12),
-              child: InkWell(
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                  Navigator.push(
-                    ctx,
-                    PageRouteBuilder(
-                      pageBuilder: (_, __, ___) =>
-                          const NotificationsScreen(),
-                      transitionsBuilder: (_, a, __, c) => FadeTransition(
-                        opacity: a,
-                        child: SlideTransition(
-                          position: Tween<Offset>(
-                            begin: const Offset(0, 0.05),
-                            end: Offset.zero,
-                          ).animate(a),
-                          child: c,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.border),
-                  ),
-                  child: Stack(
-                    children: [
-                      Center(
-                        child: Icon(LucideIcons.bell,
-                            color: unread > 0
-                                ? AppColors.primary
-                                : AppColors.sub,
-                            size: 20),
-                      ),
-                      if (unread > 0)
-                        Positioned(
-                          top: 6,
-                          right: 6,
-                          child: Container(
-                            constraints: const BoxConstraints(
-                                minWidth: 16, minHeight: 16),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: AppColors.gradWarning),
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      AppColors.danger.withOpacity(0.6),
-                                  blurRadius: 8,
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                unread > 9 ? '9+' : '$unread',
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w800,
-                                ),
-              maxLines: 1, overflow: TextOverflow.ellipsis,
+          builder: (ctx, np, __) => _HeaderIconBtn(
+            icon: LucideIcons.bell,
+            iconColor: np.unreadCount > 0 ? AppColors.primary : null,
+            badge: np.unreadCount,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => const NotificationsScreen()),
             ),
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
+          ),
         ),
       ],
+    );
+  }
+}
+
+class _HeaderIconBtn extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final Color? iconColor;
+  final int badge;
+  const _HeaderIconBtn({
+    required this.icon,
+    required this.onTap,
+    this.iconColor,
+    this.badge = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        HapticFeedback.selectionClick();
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.border),
+        ),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Icon(icon, color: iconColor ?? AppColors.sub, size: 18),
+            if (badge > 0)
+              Positioned(
+                top: 4,
+                right: 4,
+                child: Container(
+                  constraints:
+                      const BoxConstraints(minWidth: 14, minHeight: 14),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.danger,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Text(
+                      badge > 9 ? '9+' : '$badge',
+                      style: GoogleFonts.poppins(
+                        color: Colors.white,
+                        fontSize: 9,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

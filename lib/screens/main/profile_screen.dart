@@ -326,7 +326,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.brush_1,
                       iconColor: AppColors.sub,
-                      title: 'Avto tema',
+                      title: S.get('auto_theme'),
                       subtitle:
                           'Kechqurun dark, kunduzi light — avtomatik',
                       trailing: Switch.adaptive(
@@ -341,7 +341,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: LucideIcons.palette,
                       iconColor: AppColors.pink,
-                      title: 'Rang mavzusi',
+                      title: S.get('theme_color'),
                       subtitle:
                           '${ThemePresets.current.emoji}  ${ThemePresets.current.name}',
                       onTap: _showThemePicker,
@@ -355,8 +355,8 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.card,
                       iconColor: AppColors.sub,
-                      title: 'Flashcards',
-                      subtitle: 'Kartochkalar',
+                      title: S.get('flashcards'),
+                      subtitle: S.get('flashcards'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -370,7 +370,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.activity,
                       iconColor: AppColors.sub,
-                      title: 'Kundalik odatlar',
+                      title: S.get('habits'),
                       subtitle: 'Streak orqali o\'z-o\'zingizni rivojlantiring',
                       onTap: () {
                         HapticFeedback.selectionClick();
@@ -385,8 +385,8 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.magicpen,
                       iconColor: AppColors.sub,
-                      title: 'Haftalik xulosa',
-                      subtitle: 'Haftalik xulosa',
+                      title: S.get('wrapped'),
+                      subtitle: S.get('wrapped'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -403,7 +403,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.magicpen,
                       iconColor: AppColors.sub,
-                      title: 'Aqlli reja',
+                      title: S.get('smart_plan'),
                       subtitle: 'Vaqtni optimal bloklarga bo\'lish',
                       onTap: () {
                         HapticFeedback.selectionClick();
@@ -417,7 +417,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.tree,
                       iconColor: AppColors.sub,
-                      title: 'Sayohat',
+                      title: S.get('journey'),
                       subtitle: '30 kunlik daraxt o\'sishi',
                       onTap: () {
                         HapticFeedback.selectionClick();
@@ -431,8 +431,8 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.grid_8,
                       iconColor: AppColors.sub,
-                      title: 'Mahsuldorlik xaritasi',
-                      subtitle: 'Soat va kun statistikasi',
+                      title: S.get('heatmap'),
+                      subtitle: S.get('heatmap_sub'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -445,7 +445,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: LucideIcons.flower2,
                       iconColor: AppColors.sub,
-                      title: 'Rituallar',
+                      title: S.get('rituals'),
                       subtitle: 'Takroriy mashg\'ulotlar uchun eslatma',
                       onTap: () {
                         HapticFeedback.selectionClick();
@@ -460,7 +460,7 @@ class _ProfileState extends State<ProfileScreen> {
                       icon: Iconsax.profile_2user,
                       iconColor: AppColors.sub,
                       title: 'Do\'stlar',
-                      subtitle: 'Taklif kodi orqali',
+                      subtitle: S.get('friends_sub'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -473,7 +473,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.cup,
                       iconColor: AppColors.sub,
-                      title: 'Chellenjlar',
+                      title: S.get('challenges'),
                       subtitle: 'Do\'st bilan 7 kunlik turnir',
                       onTap: () {
                         HapticFeedback.selectionClick();
@@ -515,15 +515,15 @@ class _ProfileState extends State<ProfileScreen> {
                           _tile(
                             icon: Iconsax.notification_1,
                             iconColor: AppColors.accent,
-                            title: 'Bildirishnomani sinash',
-                            subtitle: '5 soniyadan keyin test keladi',
+                            title: S.get('test_notif'),
+                            subtitle: S.get('test_notif_sub'),
                             onTap: _testNotification,
                           ),
                         if (np.enabled)
                           _tile(
                             icon: Iconsax.music_circle,
                             iconColor: AppColors.sub,
-                            title: 'Tovush pachkasi',
+                            title: S.get('sound_pack'),
                             subtitle:
                                 '${SoundPackStore.info(SoundPackStore.current).emoji}  ${SoundPackStore.info(SoundPackStore.current).name}',
                             onTap: _showSoundPackPicker,
@@ -533,7 +533,7 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.mobile,
                       iconColor: AppColors.sub,
-                      title: 'Titrash kuchi',
+                      title: S.get('haptics'),
                       subtitle:
                           '${Haptics.info(Haptics.level).emoji}  ${Haptics.info(Haptics.level).name}',
                       onTap: _showHapticPicker,
@@ -555,20 +555,20 @@ class _ProfileState extends State<ProfileScreen> {
                       icon: Iconsax.import_1,
                       iconColor: AppColors.sub,
                       title: 'Ma\'lumotlarni eksport',
-                      subtitle: 'JSON formatida',
+                      subtitle: S.get('export_data_sub'),
                       onTap: _exportData,
                     ),
                     _tile(
                       icon: Iconsax.send_1,
                       iconColor: AppColors.pink,
-                      title: 'Template ulashish',
+                      title: S.get('share_template'),
                       subtitle: 'Odatlar + kartalar — do\'stga yuboring',
                       onTap: _shareTemplate,
                     ),
                     _tile(
                       icon: Iconsax.export_1,
                       iconColor: AppColors.success,
-                      title: 'Template import',
+                      title: S.get('import_template'),
                       subtitle: 'JSON yopishtiring — odat/kartalarga qo\'shiladi',
                       onTap: _importTemplate,
                     ),
@@ -594,32 +594,32 @@ class _ProfileState extends State<ProfileScreen> {
                       onTap: () => _confirmDeleteAccount(auth),
                     ),
                     const SizedBox(height: 24),
-                    _section('Ilova haqida'),
+                    _section(S.get('about_app')),
                     const SizedBox(height: 12),
                     _tile(
                       icon: Iconsax.info_circle,
                       iconColor: AppColors.info,
-                      title: 'MotivAI haqida',
+                      title: S.get('about_motivai'),
                       onTap: _showAbout,
                     ),
                     _tile(
                       icon: Iconsax.message_question,
                       iconColor: AppColors.secondary,
-                      title: 'Yordam',
+                      title: S.get('help'),
                       subtitle: 'Qo\'llanma va savollar',
                       onTap: _showHelp,
                     ),
                     _tile(
                       icon: Iconsax.security_safe,
                       iconColor: AppColors.sub,
-                      title: 'Maxfiylik siyosati',
+                      title: S.get('privacy_policy'),
                       onTap: () => _openUrl(
                           'https://abduvaliyevsamandar.github.io/motivai/privacy.html'),
                     ),
                     _tile(
                       icon: Iconsax.document_text,
                       iconColor: AppColors.sub,
-                      title: 'Foydalanish shartlari',
+                      title: S.get('terms_of_service'),
                       onTap: () => _openUrl(
                           'https://abduvaliyevsamandar.github.io/motivai/terms.html'),
                     ),
@@ -811,26 +811,32 @@ class _ProfileState extends State<ProfileScreen> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(children: [
-              // iOS Settings-style filled square — slight gradient gives
-              // the icon a 3D / illustrated feel instead of flat-mono.
+              // Bigger 3D-feel chip — top-left highlight + bottom-right
+              // shade gives the chip a soft sheen so icons read as
+              // illustrated buttons rather than flat squares.
               Container(
-                width: 36,
-                height: 36,
+                width: 44,
+                height: 44,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
+                    stops: const [0, 0.55, 1],
                     colors: [
+                      Color.alphaBlend(
+                        Colors.white.withOpacity(0.20),
+                        iconColor,
+                      ),
                       iconColor,
                       Color.alphaBlend(
-                        Colors.black.withOpacity(0.18),
+                        Colors.black.withOpacity(0.22),
                         iconColor,
                       ),
                     ],
                   ),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: Colors.white, size: 20),
+                child: Icon(icon, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 12),
               Expanded(
