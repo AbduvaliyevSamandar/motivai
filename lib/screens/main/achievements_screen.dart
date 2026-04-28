@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../services/achievements.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -332,7 +333,7 @@ class _AchDialog extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(LucideIcons.star,
+                      Icon(Iconsax.star_1,
                           color: AppColors.accent, size: 12),
                       const SizedBox(width: 2),
                       Text(

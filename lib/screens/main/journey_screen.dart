@@ -2,6 +2,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../services/journey_storage.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -212,7 +213,7 @@ class _JourneyScreenState extends State<JourneyScreen>
         const SizedBox(width: 10),
         Expanded(
             child: _statBox('$_productive', 'Faol kun',
-                LucideIcons.flame, AppColors.accent)),
+                Iconsax.flash_1, AppColors.accent)),
       ],
     );
   }
@@ -316,7 +317,7 @@ class _JourneyScreenState extends State<JourneyScreen>
               color: AppColors.primary.withOpacity(0.2),
               shape: BoxShape.circle,
             ),
-            child: Icon(LucideIcons.sparkles,
+            child: Icon(Iconsax.magicpen,
                 color: AppColors.accent, size: 20),
           ),
           const SizedBox(width: 12),

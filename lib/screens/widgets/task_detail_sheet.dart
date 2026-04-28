@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../models/models.dart';
 import '../../services/task_notes.dart';
@@ -127,7 +128,7 @@ class _TaskDetailSheet extends StatelessWidget {
                         children: [
                           if (task.isFromChat) ...[
                             _miniBadge('AI', AppColors.primary,
-                                LucideIcons.sparkles),
+                                Iconsax.magicpen),
                             const SizedBox(width: 6),
                           ],
                           if (task.isOverdue)
@@ -218,7 +219,7 @@ class _TaskDetailSheet extends StatelessWidget {
             if (!task.isCompleted) ...[
               NebulaButton(
                 label: 'AI yordam',
-                icon: LucideIcons.brain,
+                icon: Iconsax.brifecase_tick,
                 gradient: AppColors.gradCosmic,
                 onTap: () async {
                   HapticFeedback.selectionClick();
@@ -367,7 +368,7 @@ class _TaskDetailSheet extends StatelessWidget {
     return Column(
       children: [
         _detailRow(
-          LucideIcons.star,
+          Iconsax.star_1,
           AppColors.accent,
           'XP',
           '+${task.points}',
@@ -490,7 +491,7 @@ class _TaskDetailSheet extends StatelessWidget {
   IconData _diffIcon(String d) => {
         'easy': Icons.flash_on_rounded,
         'medium': LucideIcons.dumbbell,
-        'hard': LucideIcons.flame,
+        'hard': Iconsax.flash_1,
         'expert': Icons.workspace_premium_rounded,
       }[d] ??
       Icons.label_rounded;

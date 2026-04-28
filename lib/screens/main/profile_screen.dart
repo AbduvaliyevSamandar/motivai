@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -244,14 +245,14 @@ class _ProfileState extends State<ProfileScreen> {
                     childAspectRatio: 1.55,
                     children: [
                       BentoCard(
-                        icon: LucideIcons.star,
+                        icon: Iconsax.star_1,
                         value: '${auth.points}',
                         label: 'XP',
                         gradient: AppColors.gradGold,
                         accent: AppColors.accent,
                       ),
                       BentoCard(
-                        icon: LucideIcons.flame,
+                        icon: Iconsax.flash_1,
                         value: '${auth.streak}',
                         label: S.get('streak'),
                         gradient: AppColors.gradFire,
@@ -265,7 +266,7 @@ class _ProfileState extends State<ProfileScreen> {
                         accent: AppColors.success,
                       ),
                       BentoCard(
-                        icon: LucideIcons.trophy,
+                        icon: Iconsax.cup,
                         value: '${auth.achiev.length}',
                         label: S.get('achievements'),
                         gradient: AppColors.gradCosmic,
@@ -378,7 +379,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: LucideIcons.sparkles,
+                      icon: Iconsax.magicpen,
                       iconColor: AppColors.pink,
                       title: 'Haftalik xulosa',
                       subtitle: 'Bu haftangiz natijalari',
@@ -452,7 +453,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: LucideIcons.trophy,
+                      icon: Iconsax.cup,
                       iconColor: AppColors.accent,
                       title: 'Chellenjlar',
                       subtitle: 'Do\'st bilan 7 kunlik turnir',
@@ -554,7 +555,7 @@ class _ProfileState extends State<ProfileScreen> {
                       onTap: _importTemplate,
                     ),
                     _tile(
-                      icon: LucideIcons.sparkles,
+                      icon: Iconsax.magicpen,
                       iconColor: AppColors.accent,
                       title: S.get('clear_cache'),
                       onTap: () => _clearCache(auth),
@@ -619,7 +620,7 @@ class _ProfileState extends State<ProfileScreen> {
                               ]),
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(LucideIcons.zap,
+                            child: Icon(Iconsax.flash,
                                 color: AppColors.primary, size: 28),
                           ),
                           const SizedBox(height: 10),
@@ -1807,7 +1808,7 @@ class _ProfileState extends State<ProfileScreen> {
                     ),
                   ],
                 ),
-                child: const Icon(LucideIcons.zap,
+                child: const Icon(Iconsax.flash,
                     color: Colors.white, size: 36),
               ),
               const SizedBox(height: 16),
@@ -1954,7 +1955,7 @@ class _ProfileState extends State<ProfileScreen> {
                 "Chapga swipe qiling yoki 3-nuqta menyu"),
             _helpItem(LucideIcons.pointer, 'Tafsilot',
                 "Vazifani bosing — tafsilot oynasi ochiladi"),
-            _helpItem(LucideIcons.sparkles, 'AI Chat',
+            _helpItem(Iconsax.magicpen, 'AI Chat',
                 "AI'dan tavsiya so'rang — tanlab ro'yxatga qo'shing"),
             _helpItem(LucideIcons.bell, 'Bildirishnoma',
                 "Vazifaga vaqt qo'ying — oldindan eslatadi"),

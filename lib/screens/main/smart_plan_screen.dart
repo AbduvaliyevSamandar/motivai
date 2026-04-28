@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../providers/task_provider.dart';
 import '../../models/models.dart';
@@ -286,7 +287,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           const SizedBox(height: 6),
           NebulaButton(
             label: _plan == null ? 'Yaratish' : 'Qayta yaratish',
-            icon: LucideIcons.sparkles,
+            icon: Iconsax.magicpen,
             onTap: _generate,
           ),
         ],

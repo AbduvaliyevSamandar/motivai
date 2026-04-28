@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -134,8 +135,8 @@ class _FloatingGlassNav extends StatelessWidget {
 
   static const _items = [
     (LucideIcons.home, 'home'),
-    (LucideIcons.sparkles, 'chat'),
-    (LucideIcons.trophy, 'rating'),
+    (Iconsax.magicpen, 'chat'),
+    (Iconsax.cup, 'rating'),
     (LucideIcons.lineChart, 'analytics'),
     (LucideIcons.user, 'profile'),
   ];

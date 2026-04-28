@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../services/friends_storage.dart';
 import '../../services/friend_challenge.dart';
@@ -97,7 +98,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   GlassTextField(
                     controller: titleCtrl,
                     label: 'Sarlavha',
-                    prefixIcon: LucideIcons.trophy,
+                    prefixIcon: Iconsax.cup,
                   ),
                   const SizedBox(height: 12),
                   Container(
@@ -163,7 +164,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   const SizedBox(height: 18),
                   NebulaButton(
                     label: 'Chellenj boshlash',
-                    icon: LucideIcons.rocket,
+                    icon: Iconsax.send_2,
                     onTap: () async {
                       if (friend == null) return;
                       await FriendChallenges.create(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../config/colors.dart';
 import '../services/morning_ritual.dart';
 import 'nebula/nebula.dart';
@@ -290,7 +291,7 @@ class _RitualSheetState extends State<_RitualSheet> {
             GlassTextField(
               controller: _grat,
               label: 'Bir narsa yozing…',
-              prefixIcon: LucideIcons.heart,
+              prefixIcon: Iconsax.heart,
             ),
             const SizedBox(height: 24),
             NebulaButton(

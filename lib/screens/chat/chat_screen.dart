@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -144,7 +145,7 @@ class _ChatState extends State<ChatScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Icon(
-                LucideIcons.sparkles,
+                Iconsax.magicpen,
                 color: AppColors.primary,
                 size: 18,
               ),
@@ -512,7 +513,7 @@ class _EmptyChat extends StatelessWidget {
                 ),
               ],
             ),
-            child: const Icon(LucideIcons.sparkles,
+            child: const Icon(Iconsax.magicpen,
                 color: Colors.white, size: 52),
           ),
         ),
@@ -610,7 +611,7 @@ class _ChatBubble extends StatelessWidget {
                             colors: AppColors.gradCosmic),
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      child: const Icon(LucideIcons.sparkles,
+                      child: const Icon(Iconsax.magicpen,
                           color: Colors.white, size: 10),
                     ),
                     const SizedBox(width: 6),
@@ -900,7 +901,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                       ),
                     ],
                   ),
-                  child: const Icon(LucideIcons.sparkles,
+                  child: const Icon(Iconsax.magicpen,
                       color: Colors.white, size: 16),
                 ),
                 const SizedBox(width: 10),
@@ -998,7 +999,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                 ),
                 child: Row(
                   children: [
-                    Icon(LucideIcons.star,
+                    Icon(Iconsax.star_1,
                         color: AppColors.accent, size: 16),
                     const SizedBox(width: 6),
                     Text(
@@ -1229,7 +1230,7 @@ class _SuggestItem extends StatelessWidget {
                         color: AppColors.sub, fontSize: 11),
                   ),
                   const SizedBox(width: 12),
-                  Icon(LucideIcons.star,
+                  Icon(Iconsax.star_1,
                       color: AppColors.accent, size: 12),
                   const SizedBox(width: 4),
                   Text(

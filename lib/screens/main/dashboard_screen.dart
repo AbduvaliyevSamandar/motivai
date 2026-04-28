@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -157,7 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         D.sp20, D.sp24, D.sp20, D.sp12),
                     sliver: SliverToBoxAdapter(
                       child: _SectionBanner(
-                        icon: LucideIcons.rocket,
+                        icon: Iconsax.send_2,
                         title: 'Vazifalar',
                         badge: '${tasks.completedToday}/${tasks.totalToday}',
                         gradient: AppColors.gradCosmic,
@@ -745,7 +746,7 @@ class _HeroXPRing extends StatelessWidget {
                 const SizedBox(height: 12),
                 Row(
                   children: [
-                    Icon(LucideIcons.star,
+                    Icon(Iconsax.star_1,
                         color: AppColors.accent, size: 14),
                     const SizedBox(width: 4),
                     Text(
@@ -809,7 +810,7 @@ class _QuickStats extends StatelessWidget {
         children: [
           Expanded(
             child: _StatChip(
-              icon: LucideIcons.star,
+              icon: Iconsax.star_1,
               value: _fmt(points),
               label: 'XP',
               gradient: AppColors.gradGold,
@@ -818,7 +819,7 @@ class _QuickStats extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: _StatChip(
-              icon: LucideIcons.flame,
+              icon: Iconsax.flash_1,
               value: '$streak',
               label: 'streak',
               gradient: AppColors.gradFire,
@@ -854,41 +855,44 @@ class _StatChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = gradient.first;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.card.withOpacity(0.5),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: gradient.first.withOpacity(0.3)),
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.border),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 28,
-            height: 28,
+            width: 26,
+            height: 26,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: gradient),
+              color: accent.withOpacity(0.12),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(icon, color: Colors.white, size: 15),
+            child: Icon(icon, color: accent, size: 14),
           ),
           const SizedBox(width: 8),
-          Flexible(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
-                    color: AppColors.txt,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    height: 1.1,
-                    letterSpacing: -0.3,
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    value,
+                    maxLines: 1,
+                    style: GoogleFonts.poppins(
+                      color: AppColors.txt,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      height: 1.1,
+                      letterSpacing: -0.3,
+                    ),
                   ),
                 ),
                 Text(
@@ -945,7 +949,7 @@ class _BentoGrid extends StatelessWidget {
               child: Column(
                 children: [
                   BentoCard(
-                    icon: LucideIcons.star,
+                    icon: Iconsax.star_1,
                     value: _fmt(points),
                     label: 'XP',
                     gradient: AppColors.gradGold,
@@ -1510,7 +1514,7 @@ class _SmartPlanShortcut extends StatelessWidget {
                       colors: AppColors.gradCosmic),
                   borderRadius: BorderRadius.circular(11),
                 ),
-                child: const Icon(LucideIcons.sparkles,
+                child: const Icon(Iconsax.magicpen,
                     color: Colors.white, size: 20),
               ),
               const SizedBox(width: 12),

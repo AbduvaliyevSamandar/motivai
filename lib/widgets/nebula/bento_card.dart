@@ -158,16 +158,16 @@ class _BentoCardState extends State<BentoCard>
         ),
         const SizedBox(height: D.sp12),
         if (widget.value != null)
-          ShaderMask(
-            shaderCallback: (r) =>
-                LinearGradient(colors: gradient).createShader(r),
-            blendMode: BlendMode.srcIn,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
             child: Text(
               widget.value!,
+              maxLines: 1,
               style: GoogleFonts.poppins(
-                fontSize: 32,
+                fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: AppColors.txt,
                 height: 1.1,
                 letterSpacing: -1,
               ),
@@ -177,6 +177,8 @@ class _BentoCardState extends State<BentoCard>
           const SizedBox(height: 2),
           Text(
             widget.label!,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: GoogleFonts.poppins(
               fontSize: 12,
               fontWeight: FontWeight.w500,

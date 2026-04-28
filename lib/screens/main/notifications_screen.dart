@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../models/models.dart';
@@ -189,7 +190,7 @@ class _NotifTile extends StatelessWidget {
       case AppNotifType.overdue:
         return LucideIcons.alertCircle;
       case AppNotifType.achievement:
-        return LucideIcons.trophy;
+        return Iconsax.cup;
       case AppNotifType.info:
         return LucideIcons.info;
     }

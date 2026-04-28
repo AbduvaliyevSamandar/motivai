@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../config/colors.dart';
 import '../services/user_goal.dart';
 import '../widgets/nebula/nebula.dart';
@@ -150,7 +151,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   child: NebulaButton(
                     label: isLast ? 'Boshlash' : 'Keyingi',
                     icon: isLast
-                        ? LucideIcons.rocket
+                        ? Iconsax.send_2
                         : LucideIcons.arrowRight,
                     disabled: !canAdvance,
                     onTap: () {

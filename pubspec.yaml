@@ -51,9 +51,14 @@ dependencies:
   # External URLs (privacy / terms)
   url_launcher: ^6.2.6
 
-  # Lucide icon library — same set Linear / Vercel / Notion / Supabase
-  # ship with. Single line-stroke style for the entire app.
+  # Lucide icon library — base set Linear / Vercel / Notion / Supabase
+  # ship with. Single line-stroke style.
   lucide_icons: ^0.257.0
+
+  # Iconsax — Apple-style icon system (linear / bold) used in premium
+  # Dribbble UIs; we use it for the most prominent decorative icons
+  # (streak flame, XP star, trophy, target, book, rocket).
+  iconsax_flutter: ^1.0.0
 
   cupertino_icons: ^1.0.6
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../widgets/nebula/nebula.dart';
 
@@ -187,7 +188,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(LucideIcons.star,
+                            Icon(Iconsax.star_1,
                                 color: AppColors.accent, size: 28),
                             const SizedBox(width: 10),
                             BigNumber(

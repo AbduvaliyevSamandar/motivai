@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
 import '../../config/strings.dart';
@@ -194,7 +195,7 @@ class _StatsGrid extends StatelessWidget {
       childAspectRatio: 1.55,
       children: [
         BentoCard(
-          icon: LucideIcons.star,
+          icon: Iconsax.star_1,
           value: '${auth.points}',
           label: S.get('total_points'),
           gradient: AppColors.gradGold,
@@ -209,7 +210,7 @@ class _StatsGrid extends StatelessWidget {
           accent: AppColors.primary,
         ),
         BentoCard(
-          icon: LucideIcons.flame,
+          icon: Iconsax.flash_1,
           value: '${auth.streak}',
           label: S.get('streak'),
           gradient: AppColors.gradFire,
