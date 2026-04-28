@@ -244,7 +244,7 @@ class _ProfileState extends State<ProfileScreen> {
                     crossAxisCount: 2,
                     mainAxisSpacing: 12,
                     crossAxisSpacing: 12,
-                    childAspectRatio: 1.55,
+                    childAspectRatio: 1.35,
                     children: [
                       BentoCard(
                         icon: Iconsax.star_1,

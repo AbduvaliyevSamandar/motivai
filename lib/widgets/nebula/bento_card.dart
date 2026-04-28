@@ -99,93 +99,107 @@ class _BentoCardState extends State<BentoCard>
   }
 
   Widget _buildDefault(Color accent, List<Color> gradient) {
+    // Use spaceBetween + Flexible everywhere so content lays itself out
+    // against the parent box constraints (provided by GridView via
+    // childAspectRatio). No fixed margins / paddings between children
+    // beyond spacers — the column stretches to whatever the card gives it.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
           children: [
             if (widget.emoji != null)
-              Text(widget.emoji!, style: const TextStyle(fontSize: 22)),
+              Text(widget.emoji!, style: const TextStyle(fontSize: 20)),
             if (widget.icon != null)
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
                   color: accent.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(9),
                 ),
-                child: Icon(widget.icon, color: accent, size: 18),
+                child: Icon(widget.icon, color: accent, size: 16),
               ),
             const Spacer(),
             if (widget.trend != null)
-              Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: (widget.trendPositive
-                          ? AppColors.success
-                          : AppColors.danger)
-                      .withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      widget.trendPositive
-                          ? LucideIcons.trendingUp
-                          : LucideIcons.trendingDown,
-                      size: 11,
-                      color: widget.trendPositive
-                          ? AppColors.success
-                          : AppColors.danger,
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      widget.trend!,
-                      style: GoogleFonts.poppins(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
+              Flexible(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: (widget.trendPositive
+                            ? AppColors.success
+                            : AppColors.danger)
+                        .withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        widget.trendPositive
+                            ? LucideIcons.trendingUp
+                            : LucideIcons.trendingDown,
+                        size: 10,
                         color: widget.trendPositive
                             ? AppColors.success
                             : AppColors.danger,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 2),
+                      Flexible(
+                        child: Text(
+                          widget.trend!,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: GoogleFonts.poppins(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w700,
+                            color: widget.trendPositive
+                                ? AppColors.success
+                                : AppColors.danger,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
         ),
-        const SizedBox(height: D.sp12),
-        if (widget.value != null)
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              widget.value!,
-              maxLines: 1,
-              style: GoogleFonts.poppins(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: AppColors.txt,
-                height: 1.1,
-                letterSpacing: -1,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (widget.value != null)
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  widget.value!,
+                  maxLines: 1,
+                  style: GoogleFonts.poppins(
+                    fontSize: 26,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.txt,
+                    height: 1.1,
+                    letterSpacing: -0.8,
+                  ),
+                ),
               ),
-            ),
-          ),
-        if (widget.label != null) ...[
-          const SizedBox(height: 2),
-          Text(
-            widget.label!,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.poppins(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: AppColors.sub,
-            ),
-          ),
-        ],
+            if (widget.label != null)
+              Text(
+                widget.label!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: false,
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.sub,
+                ),
+              ),
+          ],
+        ),
       ],
     );
   }
