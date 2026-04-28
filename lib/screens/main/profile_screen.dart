@@ -26,6 +26,7 @@ import 'wrapped_screen.dart';
 import 'flashcards_screen.dart';
 import 'journey_screen.dart';
 import 'friends_screen.dart';
+import 'smart_plan_screen.dart';
 import 'friend_challenges_screen.dart';
 import 'rituals_screen.dart';
 import 'heatmap_screen.dart';
@@ -396,6 +397,20 @@ class _ProfileState extends State<ProfileScreen> {
                             transitionsBuilder: (_, a, __, c) =>
                                 FadeTransition(opacity: a, child: c),
                           ),
+                        );
+                      },
+                    ),
+                    _tile(
+                      icon: Iconsax.magicpen,
+                      iconColor: AppColors.primary,
+                      title: 'Aqlli reja',
+                      subtitle: 'Vaqtni optimal bloklarga bo\'lish',
+                      onTap: () {
+                        HapticFeedback.selectionClick();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const SmartPlanScreen()),
                         );
                       },
                     ),

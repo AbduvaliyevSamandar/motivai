@@ -13,7 +13,6 @@ import '../../providers/task_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../models/models.dart';
 import '../../widgets/nebula/nebula.dart';
-import '../../widgets/daily_quote_card.dart';
 import '../../widgets/daily_challenge_card.dart';
 import '../../widgets/morning_ritual_card.dart';
 import '../../widgets/offline_banner.dart';
@@ -26,7 +25,6 @@ import '../widgets/add_task_dialog.dart';
 import 'notifications_screen.dart';
 import 'calendar_screen.dart';
 import 'search_screen.dart';
-import 'smart_plan_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -124,30 +122,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     padding: EdgeInsets.fromLTRB(
                         D.sp16, 4, D.sp16, 8),
                     child: DailyChallengeCard(),
-                  ),
-                ),
-                const SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                        D.sp16, 4, D.sp16, 4),
-                    child: DailyQuoteCard(),
-                  ),
-                ),
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                        D.sp16, 6, D.sp16, 4),
-                    child: _SmartPlanShortcut(
-                      onTap: () {
-                        HapticFeedback.selectionClick();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) =>
-                                  const SmartPlanScreen()),
-                        );
-                      },
-                    ),
                   ),
                 ),
                 if (tasks.isLoading && tasks.all.isEmpty)
@@ -1492,75 +1466,6 @@ class _TaskToggle extends StatelessWidget {
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SmartPlanShortcut extends StatelessWidget {
-  final VoidCallback onTap;
-  const _SmartPlanShortcut({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(18),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
-        child: Container(
-          padding:
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              AppColors.primary.withOpacity(0.22),
-              AppColors.secondary.withOpacity(0.12),
-            ]),
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(
-              color: AppColors.primary.withOpacity(0.35),
-            ),
-          ),
-          child: Row(
-            children: [
-              Container(
-                width: 38,
-                height: 38,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: AppColors.gradCosmic),
-                  borderRadius: BorderRadius.circular(11),
-                ),
-                child: const Icon(Iconsax.magicpen,
-                    color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Aqlli reja',
-                        style: GoogleFonts.poppins(
-                          color: AppColors.txt,
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                        )),
-                    Text(
-                      'Mavjud vaqtingizni optimal bloklarga bo\'lib berish',
-                      style: GoogleFonts.poppins(
-                          color: AppColors.sub, fontSize: 11),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              Icon(LucideIcons.arrowRight,
-                  color: AppColors.primary, size: 18),
             ],
           ),
         ),
