@@ -324,7 +324,7 @@ class _ProfileState extends State<ProfileScreen> {
                       ),
                     ),
                     _tile(
-                      icon: LucideIcons.sunMoon,
+                      icon: Iconsax.brush_1,
                       iconColor: AppColors.sub,
                       title: 'Avto tema',
                       subtitle:
@@ -347,13 +347,13 @@ class _ProfileState extends State<ProfileScreen> {
                       onTap: _showThemePicker,
                     ),
                     _tile(
-                      icon: LucideIcons.lock,
+                      icon: Iconsax.lock_1,
                       iconColor: AppColors.sub,
                       title: S.get('change_pass'),
                       onTap: _showChangePassword,
                     ),
                     _tile(
-                      icon: LucideIcons.creditCard,
+                      icon: Iconsax.card,
                       iconColor: AppColors.sub,
                       title: 'Flashcards',
                       subtitle: 'Kartochkalar',
@@ -368,7 +368,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: LucideIcons.leaf,
+                      icon: Iconsax.activity,
                       iconColor: AppColors.sub,
                       title: 'Kundalik odatlar',
                       subtitle: 'Streak orqali o\'z-o\'zingizni rivojlantiring',
@@ -415,7 +415,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: LucideIcons.trees,
+                      icon: Iconsax.tree,
                       iconColor: AppColors.sub,
                       title: 'Sayohat',
                       subtitle: '30 kunlik daraxt o\'sishi',
@@ -429,7 +429,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: LucideIcons.grid,
+                      icon: Iconsax.grid_8,
                       iconColor: AppColors.sub,
                       title: 'Mahsuldorlik xaritasi',
                       subtitle: 'Soat va kun statistikasi',
@@ -457,7 +457,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: LucideIcons.users,
+                      icon: Iconsax.profile_2user,
                       iconColor: AppColors.sub,
                       title: 'Do\'stlar',
                       subtitle: 'Taklif kodi orqali',
@@ -486,7 +486,7 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: LucideIcons.languages,
+                      icon: Iconsax.translate,
                       iconColor: AppColors.sub,
                       title: S.get('language'),
                       subtitle: _langName(S.lang),
@@ -495,7 +495,7 @@ class _ProfileState extends State<ProfileScreen> {
                     Consumer<NotificationProvider>(
                       builder: (_, np, __) => Column(children: [
                         _tile(
-                          icon: LucideIcons.bell,
+                          icon: Iconsax.notification_1,
                           iconColor: AppColors.sub,
                           title: S.get('notifications'),
                           subtitle: np.enabled
@@ -513,7 +513,7 @@ class _ProfileState extends State<ProfileScreen> {
                         ),
                         if (np.enabled)
                           _tile(
-                            icon: LucideIcons.bell,
+                            icon: Iconsax.notification_1,
                             iconColor: AppColors.accent,
                             title: 'Bildirishnomani sinash',
                             subtitle: '5 soniyadan keyin test keladi',
@@ -521,7 +521,7 @@ class _ProfileState extends State<ProfileScreen> {
                           ),
                         if (np.enabled)
                           _tile(
-                            icon: LucideIcons.music,
+                            icon: Iconsax.music_circle,
                             iconColor: AppColors.sub,
                             title: 'Tovush pachkasi',
                             subtitle:
@@ -531,7 +531,7 @@ class _ProfileState extends State<ProfileScreen> {
                       ]),
                     ),
                     _tile(
-                      icon: LucideIcons.vibrate,
+                      icon: Iconsax.mobile,
                       iconColor: AppColors.sub,
                       title: 'Titrash kuchi',
                       subtitle:
@@ -552,21 +552,21 @@ class _ProfileState extends State<ProfileScreen> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     _tile(
-                      icon: LucideIcons.download,
+                      icon: Iconsax.import_1,
                       iconColor: AppColors.sub,
                       title: 'Ma\'lumotlarni eksport',
                       subtitle: 'JSON formatida',
                       onTap: _exportData,
                     ),
                     _tile(
-                      icon: LucideIcons.share2,
+                      icon: Iconsax.send_1,
                       iconColor: AppColors.pink,
                       title: 'Template ulashish',
                       subtitle: 'Odatlar + kartalar — do\'stga yuboring',
                       onTap: _shareTemplate,
                     ),
                     _tile(
-                      icon: LucideIcons.upload,
+                      icon: Iconsax.export_1,
                       iconColor: AppColors.success,
                       title: 'Template import',
                       subtitle: 'JSON yopishtiring — odat/kartalarga qo\'shiladi',
@@ -579,14 +579,14 @@ class _ProfileState extends State<ProfileScreen> {
                       onTap: () => _clearCache(auth),
                     ),
                     _tile(
-                      icon: LucideIcons.logOut,
+                      icon: Iconsax.logout_1,
                       iconColor: AppColors.danger,
                       title: S.get('logout'),
                       color: AppColors.danger,
                       onTap: () => _confirmLogout(auth),
                     ),
                     _tile(
-                      icon: LucideIcons.trash2,
+                      icon: Iconsax.trash,
                       iconColor: AppColors.danger,
                       title: 'Akkauntni o\'chirish',
                       subtitle: 'Hamma ma\'lumotlar bilan birga',
@@ -597,27 +597,27 @@ class _ProfileState extends State<ProfileScreen> {
                     _section('Ilova haqida'),
                     const SizedBox(height: 12),
                     _tile(
-                      icon: LucideIcons.info,
+                      icon: Iconsax.info_circle,
                       iconColor: AppColors.info,
                       title: 'MotivAI haqida',
                       onTap: _showAbout,
                     ),
                     _tile(
-                      icon: LucideIcons.helpCircle,
+                      icon: Iconsax.message_question,
                       iconColor: AppColors.secondary,
                       title: 'Yordam',
                       subtitle: 'Qo\'llanma va savollar',
                       onTap: _showHelp,
                     ),
                     _tile(
-                      icon: LucideIcons.shield,
+                      icon: Iconsax.security_safe,
                       iconColor: AppColors.sub,
                       title: 'Maxfiylik siyosati',
                       onTap: () => _openUrl(
                           'https://abduvaliyevsamandar.github.io/motivai/privacy.html'),
                     ),
                     _tile(
-                      icon: LucideIcons.fileText,
+                      icon: Iconsax.document_text,
                       iconColor: AppColors.sub,
                       title: 'Foydalanish shartlari',
                       onTap: () => _openUrl(
@@ -1699,7 +1699,7 @@ class _ProfileState extends State<ProfileScreen> {
               const SizedBox(height: 12),
               NebulaButton(
                 label: 'Import qilish',
-                icon: LucideIcons.upload,
+                icon: Iconsax.export_1,
                 onTap: () async {
                   final raw = ctrl.text.trim();
                   if (raw.isEmpty) return;

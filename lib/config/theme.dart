@@ -43,15 +43,22 @@ class AppTheme {
 
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final bg = isDark ? const Color(0xFF08091A) : const Color(0xFFF7F6FB);
-    final surface =
-        isDark ? const Color(0xFF111327) : const Color(0xFFFFFFFF);
-    final card = isDark ? const Color(0xFF161933) : const Color(0xFFFFFFFF);
-    final borderColor =
-        isDark ? const Color(0xFF252847) : const Color(0xFFE5E3F0);
-    final txt = isDark ? const Color(0xFFF1F1FA) : const Color(0xFF0F1028);
-    final sub = isDark ? const Color(0xFFA5A8C7) : const Color(0xFF6B6E8F);
-    final hint = isDark ? const Color(0xFF6C6F8E) : const Color(0xFFA5A8C7);
+    // Pull every surface from the active preset so changing preset
+    // immediately re-themes the whole app instead of leaving the
+    // hardcoded indigo defaults the static MaterialApp config used.
+    // Background gets a faint tint of the primary so the preset switch
+    // is visible behind every screen, even ones without AuroraBackground.
+    final scaffoldBg = Color.alphaBlend(
+      AppColors.primary.withOpacity(isDark ? 0.04 : 0.025),
+      AppColors.bg,
+    );
+    final bg = scaffoldBg;
+    final surface = AppColors.surface;
+    final card = AppColors.card;
+    final borderColor = AppColors.border;
+    final txt = AppColors.txt;
+    final sub = AppColors.sub;
+    final hint = AppColors.hint;
 
     final base = isDark ? ThemeData.dark() : ThemeData.light();
     final textTheme = GoogleFonts.poppinsTextTheme(base.textTheme).apply(
