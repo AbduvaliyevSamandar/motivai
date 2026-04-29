@@ -49,11 +49,19 @@ def _system_prompt(user_context: dict) -> str:
         f'"category": "study|exercise|reading|meditation|social|creative|productivity|challenge", '
         f'"difficulty": "easy|medium|hard|expert", "duration_minutes": 30, '
         f'"estimated_points": 50}}]}}\n\n'
-        f"VAZIFA TAVSIYA QILISH SHARTLARI:\n"
-        f"- Foydalanuvchi reja, maqsad, vazifa, ish so'rasa — 2..5 ta vazifa qaytar.\n"
-        f"- Suhbat tabiati shaxsiy/savol-javob bo'lsa — suggested_tasks: [] (bo'sh ro'yxat).\n"
-        f"- duration_minutes 15..120 oralig'ida, estimated_points 10..200 oralig'ida.\n"
-        f"- title qisqa va aniq (5-10 so'z), description biroz batafsil (1-2 jumla).\n"
+        f"VAZIFA TAVSIYA QILISH — DEFAULT YOQILGAN:\n"
+        f"- DOIMO 2..4 ta vazifa qaytar. Sukut yo'q — har xabarga vazifa kerak.\n"
+        f"- Foydalanuvchi xabari qisqa bo'lsa ham (masalan 'salom', 'charchadim', "
+        f"'nima qilay') — uning holati va profilidan kelib chiqib mos vazifa yarat.\n"
+        f"  Charchagan bo'lsa: kichik/oson vazifalar (10-20 daqiqa). "
+        f"Maqsadi haqida gapirsa: shu sohada vazifalar. "
+        f"Salom desa: bugungi maqsadiga qadam — qiziqishlariga mos.\n"
+        f"- FAQAT mavhum bilim savoli bo'lsa (masalan 'Eyfel minorasi qachon qurilgan?') "
+        f"vazifa qo'shma — suggested_tasks: [].\n"
+        f"- duration_minutes 15..120, estimated_points 10..200 oralig'ida.\n"
+        f"- title qisqa va harakat-fe'li bilan (5-10 so'z, masalan 'Algebra: 20 ta misol yech'), "
+        f"description 1-2 jumla — nima va qanday qilishni aniq aytsin.\n"
+        f"- Vazifalar bir-biriga aralashmasin, har biri alohida amaliy qadam bo'lsin.\n"
         f"- Til: barcha matn (response, title, description) {_lang_label(lang_code)} tilida."
     )
 
