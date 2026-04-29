@@ -131,6 +131,8 @@ async def chat(request: ChatRequest, current_user: dict = Depends(get_current_us
             "message": result["message"],
             "session_id": session_id,
             "created_plan": created_plan,
+            "suggested_tasks": result.get("suggested_tasks"),
+            "provider": result.get("provider"),
             "tokens_used": result.get("tokens_used", 0)
         }
     }

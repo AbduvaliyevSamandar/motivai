@@ -42,7 +42,19 @@ def _system_prompt(user_context: dict) -> str:
         f"2. Iliq, motivatsion ohang. Foydalanuvchini ismi bilan chaqir.\n"
         f"3. Javob 2-4 paragraf, har biri 1-3 jumla. Amaliy maslahat ber.\n"
         f"4. Streak > 0 bo'lsa — uni asrash muhimligini eslat.\n"
-        f"5. Markdown qo'llasangiz **qalin** va emojilardan foyda — boshqa formatlash yo'q."
+        f"5. Markdown qo'llasangiz **qalin** va emojilardan foyda — boshqa formatlash yo'q.\n\n"
+        f"OUTPUT FORMAT (JSON, nothing else, no markdown fences):\n"
+        f'{{"response": "...sizning matnli javobingiz...", '
+        f'"suggested_tasks": [{{"title": "...", "description": "...", '
+        f'"category": "study|exercise|reading|meditation|social|creative|productivity|challenge", '
+        f'"difficulty": "easy|medium|hard|expert", "duration_minutes": 30, '
+        f'"estimated_points": 50}}]}}\n\n'
+        f"VAZIFA TAVSIYA QILISH SHARTLARI:\n"
+        f"- Foydalanuvchi reja, maqsad, vazifa, ish so'rasa — 2..5 ta vazifa qaytar.\n"
+        f"- Suhbat tabiati shaxsiy/savol-javob bo'lsa — suggested_tasks: [] (bo'sh ro'yxat).\n"
+        f"- duration_minutes 15..120 oralig'ida, estimated_points 10..200 oralig'ida.\n"
+        f"- title qisqa va aniq (5-10 so'z), description biroz batafsil (1-2 jumla).\n"
+        f"- Til: barcha matn (response, title, description) {_lang_label(lang_code)} tilida."
     )
 
 
@@ -87,19 +99,76 @@ async def chat_with_ai(
     try:
         text, provider = await chat_complete(
             messages=messages,
-            json_mode=False,
-            max_tokens=600,
+            json_mode=True,
+            max_tokens=900,
             temperature=0.85,
         )
-        return {
-            "success": True,
-            "message": text.strip() or _fallback_message(user_context)["message"],
-            "plan_data": None,
-            "tokens_used": 0,
-            "provider": provider,
-        }
     except Exception as e:
         return _fallback_message(user_context, str(e))
+
+    # Parse JSON. If the model misformatted, treat full text as the message
+    # and skip suggestions rather than failing the whole chat.
+    parsed: dict = {}
+    try:
+        parsed = json.loads(text)
+    except json.JSONDecodeError:
+        # Some providers wrap in ```json ... ``` even when asked not to.
+        cleaned = text.strip().lstrip("`")
+        if cleaned.startswith("json\n"):
+            cleaned = cleaned[5:]
+        cleaned = cleaned.rstrip("`").strip()
+        try:
+            parsed = json.loads(cleaned)
+        except Exception:
+            log.warning("ai_service: %s returned non-JSON; using raw text", provider)
+            parsed = {"response": text.strip(), "suggested_tasks": []}
+
+    response_text = (parsed.get("response") or "").strip()
+    if not response_text:
+        response_text = _fallback_message(user_context)["message"]
+
+    raw_tasks = parsed.get("suggested_tasks") or []
+    if not isinstance(raw_tasks, list):
+        raw_tasks = []
+
+    # Normalise / sanity-check each task so the client gets clean shape.
+    valid_categories = {"study", "exercise", "reading", "meditation", "social",
+                        "creative", "productivity", "challenge"}
+    valid_difficulty = {"easy", "medium", "hard", "expert"}
+    suggested: list[dict] = []
+    for t in raw_tasks[:5]:  # cap at 5
+        if not isinstance(t, dict):
+            continue
+        title = (t.get("title") or "").strip()
+        if not title:
+            continue
+        cat = (t.get("category") or "study").lower()
+        diff = (t.get("difficulty") or "medium").lower()
+        try:
+            dur = int(t.get("duration_minutes") or 30)
+        except (TypeError, ValueError):
+            dur = 30
+        try:
+            pts = int(t.get("estimated_points") or 50)
+        except (TypeError, ValueError):
+            pts = 50
+        suggested.append({
+            "title": title,
+            "description": (t.get("description") or "").strip(),
+            "category": cat if cat in valid_categories else "study",
+            "difficulty": diff if diff in valid_difficulty else "medium",
+            "duration_minutes": max(15, min(120, dur)),
+            "estimated_points": max(10, min(200, pts)),
+        })
+
+    return {
+        "success": True,
+        "message": response_text,
+        "suggested_tasks": suggested if suggested else None,
+        "plan_data": None,
+        "tokens_used": 0,
+        "provider": provider,
+    }
 
 
 # ──────────────────────────────────────────────────────────────────────
