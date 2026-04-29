@@ -16,25 +16,13 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from openai import AsyncOpenAI
 from pydantic import BaseModel
 
 from middleware.auth_middleware import get_authenticated_user
 from config.database import get_db
+from .ai_providers import chat_complete, chat_json, configured_providers
 
 router = APIRouter(prefix="/ai", tags=["AI"])
-
-# ── OpenAI client ──────────────────────────────────────────────────────────────
-_client: AsyncOpenAI | None = None
-
-def get_openai() -> AsyncOpenAI:
-    global _client
-    if _client is None:
-        key = os.getenv("OPENAI_API_KEY", "")
-        if not key:
-            raise HTTPException(500, "OPENAI_API_KEY sozlanmagan")
-        _client = AsyncOpenAI(api_key=key)
-    return _client
 
 
 # ── SCHEMAS ───────────────────────────────────────────────────────────────────
@@ -111,10 +99,8 @@ async def ai_chat(
     current_user: dict = Depends(get_authenticated_user),
     db = Depends(get_db),
 ):
-    try:
-        client = get_openai()
-    except HTTPException:
-        # Fallback — OpenAI yo'q bo'lsa
+    if not configured_providers():
+        # No provider has a key — go straight to template fallback.
         return _fallback_response(req.message, current_user)
 
     # History tozalash va limitlash
@@ -131,17 +117,11 @@ async def ai_chat(
     ]
 
     try:
-        resp = await client.chat.completions.create(
-            model="gpt-4o-mini",
+        data, provider = await chat_json(
             messages=messages,
-            temperature=0.8,
             max_tokens=800,
-            response_format={"type": "json_object"},
+            temperature=0.8,
         )
-        raw = resp.choices[0].message.content or "{}"
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        data = {"response": raw, "suggested_tasks": None}
     except Exception as e:
         return _fallback_response(req.message, current_user, str(e))
 
@@ -149,6 +129,7 @@ async def ai_chat(
         "response":        data.get("response", "Javob generatsiya qilishda xato."),
         "suggested_tasks": data.get("suggested_tasks") or None,
         "motivation_plan": data.get("motivation_plan"),
+        "provider":        provider,
     }
 
 
@@ -208,22 +189,22 @@ async def motivation_plan(
     # Haftalik jadval
     schedule = _generate_schedule(level, archetype)
 
-    # LLM bilan boyitish (ixtiyoriy)
+    # LLM bilan boyitish (ixtiyoriy) — hamma provider'lar tugasa default qoladi
     personal_msg = _default_message(name, archetype, streak)
     try:
-        client = get_openai()
         prompt = (
             f"'{name}' ismli talaba uchun qisqa (2 jumlali) shaxsiy motivatsion xabar yoz. "
             f"Daraja: {level}, Streak: {streak} kun, Arxetip: {archetype}. "
             f"O'zbek tilida, iliq ohangda. FAQAT matn qaytar, JSON emas."
         )
-        resp = await client.chat.completions.create(
-            model="gpt-4o-mini",
+        text, _ = await chat_complete(
             messages=[{"role": "user", "content": prompt}],
             max_tokens=150,
             temperature=0.9,
+            json_mode=False,
         )
-        personal_msg = resp.choices[0].message.content.strip()
+        if text.strip():
+            personal_msg = text.strip()
     except Exception:
         pass
 
