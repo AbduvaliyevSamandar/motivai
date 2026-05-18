@@ -162,50 +162,42 @@ async def ai_chat(
     authorization: str = None,
     db=Depends(get_database),
 ):
-    """OpenAI GPT-4o-mini asosida motivatsion chatbot"""
-    user    = await get_current_user(authorization, db)
-    api_key = os.getenv("OPENAI_API_KEY", "")
+    """Motivatsion chatbot — multi-provider fallback (OpenAI -> Gemini -> Groq)."""
+    user = await get_current_user(authorization, db)
 
-    if not api_key:
+    from app.services.ai_providers import chat_complete, configured_providers
+    if not configured_providers():
         return _fallback_response(req.message, user)
 
+    history = [
+        {"role": m.get("role", "user"), "content": str(m.get("content", ""))}
+        for m in (req.history or [])[-8:]
+        if m.get("role") in ("user", "assistant")
+    ]
+    messages = [
+        {"role": "system", "content": _build_system_prompt(user)},
+        *history,
+        {"role": "user",   "content": req.message},
+    ]
+
+    raw = ""
     try:
-        from openai import AsyncOpenAI
-        client = AsyncOpenAI(api_key=api_key)
-
-        # History (oxirgi 8 ta xabar)
-        history = [
-            {"role": m.get("role","user"), "content": str(m.get("content",""))}
-            for m in (req.history or [])[-8:]
-            if m.get("role") in ("user", "assistant")
-        ]
-
-        messages = [
-            {"role": "system", "content": _build_system_prompt(user)},
-            *history,
-            {"role": "user",   "content": req.message},
-        ]
-
-        resp = await client.chat.completions.create(
-            model="gpt-4o-mini",
+        raw, provider = await chat_complete(
             messages=messages,
-            temperature=0.8,
+            json_mode=True,
             max_tokens=700,
-            response_format={"type": "json_object"},
+            temperature=0.8,
         )
-
-        raw  = resp.choices[0].message.content or "{}"
-        data = json.loads(raw)
+        data = json.loads(raw or "{}")
         return {
             "response":        data.get("response", "Javob olishda xato."),
             "suggested_tasks": data.get("suggested_tasks") or None,
+            "_provider":       provider,
         }
-
     except json.JSONDecodeError:
-        return {"response": raw if 'raw' in dir() else "Xato.",
-                "suggested_tasks": None}
+        return {"response": raw or "Xato.", "suggested_tasks": None}
     except Exception as e:
-        logger.error(f"OpenAI xato: {e}")
+        logger.error(f"AI providers xato: {e}")
         return _fallback_response(req.message, user)
 
 
