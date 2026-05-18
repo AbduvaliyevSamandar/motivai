@@ -1,69 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 
 class AppText {
-  static TextStyle get displayLarge => GoogleFonts.poppins(
+  static TextStyle get displayLarge => TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.w700,
         color: AppColors.txt,
       );
 
-  static TextStyle get displayMedium => GoogleFonts.poppins(
+  static TextStyle get displayMedium => TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w700,
         color: AppColors.txt,
       );
 
-  static TextStyle get headlineLarge => GoogleFonts.poppins(
+  static TextStyle get headlineLarge => TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w600,
         color: AppColors.txt,
       );
 
-  static TextStyle get headlineMedium => GoogleFonts.poppins(
+  static TextStyle get headlineMedium => TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: AppColors.txt,
       );
 
-  static TextStyle get titleLarge => GoogleFonts.poppins(
+  static TextStyle get titleLarge => TextStyle(
         fontSize: 18,
         fontWeight: FontWeight.w600,
         color: AppColors.txt,
       );
 
-  static TextStyle get titleMedium => GoogleFonts.poppins(
+  static TextStyle get titleMedium => TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w500,
         color: AppColors.txt,
       );
 
-  static TextStyle get bodyLarge => GoogleFonts.poppins(
+  static TextStyle get bodyLarge => TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w400,
         color: AppColors.txt,
       );
 
-  static TextStyle get bodyMedium => GoogleFonts.poppins(
+  static TextStyle get bodyMedium => TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w400,
         color: AppColors.txt,
       );
 
-  static TextStyle get bodySmall => GoogleFonts.poppins(
+  static TextStyle get bodySmall => TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w400,
         color: AppColors.txt,
       );
 
-  static TextStyle get labelLarge => GoogleFonts.poppins(
+  static TextStyle get labelLarge => TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w500,
         color: AppColors.txt,
       );
 
-  static TextStyle get caption => GoogleFonts.poppins(
+  static TextStyle get caption => TextStyle(
         fontSize: 11,
         fontWeight: FontWeight.w400,
         color: AppColors.txt,

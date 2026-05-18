@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -76,7 +75,7 @@ class StatCard extends StatelessWidget {
                   ),
                   child: Text(
                     trend!,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
                       color: hasGradient
@@ -92,7 +91,7 @@ class StatCard extends StatelessWidget {
           const SizedBox(height: D.sp12),
           Text(
             value,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w700,
               color: hasGradient ? Colors.white : AppColors.txt,
@@ -101,7 +100,7 @@ class StatCard extends StatelessWidget {
           const SizedBox(height: D.sp4),
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w400,
               color: hasGradient

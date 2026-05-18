@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_data_sync.dart';
 import 'user_scope.dart';
 
 /// Simple habit tracker stored client-side.
@@ -75,6 +76,25 @@ class HabitStorage {
   }
 
   static Future<void> save(List<Habit> habits) async {
+    final p = await SharedPreferences.getInstance();
+    await p.setString(
+        _key, jsonEncode(habits.map((h) => h.toJson()).toList()));
+    UserDataSync.schedule();
+  }
+
+  /// Cross-device sync: dump habits as a list of JSON maps.
+  static Future<dynamic> exportJson() async {
+    final habits = await load();
+    return habits.map((h) => h.toJson()).toList();
+  }
+
+  /// Cross-device sync: overwrite local habits with server-side data.
+  static Future<void> importJson(dynamic json) async {
+    if (json is! List) return;
+    final habits = json
+        .whereType<Map>()
+        .map((e) => Habit.fromJson(e.cast<String, dynamic>()))
+        .toList();
     final p = await SharedPreferences.getInstance();
     await p.setString(
         _key, jsonEncode(habits.map((h) => h.toJson()).toList()));

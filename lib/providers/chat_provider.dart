@@ -4,6 +4,7 @@ import '../services/storage.dart';
 import '../services/task_templates.dart';
 import '../services/user_scope.dart';
 import '../config/constants.dart';
+import '../config/strings.dart';
 import '../models/models.dart';
 
 class ChatProvider extends ChangeNotifier {
@@ -66,14 +67,7 @@ class ChatProvider extends ChangeNotifier {
   ChatMsg _welcome() => ChatMsg(
     id:        'welcome_${DateTime.now().millisecondsSinceEpoch}',
     role:      'assistant',
-    content:
-        '👋 Salom! Men **MotivAI** — sizning AI motivatsion assistentingizman!\n\n'
-        'Quyidagilarni so\'rashingiz mumkin:\n'
-        '• 📋 Bugunlik yoki haftalik motivatsiya rejasi\n'
-        '• 🎯 Qiziqishlaringizga mos vazifalar\n'
-        '• 💪 Qiynalayotgan soha bo\'yicha maslahat\n'
-        '• 🔥 Streak saqlash strategiyasi\n\n'
-        'Nima haqida gaplashmoqchisiz?',
+    content:   S.get('chat_welcome'),
     timestamp: DateTime.now(),
   );
 
@@ -119,7 +113,7 @@ class ChatProvider extends ChangeNotifier {
       final resData = res['data'] as Map<String, dynamic>? ?? res;
       String content = resData['message']?.toString() ??
           res['message']?.toString() ??
-          'Javob olishda xato yuz berdi.';
+          S.tr('Javob olishda xato yuz berdi.', 'Произошла ошибка при получении ответа.', 'An error occurred while getting a response.');
 
       // Detect OpenAI quota error — show fallback template suggestions
       final isQuotaErr =
@@ -130,8 +124,9 @@ class ChatProvider extends ChangeNotifier {
         fallbackTasks = TaskTemplates.suggestFor(text);
         if (fallbackTasks.isEmpty) fallbackTasks = TaskTemplates.starter();
         content =
-            'AI servisi vaqtincha ishlamayapti.'
-            '\n\nSiz uchun tayyor shablonlar tanladim — kerakli vazifalarni belgilang va qo\'shing.';
+            S.tr('AI servisi vaqtincha ishlamayapti.', 'AI сервис временно недоступен.', 'AI service is temporarily unavailable.')
+            + '\n\n'
+            + S.tr('Siz uchun tayyor shablonlar tanladim — kerakli vazifalarni belgilang va qo\'shing.', 'Я подобрал готовые шаблоны — отметьте нужные задачи и добавьте.', 'I picked ready templates — mark the tasks you need and add them.');
       }
 
       // Case 1: backend auto-created a plan — reload tasks so they appear in dashboard
@@ -158,8 +153,7 @@ class ChatProvider extends ChangeNotifier {
       tasks ??= fallbackTasks;
 
       if (planCreated) {
-        content +=
-            "\n\n\u2728 **Reja avtomatik yaratildi** — Bosh sahifadagi 'Vazifalar' ro\'yxatida ko\'ring.";
+        content += S.get('plan_auto_created');
       }
 
       final aiMsg = ChatMsg(
@@ -180,8 +174,8 @@ class ChatProvider extends ChangeNotifier {
         id:        'err_${DateTime.now().millisecondsSinceEpoch}',
         role:      'assistant',
         content:
-            '❌ Xato yuz berdi: ${e.toString()}\n\n'
-            'Qayta urinib ko\'ring yoki internet aloqasini tekshiring.',
+            '❌ ${S.tr("Xato yuz berdi", "Произошла ошибка", "An error occurred")}: ${e.toString()}\n\n'
+            '${S.tr("Qayta urinib ko\\'ring yoki internet aloqasini tekshiring.", "Попробуйте снова или проверьте интернет-соединение.", "Please retry or check your internet connection.")}',
         timestamp: DateTime.now(),
         isError:   true,
       ));
@@ -194,12 +188,19 @@ class ChatProvider extends ChangeNotifier {
 
   // ── CONFIRM AI TASKS ADDED (called by chat screen after TaskProvider success)
   Future<void> confirmAdded(int count) async {
+    // Mark the most recent assistant message with un-added tasks as added,
+    // so the selection panel disappears and stays gone across reloads.
+    for (var i = _msgs.length - 1; i >= 0; i--) {
+      final m = _msgs[i];
+      if (m.isAssistant && m.hasTasks) {
+        _msgs[i] = m.copyWith(tasksAdded: true);
+        break;
+      }
+    }
     final confirmMsg = ChatMsg(
       id: 'confirm_${DateTime.now().millisecondsSinceEpoch}',
       role: 'assistant',
-      content:
-          '✅ Ajoyib! **$count ta vazifa** sizning ro\'yxatingizga qo\'shildi!\n\n'
-          'Ularni bajarib XP to\'plang va reytingda yuqoriga chiqing! 💪🏆',
+      content: S.get('tasks_added_thanks').replaceAll('{n}', '$count'),
       timestamp: DateTime.now(),
     );
     _msgs.add(confirmMsg);

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
-import '../../config/dimensions.dart';
 import '../../models/models.dart';
 import '../../providers/notification_provider.dart';
 import '../../widgets/nebula/nebula.dart';
@@ -19,8 +18,6 @@ class NotificationsScreen extends StatelessWidget {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 18),
           SafeArea(
             child: Column(
               children: [
@@ -70,34 +67,27 @@ class _Header extends StatelessWidget {
             },
           ),
           const SizedBox(width: 4),
-          ShaderMask(
-            shaderCallback: (b) => LinearGradient(
-              colors: AppColors.titleGradient,
-            ).createShader(b),
-            blendMode: BlendMode.srcIn,
-            child: Text(
-              'Bildirishnomalar',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+          Text(
+              S.get('notifications'),
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.5,
               ),
             ),
-          ),
           if (np.unreadCount > 0) ...[
             const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(
                   horizontal: 8, vertical: 3),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: AppColors.gradCosmic),
+                color: AppColors.primary,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 '${np.unreadCount}',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: Colors.white,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
@@ -124,8 +114,8 @@ class _Header extends StatelessWidget {
                         color: AppColors.primary, size: 18),
                     const SizedBox(width: 10),
                     Text(
-                      "Barchasini o'qilgan qilish",
-                      style: GoogleFonts.poppins(
+                      S.get('mark_all_read'),
+                      style: TextStyle(
                         color: AppColors.txt,
                         fontSize: 13,
                       ),
@@ -139,8 +129,8 @@ class _Header extends StatelessWidget {
                         color: AppColors.danger, size: 18),
                     const SizedBox(width: 10),
                     Text(
-                      'Hammasini tozalash',
-                      style: GoogleFonts.poppins(
+                      S.get('clear_all'),
+                      style: TextStyle(
                         color: AppColors.danger,
                         fontSize: 13,
                       ),
@@ -199,10 +189,10 @@ class _NotifTile extends StatelessWidget {
 
   String _relTime() {
     final diff = DateTime.now().difference(notif.at);
-    if (diff.inMinutes < 1) return 'hozir';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min oldin';
-    if (diff.inHours < 24) return '${diff.inHours} soat oldin';
-    if (diff.inDays < 7) return '${diff.inDays} kun oldin';
+    if (diff.inMinutes < 1) return S.tr('hozir', 'сейчас', 'now');
+    if (diff.inMinutes < 60) return '${diff.inMinutes} ${S.get("min_ago")}';
+    if (diff.inHours < 24) return '${diff.inHours} ${S.get("hour_ago")}';
+    if (diff.inDays < 7) return '${diff.inDays} ${S.get("day_ago")}';
     return '${notif.at.day}/${notif.at.month}';
   }
 
@@ -216,7 +206,7 @@ class _NotifTile extends StatelessWidget {
         padding: const EdgeInsets.only(right: 24),
         decoration: BoxDecoration(
           color: AppColors.danger.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
         ),
         alignment: Alignment.centerRight,
         child:
@@ -230,24 +220,20 @@ class _NotifTile extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 10),
         child: Material(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           child: InkWell(
             onTap: () {
               HapticFeedback.selectionClick();
               onTap();
             },
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                gradient: notif.read
-                    ? null
-                    : LinearGradient(colors: [
-                        _accent.withOpacity(0.08),
-                        _accent.withOpacity(0.02),
-                      ]),
-                color: notif.read ? AppColors.surface : null,
-                borderRadius: BorderRadius.circular(16),
+                color: notif.read
+                    ? AppColors.surface
+                    : _accent.withOpacity(0.06),
+                borderRadius: BorderRadius.circular(10),
                 border: Border.all(
                   color: notif.read
                       ? AppColors.border
@@ -262,10 +248,7 @@ class _NotifTile extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        _accent.withOpacity(0.25),
-                        _accent.withOpacity(0.08),
-                      ]),
+                      color: _accent.withOpacity(0.25),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: _accent.withOpacity(0.4)),
                     ),
@@ -281,7 +264,7 @@ class _NotifTile extends StatelessWidget {
                             Expanded(
                               child: Text(
                                 notif.title,
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: AppColors.txt,
                                   fontSize: 13,
                                   fontWeight: notif.read
@@ -314,7 +297,7 @@ class _NotifTile extends StatelessWidget {
                         const SizedBox(height: 4),
                         Text(
                           notif.body,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 11,
                           ),
@@ -324,7 +307,7 @@ class _NotifTile extends StatelessWidget {
                         const SizedBox(height: 6),
                         Text(
                           _relTime(),
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.hint,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
@@ -355,47 +338,32 @@ class _EmptyFeed extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  AppColors.primary.withOpacity(0.2),
-                  AppColors.secondary.withOpacity(0.1),
-                ]),
+                color: AppColors.primary.withOpacity(0.10),
                 shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
-                    blurRadius: 30,
-                  ),
-                ],
               ),
               child: Icon(Icons.notifications_none_rounded,
-                  color: AppColors.primary, size: 46),
+                  color: AppColors.primary, size: 24),
             ),
             const SizedBox(height: 20),
-            ShaderMask(
-              shaderCallback: (b) => LinearGradient(
-                colors: AppColors.titleGradient,
-              ).createShader(b),
-              blendMode: BlendMode.srcIn,
-              child: Text(
-                'Bildirishnomalar yo\'q',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+            Text(
+                S.get('notif_no'),
+                style: TextStyle(
+                  color: AppColors.txt,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                   letterSpacing: -0.3,
                 ),
               ),
-            ),
             const SizedBox(height: 6),
             Text(
-              'Vazifalaringizga vaqt qo\'shing —\neslatmalar shu yerda ko\'rinadi',
+              S.get('tasks_show_here_x'),
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.sub,
-                fontSize: 13,
+                fontSize: 12,
                 height: 1.5,
               ),
             ),

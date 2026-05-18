@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -78,9 +77,9 @@ class _GradientButtonState extends State<GradientButton>
               ? null
               : [
                   BoxShadow(
-                    color: colors.first.withOpacity(0.4),
-                    blurRadius: 16,
-                    offset: const Offset(0, 6),
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
                   ),
                 ],
         ),
@@ -118,7 +117,7 @@ class _GradientButtonState extends State<GradientButton>
                         ],
                         Text(
                           widget.label,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
                             color: Colors.white,

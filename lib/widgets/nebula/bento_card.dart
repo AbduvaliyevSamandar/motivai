@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -78,7 +77,7 @@ class _BentoCardState extends State<BentoCard>
       padding: widget.padding ?? const EdgeInsets.all(D.sp16),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border, width: 1),
       ),
       child: widget.customChild ?? _buildDefault(accent, gradient),
@@ -151,7 +150,7 @@ class _BentoCardState extends State<BentoCard>
                           widget.trend!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                             color: widget.trendPositive
@@ -177,7 +176,7 @@ class _BentoCardState extends State<BentoCard>
                 child: Text(
                   widget.value!,
                   maxLines: 1,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     color: AppColors.txt,
@@ -192,7 +191,7 @@ class _BentoCardState extends State<BentoCard>
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 softWrap: false,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w500,
                   color: AppColors.sub,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../services/coins_storage.dart';
 
@@ -31,10 +30,7 @@ class _CoinsBadgeState extends State<CoinsBadge> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            AppColors.accent.withOpacity(0.25),
-            AppColors.accent.withOpacity(0.1),
-          ]),
+          color: AppColors.accent.withOpacity(0.25),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.accent.withOpacity(0.4)),
         ),
@@ -45,7 +41,7 @@ class _CoinsBadgeState extends State<CoinsBadge> {
             const SizedBox(width: 4),
             Text(
               '$_coins',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.accent,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

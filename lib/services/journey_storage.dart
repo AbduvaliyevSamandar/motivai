@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_data_sync.dart';
 import 'user_scope.dart';
 
 /// Focus journey — 30-day growing tree.
@@ -69,6 +70,32 @@ class JourneyStorage {
       '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 
   static Future<void> _persist() async {
+    final p = await SharedPreferences.getInstance();
+    await p.setString(
+        _key,
+        jsonEncode(
+            _cache.map((k, v) => MapEntry(k, v.toJson()))));
+    UserDataSync.schedule();
+  }
+
+  /// Cross-device sync: dump every recorded day as a list of JSON maps.
+  static Future<dynamic> exportJson() async {
+    await _ensure();
+    return _cache.values.map((d) => d.toJson()).toList();
+  }
+
+  /// Cross-device sync: overwrite local journey with server-side data.
+  static Future<void> importJson(dynamic json) async {
+    if (json is! List) return;
+    _cache = {};
+    for (final entry in json) {
+      if (entry is! Map) continue;
+      final day = JourneyDay.fromJson(entry.cast<String, dynamic>());
+      if (day.date.isEmpty) continue;
+      _cache[day.date] = day;
+    }
+    _loaded = true;
+    _loadedFor = UserScope.userId;
     final p = await SharedPreferences.getInstance();
     await p.setString(
         _key,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 
 /// Six independent slot-style OTP input. Calls [onChanged] with the
@@ -98,7 +97,7 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               maxLength: 1,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,

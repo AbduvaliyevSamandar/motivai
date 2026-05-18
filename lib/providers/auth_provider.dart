@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/api.dart';
 import '../services/storage.dart';
+import '../services/user_data_sync.dart';
 import '../services/user_scope.dart';
 import '../config/constants.dart';
 
@@ -57,6 +58,11 @@ class AuthProvider extends ChangeNotifier {
         if (cached != null) _user = cached;
         _applyScope();
         _refreshProfile().catchError((_) {});
+        // Resume cross-device sync in the background — the app can
+        // already render with the cached user, and the blob lands when
+        // the network responds.
+        // ignore: discarded_futures
+        UserDataSync.pullAndApply();
       }
     } catch (_) {
       await _store.clearAll();
@@ -117,6 +123,14 @@ class AuthProvider extends ChangeNotifier {
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
       _applyScope();
+      // Pull cross-device blob BEFORE we mark the session ready so that
+      // by the time screens render, coins/habits/etc. are restored. If
+      // the network is slow we still finish (fail open) — pullAndApply
+      // never throws.
+      UserDataSync.resetForUser();
+      try {
+        await UserDataSync.pullAndApply();
+      } catch (_) {/* already logged */}
       _loading = false;
       notifyListeners();
       return true;
@@ -161,6 +175,13 @@ class AuthProvider extends ChangeNotifier {
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
       _applyScope();
+      // First-time register usually means an empty server blob — but
+      // calling pullAndApply still arms the push gate so subsequent
+      // local mutations get persisted.
+      UserDataSync.resetForUser();
+      try {
+        await UserDataSync.pullAndApply();
+      } catch (_) {/* already logged */}
       _loading = false;
       notifyListeners();
       return true;
@@ -225,6 +246,7 @@ class AuthProvider extends ChangeNotifier {
     await _store.clearAll();
     _token = null;
     _user = null;
+    UserDataSync.resetForUser();
     UserScope.setUser(null);
     notifyListeners();
     return true;
@@ -232,10 +254,16 @@ class AuthProvider extends ChangeNotifier {
 
   // ── LOGOUT ────────────────────────────────────────────
   Future<void> logout() async {
+    // Best-effort: try to push any pending local changes BEFORE we
+    // tear the session down, so nothing gets lost on next login.
+    try {
+      await UserDataSync.flush();
+    } catch (_) {}
     try { await _api.post(K.logout, {}); } catch (_) {}
     await _store.clearAll();
     _token = null;
     _user  = null;
+    UserDataSync.resetForUser();
     UserScope.setUser(null);
     notifyListeners();
   }
@@ -307,6 +335,10 @@ class AuthProvider extends ChangeNotifier {
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
       _applyScope();
+      UserDataSync.resetForUser();
+      try {
+        await UserDataSync.pullAndApply();
+      } catch (_) {/* already logged */}
       _loading = false;
       notifyListeners();
       return true;
@@ -361,6 +393,10 @@ class AuthProvider extends ChangeNotifier {
       await _store.saveToken(_token!);
       if (_user != null) await _store.saveUser(_user!);
       _applyScope();
+      UserDataSync.resetForUser();
+      try {
+        await UserDataSync.pullAndApply();
+      } catch (_) {/* already logged */}
       _loading = false;
       notifyListeners();
       return true;

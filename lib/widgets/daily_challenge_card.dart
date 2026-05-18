@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
+import '../config/strings.dart';
 import '../services/daily_challenge.dart';
 import 'nebula/nebula.dart';
 
@@ -38,31 +38,15 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
     final pct = (_progress / c.target).clamp(0.0, 1.0);
     return GlassCard(
       padding: const EdgeInsets.all(14),
-      glowColors: _completed
-          ? [AppColors.success, AppColors.accent]
-          : [AppColors.accent, AppColors.pink],
-      glowIntensity: _completed ? 0.3 : 0.2,
       child: Row(
         children: [
           Container(
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: _completed
-                    ? AppColors.gradSuccess
-                    : AppColors.gradFire,
-              ),
+              color: (_completed ? AppColors.success : AppColors.accent)
+                  .withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: (_completed
-                          ? AppColors.success
-                          : AppColors.accent)
-                      .withOpacity(0.5),
-                  blurRadius: 12,
-                ),
-              ],
             ),
             child: Center(
               child: Text(
@@ -80,8 +64,8 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                 Row(
                   children: [
                     Text(
-                      'KUNLIK CHALLENGE',
-                      style: GoogleFonts.poppins(
+                      S.tr('KUNLIK CHALLENGE', 'ВЫЗОВ ДНЯ', 'DAILY CHALLENGE'),
+                      style: TextStyle(
                         color: AppColors.sub,
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
@@ -93,13 +77,12 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 6, vertical: 2),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: AppColors.gradGold),
+                        color: AppColors.accent,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         '+${c.bonusXP} XP',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: const Color(0xFF0F1028),
                           fontSize: 10,
                           fontWeight: FontWeight.w800,
@@ -112,7 +95,7 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                 const SizedBox(height: 4),
                 Text(
                   c.title,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -143,7 +126,7 @@ class _DailyChallengeCardState extends State<DailyChallengeCard> {
                     const SizedBox(width: 8),
                     Text(
                       '$_progress/${c.target}',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: _completed
                             ? AppColors.success
                             : AppColors.sub,

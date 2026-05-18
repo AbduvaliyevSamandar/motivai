@@ -1,4 +1,5 @@
 import 'dart:convert';
+import '../config/strings.dart';
 import 'package:http/http.dart' as http;
 import '../config/constants.dart';
 import 'storage.dart';
@@ -55,7 +56,7 @@ class Api {
     } on ApiError {
       rethrow;
     } catch (e) {
-      throw ApiError('Tarmoq xatosi: $e');
+      throw ApiError('${S.tr("Tarmoq xatosi", "Ошибка сети", "Network error")}: $e');
     }
   }
 

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -81,7 +80,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         enabled: widget.enabled,
         onChanged: widget.onChanged,
         textInputAction: widget.textInputAction,
-        style: GoogleFonts.poppins(
+        style: TextStyle(
           fontSize: 13,
           color: AppColors.txt,
         ),
@@ -112,11 +111,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
             borderRadius: BorderRadius.circular(D.radiusMd),
             borderSide: BorderSide(color: AppColors.danger),
           ),
-          labelStyle: GoogleFonts.poppins(
+          labelStyle: TextStyle(
             fontSize: 13,
             color: AppColors.sub,
           ),
-          hintStyle: GoogleFonts.poppins(
+          hintStyle: TextStyle(
             fontSize: 13,
             color: AppColors.hint,
           ),

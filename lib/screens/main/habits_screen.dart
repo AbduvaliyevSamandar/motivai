@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/habit_storage.dart';
@@ -57,26 +57,26 @@ class _HabitsScreenState extends State<HabitsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
-          'Odatni o\'chirish?',
-          style: GoogleFonts.poppins(
+          S.get('habit_delete_q'),
+          style: TextStyle(
             color: AppColors.txt,
             fontWeight: FontWeight.w700,
           ),
         ),
         content: Text(
-          '"${h.title}" — ${h.completedDays.length} kunlik tarix yo\'qoladi.',
-          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
+          '"${h.title}" — ${h.completedDays.length} ${S.get("unit_day")}',
+          style: TextStyle(color: AppColors.sub, fontSize: 13),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Bekor qilish',
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+            child: Text(S.get('cancel_btn'),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -85,7 +85,7 @@ class _HabitsScreenState extends State<HabitsScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
             ),
-            child: Text("O'chirish", style: GoogleFonts.poppins()),
+            child: Text(S.get('delete'), style: TextStyle()),
           ),
         ],
       ),
@@ -109,14 +109,13 @@ class _HabitsScreenState extends State<HabitsScreen> {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: AppColors.gradCosmic),
+            color: AppColors.primary,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.5),
-                blurRadius: 20,
-                offset: const Offset(0, 6),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -126,8 +125,6 @@ class _HabitsScreenState extends State<HabitsScreen> {
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 18),
           SafeArea(
             child: Column(
               children: [
@@ -141,21 +138,15 @@ class _HabitsScreenState extends State<HabitsScreen> {
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 4),
-                      ShaderMask(
-                        shaderCallback: (b) => LinearGradient(
-                          colors: AppColors.titleGradient,
-                        ).createShader(b),
-                        blendMode: BlendMode.srcIn,
-                        child: Text(
-                          'Kundalik odatlar',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
+                      Text(
+                          S.get('habits_title'),
+                          style: TextStyle(
+                            color: AppColors.txt,
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -193,35 +184,33 @@ class _HabitsScreenState extends State<HabitsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  AppColors.primary.withOpacity(0.25),
-                  AppColors.secondary.withOpacity(0.1),
-                ]),
+                color: AppColors.success.withOpacity(0.10),
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Text('\u{1F331}', style: TextStyle(fontSize: 32)),
+                child: Text('\u{1F331}', style: TextStyle(fontSize: 28)),
               ),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 16),
             Text(
-              'Hali odat yo\'q',
-              style: GoogleFonts.poppins(
+              S.get('habits_empty_title'),
+              style: TextStyle(
                 color: AppColors.txt,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.2,
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              'Kundalik odat qo\'shing — streak orttiring',
+              S.get('habits_grow_streak'),
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.sub,
-                fontSize: 13,
+                fontSize: 12,
               ),
             ),
           ],
@@ -256,7 +245,7 @@ class _HabitCard extends StatelessWidget {
           padding: const EdgeInsets.only(right: 24),
           decoration: BoxDecoration(
             color: AppColors.danger.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
           ),
           alignment: Alignment.centerRight,
           child: Icon(LucideIcons.trash2,
@@ -271,14 +260,8 @@ class _HabitCard extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              gradient: done
-                  ? LinearGradient(colors: [
-                      AppColors.success.withOpacity(0.18),
-                      AppColors.success.withOpacity(0.06),
-                    ])
-                  : null,
-              color: done ? null : AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
+              color: done ? AppColors.success.withOpacity(0.18) : AppColors.surface,
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: done
                     ? AppColors.success.withOpacity(0.5)
@@ -300,13 +283,7 @@ class _HabitCard extends StatelessWidget {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    gradient: done
-                        ? LinearGradient(
-                            colors: AppColors.gradSuccess)
-                        : null,
-                    color: done
-                        ? null
-                        : AppColors.primary.withOpacity(0.1),
+                    color: done ? AppColors.success : AppColors.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Center(
@@ -323,7 +300,7 @@ class _HabitCard extends StatelessWidget {
                     children: [
                       Text(
                         habit.title,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -338,8 +315,8 @@ class _HabitCard extends StatelessWidget {
                               style: TextStyle(fontSize: 11)),
                           const SizedBox(width: 4),
                           Text(
-                            '$streak kun',
-                            style: GoogleFonts.poppins(
+                            '$streak ${S.get('unit_day')}',
+                            style: TextStyle(
                               color: AppColors.sub,
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -356,13 +333,7 @@ class _HabitCard extends StatelessWidget {
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
-                    gradient: done
-                        ? LinearGradient(
-                            colors: AppColors.gradSuccess)
-                        : null,
-                    color: done
-                        ? null
-                        : AppColors.surface,
+                    color: done ? AppColors.success : AppColors.surface,
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: done
@@ -415,7 +386,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(16)),
+            const BorderRadius.vertical(top: Radius.circular(10)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -439,8 +410,8 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
           ),
           const SizedBox(height: 18),
           Text(
-            'Yangi odat',
-            style: GoogleFonts.poppins(
+            S.get('habit_new'),
+            style: TextStyle(
               color: AppColors.txt,
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -450,14 +421,14 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
           const SizedBox(height: 16),
           GlassTextField(
             controller: _ctrl,
-            label: 'Odat nomi',
-            hint: 'Masalan: 30 daqiqa o\'qish',
+            label: S.get('habit_name_label'),
+            hint: S.tr('Masalan: 30 daqiqa o\'qish', 'Например: 30 минут чтения', 'E.g. 30 min reading'),
             prefixIcon: LucideIcons.pencil,
           ),
           const SizedBox(height: 14),
           Text(
             'EMOJI',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 10,
               fontWeight: FontWeight.w700,
@@ -479,11 +450,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    gradient: sel
-                        ? LinearGradient(
-                            colors: AppColors.gradCosmic)
-                        : null,
-                    color: sel ? null : AppColors.bg,
+                    color: sel ? AppColors.primary : AppColors.bg,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: sel
@@ -500,7 +467,7 @@ class _AddHabitSheetState extends State<_AddHabitSheet> {
           ),
           const SizedBox(height: 24),
           NebulaButton(
-            label: "Qo'shish",
+            label: S.get('add_action'),
             icon: LucideIcons.plus,
             onTap: () {
               final t = _ctrl.text.trim();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/rituals_storage.dart';
@@ -48,7 +48,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
 
   void _showEditor({Ritual? existing}) {
     final titleCtrl =
-        TextEditingController(text: existing?.title ?? 'Ertalab 20 min ingliz');
+        TextEditingController(text: existing?.title ?? S.tr('Ertalab 20 min ingliz', 'Утром 20 мин английского', 'Morning 20 min English'));
     String emoji = existing?.emoji ?? _emojis[0];
     int hour = existing?.hour ?? 7;
     int minute = existing?.minute ?? 30;
@@ -67,7 +67,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  const BorderRadius.vertical(top: Radius.circular(10)),
               border: Border(
                 top:
                     BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -88,8 +88,8 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    existing == null ? 'Yangi ritual' : 'Ritualni tahrirlash',
-                    style: GoogleFonts.poppins(
+                    existing == null ? S.get('ritual_new') : 'Ritualni tahrirlash',
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -138,7 +138,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   const SizedBox(height: 12),
                   GlassTextField(
                     controller: titleCtrl,
-                    label: 'Ritual nomi',
+                    label: S.get('ritual_name'),
                     prefixIcon: LucideIcons.pencil,
                   ),
                   const SizedBox(height: 14),
@@ -146,7 +146,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                     children: [
                       Expanded(
                         child: _stepper(
-                          label: 'Soat',
+                          label: S.get('hour_short'),
                           value: hour,
                           min: 0,
                           max: 23,
@@ -157,7 +157,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: _stepper(
-                          label: 'Daqiqa',
+                          label: S.get('minute_short'),
                           value: minute,
                           min: 0,
                           max: 59,
@@ -169,12 +169,12 @@ class _RitualsScreenState extends State<RitualsScreen> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: _stepper(
-                          label: 'Davomi',
+                          label: S.tr('Davomi', 'Длит.', 'Duration'),
                           value: duration,
                           min: 5,
                           max: 120,
                           step: 5,
-                          fmt: (v) => '$v min',
+                          fmt: (v) => '$v ${S.tr('min', 'мин', 'min')}',
                           onChange: (v) => setS(() => duration = v),
                         ),
                       ),
@@ -183,8 +183,8 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   const SizedBox(height: 14),
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Text('Kunlar',
-                        style: GoogleFonts.poppins(
+                    child: Text(S.get('days_label'),
+                        style: TextStyle(
                           color: AppColors.sub,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -213,11 +213,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                           height: 40,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: active
-                                ? LinearGradient(
-                                    colors: AppColors.gradCosmic)
-                                : null,
-                            color: active ? null : AppColors.bg,
+                            color: active ? AppColors.primary : AppColors.bg,
                             border: Border.all(
                               color: active
                                   ? AppColors.primary
@@ -228,7 +224,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                           child: Center(
                             child: Text(
                               _dayShort[d],
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: active
                                     ? Colors.white
                                     : AppColors.sub,
@@ -243,7 +239,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   ),
                   const SizedBox(height: 20),
                   NebulaButton(
-                    label: existing == null ? 'Saqlash' : 'Yangilash',
+                    label: existing == null ? S.get('save') : S.tr('Yangilash', 'Обновить', 'Update'),
                     icon: LucideIcons.check,
                     onTap: () async {
                       final title = titleCtrl.text.trim();
@@ -253,8 +249,8 @@ class _RitualsScreenState extends State<RitualsScreen> {
                             behavior: SnackBarBehavior.floating,
                             backgroundColor: AppColors.danger,
                             content: Text(
-                              'Ism va kamida 1 kunni tanlang',
-                              style: GoogleFonts.poppins(),
+                              S.get('habit_name_validate'),
+                              style: TextStyle(),
                             ),
                           ),
                         );
@@ -312,10 +308,10 @@ class _RitualsScreenState extends State<RitualsScreen> {
       child: Column(
         children: [
           Text(label,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                   color: AppColors.sub, fontSize: 10)),
           Text(fmt(value),
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -359,19 +355,13 @@ class _RitualsScreenState extends State<RitualsScreen> {
           icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
-        title: ShaderMask(
-          shaderCallback: (b) => LinearGradient(
-            colors: AppColors.titleGradient,
-          ).createShader(b),
-          blendMode: BlendMode.srcIn,
-          child: Text('Rituallar',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+        title: Text(S.get('rituals'),
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
-        ),
         actions: [
           IconButton(
             icon: Icon(LucideIcons.plus, color: AppColors.primary),
@@ -381,8 +371,6 @@ class _RitualsScreenState extends State<RitualsScreen> {
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 22),
           SafeArea(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -407,24 +395,24 @@ class _RitualsScreenState extends State<RitualsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('\u{1F9D8}', style: const TextStyle(fontSize: 32)),
+            Text('\u{1F9D8}', style: const TextStyle(fontSize: 28)),
             const SizedBox(height: 14),
-            Text('Rituallar yo\'q',
-                style: GoogleFonts.poppins(
+            Text(S.get('rituals_empty'),
+                style: TextStyle(
                   color: AppColors.txt,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 )),
             const SizedBox(height: 6),
             Text(
-              '"Har ertalab 20 min ingliz" kabi takroriy ishlar',
+              S.get('ritual_examples'),
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                  color: AppColors.sub, fontSize: 13),
+              style: TextStyle(
+                  color: AppColors.sub, fontSize: 12),
             ),
             const SizedBox(height: 20),
             NebulaButton(
-              label: 'Yangi ritual',
+              label: S.get('ritual_new'),
               icon: LucideIcons.plus,
               expand: false,
               onTap: () => _showEditor(),
@@ -441,11 +429,11 @@ class _RitualsScreenState extends State<RitualsScreen> {
     if (next != null) {
       final diff = next.difference(DateTime.now());
       if (diff.inDays > 0) {
-        nextLabel = 'Keyin ${diff.inDays} kunda';
+        nextLabel = S.get('after_days').replaceAll('{n}', '${diff.inDays}');
       } else if (diff.inHours > 0) {
-        nextLabel = 'Keyin ${diff.inHours} soat';
+        nextLabel = S.get('after_hours').replaceAll('{n}', '${diff.inHours}');
       } else {
-        nextLabel = 'Keyin ${diff.inMinutes} daqiqa';
+        nextLabel = S.get('after_minutes').replaceAll('{n}', '${diff.inMinutes}');
       }
     }
     final daysLabel = r.weekdays
@@ -456,7 +444,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: r.enabled
               ? AppColors.primary.withOpacity(0.3)
@@ -469,13 +457,9 @@ class _RitualsScreenState extends State<RitualsScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              gradient: r.enabled
-                  ? LinearGradient(colors: [
-                      AppColors.primary.withOpacity(0.3),
-                      AppColors.secondary.withOpacity(0.15),
-                    ])
-                  : null,
-              color: r.enabled ? null : AppColors.bg,
+              color: r.enabled
+                  ? AppColors.primary.withOpacity(0.15)
+                  : AppColors.bg,
               shape: BoxShape.circle,
               border: Border.all(
                   color: r.enabled
@@ -495,7 +479,7 @@ class _RitualsScreenState extends State<RitualsScreen> {
                 Text(r.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -503,12 +487,12 @@ class _RitualsScreenState extends State<RitualsScreen> {
                 const SizedBox(height: 2),
                 Text(
                   '${r.hour.toString().padLeft(2, '0')}:${r.minute.toString().padLeft(2, '0')} • ${r.durationMin} min • $daysLabel',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                       color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
                 Text(nextLabel,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: AppColors.primary,
                         fontSize: 10,
                         fontWeight: FontWeight.w600)),

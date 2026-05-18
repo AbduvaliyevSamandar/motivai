@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
@@ -69,7 +69,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  const BorderRadius.vertical(top: Radius.circular(10)),
               border: Border(
                 top:
                     BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -89,8 +89,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  'Do\'st qo\'shish',
-                  style: GoogleFonts.poppins(
+                  S.get('friend_add'),
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -140,18 +140,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 const SizedBox(height: 14),
                 GlassTextField(
                   controller: nameCtrl,
-                  label: 'Ism',
+                  label: S.tr('Ism', 'Имя', 'Name'),
                   prefixIcon: LucideIcons.user,
                 ),
                 const SizedBox(height: 10),
                 GlassTextField(
                   controller: codeCtrl,
-                  label: 'Taklif kodi (6 belgi)',
+                  label: S.get('invite_code_label'),
                   prefixIcon: LucideIcons.key,
                 ),
                 const SizedBox(height: 18),
                 NebulaButton(
-                  label: 'Qo\'shish',
+                  label: S.get('add_btn'),
                   icon: LucideIcons.userPlus,
                   onTap: () async {
                     final ok = await FriendsStorage.add(
@@ -170,9 +170,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
                             : AppColors.danger,
                         content: Text(
                           ok
-                              ? 'Do\'st qo\'shildi'
-                              : 'Xato: kod mavjud yoki o\'zingizniki',
-                          style: GoogleFonts.poppins(),
+                              ? S.tr('Do\'st qo\'shildi', 'Друг добавлен', 'Friend added')
+                              : S.tr('Xato: kod mavjud yoki o\'zingizniki', 'Ошибка: код уже есть или ваш собственный', 'Error: code exists or is your own'),
+                          style: TextStyle(),
                         ),
                       ),
                     );
@@ -194,27 +194,27 @@ class _FriendsScreenState extends State<FriendsScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
-          '${f.emoji} ${f.name} ga sovg\'a',
-          style: GoogleFonts.poppins(
+          '${f.emoji} ${f.name} ${S.tr('ga sovg\'a', '— подарок', 'gift')}',
+          style: TextStyle(
               color: AppColors.txt, fontWeight: FontWeight.w700),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Balansingiz: $_myCoins',
-                style: GoogleFonts.poppins(color: AppColors.sub),
+            Text('${S.tr('Balansingiz', 'Ваш баланс', 'Your balance')}: $_myCoins',
+                style: TextStyle(color: AppColors.sub),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 12),
             TextField(
               controller: ctrl,
               keyboardType: TextInputType.number,
-              style: GoogleFonts.poppins(color: AppColors.txt),
+              style: TextStyle(color: AppColors.txt),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: AppColors.bg,
@@ -233,7 +233,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 ),
                 suffixText: 'tanga',
                 suffixStyle:
-                    GoogleFonts.poppins(color: AppColors.sub),
+                    TextStyle(color: AppColors.sub),
               ),
             ),
           ],
@@ -241,8 +241,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Bekor',
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+            child: Text(S.get('cancel'),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -251,8 +251,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   behavior: SnackBarBehavior.floating,
                   backgroundColor: AppColors.danger,
-                  content: Text('Noto\'g\'ri miqdor',
-                      style: GoogleFonts.poppins()),
+                  content: Text(S.get('wrong_amount'),
+                      style: TextStyle()),
                 ));
                 return;
               }
@@ -265,8 +265,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 behavior: SnackBarBehavior.floating,
                 backgroundColor: AppColors.success,
                 content: Text(
-                  '${f.name} ga $amount tanga yuborildi',
-                  style: GoogleFonts.poppins(),
+                  S.tr('${f.name} ga $amount tanga yuborildi', '${f.name} получил $amount монет', '$amount coins sent to ${f.name}'),
+                  style: TextStyle(),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
               ));
@@ -276,8 +276,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
             ),
-            child: Text('Yuborish',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
+            child: Text(S.tr('Yuborish', 'Отправить', 'Send'),
+                style: TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -296,21 +296,15 @@ class _FriendsScreenState extends State<FriendsScreen> {
           icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
-        title: ShaderMask(
-          shaderCallback: (b) => LinearGradient(
-            colors: AppColors.titleGradient,
-          ).createShader(b),
-          blendMode: BlendMode.srcIn,
-          child: Text(
-            'Do\'stlar',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
+        title: Text(
+            S.get('friends_title'),
+            style: TextStyle(
+              color: AppColors.txt,
               fontSize: 24,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
           ),
-        ),
         actions: [
           IconButton(
             icon: Icon(LucideIcons.userPlus, color: AppColors.primary),
@@ -320,8 +314,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 22),
           SafeArea(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -344,7 +336,6 @@ class _FriendsScreenState extends State<FriendsScreen> {
 
   Widget _myCodeCard(String myName) {
     return GlassCard(
-      glowColors: [AppColors.primary, AppColors.secondary],
       padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,8 +344,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
             children: [
               Icon(LucideIcons.qrCode, color: AppColors.primary),
               const SizedBox(width: 8),
-              Text('Sizning taklif kodingiz',
-                  style: GoogleFonts.poppins(
+              Text(S.get('your_invite_code'),
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -369,10 +360,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 14, vertical: 12),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                      AppColors.primary.withOpacity(0.25),
-                      AppColors.secondary.withOpacity(0.12),
-                    ]),
+                    color: AppColors.primary.withOpacity(0.25),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: AppColors.primary.withOpacity(0.4),
@@ -382,7 +370,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     children: [
                       Text(
                         _myCode,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -396,14 +384,14 @@ class _FriendsScreenState extends State<FriendsScreen> {
                         onPressed: () {
                           Clipboard.setData(ClipboardData(
                               text:
-                                  'MotivAI do\'st kodim: $_myCode'));
+                                  '${S.tr('MotivAI do\'st kodim', 'Мой код друга MotivAI', 'My MotivAI friend code')}: $_myCode'));
                           HapticFeedback.selectionClick();
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               behavior: SnackBarBehavior.floating,
                               backgroundColor: AppColors.success,
-                              content: Text('Nusxa olindi',
-                                  style: GoogleFonts.poppins()),
+                              content: Text(S.get('copied'),
+                                  style: TextStyle()),
                             ),
                           );
                         },
@@ -416,8 +404,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Kodni do\'stga yuboring — ular sizni do\'st sifatida qo\'sha oladi',
-            style: GoogleFonts.poppins(
+            S.get('send_invite'),
+            style: TextStyle(
                 color: AppColors.sub, fontSize: 11),
           ),
           const SizedBox(height: 10),
@@ -425,8 +413,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
             padding: const EdgeInsets.symmetric(
                 horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: AppColors.gradGold),
-              borderRadius: BorderRadius.circular(16),
+              color: AppColors.accent,
+              borderRadius: BorderRadius.circular(10),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -434,8 +422,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 const Icon(LucideIcons.circleDollarSign,
                     color: Colors.white, size: 16),
                 const SizedBox(width: 6),
-                Text('$_myCoins tanga',
-                    style: GoogleFonts.poppins(
+                Text('$_myCoins ${S.get('unit_coin')}',
+                    style: TextStyle(
                         color: Colors.white,
                         fontSize: 11,
                         fontWeight: FontWeight.w700),
@@ -454,7 +442,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
       padding: const EdgeInsets.all(28),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -462,8 +450,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
           Text('\u{1F46F}', style: const TextStyle(fontSize: 32)),
           const SizedBox(height: 12),
           Text(
-            'Hali do\'stlar yo\'q',
-            style: GoogleFonts.poppins(
+            S.get('friends_empty'),
+            style: TextStyle(
               color: AppColors.txt,
               fontSize: 15,
               fontWeight: FontWeight.w700,
@@ -471,9 +459,9 @@ class _FriendsScreenState extends State<FriendsScreen> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Yuqoridagi "+" tugmasi orqali do\'st qo\'shing',
+            S.get('friends_empty_sub'),
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
                 color: AppColors.sub, fontSize: 11),
           ),
         ],
@@ -487,7 +475,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
@@ -496,10 +484,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                AppColors.primary.withOpacity(0.25),
-                AppColors.secondary.withOpacity(0.1),
-              ]),
+              color: AppColors.primary.withOpacity(0.25),
               shape: BoxShape.circle,
               border: Border.all(
                   color: AppColors.primary.withOpacity(0.3)),
@@ -515,7 +500,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(f.name,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -524,8 +509,8 @@ class _FriendsScreenState extends State<FriendsScreen> {
                 Row(
                   children: [
                     Text(
-                      '${f.code} • yuborgan ${f.coinsSent}',
-                      style: GoogleFonts.poppins(
+                      '${f.code} • ${S.tr('yuborgan', 'отправлено', 'sent')} ${f.coinsSent}',
+                      style: TextStyle(
                           color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),

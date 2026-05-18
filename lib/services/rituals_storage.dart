@@ -1,6 +1,8 @@
 import 'dart:convert';
+import '../config/strings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'notification_service.dart';
+import 'user_data_sync.dart';
 import 'user_scope.dart';
 
 /// A recurring daily/weekly mini-ritual (e.g. "20 min ingliz har ertalab 07:30").
@@ -132,6 +134,27 @@ class RitualsStorage {
     final p = await SharedPreferences.getInstance();
     await p.setString(
         _key, jsonEncode(_cache.map((e) => e.toJson()).toList()));
+    UserDataSync.schedule();
+  }
+
+  /// Cross-device sync: dump rituals as a list of JSON maps.
+  static Future<dynamic> exportJson() async {
+    await _ensure();
+    return _cache.map((r) => r.toJson()).toList();
+  }
+
+  /// Cross-device sync: overwrite local rituals with server-side data.
+  static Future<void> importJson(dynamic json) async {
+    if (json is! List) return;
+    _cache = json
+        .whereType<Map>()
+        .map((e) => Ritual.fromJson(e.cast<String, dynamic>()))
+        .toList();
+    _loaded = true;
+    _loadedFor = UserScope.userId;
+    final p = await SharedPreferences.getInstance();
+    await p.setString(
+        _key, jsonEncode(_cache.map((e) => e.toJson()).toList()));
   }
 
   static Future<Ritual> create({
@@ -198,7 +221,7 @@ class RitualsStorage {
     await NotificationService.instance.scheduleAt(
       id: r.notifIdBase,
       title: '${r.emoji} ${r.title}',
-      body: 'Vaqt keldi — ${r.durationMin} daqiqa fokus',
+      body: '${S.tr("Vaqt keldi", "Время пришло", "Time to focus")} — ${r.durationMin} ${S.tr("daqiqa fokus", "мин. фокуса", "min focus")}',
       at: at,
     );
   }

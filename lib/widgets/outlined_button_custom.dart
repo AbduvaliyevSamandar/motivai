@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -48,7 +47,7 @@ class OutlinedButtonCustom extends StatelessWidget {
               ],
               Text(
                 label,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
                   color: c,

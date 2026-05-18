@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../config/strings.dart';
 import '../config/colors.dart';
 import '../services/streak_storage.dart';
 
@@ -28,14 +28,11 @@ class _StreakFreezeBadgeState extends State<StreakFreezeBadge> {
   @override
   Widget build(BuildContext context) {
     return Tooltip(
-      message: 'Freeze: streakni saqlaydi bitta-o\'tkazib yuborilgan kunda',
+      message: S.get('freeze_keeps_streak'),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            AppColors.secondary.withOpacity(0.22),
-            AppColors.info.withOpacity(0.12),
-          ]),
+          color: AppColors.secondary.withOpacity(0.22),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: AppColors.secondary.withOpacity(0.4)),
         ),
@@ -46,7 +43,7 @@ class _StreakFreezeBadgeState extends State<StreakFreezeBadge> {
             const SizedBox(width: 4),
             Text(
               '$_count/${StreakStorage.maxFreezes}',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.secondary,
                 fontSize: 11,
                 fontWeight: FontWeight.w700,

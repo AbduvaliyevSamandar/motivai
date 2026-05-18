@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
@@ -68,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen>
       final humanized = _humanize(auth.error);
       setState(() {
         _formError = humanized.isEmpty
-            ? 'Kirish amalga oshmadi. Qayta urinib ko\'ring.'
+            ? S.tr('Kirish amalga oshmadi. Qayta urinib ko\'ring.', 'Не удалось войти. Попробуйте снова.', 'Login failed. Try again.')
             : humanized;
       });
     }
@@ -77,20 +76,20 @@ class _LoginScreenState extends State<LoginScreen>
   /// Strip the leading "Exception: " or noise so the user sees a clean
   /// one-liner instead of stack-trace fragments.
   String _humanize(String? raw) {
-    if (raw == null || raw.isEmpty) return 'Xato yuz berdi. Qayta urinib ko\'ring.';
+    if (raw == null || raw.isEmpty) return S.tr('Xato yuz berdi. Qayta urinib ko\'ring.', 'Произошла ошибка. Попробуйте ещё раз.', 'An error occurred. Please try again.');
     var msg = raw;
     if (msg.startsWith('Exception:')) msg = msg.substring(10).trim();
-    if (msg.contains('Tarmoq xatosi')) {
-      return 'Internet aloqasini tekshiring va qayta urinib ko\'ring';
+    if (msg.contains(S.tr('Tarmoq xatosi', 'Ошибка сети', 'Network error'))) {
+      return S.tr('Internet aloqasini tekshiring va qayta urinib ko\'ring', 'Проверьте интернет и попробуйте снова', 'Check your internet and try again');
     }
     if (msg.contains('Invalid email or password')) {
-      return 'Email yoki parol noto\'g\'ri';
+      return S.tr('Email yoki parol noto\'g\'ri', 'Неверный email или пароль', 'Invalid email or password');
     }
-    if (msg.contains('Email tasdiqlanmagan')) {
-      return 'Bu akkaunt tasdiqlanmagan. "Parolni unutdingizmi?" tugmasini bosing';
+    if (msg.contains(S.tr('Email tasdiqlanmagan', 'Email не подтверждён', 'Email not verified'))) {
+      return S.tr('Bu akkaunt tasdiqlanmagan. "Parolni unutdingizmi?" tugmasini bosing', 'Аккаунт не подтверждён. Нажмите "Забыли пароль?"', 'Account unverified. Tap "Forgot password?"');
     }
     if (msg.contains('Account deactivated')) {
-      return 'Hisob bloklangan';
+      return S.get('account_locked');
     }
     return msg;
   }
@@ -100,8 +99,6 @@ class _LoginScreenState extends State<LoginScreen>
     return Scaffold(
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 24),
           SafeArea(
             child: FadeTransition(
               opacity: _fade,
@@ -122,21 +119,20 @@ class _LoginScreenState extends State<LoginScreen>
                           height: 72,
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.08),
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color: Colors.white.withOpacity(0.2),
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color:
-                                    AppColors.primary.withOpacity(0.3),
-                                blurRadius: 24,
-                                spreadRadius: 2,
+                                color: Colors.black.withOpacity(0.04),
+                                blurRadius: 4,
+                                offset: const Offset(0, 1),
                               ),
                             ],
                           ),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(10),
                             child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: Image.asset(
@@ -149,25 +145,19 @@ class _LoginScreenState extends State<LoginScreen>
 
                         const SizedBox(height: D.sp24),
 
-                        ShaderMask(
-                          shaderCallback: (b) => LinearGradient(
-                            colors: AppColors.titleGradient,
-                          ).createShader(b),
-                          blendMode: BlendMode.srcIn,
-                          child: Text(
-                            'Xush kelibsiz',
-                            style: GoogleFonts.poppins(
+                        Text(
+                            S.get('welcome'),
+                            style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -1,
-                              color: Colors.white,
+                              color: AppColors.txt,
                             ),
                           ),
-                        ),
                         const SizedBox(height: 6),
                         Text(
                           S.get('motto'),
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 13,
                             height: 1.4,
@@ -229,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen>
                             onPressed: _forgotPassword,
                             child: Text(
                               S.get('forgot_pass'),
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: AppColors.secondary,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
@@ -275,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen>
                           children: [
                             Text(
                               S.get('no_account'),
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: AppColors.sub,
                                 fontSize: 13,
                               ),
@@ -302,21 +292,14 @@ class _LoginScreenState extends State<LoginScreen>
                                       const Duration(milliseconds: 400),
                                 ),
                               ),
-                              child: ShaderMask(
-                                shaderCallback: (b) =>
-                                    LinearGradient(
-                                        colors: AppColors.gradCosmic)
-                                        .createShader(b),
-                                blendMode: BlendMode.srcIn,
-                                child: Text(
+                              child: Text(
                                   S.get('register'),
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: AppColors.txt,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                              ),
                             ),
                           ],
                         ),
@@ -341,9 +324,7 @@ class _LoginScreenState extends State<LoginScreen>
           child: Container(
             height: 1,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.transparent, AppColors.border],
-              ),
+              color: Colors.transparent,
             ),
           ),
         ),
@@ -351,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen>
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             S.get('or'),
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 11,
               fontWeight: FontWeight.w500,
@@ -363,9 +344,7 @@ class _LoginScreenState extends State<LoginScreen>
           child: Container(
             height: 1,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [AppColors.border, Colors.transparent],
-              ),
+              color: AppColors.border,
             ),
           ),
         ),
@@ -381,19 +360,19 @@ class _LoginScreenState extends State<LoginScreen>
   }) {
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(10),
       child: InkWell(
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         child: Container(
           width: double.infinity,
           height: 54,
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(color: AppColors.border, width: 1.2),
           ),
           child: Row(
@@ -417,7 +396,7 @@ class _LoginScreenState extends State<LoginScreen>
               const SizedBox(width: 12),
               Text(
                 label,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -448,7 +427,7 @@ class _LoginScreenState extends State<LoginScreen>
           prefixIcon: LucideIcons.mail,
           keyboardType: TextInputType.emailAddress,
         ),
-        actionLabel: 'Kod yuborish',
+        actionLabel: S.tr('Kod yuborish', 'Отправить код', 'Send code'),
         onAction: () {
           if (emailCtrl.text.trim().isEmpty) {
             Navigator.pop(ctx);
@@ -470,7 +449,7 @@ class _LoginScreenState extends State<LoginScreen>
       context,
       email: email,
       onResend: () => auth.sendOtp(email, purpose: 'reset'),
-      title: 'Parolni tiklash',
+      title: S.get('reset_pass_btn'),
       purpose: 'reset',
     );
     if (code == null || code.length != 6 || !mounted) return;
@@ -484,15 +463,15 @@ class _LoginScreenState extends State<LoginScreen>
       builder: (ctx) => _AuthSheet(
         icon: LucideIcons.key,
         accent: AppColors.success,
-        title: 'Yangi parol',
-        subtitle: 'Kamida 6 belgi',
+        title: S.get('new_pass_label'),
+        subtitle: S.get('min6_char'),
         child: GlassTextField(
           controller: newPassCtrl,
-          label: 'Yangi parol',
+          label: S.get('new_pass_label'),
           prefixIcon: LucideIcons.lock,
           obscureText: true,
         ),
-        actionLabel: 'Saqlash',
+        actionLabel: S.get('save'),
         onAction: () {
           if (newPassCtrl.text.length < 6) return;
           Navigator.pop(ctx, newPassCtrl.text);
@@ -508,7 +487,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
     if (!mounted) return;
     if (ok) {
-      _showSnack('Parol yangilandi! Endi kiring.', isError: false);
+      _showSnack(S.tr('Parol yangilandi! Endi kiring.', 'Пароль обновлён! Войдите.', 'Password updated! Please sign in.'), isError: false);
     } else {
       _showSnack(auth.error ?? 'Xatolik', isError: true);
     }
@@ -521,14 +500,14 @@ class _LoginScreenState extends State<LoginScreen>
     if (idToken == null) return;
     final ok = await auth.loginWithGoogleIdToken(idToken);
     if (!ok && mounted) {
-      _showSnack(auth.error ?? 'Google kirish xatosi', isError: true);
+      _showSnack(auth.error ?? S.tr('Google kirish xatosi', 'Ошибка входа Google', 'Google sign-in error'), isError: true);
     }
   }
 
   void _showSnack(String msg, {required bool isError}) {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(msg, style: GoogleFonts.poppins()),
+      content: Text(msg, style: TextStyle()),
       backgroundColor: isError ? AppColors.danger : AppColors.success,
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(
@@ -563,7 +542,7 @@ class _AuthSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(16)),
+            const BorderRadius.vertical(top: Radius.circular(10)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -590,18 +569,14 @@ class _AuthSheet extends StatelessWidget {
             width: 72,
             height: 72,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  accent.withOpacity(0.25),
-                  accent.withOpacity(0.05),
-                ],
-              ),
-              borderRadius: BorderRadius.circular(16),
+              color: accent.withOpacity(0.25),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: accent.withOpacity(0.4)),
               boxShadow: [
                 BoxShadow(
-                  color: accent.withOpacity(0.3),
-                  blurRadius: 20,
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
@@ -610,7 +585,7 @@ class _AuthSheet extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.txt,
               fontSize: 24,
               fontWeight: FontWeight.w700,
@@ -620,7 +595,7 @@ class _AuthSheet extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             subtitle,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 13,
               height: 1.4,
@@ -664,7 +639,7 @@ class _ErrorBanner extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 13,
                 height: 1.5,

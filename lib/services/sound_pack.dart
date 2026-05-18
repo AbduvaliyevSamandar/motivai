@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/strings.dart';
 
 /// Notification sound/vibration style. Since we can't ship custom audio
 /// assets at runtime, each pack tunes the built-in channel: priority,
@@ -39,7 +40,7 @@ class SoundPackStore {
         return (
           name: 'Chime',
           emoji: '\u{1F514}',
-          desc: 'Standart tovush, oddiy eslatma',
+          desc: S.tr('Standart tovush, oddiy eslatma', 'Стандартный звук, обычное напоминание', 'Standard sound, regular reminder'),
           channel: 'motivai_default'
         );
       case SoundPack.calm:

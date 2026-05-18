@@ -11,13 +11,24 @@ from app.db.database import (
 )
 from app.api.router import api_router
 
+import logging
+log = logging.getLogger("startup")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await connect_db()
-    await cleanup_unverified_users()
-    await merge_duplicate_emails()
+    # Migrations are best-effort: never block startup on them.
+    for step in (cleanup_unverified_users, merge_duplicate_emails):
+        try:
+            await step()
+        except Exception as e:
+            log.warning("startup migration %s failed: %s", step.__name__, e)
     yield
-    await close_db()
+    try:
+        await close_db()
+    except Exception:
+        pass
 
 app = FastAPI(
     title="MotivAI API",
@@ -42,7 +53,16 @@ async def root():
 
 @app.get("/health")
 async def health():
-    return {"status": "healthy"}
+    from app.db.database import db as _db
+    return {
+        "status": "healthy",
+        "db": "mock" if _db.is_mock else "mongodb",
+    }
+
+
+@app.get("/api/v1/health")
+async def health_v1():
+    return await health()
 
 if __name__ == "__main__":
     import uvicorn

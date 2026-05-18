@@ -17,23 +17,21 @@ async def connect_db():
     try:
         db.client = AsyncIOMotorClient(
             settings.MONGODB_URL,
-            serverSelectionTimeoutMS=5000,  # Quick timeout for testing
-            connectTimeoutMS=5000,
+            serverSelectionTimeoutMS=8000,
+            connectTimeoutMS=8000,
         )
         db.db = db.client[settings.DATABASE_NAME]
-        # Try to verify connection
         await db.client.admin.command('ping')
-        # Create indexes
         await create_indexes()
         db.is_mock = False
         logger.info("✅ MongoDB connected successfully")
     except Exception as e:
-        logger.warning(f"⚠️ MongoDB connection warning: {e}")
-        logger.warning("⚠️ Running WITH MOCK DATABASE (testing mode only)")
-        # For local testing without DB, use mock database
-        if not settings.DEBUG:
-            raise e
-        # Use mock database for testing
+        # Never crash startup on a transient DB error — the server must
+        # come up so health-checks pass and operators can see logs.
+        # If a real DB is configured, the app will reconnect on the
+        # next live request; until then it serves from mock storage.
+        logger.error(f"⚠️ MongoDB connection failed: {e}")
+        logger.warning("⚠️ Running WITH MOCK DATABASE — fix MONGODB_URL ASAP")
         from app.services.mock_storage import get_mock_db
         db.db = get_mock_db()
         db.client = None

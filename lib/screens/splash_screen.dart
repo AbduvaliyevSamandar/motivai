@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 import '../config/strings.dart';
@@ -93,8 +92,6 @@ class _SplashScreenState extends State<SplashScreen>
               ),
             ),
           ),
-          const ParticleField(
-              count: 40, color: Color(0x66FFFFFF)),
           SafeArea(
             child: Column(
               children: [
@@ -113,28 +110,27 @@ class _SplashScreenState extends State<SplashScreen>
                           progress: _progressCtrl.value,
                           size: 180,
                           strokeWidth: 6,
-                          gradientColors: AppColors.gradAurora,
+                          gradientColors: [AppColors.primary],
                           center: Container(
                             width: 140,
                             height: 140,
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.04),
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                 color: Colors.white.withOpacity(0.2),
                                 width: 1.5,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary
-                                      .withOpacity(0.4),
-                                  blurRadius: 40,
-                                  spreadRadius: 6,
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 1),
                                 ),
                               ],
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(10),
                               child: Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Image.asset(
@@ -156,26 +152,16 @@ class _SplashScreenState extends State<SplashScreen>
                   position: _textSlide,
                   child: FadeTransition(
                     opacity: _textFade,
-                    child: ShaderMask(
-                      shaderCallback: (b) => const LinearGradient(
-                        colors: [
-                          Color(0xFFFFFFFF),
-                          Color(0xFFE0D4FB),
-                          Color(0xFF9CE4FF),
-                        ],
-                      ).createShader(b),
-                      blendMode: BlendMode.srcIn,
-                      child: Text(
+                    child: Text(
                         'MotivAI',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -2,
-                          color: Colors.white,
+                          color: AppColors.txt,
                           height: 1,
                         ),
                       ),
-                    ),
                   ),
                 ),
 
@@ -189,7 +175,7 @@ class _SplashScreenState extends State<SplashScreen>
                       padding: const EdgeInsets.symmetric(horizontal: 40),
                       child: Text(
                         S.get('motto'),
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.sub,
                           fontSize: 13,
                           fontWeight: FontWeight.w400,
@@ -245,9 +231,7 @@ class _LoadingBar extends StatelessWidget {
                   child: Container(
                     height: 4,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: AppColors.gradAurora,
-                      ),
+                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(8),
                       boxShadow: [
                         BoxShadow(
@@ -269,7 +253,7 @@ class _LoadingBar extends StatelessWidget {
             final pct = (ctrl.value * 100).floor();
             return Text(
               '$pct%',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 color: Colors.white.withOpacity(0.7),

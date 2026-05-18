@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
@@ -32,23 +31,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Color _strengthColor = AppColors.border;
   String? _formError;
 
-  static const _subjects = [
-    ('Matematika', LucideIcons.calculator),
-    ('Fizika', LucideIcons.flaskConical),
-    ('Dasturlash', LucideIcons.code2),
-    ('Ingliz tili', LucideIcons.languages),
-    ('Tarix', LucideIcons.scroll),
-    ('Kimyo', LucideIcons.flaskConical),
-    ('Biologiya', LucideIcons.leaf),
-    ('Iqtisodiyot', LucideIcons.trendingUp),
-  ];
+  // NOT const — getters re-evaluate S.tr on each build so labels stay
+  // in sync with the active language.
+  List<(String, IconData)> get _subjects => [
+        (S.tr('Matematika', 'Математика', 'Mathematics'), LucideIcons.calculator),
+        (S.tr('Fizika', 'Физика', 'Physics'), LucideIcons.flaskConical),
+        (S.tr('Dasturlash', 'Программирование', 'Programming'), LucideIcons.code2),
+        (S.tr('Ingliz tili', 'Английский язык', 'English'), LucideIcons.languages),
+        (S.tr('Tarix', 'История', 'History'), LucideIcons.scroll),
+        (S.tr('Kimyo', 'Химия', 'Chemistry'), LucideIcons.flaskConical),
+        (S.tr('Biologiya', 'Биология', 'Biology'), LucideIcons.leaf),
+        (S.tr('Iqtisodiyot', 'Экономика', 'Economics'), LucideIcons.trendingUp),
+      ];
 
-  static const _diffs = [
-    ('easy', 'easy', Color(0xFF34D399)),
-    ('medium', 'medium', Color(0xFFFCD34D)),
-    ('hard', 'hard', Color(0xFFF87171)),
-    ('expert', 'expert', Color(0xFFA855F7)),
-  ];
+  List<(String, String, Color)> get _diffs => [
+        ('easy', S.get('easy'), const Color(0xFF34D399)),
+        ('medium', S.get('medium'), const Color(0xFFFCD34D)),
+        ('hard', S.get('hard'), const Color(0xFFF87171)),
+        ('expert', S.get('expert'), const Color(0xFFA855F7)),
+      ];
 
   @override
   void dispose() {
@@ -69,16 +70,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
     String label;
     Color color;
     if (s < 0.3) {
-      label = 'Zaif';
+      label = S.tr('Zaif', 'Слабый', 'Weak');
       color = AppColors.danger;
     } else if (s < 0.6) {
-      label = "O'rtacha";
+      label = S.tr("O'rtacha", 'Средний', 'Medium');
       color = AppColors.accent;
     } else if (s < 0.85) {
-      label = 'Yaxshi';
+      label = S.tr('Yaxshi', 'Хороший', 'Good');
       color = AppColors.info;
     } else {
-      label = 'Kuchli';
+      label = S.tr('Kuchli', 'Сильный', 'Strong');
       color = AppColors.success;
     }
     setState(() {
@@ -108,7 +109,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final code = await showOtpSheet(
       context,
       email: email,
-      title: 'Tasdiq kodi',
+      title: S.get('verify_code'),
     );
     if (code == null || code.length != 6 || !mounted) return;
 
@@ -134,26 +135,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _formError = _humanize(raw));
   }
 
+  String _translateSubject(String name) {
+    switch (name) {
+      case 'Matematika': return S.tr('Matematika', 'Математика', 'Mathematics');
+      case 'Fizika': return S.tr('Fizika', 'Физика', 'Physics');
+      case 'Dasturlash': return S.tr('Dasturlash', 'Программирование', 'Programming');
+      case 'Ingliz tili': return S.tr('Ingliz tili', 'Английский', 'English');
+      case 'Tarix': return S.tr('Tarix', 'История', 'History');
+      case 'Kimyo': return S.tr('Kimyo', 'Химия', 'Chemistry');
+      case 'Biologiya': return S.tr('Biologiya', 'Биология', 'Biology');
+      case 'Iqtisodiyot': return S.tr('Iqtisodiyot', 'Экономика', 'Economics');
+      default: return name;
+    }
+  }
+
   String _humanize(String? raw) {
     if (raw == null || raw.isEmpty) {
-      return 'Xato yuz berdi. Qayta urinib ko\'ring.';
+      return S.tr('Xato yuz berdi. Qayta urinib ko\'ring.', 'Произошла ошибка. Попробуйте ещё раз.', 'An error occurred. Please try again.');
     }
     var msg = raw;
     if (msg.startsWith('Exception:')) msg = msg.substring(10).trim();
     if (msg.contains('Tarmoq xatosi')) {
-      return 'Internet aloqasini tekshiring va qayta urinib ko\'ring';
+      return S.tr('Internet aloqasini tekshiring va qayta urinib ko\'ring', 'Проверьте интернет и попробуйте снова', 'Check your internet and try again');
     }
     if (msg.contains('Email already registered')) {
-      return 'Bu email allaqachon ro\'yxatdan o\'tgan';
+      return S.tr('Bu email allaqachon ro\'yxatdan o\'tgan', 'Этот email уже зарегистрирован', 'Email already registered');
     }
     if (msg.contains('Invalid or expired code')) {
-      return 'Kod noto\'g\'ri yoki muddati o\'tgan. Yangi kod oling.';
+      return S.tr('Kod noto\'g\'ri yoki muddati o\'tgan. Yangi kod oling.', 'Неверный или истёкший код. Получите новый.', 'Invalid or expired code. Get a new one.');
     }
     if (msg.contains('Vaqtinchalik') || msg.contains('fake email')) {
-      return 'Bu email vaqtinchalik/soxta. Real email kiriting.';
+      return S.get('fake_email');
     }
     if (msg.contains('Too many requests')) {
-      return 'Juda ko\'p urinish — biroz kuting va qayta urining';
+      return S.tr('Juda ko\'p urinish — biroz kuting va qayta urining', 'Слишком много попыток — подождите и попробуйте снова', 'Too many attempts — wait and try again');
     }
     return msg;
   }
@@ -178,8 +193,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 20),
           SafeArea(
             child: Column(
               children: [
@@ -196,21 +209,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 8),
-                      ShaderMask(
-                        shaderCallback: (b) => LinearGradient(
-                          colors: AppColors.titleGradient,
-                        ).createShader(b),
-                        blendMode: BlendMode.srcIn,
-                        child: Text(
+                      Text(
                           S.get('register'),
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColors.txt,
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -321,7 +328,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 const SizedBox(width: 12),
                                 Text(
                                   _strengthLabel,
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                     color: _strengthColor,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w700,
@@ -354,18 +361,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       padding: const EdgeInsets
                                           .symmetric(vertical: 12),
                                       decoration: BoxDecoration(
-                                        gradient: isActive
-                                            ? LinearGradient(
-                                                colors: [
-                                                  d.$3.withOpacity(
-                                                      0.25),
-                                                  d.$3.withOpacity(
-                                                      0.08),
-                                                ],
-                                              )
-                                            : null,
                                         color: isActive
-                                            ? null
+                                            ? d.$3.withOpacity(0.15)
                                             : AppColors.card
                                                 .withOpacity(0.5),
                                         borderRadius:
@@ -380,13 +377,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         boxShadow: isActive
                                             ? [
                                                 BoxShadow(
-                                                  color: d.$3
-                                                      .withOpacity(
-                                                          0.3),
-                                                  blurRadius: 14,
-                                                  offset:
-                                                      const Offset(
-                                                          0, 4),
+                                                  color: Colors.black.withOpacity(0.04),
+                                                  blurRadius: 4,
+                                                  offset: const Offset(0, 1),
                                                 ),
                                               ]
                                             : null,
@@ -413,8 +406,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           const SizedBox(height: 6),
                                           Text(
                                             S.get(d.$2),
-                                            style: GoogleFonts
-                                                .poppins(
+                                            style: TextStyle(
                                               color: isActive
                                                   ? d.$3
                                                   : AppColors.sub,
@@ -445,7 +437,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               final sel =
                                   _selected.contains(s.$1);
                               return NebulaChip(
-                                label: s.$1,
+                                label: _translateSubject(s.$1),
                                 icon: s.$2,
                                 selected: sel,
                                 onTap: () => setState(() => sel
@@ -483,7 +475,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               children: [
                                 Text(
                                   S.get('has_account'),
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                     color: AppColors.sub,
                                     fontSize: 13,
                                   ),
@@ -492,23 +484,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 GestureDetector(
                                   onTap: () =>
                                       Navigator.pop(context),
-                                  child: ShaderMask(
-                                    shaderCallback: (b) =>
-                                        LinearGradient(
-                                            colors: AppColors
-                                                .gradCosmic)
-                                            .createShader(b),
-                                    blendMode: BlendMode.srcIn,
-                                    child: Text(
+                                  child: Text(
                                       S.get('login'),
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.white,
+                                      style: TextStyle(
+                                        color: AppColors.txt,
                                         fontSize: 13,
                                         fontWeight:
                                             FontWeight.w700,
                                       ),
                                     ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -534,11 +518,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           width: 4,
           height: 20,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: AppColors.gradCosmic,
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            color: AppColors.primary,
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
@@ -551,7 +531,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         const SizedBox(width: 10),
         Text(
           title,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.txt,
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -574,7 +554,7 @@ class _OrDivider extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: Text(
             'yoki',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
                 color: AppColors.sub, fontSize: 11),
           ),
         ),
@@ -594,21 +574,21 @@ class _GoogleButton extends StatelessWidget {
       width: double.infinity,
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap,
           child: Container(
             height: 52,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(color: AppColors.border),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
-                  blurRadius: 14,
-                  offset: const Offset(0, 4),
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
@@ -618,8 +598,8 @@ class _GoogleButton extends StatelessWidget {
                 const GoogleLogo(size: 20),
                 const SizedBox(width: 12),
                 Text(
-                  'Google bilan kirish',
-                  style: GoogleFonts.poppins(
+                  S.get('login_google_btn'),
+                  style: TextStyle(
                     color: const Color(0xFF1F2937),
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -657,7 +637,7 @@ class _RegErrorBanner extends StatelessWidget {
           Expanded(
             child: Text(
               message,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 13,
                 height: 1.5,

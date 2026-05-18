@@ -1,16 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
-import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/task_provider.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/notification_provider.dart';
+import '../../services/user_data_sync.dart';
 import 'dashboard_screen.dart';
 import 'leaderboard_screen.dart';
 import 'progress_screen.dart';
@@ -23,30 +22,53 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _ShellState();
 }
 
-class _ShellState extends State<MainShell> {
+class _ShellState extends State<MainShell> with WidgetsBindingObserver {
   int _idx = 0;
   bool _inited = false;
   DateTime? _lastBack;
   Timer? _notifTicker;
 
-  final _screens = const [
-    DashboardScreen(),
-    ChatScreen(),
-    LeaderboardScreen(),
-    ProgressScreen(),
-    ProfileScreen(),
-  ];
+  // NOT const — using const here would canonicalize widget instances and
+  // cause the framework to skip rebuilds of the subtree when language
+  // changes, leaving translated text frozen on whichever lang was active
+  // when the const was first allocated.
+  List<Widget> _buildScreens() => [
+        DashboardScreen(),
+        ChatScreen(),
+        LeaderboardScreen(),
+        ProgressScreen(),
+        ProfileScreen(),
+      ];
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) => _init());
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _notifTicker?.cancel();
+    // Best-effort flush so anything pending hits the server before we go.
+    // ignore: discarded_futures
+    UserDataSync.flush();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached ||
+        state == AppLifecycleState.inactive) {
+      // Push any pending local-only data to the server before the OS
+      // potentially kills us. Fire-and-forget; we don't block the
+      // lifecycle callback.
+      // ignore: discarded_futures
+      UserDataSync.flush();
+    }
   }
 
   Future<void> _init() async {
@@ -86,7 +108,7 @@ class _ShellState extends State<MainShell> {
       SnackBar(
         content: Text(
           S.get('back_exit'),
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
+          style: TextStyle(fontWeight: FontWeight.w500),
         ),
         duration: const Duration(seconds: 2),
         backgroundColor: AppColors.card,
@@ -112,7 +134,7 @@ class _ShellState extends State<MainShell> {
       },
       child: Scaffold(
         extendBody: true,
-        body: IndexedStack(index: _idx, children: _screens),
+        body: IndexedStack(index: _idx, children: _buildScreens()),
         bottomNavigationBar: _FloatingGlassNav(
           index: _idx,
           onChanged: (i) {
@@ -172,7 +194,7 @@ class _FloatingGlassNav extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         S.get(label),
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           fontSize: 10,
                           fontWeight:
                               active ? FontWeight.w600 : FontWeight.w500,

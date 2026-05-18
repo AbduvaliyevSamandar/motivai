@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../config/strings.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -143,8 +144,8 @@ class NotificationProvider extends ChangeNotifier {
     if (remindAt.isAfter(DateTime.now())) {
       await NotificationService.instance.scheduleAt(
         id: NotificationService.taskReminderId(taskId),
-        title: 'Eslatma: $taskTitle',
-        body: '$reminderMinutes daqiqadan keyin boshlanadi',
+        title: '${S.get("reminder_prefix")}: $taskTitle',
+        body: '$reminderMinutes ${S.get("min_starts_in")}',
         at: remindAt,
         payload: taskId,
       );
@@ -170,14 +171,14 @@ class NotificationProvider extends ChangeNotifier {
     }
     await NotificationService.instance.show(
       id: NotificationService.taskOverdueId(taskId),
-      title: "Vazifa o'tkazib yuborildi",
+      title: S.get('task_skipped_msg'),
       body: taskTitle,
       payload: taskId,
     );
     add(AppNotif(
       id: 'o_${taskId}_${DateTime.now().millisecondsSinceEpoch}',
       type: AppNotifType.overdue,
-      title: "Vazifa o'tkazib yuborildi",
+      title: S.get('task_skipped_msg'),
       body: taskTitle,
       at: DateTime.now(),
       taskId: taskId,
@@ -193,8 +194,8 @@ class NotificationProvider extends ChangeNotifier {
     add(AppNotif(
       id: 'u_${taskId}_${DateTime.now().millisecondsSinceEpoch}',
       type: AppNotifType.reminder,
-      title: 'Yaqinlashmoqda: $taskTitle',
-      body: '$minutesUntil daqiqadan keyin boshlanadi',
+      title: '${S.get("upcoming_label")}: $taskTitle',
+      body: '$minutesUntil ${S.get("min_starts_in")}',
       at: DateTime.now(),
       taskId: taskId,
     ));

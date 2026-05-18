@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../config/colors.dart';
+import '../config/strings.dart';
 import '../models/models.dart';
 import 'nebula/nebula.dart';
 
@@ -24,8 +24,6 @@ class ProductivityScoreCard extends StatelessWidget {
 
     return GlassCard(
       padding: const EdgeInsets.all(16),
-      glowColors: [AppColors.accent, AppColors.primary],
-      glowIntensity: 0.2,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -34,8 +32,7 @@ class ProductivityScoreCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: AppColors.gradCosmic),
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
@@ -49,8 +46,8 @@ class ProductivityScoreCard extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text(
-                'Samaradorlik',
-                style: GoogleFonts.poppins(
+                S.tr('Samaradorlik', 'Продуктивность', 'Productivity'),
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -63,15 +60,10 @@ class ProductivityScoreCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              ShaderMask(
-                shaderCallback: (b) => LinearGradient(
-                        colors: AppColors.gradCosmic)
-                    .createShader(b),
-                blendMode: BlendMode.srcIn,
-                child: Text(
+              Text(
                   '$score',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: AppColors.txt,
                     fontSize: 32,
                     fontWeight: FontWeight.w800,
                     height: 1,
@@ -79,13 +71,12 @@ class ProductivityScoreCard extends StatelessWidget {
                   ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
-              ),
               const SizedBox(width: 6),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
                   '/ 100',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
@@ -99,7 +90,7 @@ class ProductivityScoreCard extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             _scoreLabel(score),
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 11,
               fontWeight: FontWeight.w500,
@@ -129,7 +120,7 @@ class ProductivityScoreCard extends StatelessWidget {
                   Expanded(
                     child: _miniStat(
                       '\u{1F4C5}',
-                      'Yaxshi kun',
+                      S.tr('Yaxshi kun', 'Лучший день', 'Best day'),
                       best,
                     ),
                   ),
@@ -139,7 +130,7 @@ class ProductivityScoreCard extends StatelessWidget {
                   Expanded(
                     child: _miniStat(
                       '\u{23F0}',
-                      'Yaxshi vaqt',
+                      S.tr('Yaxshi vaqt', 'Лучшее время', 'Best time'),
                       mostProductiveHour,
                     ),
                   ),
@@ -171,7 +162,7 @@ class ProductivityScoreCard extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
@@ -180,7 +171,7 @@ class ProductivityScoreCard extends StatelessWidget {
                 ),
                 Text(
                   value,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
@@ -209,10 +200,10 @@ class ProductivityScoreCard extends StatelessWidget {
   }
 
   String _scoreLabel(int score) {
-    if (score >= 85) return 'Ajoyib! Kuchli davom eting';
-    if (score >= 60) return 'Yaxshi natija';
-    if (score >= 30) return 'Yaxshi start — yanada ko\'paytiring';
-    return 'Endigina boshladik — her qadam muhim';
+    if (score >= 85) return S.tr('Ajoyib! Kuchli davom eting', 'Отлично! Так держать', 'Excellent! Keep it up');
+    if (score >= 60) return S.tr('Yaxshi natija', 'Хороший результат', 'Good result');
+    if (score >= 30) return S.tr('Yaxshi start — yanada ko\'paytiring', 'Хороший старт — увеличьте темп', 'Good start — pick up the pace');
+    return S.tr('Endigina boshladik — har qadam muhim', 'Только начали — каждый шаг важен', 'Just started — every step counts');
   }
 
   int _calculateScore() {
@@ -263,8 +254,14 @@ class ProductivityScoreCard extends StatelessWidget {
     }
     if (counts.isEmpty) return null;
     final best = counts.entries.reduce((a, b) => a.value > b.value ? a : b);
-    const names = {
-      1: 'Du', 2: 'Se', 3: 'Ch', 4: 'Pa', 5: 'Ju', 6: 'Sh', 7: 'Ya',
+    final names = {
+      1: S.tr('Du', 'Пн', 'Mon'),
+      2: S.tr('Se', 'Вт', 'Tue'),
+      3: S.tr('Ch', 'Ср', 'Wed'),
+      4: S.tr('Pa', 'Чт', 'Thu'),
+      5: S.tr('Ju', 'Пт', 'Fri'),
+      6: S.tr('Sh', 'Сб', 'Sat'),
+      7: S.tr('Ya', 'Вс', 'Sun'),
     };
     return names[best.key];
   }

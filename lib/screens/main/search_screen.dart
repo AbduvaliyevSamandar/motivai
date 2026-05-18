@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
@@ -84,7 +84,6 @@ class _SearchScreenState extends State<SearchScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
           SafeArea(
             child: Column(
               children: [
@@ -110,13 +109,13 @@ class _SearchScreenState extends State<SearchScreen> {
                             controller: _ctrl,
                             autofocus: true,
                             onChanged: (v) => setState(() => _query = v),
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               color: AppColors.txt,
                               fontSize: 13,
                             ),
                             decoration: InputDecoration(
-                              hintText: 'Qidirish...',
-                              hintStyle: GoogleFonts.poppins(
+                              hintText: S.tr('Qidirish...', 'Поиск...', 'Search...'),
+                              hintStyle: TextStyle(
                                 color: AppColors.hint,
                                 fontSize: 13,
                               ),
@@ -150,8 +149,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     child: Row(
                       children: [
                         Text(
-                          '$total ta natija',
-                          style: GoogleFonts.poppins(
+                          '$total ${S.get('results_count')}',
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -172,7 +171,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                   16, 0, 16, 80),
                               children: [
                                 if (matchedTasks.isNotEmpty)
-                                  _section('Vazifalar',
+                                  _section(S.get('tasks_label'),
                                       matchedTasks.length),
                                 ...matchedTasks.map((t) => _TaskHit(
                                       task: t,
@@ -181,30 +180,30 @@ class _SearchScreenState extends State<SearchScreen> {
                                     )),
                                 if (matchedHabits.isNotEmpty) ...[
                                   const SizedBox(height: 12),
-                                  _section('Odatlar',
+                                  _section(S.get('habits'),
                                       matchedHabits.length),
                                 ],
                                 ...matchedHabits.map(
                                     (h) => _SimpleHit(
                                           title: h.title,
                                           subtitle:
-                                              '${h.currentStreak()} kun streak',
+                                              '${h.currentStreak()} ${S.get("day_streak")}',
                                           emoji: h.emoji,
                                         )),
                                 if (matchedDecks.isNotEmpty) ...[
                                   const SizedBox(height: 12),
-                                  _section('Flashcards',
+                                  _section(S.get('flashcards'),
                                       matchedDecks.length),
                                 ],
                                 ...matchedDecks.map(
                                     (d) => _SimpleHit(
                                           title: d.name,
-                                          subtitle: 'Flashcard deck',
+                                          subtitle: S.get('flashcard_label'),
                                           emoji: d.emoji,
                                         )),
                                 if (matchedCards.isNotEmpty) ...[
                                   const SizedBox(height: 12),
-                                  _section('Kartalar',
+                                  _section(S.tr('Kartalar', 'Карточки', 'Cards'),
                                       matchedCards.length),
                                 ],
                                 ...matchedCards.map(
@@ -231,7 +230,7 @@ class _SearchScreenState extends State<SearchScreen> {
         children: [
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -241,7 +240,7 @@ class _SearchScreenState extends State<SearchScreen> {
           const SizedBox(width: 6),
           Text(
             '($count)',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.primary,
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -264,33 +263,33 @@ class _SearchScreenState extends State<SearchScreen> {
               width: 64,
               height: 64,
               decoration: BoxDecoration(
-                color: AppColors.primary.withOpacity(0.12),
+                color: AppColors.primary.withOpacity(0.10),
                 shape: BoxShape.circle,
               ),
               child: Center(
                 child: Icon(
                   LucideIcons.search,
                   color: AppColors.primary,
-                  size: 28,
+                  size: 24,
                 ),
               ),
             ),
             const SizedBox(height: 18),
             Text(
-              'Nimani qidiryapsiz?',
-              style: GoogleFonts.poppins(
+              S.get('search_what'),
+              style: TextStyle(
                 color: AppColors.txt,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              'Vazifa, odat yoki flashcard nomini yozing',
+              S.get('search_hint'),
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.sub,
-                fontSize: 13,
+                fontSize: 12,
               ),
             ),
           ],
@@ -304,13 +303,13 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('\u{1F614}', style: TextStyle(fontSize: 32)),
+          const Text('\u{1F614}', style: TextStyle(fontSize: 28)),
           const SizedBox(height: 10),
           Text(
-            'Hech narsa topilmadi',
-            style: GoogleFonts.poppins(
+            S.get('nothing_found'),
+            style: TextStyle(
               color: AppColors.sub,
-              fontSize: 13,
+              fontSize: 12,
             ),
           ),
         ],
@@ -366,7 +365,7 @@ class _TaskHit extends StatelessWidget {
                     children: [
                       Text(
                         task.title,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -381,7 +380,7 @@ class _TaskHit extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           task.description,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 11,
                           ),
@@ -435,7 +434,7 @@ class _SimpleHit extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
@@ -446,7 +445,7 @@ class _SimpleHit extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.sub,
                       fontSize: 11,
                     ),

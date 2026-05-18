@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../config/colors.dart';
@@ -46,7 +46,6 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: GlassCard(
         onTap: () => _openSheet(context),
-        glowColors: [AppColors.accent, AppColors.pink],
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
@@ -54,10 +53,7 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  AppColors.accent.withOpacity(0.35),
-                  AppColors.pink.withOpacity(0.2),
-                ]),
+                color: AppColors.accent.withOpacity(0.35),
                 shape: BoxShape.circle,
                 border: Border.all(color: AppColors.accent.withOpacity(0.4)),
               ),
@@ -74,8 +70,8 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    done ? 'Bugungi maqsad' : 'Kun boshi rituali',
-                    style: GoogleFonts.poppins(
+                    done ? S.get('today_goal_short') : S.get('morning_ritual'),
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -88,8 +84,8 @@ class _MorningRitualCardState extends State<MorningRitualCard> {
                         ? (_today!.mainGoal.isEmpty
                             ? '${_today!.gratitude}'
                             : _today!.mainGoal)
-                        : '1 daqiqa — kayfiyat, maqsad, minnatdorlik',
-                    style: GoogleFonts.poppins(
+                        : S.get('morning_minute'),
+                    style: TextStyle(
                       color: AppColors.sub,
                       fontSize: 11,
                     ),
@@ -176,7 +172,7 @@ class _RitualSheetState extends State<_RitualSheet> {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: AppColors.success,
       behavior: SnackBarBehavior.floating,
-      content: Text('Ritual saqlandi', style: GoogleFonts.poppins()),
+      content: Text(S.get('ritual_saved'), style: TextStyle()),
     ));
   }
 
@@ -186,7 +182,7 @@ class _RitualSheetState extends State<_RitualSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(16)),
+            const BorderRadius.vertical(top: Radius.circular(10)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -210,31 +206,25 @@ class _RitualSheetState extends State<_RitualSheet> {
               ),
             ),
             const SizedBox(height: 18),
-            ShaderMask(
-              shaderCallback: (b) => LinearGradient(
-                colors: AppColors.titleGradient,
-              ).createShader(b),
-              blendMode: BlendMode.srcIn,
-              child: Text(
-                'Kun boshi rituali',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
+            Text(
+                S.get('morning_ritual'),
+                style: TextStyle(
+                  color: AppColors.txt,
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
               ),
-            ),
             const SizedBox(height: 4),
             Text(
-              '1 daqiqa — o\'z kuningizni asoslang',
-              style: GoogleFonts.poppins(
+              S.get('ai_one_minute'),
+              style: TextStyle(
                 color: AppColors.sub,
                 fontSize: 11,
               ),
             ),
             const SizedBox(height: 20),
-            _label('1. Kayfiyatingiz qanday?'),
+            _label(MorningRitual.promptMood),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -251,13 +241,7 @@ class _RitualSheetState extends State<_RitualSheet> {
                     width: 54,
                     height: 54,
                     decoration: BoxDecoration(
-                      gradient: selected
-                          ? LinearGradient(colors: [
-                              AppColors.primary.withOpacity(0.35),
-                              AppColors.secondary.withOpacity(0.2),
-                            ])
-                          : null,
-                      color: selected ? null : AppColors.bg,
+                      color: selected ? AppColors.primary.withOpacity(0.35) : AppColors.bg,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: selected
@@ -278,24 +262,24 @@ class _RitualSheetState extends State<_RitualSheet> {
               }),
             ),
             const SizedBox(height: 20),
-            _label('2. Bugungi asosiy maqsadingiz?'),
+            _label(MorningRitual.promptGoal),
             const SizedBox(height: 10),
             GlassTextField(
               controller: _goal,
-              label: 'Masalan: 3 vazifani tugatish',
+              label: S.get('task_remind_examples'),
               prefixIcon: LucideIcons.flag,
             ),
             const SizedBox(height: 16),
-            _label('3. Nima uchun minnatdorsiz?'),
+            _label(MorningRitual.promptGratitude),
             const SizedBox(height: 10),
             GlassTextField(
               controller: _grat,
-              label: 'Bir narsa yozing…',
+              label: S.get('type_something'),
               prefixIcon: Iconsax.heart,
             ),
             const SizedBox(height: 24),
             NebulaButton(
-              label: 'Saqlash',
+              label: S.get('save'),
               icon: LucideIcons.check,
               onTap: _save,
             ),
@@ -310,7 +294,7 @@ class _RitualSheetState extends State<_RitualSheet> {
         alignment: Alignment.centerLeft,
         child: Text(
           t,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.sub,
             fontSize: 11,
             fontWeight: FontWeight.w600,

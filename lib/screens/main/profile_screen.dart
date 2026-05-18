@@ -2,7 +2,6 @@ import 'dart:io' show File;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,9 +9,9 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:hugeicons/hugeicons.dart';
 import '../../config/colors.dart';
-import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../config/theme_presets.dart';
+import '../../services/smart_reminder.dart';
 import '../../services/sound_pack.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
@@ -72,7 +71,7 @@ class _ProfileState extends State<ProfileScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(S.get('done'), style: GoogleFonts.poppins()),
+              content: Text(S.get('done'), style: TextStyle()),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
             ),
@@ -96,8 +95,6 @@ class _ProfileState extends State<ProfileScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 22),
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             slivers: [
@@ -112,7 +109,7 @@ class _ProfileState extends State<ProfileScreen> {
                           progress: ratio.clamp(0.0, 1.0),
                           size: 140,
                           strokeWidth: 8,
-                          gradientColors: AppColors.gradCosmic,
+                          gradientColors: [AppColors.primary],
                           center: GestureDetector(
                             onTap: _pickImage,
                             child: Stack(
@@ -125,8 +122,7 @@ class _ProfileState extends State<ProfileScreen> {
                                     width: 30,
                                     height: 30,
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: AppColors.gradCosmic),
+                                      color: AppColors.primary,
                                       shape: BoxShape.circle,
                                       border: Border.all(
                                           color: AppColors.bg,
@@ -151,25 +147,19 @@ class _ProfileState extends State<ProfileScreen> {
                           ),
                         ),
                         const SizedBox(height: 18),
-                        ShaderMask(
-                          shaderCallback: (b) => LinearGradient(
-                            colors: AppColors.titleGradient,
-                          ).createShader(b),
-                          blendMode: BlendMode.srcIn,
-                          child: Text(
+                        Text(
                             auth.name.isEmpty ? 'User' : auth.name,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
+                            style: TextStyle(
+                              color: AppColors.txt,
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.5,
                             ),
                           ),
-                        ),
                         const SizedBox(height: 4),
                         Text(
                           auth.email,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 13,
                           ),
@@ -179,11 +169,8 @@ class _ProfileState extends State<ProfileScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 14, vertical: 8),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(colors: [
-                              AppColors.primary.withOpacity(0.25),
-                              AppColors.secondary.withOpacity(0.15),
-                            ]),
-                            borderRadius: BorderRadius.circular(16),
+                            color: AppColors.primary.withOpacity(0.25),
+                            borderRadius: BorderRadius.circular(10),
                             border: Border.all(
                               color:
                                   AppColors.primary.withOpacity(0.4),
@@ -197,7 +184,7 @@ class _ProfileState extends State<ProfileScreen> {
                               const SizedBox(width: 6),
                               Text(
                                 '${S.get('level')} ${auth.level}',
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: AppColors.txt,
                                   fontSize: 13,
                                   fontWeight: FontWeight.w700,
@@ -214,21 +201,15 @@ class _ProfileState extends State<ProfileScreen> {
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              ShaderMask(
-                                shaderCallback: (b) => LinearGradient(
-                                        colors: AppColors.gradGold)
-                                    .createShader(b),
-                                blendMode: BlendMode.srcIn,
-                                child: Text(
+                              Text(
                                   '${auth.points} XP',
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: AppColors.txt,
                                     fontSize: 13,
                                     fontWeight: FontWeight.w700,
                                   ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
-                              ),
                             ],
                           ),
                         ),
@@ -305,12 +286,12 @@ class _ProfileState extends State<ProfileScreen> {
                           : LucideIcons.sun,
                       iconColor: AppColors.sub,
                       title: theme.auto
-                          ? 'Avto rejim'
+                          ? S.tr('Avto rejim', 'Авто режим', 'Auto mode')
                           : (theme.isDark
                               ? S.get('dark_mode')
                               : S.get('light_mode')),
                       subtitle: theme.auto
-                          ? 'Soatga qarab avtomatik'
+                          ? S.get('auto_theme_sub')
                           : null,
                       trailing: Switch.adaptive(
                         value: theme.isDark,
@@ -324,11 +305,12 @@ class _ProfileState extends State<ProfileScreen> {
                       ),
                     ),
                     _tile(
-                      icon: Iconsax.brush_1,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.brush_1_copy,
+                      iconColor: AppColors.info,
+                      emoji: '🌗',
                       title: S.get('auto_theme'),
                       subtitle:
-                          'Kechqurun dark, kunduzi light — avtomatik',
+                          S.get('auto_dark_light'),
                       trailing: Switch.adaptive(
                         value: theme.auto,
                         activeColor: AppColors.primary,
@@ -341,20 +323,23 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: LucideIcons.palette,
                       iconColor: AppColors.pink,
+                      emoji: '🎨',
                       title: S.get('theme_color'),
                       subtitle:
                           '${ThemePresets.current.emoji}  ${ThemePresets.current.name}',
                       onTap: _showThemePicker,
                     ),
                     _tile(
-                      icon: Iconsax.lock_1,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.lock_1_copy,
+                      iconColor: AppColors.success,
+                      emoji: '🔒',
                       title: S.get('change_pass'),
                       onTap: _showChangePassword,
                     ),
                     _tile(
-                      icon: Iconsax.card,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.card_copy,
+                      iconColor: AppColors.info,
+                      emoji: '📇',
                       title: S.get('flashcards'),
                       subtitle: S.get('flashcards'),
                       onTap: () {
@@ -368,10 +353,11 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.activity,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.activity_copy,
+                      iconColor: AppColors.success,
+                      emoji: '🌱',
                       title: S.get('habits'),
-                      subtitle: 'Streak orqali o\'z-o\'zingizni rivojlantiring',
+                      subtitle: S.get('goal_streak'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -383,8 +369,9 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.magicpen,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.magicpen_copy,
+                      iconColor: AppColors.pink,
+                      emoji: '📊',
                       title: S.get('wrapped'),
                       subtitle: S.get('wrapped'),
                       onTap: () {
@@ -401,10 +388,11 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.magicpen,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.magicpen_copy,
+                      iconColor: AppColors.primary,
+                      emoji: '🧠',
                       title: S.get('smart_plan'),
-                      subtitle: 'Vaqtni optimal bloklarga bo\'lish',
+                      subtitle: S.get('split_to_blocks'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -415,10 +403,11 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.tree,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.tree_copy,
+                      iconColor: AppColors.success,
+                      emoji: '🌳',
                       title: S.get('journey'),
-                      subtitle: '30 kunlik daraxt o\'sishi',
+                      subtitle: S.get('tree_30_grow'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -429,8 +418,9 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.grid_8,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.grid_8_copy,
+                      iconColor: AppColors.info,
+                      emoji: '📈',
                       title: S.get('heatmap'),
                       subtitle: S.get('heatmap_sub'),
                       onTap: () {
@@ -444,9 +434,10 @@ class _ProfileState extends State<ProfileScreen> {
                     ),
                     _tile(
                       icon: LucideIcons.flower2,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.accent,
+                      emoji: '🌅',
                       title: S.get('rituals'),
-                      subtitle: 'Takroriy mashg\'ulotlar uchun eslatma',
+                      subtitle: S.get('ritual_repeat_help'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -457,9 +448,10 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.profile_2user,
+                      icon: Iconsax.profile_2user_copy,
                       iconColor: AppColors.sub,
-                      title: 'Do\'stlar',
+                      emoji: '👥',
+                      title: S.get('friends_title'),
                       subtitle: S.get('friends_sub'),
                       onTap: () {
                         HapticFeedback.selectionClick();
@@ -471,10 +463,11 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.cup,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.cup_copy,
+                      iconColor: AppColors.accent,
+                      emoji: '🏆',
                       title: S.get('challenges'),
-                      subtitle: 'Do\'st bilan 7 kunlik turnir',
+                      subtitle: S.get('challenge_friend_7day'),
                       onTap: () {
                         HapticFeedback.selectionClick();
                         Navigator.push(
@@ -486,8 +479,9 @@ class _ProfileState extends State<ProfileScreen> {
                       },
                     ),
                     _tile(
-                      icon: Iconsax.translate,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.translate_copy,
+                      iconColor: AppColors.secondary,
+                      emoji: '🌍',
                       title: S.get('language'),
                       subtitle: _langName(S.lang),
                       onTap: _showLanguageDialog,
@@ -495,12 +489,13 @@ class _ProfileState extends State<ProfileScreen> {
                     Consumer<NotificationProvider>(
                       builder: (_, np, __) => Column(children: [
                         _tile(
-                          icon: Iconsax.notification_1,
-                          iconColor: AppColors.sub,
+                          icon: Iconsax.notification_1_copy,
+                          iconColor: AppColors.accent,
+                          emoji: '🔔',
                           title: S.get('notifications'),
                           subtitle: np.enabled
-                              ? '${np.defaultReminderMinutes} min oldin eslatma'
-                              : "O'chirilgan",
+                              ? '${np.defaultReminderMinutes} ${S.get("min_before_remind")}'
+                              : S.get('reminder_off'),
                           trailing: Switch.adaptive(
                             value: np.enabled,
                             activeColor: AppColors.primary,
@@ -512,17 +507,21 @@ class _ProfileState extends State<ProfileScreen> {
                           onTap: np.enabled ? _showReminderPicker : null,
                         ),
                         if (np.enabled)
+                          _SmartReminderTile(buildTile: _tile),
+                        if (np.enabled)
                           _tile(
-                            icon: Iconsax.notification_1,
-                            iconColor: AppColors.accent,
+                            icon: Iconsax.notification_1_copy,
+                            iconColor: AppColors.success,
+                            emoji: '🧪',
                             title: S.get('test_notif'),
                             subtitle: S.get('test_notif_sub'),
                             onTap: _testNotification,
                           ),
                         if (np.enabled)
                           _tile(
-                            icon: Iconsax.music_circle,
-                            iconColor: AppColors.sub,
+                            icon: Iconsax.music_circle_copy,
+                            iconColor: AppColors.pink,
+                            emoji: '🎵',
                             title: S.get('sound_pack'),
                             subtitle:
                                 '${SoundPackStore.info(SoundPackStore.current).emoji}  ${SoundPackStore.info(SoundPackStore.current).name}',
@@ -531,13 +530,14 @@ class _ProfileState extends State<ProfileScreen> {
                       ]),
                     ),
                     _tile(
-                      icon: Iconsax.mobile,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.mobile_copy,
+                      iconColor: AppColors.secondary,
+                      emoji: '📳',
                       title: S.get('haptics'),
                       subtitle:
                           '${Haptics.info(Haptics.level).emoji}  ${Haptics.info(Haptics.level).name}',
                       onTap: _showHapticPicker,
-                    ),
+                    )
                   ]),
                 ),
               ),
@@ -552,29 +552,31 @@ class _ProfileState extends State<ProfileScreen> {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     _tile(
-                      icon: Iconsax.import_1,
+                      icon: Iconsax.import_1_copy,
                       iconColor: AppColors.sub,
-                      title: 'Ma\'lumotlarni eksport',
+                      title: S.get('export_data_btn'),
                       subtitle: S.get('export_data_sub'),
                       onTap: _exportData,
                     ),
                     _tile(
-                      icon: Iconsax.send_1,
+                      icon: Iconsax.send_1_copy,
                       iconColor: AppColors.pink,
+                      emoji: '📨',
                       title: S.get('share_template'),
-                      subtitle: 'Odatlar + kartalar — do\'stga yuboring',
+                      subtitle: S.get('send_friend_json'),
                       onTap: _shareTemplate,
                     ),
                     _tile(
-                      icon: Iconsax.export_1,
+                      icon: Iconsax.export_1_copy,
                       iconColor: AppColors.success,
+                      emoji: '📥',
                       title: S.get('import_template'),
-                      subtitle: 'JSON yopishtiring — odat/kartalarga qo\'shiladi',
+                      subtitle: S.get('json_paste_help'),
                       onTap: _importTemplate,
                     ),
                     _tile(
-                      icon: Iconsax.magicpen,
-                      iconColor: AppColors.sub,
+                      icon: Iconsax.magicpen_copy,
+                      iconColor: AppColors.accent,
                       title: S.get('clear_cache'),
                       onTap: () => _clearCache(auth),
                     ),
@@ -588,8 +590,8 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.trash,
                       iconColor: AppColors.danger,
-                      title: 'Akkauntni o\'chirish',
-                      subtitle: 'Hamma ma\'lumotlar bilan birga',
+                      title: S.get('delete_account_btn'),
+                      subtitle: S.get('with_all_data'),
                       color: AppColors.danger,
                       onTap: () => _confirmDeleteAccount(auth),
                     ),
@@ -599,26 +601,30 @@ class _ProfileState extends State<ProfileScreen> {
                     _tile(
                       icon: Iconsax.info_circle,
                       iconColor: AppColors.info,
+                      emoji: 'ℹ️',
                       title: S.get('about_motivai'),
                       onTap: _showAbout,
                     ),
                     _tile(
                       icon: Iconsax.message_question,
                       iconColor: AppColors.secondary,
+                      emoji: '❓',
                       title: S.get('help'),
-                      subtitle: 'Qo\'llanma va savollar',
+                      subtitle: S.get('guide_help_full'),
                       onTap: _showHelp,
                     ),
                     _tile(
                       icon: Iconsax.security_safe,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.success,
+                      emoji: '🛡️',
                       title: S.get('privacy_policy'),
                       onTap: () => _openUrl(
                           'https://abduvaliyevsamandar.github.io/motivai/privacy.html'),
                     ),
                     _tile(
                       icon: Iconsax.document_text,
-                      iconColor: AppColors.sub,
+                      iconColor: AppColors.info,
+                      emoji: '📜',
                       title: S.get('terms_of_service'),
                       onTap: () => _openUrl(
                           'https://abduvaliyevsamandar.github.io/motivai/terms.html'),
@@ -632,10 +638,7 @@ class _ProfileState extends State<ProfileScreen> {
                             height: 60,
                             padding: const EdgeInsets.all(12),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [
-                                AppColors.primary.withOpacity(0.22),
-                                AppColors.secondary.withOpacity(0.15),
-                              ]),
+                              color: AppColors.primary.withOpacity(0.22),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(Iconsax.flash,
@@ -643,8 +646,8 @@ class _ProfileState extends State<ProfileScreen> {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            'MotivAI v2.2.0',
-                            style: GoogleFonts.poppins(
+                            S.get('version_label'),
+                            style: TextStyle(
                               color: AppColors.txt,
                               fontSize: 13,
                               fontWeight: FontWeight.w700,
@@ -652,8 +655,8 @@ class _ProfileState extends State<ProfileScreen> {
                             ),
                           ),
                           Text(
-                            'Maqsadga — har kuni bir qadam',
-                            style: GoogleFonts.poppins(
+                            S.get('ground_motto'),
+                            style: TextStyle(
                               color: AppColors.sub,
                               fontSize: 11,
                               fontStyle: FontStyle.italic,
@@ -734,20 +737,14 @@ class _ProfileState extends State<ProfileScreen> {
     final letter =
         auth.name.isNotEmpty ? auth.name[0].toUpperCase() : 'U';
     return Center(
-      child: ShaderMask(
-        shaderCallback: (r) =>
-            LinearGradient(colors: AppColors.gradCosmic)
-                .createShader(r),
-        blendMode: BlendMode.srcIn,
-        child: Text(
+      child: Text(
           letter,
-          style: GoogleFonts.poppins(
-            color: Colors.white,
+          style: TextStyle(
+            color: AppColors.txt,
             fontSize: 32,
             fontWeight: FontWeight.w700,
           ),
         ),
-      ),
     );
   }
 
@@ -758,18 +755,14 @@ class _ProfileState extends State<ProfileScreen> {
           width: 4,
           height: 16,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: AppColors.gradCosmic,
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+            color: AppColors.primary,
             borderRadius: BorderRadius.circular(8),
           ),
         ),
         const SizedBox(width: 8),
         Text(
           title.toUpperCase(),
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.sub,
             fontSize: 11,
             fontWeight: FontWeight.w700,
@@ -788,19 +781,23 @@ class _ProfileState extends State<ProfileScreen> {
     Widget? trailing,
     VoidCallback? onTap,
     Color? color,
+    // When an emoji is given the chip renders it as the picture-like
+    // glyph (modern OS emoji = full-color illustration). Falls back to
+    // the IconData if emoji is null.
+    String? emoji,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           onTap: onTap == null
               ? null
               : () {
@@ -811,9 +808,11 @@ class _ProfileState extends State<ProfileScreen> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(children: [
-              // Bigger 3D-feel chip — top-left highlight + bottom-right
-              // shade gives the chip a soft sheen so icons read as
-              // illustrated buttons rather than flat squares.
+              // Picture-like chip: 3-stop gradient + inner top gloss + outer
+              // colored shadow gives the chip real depth. With an emoji we
+              // soften the chip so the emoji's own colors shine through;
+              // with an icon we keep the bold tint and put the icon on top
+              // in white. Either way the chip reads as a 3D button.
               Container(
                 width: 44,
                 height: 44,
@@ -821,22 +820,61 @@ class _ProfileState extends State<ProfileScreen> {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    stops: const [0, 0.55, 1],
-                    colors: [
-                      Color.alphaBlend(
-                        Colors.white.withOpacity(0.20),
-                        iconColor,
-                      ),
-                      iconColor,
-                      Color.alphaBlend(
-                        Colors.black.withOpacity(0.22),
-                        iconColor,
-                      ),
-                    ],
+                    stops: const [0, 0.5, 1],
+                    colors: emoji != null
+                        ? [
+                            Color.alphaBlend(
+                              Colors.white.withOpacity(0.55),
+                              iconColor,
+                            ),
+                            Color.alphaBlend(
+                              Colors.white.withOpacity(0.30),
+                              iconColor,
+                            ),
+                            Color.alphaBlend(
+                              Colors.white.withOpacity(0.10),
+                              iconColor,
+                            ),
+                          ]
+                        : [
+                            Color.alphaBlend(
+                              Colors.white.withOpacity(0.32),
+                              iconColor,
+                            ),
+                            iconColor,
+                            Color.alphaBlend(
+                              Colors.black.withOpacity(0.28),
+                              iconColor,
+                            ),
+                          ],
                   ),
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: iconColor.withOpacity(0.35),
+                      blurRadius: 10,
+                      spreadRadius: -2,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-                child: Icon(icon, color: Colors.white, size: 24),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.white.withOpacity(0.18),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: emoji != null
+                          ? Text(emoji, style: const TextStyle(fontSize: 24))
+                          : Icon(icon, color: Colors.white, size: 24),
+                    ),
+                  ],
+                ),
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -845,7 +883,7 @@ class _ProfileState extends State<ProfileScreen> {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: color ?? AppColors.txt,
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -855,7 +893,7 @@ class _ProfileState extends State<ProfileScreen> {
                       const SizedBox(height: 1),
                       Text(
                         subtitle,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                             color: AppColors.sub, fontSize: 11),
                       ),
                     ],
@@ -889,7 +927,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
+                const BorderRadius.vertical(top: Radius.circular(10)),
             border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5),
             ),
@@ -912,7 +950,7 @@ class _ProfileState extends State<ProfileScreen> {
             const SizedBox(height: 24),
             Text(
               S.get('change_pass'),
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -976,7 +1014,7 @@ class _ProfileState extends State<ProfileScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(S.get('min_6'),
-                          style: GoogleFonts.poppins()),
+                          style: TextStyle()),
                       backgroundColor: AppColors.danger,
                       behavior: SnackBarBehavior.floating,
                     ),
@@ -987,7 +1025,7 @@ class _ProfileState extends State<ProfileScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(S.get('pass_mismatch'),
-                          style: GoogleFonts.poppins()),
+                          style: TextStyle()),
                       backgroundColor: AppColors.danger,
                       behavior: SnackBarBehavior.floating,
                     ),
@@ -1005,7 +1043,7 @@ class _ProfileState extends State<ProfileScreen> {
                       ok
                           ? S.get('pass_changed')
                           : auth.error ?? S.get('error'),
-                      style: GoogleFonts.poppins(),
+                      style: TextStyle(),
                     ),
                     backgroundColor:
                         ok ? AppColors.success : AppColors.danger,
@@ -1032,7 +1070,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
+                const BorderRadius.vertical(top: Radius.circular(10)),
             border: Border(
               top:
                   BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -1051,25 +1089,19 @@ class _ProfileState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-              ShaderMask(
-                shaderCallback: (b) => LinearGradient(
-                  colors: AppColors.titleGradient,
-                ).createShader(b),
-                blendMode: BlendMode.srcIn,
-                child: Text(
-                  'Rang mavzusi',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
+              Text(
+                  S.get('color_theme_title'),
+                  style: TextStyle(
+                    color: AppColors.txt,
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
                 ),
-              ),
               const SizedBox(height: 4),
               Text(
-                'Ilovaning rang palitrasini tanlang',
-                style: GoogleFonts.poppins(
+                S.get('color_theme_pick'),
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 11,
                 ),
@@ -1094,15 +1126,8 @@ class _ProfileState extends State<ProfileScreen> {
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 220),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            p.primary.withOpacity(0.25),
-                            p.secondary.withOpacity(0.18),
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
+                        color: p.primary.withOpacity(0.25),
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(
                           color: active
                               ? p.primary
@@ -1112,9 +1137,9 @@ class _ProfileState extends State<ProfileScreen> {
                         boxShadow: active
                             ? [
                                 BoxShadow(
-                                  color: p.primary.withOpacity(0.35),
-                                  blurRadius: 16,
-                                  spreadRadius: 1,
+                                  color: Colors.black.withOpacity(0.04),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 1),
                                 ),
                               ]
                             : null,
@@ -1152,7 +1177,7 @@ class _ProfileState extends State<ProfileScreen> {
                             children: [
                               Text(
                                 p.name,
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: AppColors.txt,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w700,
@@ -1207,7 +1232,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
+                const BorderRadius.vertical(top: Radius.circular(10)),
             border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5),
             ),
@@ -1226,8 +1251,8 @@ class _ProfileState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 18),
               Text(
-                'Titrash kuchi',
-                style: GoogleFonts.poppins(
+                S.get('haptic_title'),
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -1235,8 +1260,8 @@ class _ProfileState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 4),
-              Text('Tanlang va darhol sinab ko\'ring',
-                  style: GoogleFonts.poppins(
+              Text(S.get('tap_test_now'),
+                  style: TextStyle(
                       color: AppColors.sub, fontSize: 11)),
               const SizedBox(height: 20),
               ...HapticLevel.values.map((l) {
@@ -1259,13 +1284,7 @@ class _ProfileState extends State<ProfileScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 12),
                         decoration: BoxDecoration(
-                          gradient: active
-                              ? LinearGradient(colors: [
-                                  AppColors.primary.withOpacity(0.22),
-                                  AppColors.secondary.withOpacity(0.1),
-                                ])
-                              : null,
-                          color: active ? null : AppColors.bg,
+                          color: active ? AppColors.primary.withOpacity(0.22) : AppColors.bg,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: active
@@ -1285,7 +1304,7 @@ class _ProfileState extends State<ProfileScreen> {
                                     CrossAxisAlignment.start,
                                 children: [
                                   Text(info.name,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         color: AppColors.txt,
                                         fontSize: 13,
                                         fontWeight: active
@@ -1293,7 +1312,7 @@ class _ProfileState extends State<ProfileScreen> {
                                             : FontWeight.w600,
                                       )),
                                   Text(info.desc,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         color: AppColors.sub,
                                         fontSize: 11,
                                       )),
@@ -1327,7 +1346,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
+                const BorderRadius.vertical(top: Radius.circular(10)),
             border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5),
             ),
@@ -1345,25 +1364,19 @@ class _ProfileState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-              ShaderMask(
-                shaderCallback: (b) => LinearGradient(
-                  colors: AppColors.titleGradient,
-                ).createShader(b),
-                blendMode: BlendMode.srcIn,
-                child: Text(
-                  'Tovush pachkasi',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
+              Text(
+                  S.get('sound_pack_title'),
+                  style: TextStyle(
+                    color: AppColors.txt,
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
                 ),
-              ),
               const SizedBox(height: 4),
               Text(
-                'Bildirishnoma uslubini tanlang',
-                style: GoogleFonts.poppins(
+                S.get('notif_style_pick'),
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 11,
                 ),
@@ -1389,13 +1402,7 @@ class _ProfileState extends State<ProfileScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 12),
                         decoration: BoxDecoration(
-                          gradient: active
-                              ? LinearGradient(colors: [
-                                  AppColors.primary.withOpacity(0.22),
-                                  AppColors.secondary.withOpacity(0.1),
-                                ])
-                              : null,
-                          color: active ? null : AppColors.bg,
+                          color: active ? AppColors.primary.withOpacity(0.22) : AppColors.bg,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
                             color: active
@@ -1416,7 +1423,7 @@ class _ProfileState extends State<ProfileScreen> {
                                 children: [
                                   Text(
                                     info.name,
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
                                       color: AppColors.txt,
                                       fontSize: 13,
                                       fontWeight: active
@@ -1426,7 +1433,7 @@ class _ProfileState extends State<ProfileScreen> {
                                   ),
                                   Text(
                                     info.desc,
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
                                       color: AppColors.sub,
                                       fontSize: 11,
                                     ),
@@ -1457,12 +1464,12 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
           S.get('select_lang'),
-          style: GoogleFonts.poppins(
+          style: TextStyle(
               color: AppColors.txt,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3),
@@ -1496,12 +1503,7 @@ class _ProfileState extends State<ProfileScreen> {
           padding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            gradient: isActive
-                ? LinearGradient(colors: [
-                    AppColors.primary.withOpacity(0.18),
-                    AppColors.secondary.withOpacity(0.08),
-                  ])
-                : null,
+            color: isActive ? AppColors.primary.withOpacity(0.18) : null,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: isActive ? AppColors.primary : AppColors.border,
@@ -1514,7 +1516,7 @@ class _ProfileState extends State<ProfileScreen> {
             Expanded(
               child: Text(
                 name,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 15,
                   fontWeight:
@@ -1546,21 +1548,21 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(S.get('clear_cache'),
-            style: GoogleFonts.poppins(
+            style: TextStyle(
                 color: AppColors.txt, fontWeight: FontWeight.w700)),
         content: Text(
           S.get('clear_cache'),
-          style: GoogleFonts.poppins(color: AppColors.sub),
+          style: TextStyle(color: AppColors.sub),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(S.get('cancel'),
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -1568,7 +1570,7 @@ class _ProfileState extends State<ProfileScreen> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content:
-                      Text(S.get('done'), style: GoogleFonts.poppins()),
+                      Text(S.get('done'), style: TextStyle()),
                   backgroundColor: AppColors.success,
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -1583,7 +1585,7 @@ class _ProfileState extends State<ProfileScreen> {
               ),
             ),
             child: Text(S.get('clear_cache'),
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
+                style: TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -1596,8 +1598,8 @@ class _ProfileState extends State<ProfileScreen> {
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
-        'Template nusxa olindi ($bytes bayt). Endi do\'stingizga yuboring.',
-        style: GoogleFonts.poppins(),
+        S.tr('Template nusxa olindi ($bytes bayt). Endi do\'stingizga yuboring.', 'Шаблон скопирован ($bytes байт). Теперь отправьте другу.', 'Template copied ($bytes bytes). Now send to a friend.'),
+        style: TextStyle(),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
       backgroundColor: AppColors.success,
@@ -1619,7 +1621,7 @@ class _ProfileState extends State<ProfileScreen> {
           decoration: BoxDecoration(
             color: AppColors.card,
             borderRadius:
-                const BorderRadius.vertical(top: Radius.circular(16)),
+                const BorderRadius.vertical(top: Radius.circular(10)),
             border: Border(
               top:
                   BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -1638,25 +1640,19 @@ class _ProfileState extends State<ProfileScreen> {
                 ),
               ),
               const SizedBox(height: 18),
-              ShaderMask(
-                shaderCallback: (b) => LinearGradient(
-                  colors: AppColors.titleGradient,
-                ).createShader(b),
-                blendMode: BlendMode.srcIn,
-                child: Text(
-                  'Template import',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
+              Text(
+                  S.get('import_temp'),
+                  style: TextStyle(
+                    color: AppColors.txt,
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.3,
                   ),
                 ),
-              ),
               const SizedBox(height: 4),
               Text(
-                'Do\'stingizdan olgan JSON ni yopishtiring',
-                style: GoogleFonts.poppins(
+                S.get('json_paste_friend'),
+                style: TextStyle(
                     color: AppColors.sub, fontSize: 11),
               ),
               const SizedBox(height: 16),
@@ -1664,11 +1660,11 @@ class _ProfileState extends State<ProfileScreen> {
                 controller: ctrl,
                 minLines: 5,
                 maxLines: 10,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                     color: AppColors.txt, fontSize: 11),
                 decoration: InputDecoration(
-                  hintText: '{"app":"MotivAI", ...}',
-                  hintStyle: GoogleFonts.poppins(
+                  hintText: S.get('json_sample'),
+                  hintStyle: TextStyle(
                       color: AppColors.hint, fontSize: 11),
                   filled: true,
                   fillColor: AppColors.bg,
@@ -1702,7 +1698,7 @@ class _ProfileState extends State<ProfileScreen> {
                       icon: Icon(LucideIcons.clipboardPaste,
                           color: AppColors.sub, size: 18),
                       label: Text('Clipboard',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                               color: AppColors.sub)),
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: AppColors.border),
@@ -1715,8 +1711,8 @@ class _ProfileState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 12),
               NebulaButton(
-                label: 'Import qilish',
-                icon: Iconsax.export_1,
+                label: S.get('import_btn'),
+                icon: Iconsax.export_1_copy,
                 onTap: () async {
                   final raw = ctrl.text.trim();
                   if (raw.isEmpty) return;
@@ -1732,7 +1728,7 @@ class _ProfileState extends State<ProfileScreen> {
                       r.ok
                           ? 'Qo\'shildi: ${r.habits} odat, ${r.decks} kolod, ${r.cards} karta'
                           : (r.error ?? 'Xatolik'),
-                      style: GoogleFonts.poppins(),
+                      style: TextStyle(),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
                   ));
@@ -1757,8 +1753,8 @@ class _ProfileState extends State<ProfileScreen> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              'Nusxa olindi ($bytes bayt)',
-              style: GoogleFonts.poppins(),
+              S.tr('Nusxa olindi ($bytes bayt)', 'Скопировано ($bytes байт)', 'Copied ($bytes bytes)'),
+              style: TextStyle(),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -1776,13 +1772,13 @@ class _ProfileState extends State<ProfileScreen> {
     final when = DateTime.now().add(const Duration(seconds: 5));
     await NotificationService.instance.scheduleAt(
       id: 99999,
-      title: 'MotivAI test',
-      body: 'Bu sinov bildirishnomasi — hammasi ishlayapti!',
+      title: S.get('notif_test'),
+      body: S.tr('Bu sinov bildirishnomasi — hammasi ishlayapti!', 'Это тестовое уведомление — всё работает!', 'This is a test notification — everything works!'),
       at: when,
     );
     // Also add to in-app feed
     np.addAchievement(
-        'Test bildirishnoma', '5 soniyadan keyin yetib keladi');
+        S.tr('Test bildirishnoma', 'Тестовое уведомление', 'Test notification'), S.get('min_arrives'));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Row(
@@ -1791,8 +1787,8 @@ class _ProfileState extends State<ProfileScreen> {
               color: Colors.white, size: 18),
           const SizedBox(width: 8),
           Text(
-            '5 soniyadan keyin keladi',
-            style: GoogleFonts.poppins(),
+            S.get('test_notif_when'),
+            style: TextStyle(),
           ),
         ],
       ),
@@ -1810,19 +1806,17 @@ class _ProfileState extends State<ProfileScreen> {
           constraints: const BoxConstraints(maxWidth: 360),
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [
-              AppColors.card,
-              Color.lerp(AppColors.card, AppColors.primary, 0.08)!,
-            ]),
-            borderRadius: BorderRadius.circular(16),
+            color: AppColors.card,
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: AppColors.primary.withOpacity(0.4),
               width: 1.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.3),
-                blurRadius: 30,
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -1833,13 +1827,13 @@ class _ProfileState extends State<ProfileScreen> {
                 width: 70,
                 height: 70,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: AppColors.gradCosmic),
+                  color: AppColors.primary,
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.5),
-                      blurRadius: 20,
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
                     ),
                   ],
                 ),
@@ -1847,24 +1841,18 @@ class _ProfileState extends State<ProfileScreen> {
                     color: Colors.white, size: 36),
               ),
               const SizedBox(height: 16),
-              ShaderMask(
-                shaderCallback: (b) => LinearGradient(
-                  colors: AppColors.titleGradient,
-                ).createShader(b),
-                blendMode: BlendMode.srcIn,
-                child: Text(
+              Text(
                   'MotivAI',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: AppColors.txt,
                     letterSpacing: -0.5,
                   ),
                 ),
-              ),
               Text(
                 'v2.2.0',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -1872,9 +1860,9 @@ class _ProfileState extends State<ProfileScreen> {
               ),
               const SizedBox(height: 16),
               Text(
-                'AI orqali talabalarga motivatsiya beruvchi ilova',
+                S.get('app_about_full'),
                 textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 13,
                   height: 1.5,
@@ -1888,7 +1876,7 @@ class _ProfileState extends State<ProfileScreen> {
               _aboutRow('\u{1F680}', 'Open source, Uzbekistan'),
               const SizedBox(height: 20),
               NebulaButton(
-                label: 'Yopish',
+                label: S.tr('Yopish', 'Закрыть', 'Close'),
                 onTap: () => Navigator.pop(context),
               ),
             ],
@@ -1906,7 +1894,7 @@ class _ProfileState extends State<ProfileScreen> {
         Expanded(
           child: Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 11,
             ),
@@ -1934,8 +1922,8 @@ class _ProfileState extends State<ProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: AppColors.danger,
         behavior: SnackBarBehavior.floating,
-        content: Text('Sahifa ochib bo\'lmadi',
-            style: GoogleFonts.poppins()),
+        content: Text(S.get('could_not_open'),
+            style: TextStyle()),
       ));
     }
   }
@@ -1949,7 +1937,7 @@ class _ProfileState extends State<ProfileScreen> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
+              const BorderRadius.vertical(top: Radius.circular(10)),
           border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5)),
         ),
@@ -1966,34 +1954,28 @@ class _ProfileState extends State<ProfileScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            ShaderMask(
-              shaderCallback: (b) => LinearGradient(
-                colors: AppColors.titleGradient,
-              ).createShader(b),
-              blendMode: BlendMode.srcIn,
-              child: Text(
-                "Qo'llanma",
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
+            Text(
+                S.get('guide'),
+                style: TextStyle(
+                  color: AppColors.txt,
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
               ),
-            ),
             const SizedBox(height: 20),
-            _helpItem(LucideIcons.plus, 'Vazifa qo\'shish',
-                "'+' tugmasi orqali nom, vaqt, eslatma bilan qo'shing"),
-            _helpItem(LucideIcons.checkCircle2, 'Bajarish',
-                "Davra tugmasini bosing yoki o'ngga swipe qiling"),
-            _helpItem(LucideIcons.moveLeft, 'O\'chirish',
-                "Chapga swipe qiling yoki 3-nuqta menyu"),
-            _helpItem(LucideIcons.pointer, 'Tafsilot',
-                "Vazifani bosing — tafsilot oynasi ochiladi"),
-            _helpItem(Iconsax.magicpen, 'AI Chat',
-                "AI'dan tavsiya so'rang — tanlab ro'yxatga qo'shing"),
-            _helpItem(LucideIcons.bell, 'Bildirishnoma',
-                "Vazifaga vaqt qo'ying — oldindan eslatadi"),
+            _helpItem(LucideIcons.plus, S.get('add_task'),
+                S.tr("'+' tugmasi orqali nom, vaqt, eslatma bilan qo'shing", "Через кнопку '+' добавьте имя, время, напоминание", "Via '+' add name, time and reminder")),
+            _helpItem(LucideIcons.checkCircle2, S.tr('Bajarish', 'Выполнить', 'Complete'),
+                S.tr("Davra tugmasini bosing yoki o'ngga swipe qiling", "Нажмите кружок или свайп вправо", "Tap the circle or swipe right")),
+            _helpItem(LucideIcons.moveLeft, S.get('remove_btn'),
+                S.tr("Chapga swipe qiling yoki 3-nuqta menyu", "Свайп влево или меню из 3 точек", "Swipe left or use the 3-dot menu")),
+            _helpItem(LucideIcons.pointer, S.tr('Tafsilot', 'Подробнее', 'Details'),
+                S.tr("Vazifani bosing — tafsilot oynasi ochiladi", "Нажмите задачу — откроется детальное окно", "Tap a task — details open")),
+            _helpItem(Iconsax.magicpen, S.get('chat'),
+                S.tr("AI'dan tavsiya so'rang — tanlab ro'yxatga qo'shing", "Спросите у AI — выберите и добавьте в список", "Ask AI — pick and add to your list")),
+            _helpItem(LucideIcons.bell, S.tr('Bildirishnoma', 'Уведомление', 'Notification'),
+                S.tr("Vazifaga vaqt qo'ying — oldindan eslatadi", "Поставьте время задаче — напомнит заранее", "Set a time on the task — get reminded ahead")),
             const SizedBox(height: 14),
           ],
         ),
@@ -2011,10 +1993,7 @@ class _ProfileState extends State<ProfileScreen> {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                AppColors.primary.withOpacity(0.22),
-                AppColors.secondary.withOpacity(0.12),
-              ]),
+              color: AppColors.primary.withOpacity(0.22),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                   color: AppColors.primary.withOpacity(0.3)),
@@ -2028,7 +2007,7 @@ class _ProfileState extends State<ProfileScreen> {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
@@ -2037,7 +2016,7 @@ class _ProfileState extends State<ProfileScreen> {
                 const SizedBox(height: 2),
                 Text(
                   body,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 11,
                     height: 1.4,
@@ -2057,7 +2036,7 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.danger.withOpacity(0.4)),
         ),
         title: Row(
@@ -2067,8 +2046,8 @@ class _ProfileState extends State<ProfileScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Akkauntni o\'chirish',
-                style: GoogleFonts.poppins(
+                S.get('delete_account_btn'),
+                style: TextStyle(
                   color: AppColors.danger,
                   fontWeight: FontWeight.w800,
                 ),
@@ -2077,9 +2056,9 @@ class _ProfileState extends State<ProfileScreen> {
           ],
         ),
         content: Text(
-          'Bu amal qaytarib bo\'lmaydi. Hamma vazifalar, XP, '
-          'tangalar, do\'stlar va chat tarix butunlay o\'chiriladi.',
-          style: GoogleFonts.poppins(
+          S.get('delete_account_warn') +
+              S.tr('tangalar, do\'stlar va chat tarix butunlay o\'chiriladi.', 'монеты, друзья и история чата будут удалены безвозвратно.', 'coins, friends and chat history will be permanently deleted.'),
+          style: TextStyle(
             color: AppColors.sub,
             fontSize: 13,
             height: 1.5,
@@ -2088,8 +2067,8 @@ class _ProfileState extends State<ProfileScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Bekor',
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+            child: Text(S.get('cancel'),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -2104,9 +2083,9 @@ class _ProfileState extends State<ProfileScreen> {
                       ok ? AppColors.success : AppColors.danger,
                   content: Text(
                     ok
-                        ? 'Akkaunt o\'chirildi'
-                        : 'Xato: ${auth.error ?? 'qayta urining'}',
-                    style: GoogleFonts.poppins(),
+                        ? S.tr('Akkaunt o\'chirildi', 'Аккаунт удалён', 'Account deleted')
+                        : '${S.get('error')}: ${auth.error ?? S.get('retry')}',
+                    style: TextStyle(),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
                 ),
@@ -2120,8 +2099,8 @@ class _ProfileState extends State<ProfileScreen> {
               ),
             ),
             child: Text(
-              "O'chirish",
-              style: GoogleFonts.poppins(
+              S.get('delete'),
+              style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
@@ -2138,21 +2117,21 @@ class _ProfileState extends State<ProfileScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(S.get('logout'),
-            style: GoogleFonts.poppins(
+            style: TextStyle(
                 color: AppColors.txt, fontWeight: FontWeight.w700)),
         content: Text(
           S.get('logout_confirm'),
-          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
+          style: TextStyle(color: AppColors.sub, fontSize: 13),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(S.get('cancel'),
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -2166,7 +2145,7 @@ class _ProfileState extends State<ProfileScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: Text(S.get('logout'), style: GoogleFonts.poppins()),
+            child: Text(S.get('logout'), style: TextStyle()),
           ),
         ],
       ),
@@ -2183,7 +2162,7 @@ class _ProfileState extends State<ProfileScreen> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
+              const BorderRadius.vertical(top: Radius.circular(10)),
           border: Border(
               top: BorderSide(color: AppColors.glassBorder, width: 1.5)),
         ),
@@ -2201,8 +2180,8 @@ class _ProfileState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 20),
             Text(
-              'Eslatma vaqti',
-              style: GoogleFonts.poppins(
+              S.get('notif_when'),
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -2211,8 +2190,8 @@ class _ProfileState extends State<ProfileScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Vazifadan qancha vaqt oldin eslatish',
-              style: GoogleFonts.poppins(
+              S.get('notif_remind_min_before'),
+              style: TextStyle(
                 color: AppColors.sub,
                 fontSize: 13,
               ),
@@ -2220,7 +2199,7 @@ class _ProfileState extends State<ProfileScreen> {
             const SizedBox(height: 20),
             ...options.map((m) {
               final label =
-                  m < 60 ? '$m daqiqa' : '${m ~/ 60} soat';
+                  m < 60 ? '$m ${S.get('unit_minute')}' : '${m ~/ 60} ${S.get('unit_hour')}';
               final active = np.defaultReminderMinutes == m;
               return Padding(
                 padding: const EdgeInsets.only(bottom: 8),
@@ -2238,13 +2217,7 @@ class _ProfileState extends State<ProfileScreen> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 14),
                       decoration: BoxDecoration(
-                        gradient: active
-                            ? LinearGradient(colors: [
-                                AppColors.primary.withOpacity(0.2),
-                                AppColors.secondary.withOpacity(0.1),
-                              ])
-                            : null,
-                        color: active ? null : AppColors.bg,
+                        color: active ? AppColors.primary.withOpacity(0.2) : AppColors.bg,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: active
@@ -2266,7 +2239,7 @@ class _ProfileState extends State<ProfileScreen> {
                           Expanded(
                             child: Text(
                               label,
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: AppColors.txt,
                                 fontSize: 13,
                                 fontWeight: active
@@ -2288,6 +2261,147 @@ class _ProfileState extends State<ProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Reactive tile that reads SmartReminder state on each build and shows
+/// the chosen hour. Tapping opens a picker with auto + 7..22 options.
+class _SmartReminderTile extends StatefulWidget {
+  final Widget Function({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    String? subtitle,
+    Widget? trailing,
+    VoidCallback? onTap,
+    Color? color,
+    String? emoji,
+  }) buildTile;
+  const _SmartReminderTile({required this.buildTile});
+  @override
+  State<_SmartReminderTile> createState() => _SmartReminderTileState();
+}
+
+class _SmartReminderTileState extends State<_SmartReminderTile> {
+  bool _enabled = true;
+  int? _override;
+  int _bestHour = 9;
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  Future<void> _refresh() async {
+    final en = await SmartReminder.isEnabled();
+    final ov = await SmartReminder.hourOverride();
+    final bh = await SmartReminder.bestHour();
+    if (mounted) {
+      setState(() {
+        _enabled = en;
+        _override = ov;
+        _bestHour = bh;
+      });
+    }
+  }
+
+  Future<void> _showPicker() async {
+    HapticFeedback.selectionClick();
+    final picked = await showModalBottomSheet<int?>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => Container(
+        decoration: BoxDecoration(
+          color: AppColors.card,
+          borderRadius:
+              const BorderRadius.vertical(top: Radius.circular(10)),
+        ),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 44,
+              height: 5,
+              decoration: BoxDecoration(
+                color: AppColors.border,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              S.get('smart_reminder_pick_hour'),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.txt,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: Icon(LucideIcons.sparkles,
+                  color: AppColors.primary),
+              title: Text(S.get('smart_reminder_auto'),
+                  style: TextStyle(color: AppColors.txt)),
+              trailing: _override == null
+                  ? Icon(LucideIcons.check, color: AppColors.success)
+                  : null,
+              onTap: () => Navigator.pop(ctx, -1),
+            ),
+            const Divider(height: 1),
+            SizedBox(
+              height: 280,
+              child: ListView(
+                children: [
+                  for (int h = 7; h <= 22; h++)
+                    ListTile(
+                      title: Text('${h.toString().padLeft(2, '0')}:00',
+                          style: TextStyle(
+                              color: AppColors.txt,
+                              fontWeight: FontWeight.w600)),
+                      trailing: _override == h
+                          ? Icon(LucideIcons.check,
+                              color: AppColors.success)
+                          : null,
+                      onTap: () => Navigator.pop(ctx, h),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (picked != null) {
+      await SmartReminder.setHourOverride(picked == -1 ? null : picked);
+      _refresh();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hourText = _override?.toString().padLeft(2, '0') ??
+        _bestHour.toString().padLeft(2, '0');
+    return widget.buildTile(
+      icon: Iconsax.flash_1_copy,
+      iconColor: AppColors.accent,
+      emoji: '⏰',
+      title: S.get('smart_reminder'),
+      subtitle: _enabled
+          ? S.get('smart_reminder_sub_on').replaceAll('{h}', hourText)
+          : S.get('smart_reminder_sub_off'),
+      trailing: Switch.adaptive(
+        value: _enabled,
+        activeColor: AppColors.primary,
+        onChanged: (v) async {
+          HapticFeedback.selectionClick();
+          await SmartReminder.setEnabled(v);
+          _refresh();
+        },
+      ),
+      onTap: _enabled ? _showPicker : null,
     );
   }
 }

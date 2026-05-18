@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'colors.dart';
 
 class C {
@@ -61,7 +60,7 @@ class AppTheme {
     final hint = AppColors.hint;
 
     final base = isDark ? ThemeData.dark() : ThemeData.light();
-    final textTheme = GoogleFonts.poppinsTextTheme(base.textTheme).apply(
+    final textTheme = base.textTheme.apply(
       bodyColor: txt,
       displayColor: txt,
     );
@@ -101,7 +100,7 @@ class AppTheme {
         scrolledUnderElevation: 0,
         foregroundColor: txt,
         centerTitle: false,
-        titleTextStyle: GoogleFonts.poppins(
+        titleTextStyle: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w700,
           color: txt,
@@ -137,9 +136,9 @@ class AppTheme {
           minimumSize: const Size(double.infinity, 54),
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
           ),
-          textStyle: GoogleFonts.poppins(
+          textStyle: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w700,
           ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
+import '../config/strings.dart';
 import '../services/daily_quotes.dart';
 import 'nebula/nebula.dart';
 
@@ -54,8 +54,6 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
       },
       child: GlassCard(
         padding: const EdgeInsets.fromLTRB(18, 16, 18, 14),
-        glowColors: [AppColors.primary, AppColors.pink],
-        glowIntensity: 0.15,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -65,8 +63,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                 Container(
                   padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: AppColors.gradCosmic),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
@@ -80,8 +77,8 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'KUN IQTIBOSI',
-                  style: GoogleFonts.poppins(
+                  S.tr('KUN IQTIBOSI', 'ЦИТАТА ДНЯ', 'QUOTE OF THE DAY'),
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
@@ -122,7 +119,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                 children: [
                   Text(
                     '\u201C${q.text}\u201D',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
@@ -142,7 +139,7 @@ class _DailyQuoteCardState extends State<DailyQuoteCard> {
                       const SizedBox(width: 8),
                       Text(
                         q.author,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.sub,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,

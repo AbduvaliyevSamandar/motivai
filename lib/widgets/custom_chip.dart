@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -26,7 +25,6 @@ class CustomChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final grad = selectedGradient ?? AppColors.gradPrimary;
     final accent = selectedColor ?? AppColors.primary;
 
     return GestureDetector(
@@ -42,28 +40,12 @@ class CustomChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(
             horizontal: D.sp16, vertical: D.sp8 + 2),
         decoration: BoxDecoration(
-          gradient: selected
-              ? LinearGradient(
-                  colors: grad,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-              : null,
-          color: selected ? null : AppColors.surface,
+          color: selected ? accent : AppColors.surface,
           borderRadius: BorderRadius.circular(D.radiusXl),
           border: Border.all(
             color: selected ? Colors.transparent : AppColors.border,
             width: 1,
           ),
-          boxShadow: selected
-              ? [
-                  BoxShadow(
-                    color: accent.withOpacity(0.35),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : [],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -81,7 +63,7 @@ class CustomChip extends StatelessWidget {
             ],
             Text(
               label,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                 color: selected ? Colors.white : AppColors.txt,

@@ -6,7 +6,6 @@ import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
-import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/chat_provider.dart';
 import '../../providers/auth_provider.dart';
@@ -63,7 +62,7 @@ class _ChatState extends State<ChatScreen> {
     if (mounted && chat.consumePlanCreatedSignal()) {
       await context.read<TaskProvider>().loadAll();
       if (mounted) {
-        _snack("Reja yaratildi — Bosh sahifadan ko'ring");
+        _snack(S.get('plan_created'));
       }
     }
     _toBottom();
@@ -72,7 +71,7 @@ class _ChatState extends State<ChatScreen> {
   Future<void> _addToTasks(List<TaskSuggestion> suggestions) async {
     final sel = suggestions.where((s) => s.isSelected).toList();
     if (sel.isEmpty) {
-      _snack("Kamida bitta vazifa tanlang", err: true);
+      _snack(S.get('select_at_least'), err: true);
       return;
     }
     HapticFeedback.mediumImpact();
@@ -84,16 +83,16 @@ class _ChatState extends State<ChatScreen> {
       // Add a confirmation message to chat
       await context.read<ChatProvider>().confirmAdded(sel.length);
       _toBottom();
-      _snack('${sel.length} ta vazifa qo\'shildi');
+      _snack(S.get('tasks_added_n').replaceAll('{n}', sel.length.toString()));
     } else {
-      _snack(tasks.error ?? "Xatolik yuz berdi", err: true);
+      _snack(tasks.error ?? S.get('error'), err: true);
     }
   }
 
   void _snack(String msg, {bool err = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg, style: GoogleFonts.poppins()),
+        content: Text(msg, style: TextStyle()),
         backgroundColor: err ? AppColors.danger : AppColors.success,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
@@ -110,8 +109,6 @@ class _ChatState extends State<ChatScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 18),
           Column(
             children: [
               _buildHeader(),
@@ -158,7 +155,7 @@ class _ChatState extends State<ChatScreen> {
                 children: [
                   Text(
                     'MotivAI',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -174,7 +171,7 @@ class _ChatState extends State<ChatScreen> {
                           chat.isTyping
                               ? S.get('ai_typing')
                               : 'Online',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
@@ -258,14 +255,14 @@ class _ChatState extends State<ChatScreen> {
                   children: [
                     Expanded(
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(10),
                         child: BackdropFilter(
                           filter: ImageFilter.blur(
                               sigmaX: 16, sigmaY: 16),
                           child: Container(
                             decoration: BoxDecoration(
                               color: AppColors.surface,
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(10),
                               border: Border.all(
                                   color: AppColors.border),
                             ),
@@ -277,7 +274,7 @@ class _ChatState extends State<ChatScreen> {
                               minLines: 1,
                               textInputAction: TextInputAction.send,
                               onSubmitted: (_) => _send(),
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: AppColors.txt,
                                 fontSize: 13,
                               ),
@@ -285,7 +282,7 @@ class _ChatState extends State<ChatScreen> {
                                 hintText: busy
                                     ? S.get('ai_typing')
                                     : S.get('type_message'),
-                                hintStyle: GoogleFonts.poppins(
+                                hintStyle: TextStyle(
                                   color: AppColors.hint,
                                   fontSize: 13,
                                 ),
@@ -317,20 +314,15 @@ class _ChatState extends State<ChatScreen> {
                         width: 52,
                         height: 52,
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: busy
-                                ? [AppColors.border, AppColors.border]
-                                : AppColors.gradCosmic,
-                          ),
+                          color: busy ? AppColors.border : AppColors.primary,
                           shape: BoxShape.circle,
                           boxShadow: busy
                               ? null
                               : [
                                   BoxShadow(
-                                    color: AppColors.primary
-                                        .withOpacity(0.55),
-                                    blurRadius: 18,
-                                    offset: const Offset(0, 6),
+                                    color: Colors.black.withOpacity(0.04),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 1),
                                   ),
                                 ],
                         ),
@@ -390,12 +382,12 @@ class _ChatState extends State<ChatScreen> {
       builder: (_) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
           S.get('clear_chat'),
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.txt,
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -403,13 +395,13 @@ class _ChatState extends State<ChatScreen> {
         ),
         content: Text(
           S.get('clear_chat'),
-          style: GoogleFonts.poppins(color: AppColors.sub),
+          style: TextStyle(color: AppColors.sub),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(S.get('cancel'),
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () {
@@ -424,7 +416,7 @@ class _ChatState extends State<ChatScreen> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: Text(S.get('delete'), style: GoogleFonts.poppins()),
+            child: Text(S.get('delete'), style: TextStyle()),
           ),
         ],
       ),
@@ -488,9 +480,9 @@ class _EmptyChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final prompts = [
-      ('', 'Bugun nima qilsam yaxshi?'),
-      ('', 'Meni motivatsiya qil'),
-      ('', 'Matematika bo\'yicha vazifa ber'),
+      ('', S.tr('Bugun nima qilsam yaxshi?', 'Что мне сделать сегодня?', 'What should I do today?')),
+      ('', S.tr('Meni motivatsiya qil', 'Замотивируй меня', 'Motivate me')),
+      ('', S.tr('Matematika bo\'yicha vazifa ber', 'Дай задачу по математике', 'Give me a math task')),
     ];
     return ListView(
       padding: const EdgeInsets.all(24),
@@ -498,48 +490,40 @@ class _EmptyChat extends StatelessWidget {
         const SizedBox(height: 24),
         Center(
           child: Container(
-            width: 110,
-            height: 110,
+            width: 76,
+            height: 76,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: AppColors.gradCosmic,
-              ),
+              color: AppColors.primary,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.5),
-                  blurRadius: 32,
-                  spreadRadius: 6,
+                  color: Colors.black.withOpacity(0.04),
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
                 ),
               ],
             ),
             child: const Icon(Iconsax.magicpen,
-                color: Colors.white, size: 52),
+                color: Colors.white, size: 36),
           ),
         ),
         const SizedBox(height: 20),
         Center(
-          child: ShaderMask(
-            shaderCallback: (b) => LinearGradient(
-              colors: AppColors.titleGradient,
-            ).createShader(b),
-            blendMode: BlendMode.srcIn,
-            child: Text(
-              'Salom! Men MotivAI',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+          child: Text(
+              S.get('hi_im_motivai'),
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.5,
               ),
             ),
-          ),
         ),
         const SizedBox(height: 8),
         Text(
-          'Sizga qanday yordam bera olaman?',
+          S.get('how_can_i_help'),
           textAlign: TextAlign.center,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.sub,
             fontSize: 13,
           ),
@@ -549,7 +533,6 @@ class _EmptyChat extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 10),
               child: GlassCard(
                 onTap: () => onPromptTap(p.$2),
-                glowIntensity: 0.15,
                 child: Row(
                   children: [
                     Text(p.$1, style: const TextStyle(fontSize: 24),
@@ -559,7 +542,7 @@ class _EmptyChat extends StatelessWidget {
                     Expanded(
                       child: Text(
                         p.$2,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
@@ -610,8 +593,7 @@ class _ChatBubble extends StatelessWidget {
                       width: 20,
                       height: 20,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: AppColors.gradCosmic),
+                        color: AppColors.primary,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(Iconsax.magicpen,
@@ -620,7 +602,7 @@ class _ChatBubble extends StatelessWidget {
                     const SizedBox(width: 6),
                     Text(
                       'MotivAI',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: AppColors.sub,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -638,7 +620,7 @@ class _ChatBubble extends StatelessWidget {
                   const EdgeInsets.only(top: 4, left: 6, right: 6),
               child: Text(
                 _formatTime(msg.timestamp),
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.sub.withOpacity(0.6),
                   fontSize: 10,
                   fontWeight: FontWeight.w500,
@@ -654,22 +636,18 @@ class _ChatBubble extends StatelessWidget {
   Widget _userBubble() {
     return Container(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: AppColors.gradCosmic,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.primary,
         borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
+          topLeft: Radius.circular(10),
           topRight: Radius.circular(8),
-          bottomLeft: Radius.circular(16),
-          bottomRight: Radius.circular(16),
+          bottomLeft: Radius.circular(10),
+          bottomRight: Radius.circular(10),
         ),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withOpacity(0.4),
-            blurRadius: 14,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -683,9 +661,9 @@ class _ChatBubble extends StatelessWidget {
     return ClipRRect(
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(8),
-        topRight: Radius.circular(16),
-        bottomLeft: Radius.circular(16),
-        bottomRight: Radius.circular(16),
+        topRight: Radius.circular(10),
+        bottomLeft: Radius.circular(10),
+        bottomRight: Radius.circular(10),
       ),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
@@ -696,9 +674,9 @@ class _ChatBubble extends StatelessWidget {
                 : AppColors.surface,
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(8),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
-              bottomRight: Radius.circular(16),
+              topRight: Radius.circular(10),
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10),
             ),
             border: Border.all(
               color: msg.isError
@@ -720,7 +698,7 @@ class _ChatBubble extends StatelessWidget {
       context: context,
       backgroundColor: AppColors.card,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
       ),
       builder: (ctx) => SafeArea(
         child: Column(
@@ -740,8 +718,8 @@ class _ChatBubble extends StatelessWidget {
               leading: Icon(LucideIcons.copy,
                   color: AppColors.primary),
               title: Text(
-                'Nusxa olish',
-                style: GoogleFonts.poppins(
+                S.get('copy'),
+                style: TextStyle(
                   color: AppColors.txt,
                   fontWeight: FontWeight.w500,
                 ),
@@ -751,7 +729,7 @@ class _ChatBubble extends StatelessWidget {
                 Navigator.pop(ctx);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text('Nusxa olindi'),
+                    content: Text(S.get('copied')),
                     backgroundColor: AppColors.success,
                     behavior: SnackBarBehavior.floating,
                     duration: const Duration(seconds: 1),
@@ -764,7 +742,7 @@ class _ChatBubble extends StatelessWidget {
                   Icon(Icons.delete_outline, color: AppColors.danger),
               title: Text(
                 S.get('delete'),
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.danger,
                   fontWeight: FontWeight.w500,
                 ),
@@ -822,7 +800,7 @@ class _RichText extends StatelessWidget {
     }
     return RichText(
       text: TextSpan(
-        style: GoogleFonts.poppins(
+        style: TextStyle(
           color: color,
           fontSize: 13,
           height: 1.5,
@@ -883,8 +861,6 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12, left: 6),
       child: GlassCard(
-        glowColors: [AppColors.primary, AppColors.secondary],
-        glowIntensity: 0.25,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -894,8 +870,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: AppColors.gradCosmic),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
@@ -913,8 +888,8 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'AI tavsiya etgan vazifalar',
-                        style: GoogleFonts.poppins(
+                        S.get('dashboard_intro'),
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontWeight: FontWeight.w700,
                           fontSize: 15,
@@ -922,8 +897,8 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                         ),
                       ),
                       Text(
-                        'Tanlang va ro\'yxatingizga qo\'shing',
-                        style: GoogleFonts.poppins(
+                        S.get('dashboard_pick_help'),
+                        style: TextStyle(
                           color: AppColors.sub,
                           fontSize: 11,
                         ),
@@ -942,8 +917,8 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     ),
                   ),
                   child: Text(
-                    '${widget.tasks.length} ta',
-                    style: GoogleFonts.poppins(
+                    '${widget.tasks.length} ${S.get('remaining')}',
+                    style: TextStyle(
                       color: AppColors.primary,
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
@@ -959,14 +934,14 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
             Row(
               children: [
                 _selectChip(
-                  label: 'Barchasini tanlash',
+                  label: S.get('select_all'),
                   icon: Icons.check_circle_outline_rounded,
                   active: allSelected,
                   onTap: () => _toggleAll(true),
                 ),
                 const SizedBox(width: 6),
                 _selectChip(
-                  label: 'Tozalash',
+                  label: S.tr('Tozalash', 'Очистить', 'Clear'),
                   icon: Icons.clear_all_rounded,
                   active: false,
                   onTap: () => _toggleAll(false),
@@ -993,10 +968,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 14, vertical: 10),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    AppColors.accent.withOpacity(0.18),
-                    AppColors.primary.withOpacity(0.12),
-                  ]),
+                  color: AppColors.accent.withOpacity(0.18),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                       color: AppColors.accent.withOpacity(0.35)),
@@ -1008,7 +980,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     const SizedBox(width: 6),
                     Text(
                       '$_totalXP XP',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: AppColors.accent,
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
@@ -1020,8 +992,8 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                         color: AppColors.sub, size: 14),
                     const SizedBox(width: 4),
                     Text(
-                      '${_totalMinutes} min',
-                      style: GoogleFonts.poppins(
+                      '${_totalMinutes} ${S.tr('min', 'мин', 'min')}',
+                      style: TextStyle(
                         color: AppColors.sub,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -1031,7 +1003,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     const Spacer(),
                     Text(
                       '$_selectedCount / ${widget.tasks.length}',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: AppColors.txt,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -1063,8 +1035,8 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                       ),
                     ),
                     child: Text(
-                      'Bekor qilish',
-                      style: GoogleFonts.poppins(
+                      S.get('cancel_btn'),
+                      style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),
@@ -1077,7 +1049,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                   child: NebulaButton(
                     label: anySelected
                         ? 'Qo\'shish ($_selectedCount)'
-                        : 'Vazifa tanlang',
+                        : S.get('select_task'),
                     icon: LucideIcons.plus,
                     height: 48,
                     disabled: !anySelected,
@@ -1121,13 +1093,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
             padding: const EdgeInsets.symmetric(
                 horizontal: 10, vertical: 8),
             decoration: BoxDecoration(
-              gradient: active
-                  ? LinearGradient(colors: [
-                      AppColors.primary.withOpacity(0.22),
-                      AppColors.secondary.withOpacity(0.12),
-                    ])
-                  : null,
-              color: active ? null : AppColors.surface,
+              color: active ? AppColors.primary.withOpacity(0.22) : AppColors.surface,
               borderRadius: BorderRadius.circular(8),
               border: Border.all(
                 color: active
@@ -1149,7 +1115,7 @@ class _TaskSuggestionPanelState extends State<_TaskSuggestionPanel> {
                     label,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: active
                           ? AppColors.primary
                           : AppColors.sub,
@@ -1182,15 +1148,7 @@ class _SuggestItem extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 8),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          gradient: task.isSelected
-              ? LinearGradient(colors: [
-                  AppColors.primary.withOpacity(0.18),
-                  AppColors.secondary.withOpacity(0.08),
-                ])
-              : null,
-          color: task.isSelected
-              ? null
-              : AppColors.surface,
+          color: task.isSelected ? AppColors.primary.withOpacity(0.18) : AppColors.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: task.isSelected
@@ -1220,7 +1178,7 @@ class _SuggestItem extends StatelessWidget {
               children: [
                 Text(
                   task.title,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
@@ -1232,8 +1190,8 @@ class _SuggestItem extends StatelessWidget {
                       color: AppColors.sub, size: 12),
                   const SizedBox(width: 4),
                   Text(
-                    '${task.durationMinutes} min',
-                    style: GoogleFonts.poppins(
+                    '${task.durationMinutes} ${S.tr('min', 'мин', 'min')}',
+                    style: TextStyle(
                         color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
@@ -1243,7 +1201,7 @@ class _SuggestItem extends StatelessWidget {
                   const SizedBox(width: 4),
                   Text(
                     '~${task.estimatedPoints} XP',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
@@ -1294,9 +1252,9 @@ class _TypingIndicatorState extends State<_TypingIndicator>
         child: ClipRRect(
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(8),
-            topRight: Radius.circular(16),
-            bottomLeft: Radius.circular(16),
-            bottomRight: Radius.circular(16),
+            topRight: Radius.circular(10),
+            bottomLeft: Radius.circular(10),
+            bottomRight: Radius.circular(10),
           ),
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
@@ -1307,9 +1265,9 @@ class _TypingIndicatorState extends State<_TypingIndicator>
                 color: AppColors.surface,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8),
-                  topRight: Radius.circular(16),
-                  bottomLeft: Radius.circular(16),
-                  bottomRight: Radius.circular(16),
+                  topRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
                 ),
                 border: Border.all(color: AppColors.glassBorder),
               ),
@@ -1329,12 +1287,7 @@ class _TypingIndicatorState extends State<_TypingIndicator>
                           width: 8,
                           height: 8,
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                AppColors.primary.withOpacity(0.4 + 0.6 * scale),
-                                AppColors.secondary.withOpacity(0.4 + 0.6 * scale),
-                              ],
-                            ),
+                            color: AppColors.primary.withOpacity(0.4 + 0.6 * scale),
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(

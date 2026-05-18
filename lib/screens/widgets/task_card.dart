@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../config/dimensions.dart';
@@ -57,13 +57,15 @@ class _TaskCardState extends State<TaskCard>
     final overdue = t.isOverdue;
     final upcoming = t.isUpcomingSoon;
 
+    // Difficulty drives the left accent stripe — calm color that reads
+    // as priority signal without screaming. Things 3 / Apple Notes pattern.
     final accent = done
         ? AppColors.border
         : overdue
             ? AppColors.danger
             : upcoming
                 ? AppColors.accent
-                : t.color;
+                : _diffAccent(t.difficulty);
 
     final card = ScaleTransition(
       scale: _scale,
@@ -82,25 +84,22 @@ class _TaskCardState extends State<TaskCard>
               width: 1,
             ),
           ),
-          child: Column(
+          child: Row(
             children: [
-              // ── Top color strip ──────────────────
+              // ── Left accent stripe (4px, priority signal) ─────
               Container(
-                height: 3,
+                width: 4,
+                constraints: const BoxConstraints(minHeight: 80),
                 decoration: BoxDecoration(
-                  color: done
-                      ? AppColors.border
-                      : overdue
-                          ? AppColors.danger
-                          : upcoming
-                              ? AppColors.accent
-                              : t.color,
+                  color: accent,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),
-                    topRight: Radius.circular(12),
+                    bottomLeft: Radius.circular(12),
                   ),
                 ),
               ),
+              Expanded(
+                child: Column(children: [
               // ── Content ──────────────────────────
               Padding(
                 padding: const EdgeInsets.all(14),
@@ -131,7 +130,7 @@ class _TaskCardState extends State<TaskCard>
                             children: [
                               Text(
                                 t.title,
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: done ? AppColors.sub : AppColors.txt,
                                   fontSize: 15,
                                   fontWeight: FontWeight.w600,
@@ -150,13 +149,13 @@ class _TaskCardState extends State<TaskCard>
                                 children: [
                                   if (widget.pinned)
                                     _InfoTag(
-                                      text: 'Pin',
+                                      text: S.get('title_pin'),
                                       color: AppColors.accent,
                                     ),
                                   if (t.hasSchedule)
                                     _TimeTag(task: t),
                                   _InfoTag(
-                                    text: '\u23F1 ${t.durationMinutes}m',
+                                    text: '\u23F1 ${t.durationMinutes}${S.tr('m', 'м', 'm')}',
                                     color: AppColors.sub,
                                   ),
                                   _DifficultyBadge(difficulty: t.difficulty),
@@ -170,21 +169,32 @@ class _TaskCardState extends State<TaskCard>
                           ),
                         ),
                         const SizedBox(width: D.sp8),
-                        // More menu (pin/edit/delete) — only for active tasks
-                        if (!done && (widget.onEdit != null ||
-                            widget.onDelete != null ||
-                            widget.onPin != null))
-                          _MoreMenu(
-                            onEdit: widget.onEdit,
-                            onDelete: widget.onDelete,
-                            onPin: widget.onPin,
-                            pinned: widget.pinned,
+                        // Action buttons cluster — both 32x32, gap 6, both
+                        // top-aligned so they sit on the same baseline
+                        // regardless of how tall the title column gets.
+                        SizedBox(
+                          height: 32,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (!done && (widget.onEdit != null ||
+                                  widget.onDelete != null ||
+                                  widget.onPin != null)) ...[
+                                _MoreMenu(
+                                  onEdit: widget.onEdit,
+                                  onDelete: widget.onDelete,
+                                  onPin: widget.onPin,
+                                  pinned: widget.pinned,
+                                ),
+                                const SizedBox(width: 6),
+                              ],
+                              _CompleteButton(
+                                done: done,
+                                ctrl: _ctrl,
+                                onComplete: widget.onComplete,
+                              ),
+                            ],
                           ),
-                        // Complete button
-                        _CompleteButton(
-                          done: done,
-                          ctrl: _ctrl,
-                          onComplete: widget.onComplete,
                         ),
                       ],
                     ),
@@ -199,6 +209,8 @@ class _TaskCardState extends State<TaskCard>
                     ],
                   ],
                 ),
+              ),
+                ]),
               ),
             ],
           ),
@@ -247,19 +259,29 @@ class _TaskCardState extends State<TaskCard>
           align: Alignment.centerLeft,
           color: AppColors.success,
           icon: LucideIcons.checkCircle2,
-          label: 'Bajardim',
+          label: S.get('did_it'),
         ),
         secondaryBackground: _swipeBg(
           align: Alignment.centerRight,
           color: AppColors.danger,
           icon: LucideIcons.trash2,
-          label: "O'chirish",
+          label: S.get('delete'),
         ),
         child: tappable,
       );
     }
 
     return tappable;
+  }
+
+  // Difficulty → calm priority color for the left accent stripe.
+  Color _diffAccent(String d) {
+    switch (d.toLowerCase()) {
+      case 'easy':   return const Color(0xFF34D399); // green
+      case 'hard':   return const Color(0xFFF87171); // red
+      case 'expert': return const Color(0xFFA855F7); // purple
+      default:       return AppColors.primary;       // medium → primary
+    }
   }
 
   Widget _swipeBg({
@@ -272,20 +294,9 @@ class _TaskCardState extends State<TaskCard>
       margin: const EdgeInsets.only(bottom: D.sp12),
       padding: const EdgeInsets.symmetric(horizontal: 24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            color.withOpacity(0.25),
-            color.withOpacity(0.12),
-          ],
-          begin: align == Alignment.centerLeft
-              ? Alignment.centerLeft
-              : Alignment.centerRight,
-          end: align == Alignment.centerLeft
-              ? Alignment.centerRight
-              : Alignment.centerLeft,
-        ),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(D.radiusLg),
-        border: Border.all(color: color.withOpacity(0.4)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       alignment: align,
       child: Row(
@@ -295,7 +306,7 @@ class _TaskCardState extends State<TaskCard>
           const SizedBox(width: 8),
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: color,
               fontSize: 13,
               fontWeight: FontWeight.w700,
@@ -324,20 +335,25 @@ class _MoreMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
-      padding: EdgeInsets.zero,
-      icon: Container(
-        width: 32,
-        height: 32,
-        margin: const EdgeInsets.only(right: 4),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          shape: BoxShape.circle,
-          border: Border.all(color: AppColors.border),
+    return SizedBox(
+      width: 32,
+      height: 32,
+      child: PopupMenuButton<String>(
+        padding: EdgeInsets.zero,
+        splashRadius: 16,
+        offset: const Offset(0, 36),
+        icon: Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: AppColors.primary.withOpacity(0.08),
+            shape: BoxShape.circle,
+            border: Border.all(
+                color: AppColors.primary.withOpacity(0.30), width: 1.5),
+          ),
+          child: Icon(Iconsax.more_copy,
+              size: 18, color: AppColors.primary),
         ),
-        child: Icon(LucideIcons.moreVertical,
-            size: 16, color: AppColors.sub),
-      ),
       color: AppColors.card,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -358,8 +374,8 @@ class _MoreMenu extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  pinned ? 'Pinni yechish' : 'Pin qilish',
-                  style: GoogleFonts.poppins(
+                  pinned ? S.get('unpin_btn') : S.get('pin_btn'),
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 13,
                   ),
@@ -376,8 +392,8 @@ class _MoreMenu extends StatelessWidget {
                     color: AppColors.primary, size: 18),
                 const SizedBox(width: 10),
                 Text(
-                  'Tahrirlash',
-                  style: GoogleFonts.poppins(
+                  S.get('edit_btn'),
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 13,
                   ),
@@ -394,8 +410,8 @@ class _MoreMenu extends StatelessWidget {
                     color: AppColors.danger, size: 18),
                 const SizedBox(width: 10),
                 Text(
-                  "O'chirish",
-                  style: GoogleFonts.poppins(
+                  S.get('delete'),
+                  style: TextStyle(
                     color: AppColors.danger,
                     fontSize: 13,
                   ),
@@ -404,12 +420,13 @@ class _MoreMenu extends StatelessWidget {
             ),
           ),
       ],
-      onSelected: (v) {
-        HapticFeedback.selectionClick();
-        if (v == 'edit') onEdit?.call();
-        if (v == 'delete') onDelete?.call();
-        if (v == 'pin') onPin?.call();
-      },
+        onSelected: (v) {
+          HapticFeedback.selectionClick();
+          if (v == 'edit') onEdit?.call();
+          if (v == 'delete') onDelete?.call();
+          if (v == 'pin') onPin?.call();
+        },
+      ),
     );
   }
 }
@@ -430,6 +447,9 @@ class _CompleteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Apple Reminders style: empty 2px-stroked circle when active, filled
+    // green circle with white check when complete. AnimatedSwitcher gives
+    // a tiny pop on toggle so the button feels responsive.
     return GestureDetector(
       onTapDown: (_) => ctrl.forward(),
       onTapUp: (_) async {
@@ -437,25 +457,54 @@ class _CompleteButton extends StatelessWidget {
         if (!done) onComplete();
       },
       onTapCancel: () => ctrl.reverse(),
-      child: AnimatedContainer(
+      child: AnimatedSwitcher(
         duration: const Duration(milliseconds: 220),
-        width: 36,
-        height: 36,
-        decoration: BoxDecoration(
-          color: done
-              ? AppColors.success.withOpacity(0.15)
-              : Colors.transparent,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: done ? AppColors.success : AppColors.border,
-            width: done ? 1 : 1.5,
-          ),
-        ),
-        child: Icon(
-          LucideIcons.check,
-          color: done ? AppColors.success : AppColors.sub,
-          size: 18,
-        ),
+        transitionBuilder: (c, anim) =>
+            ScaleTransition(scale: anim, child: c),
+        child: done
+            // Done state: filled circle, bold tick-circle icon
+            ? Container(
+                key: const ValueKey('done'),
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppColors.success,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.success.withOpacity(0.30),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Iconsax.tick_circle_copy,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              )
+            // Empty state: tinted circle with the same bold tick-circle
+            // icon so the empty form already looks like a "tap to check"
+            // affordance — no anonymous ring.
+            : Container(
+                key: const ValueKey('open'),
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: AppColors.success.withOpacity(0.10),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: AppColors.success.withOpacity(0.45),
+                    width: 1.5,
+                  ),
+                ),
+                child: Icon(
+                  Iconsax.tick_circle,
+                  color: AppColors.success.withOpacity(0.85),
+                  size: 22,
+                ),
+              ),
       ),
     );
   }
@@ -495,7 +544,7 @@ class _DifficultyBadge extends StatelessWidget {
           const SizedBox(width: 5),
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
                 color: color,
                 fontSize: 11,
                 fontWeight: FontWeight.w600),
@@ -543,7 +592,7 @@ class _InfoTag extends StatelessWidget {
         borderRadius: BorderRadius.circular(D.radiusSm),
       ),
       child: Text(text,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
               color: color,
               fontSize: 11,
               fontWeight: FontWeight.w500)),
@@ -571,12 +620,9 @@ class _TimeTag extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          color.withOpacity(0.2),
-          color.withOpacity(0.08),
-        ]),
+        color: color.withOpacity(0.10),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.4)),
+        border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -593,7 +639,7 @@ class _TimeTag extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             task.timeLabel,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: color,
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -615,12 +661,9 @@ class _OverdueBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          AppColors.danger.withOpacity(0.3),
-          AppColors.accent.withOpacity(0.15),
-        ]),
+        color: AppColors.danger.withOpacity(0.12),
         borderRadius: BorderRadius.circular(D.radiusSm),
-        border: Border.all(color: AppColors.danger.withOpacity(0.5)),
+        border: Border.all(color: AppColors.danger.withOpacity(0.4)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -629,8 +672,8 @@ class _OverdueBadge extends StatelessWidget {
               size: 12, color: AppColors.danger),
           const SizedBox(width: D.sp4),
           Text(
-            'O\'tkazib yuborildi',
-            style: GoogleFonts.poppins(
+            S.get('skipped'),
+            style: TextStyle(
               color: AppColors.danger,
               fontSize: 10,
               fontWeight: FontWeight.w700,
@@ -674,18 +717,9 @@ class _UpcomingBadgeState extends State<_UpcomingBadge>
         padding:
             const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            AppColors.accent.withOpacity(0.25 + 0.15 * _ctrl.value),
-            AppColors.primary.withOpacity(0.15),
-          ]),
+          color: AppColors.accent.withOpacity(0.12),
           borderRadius: BorderRadius.circular(D.radiusSm),
-          border: Border.all(color: AppColors.accent.withOpacity(0.5)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.accent.withOpacity(0.25 * _ctrl.value),
-              blurRadius: 8,
-            ),
-          ],
+          border: Border.all(color: AppColors.accent.withOpacity(0.4)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -694,8 +728,8 @@ class _UpcomingBadgeState extends State<_UpcomingBadge>
                 size: 12, color: AppColors.accent),
             const SizedBox(width: D.sp4),
             Text(
-              'Yaqinlashmoqda',
-              style: GoogleFonts.poppins(
+              S.get('upcoming_label'),
+              style: TextStyle(
                 color: AppColors.accent,
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
@@ -717,12 +751,7 @@ class _AiBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: D.sp8, vertical: D.sp4),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.primary.withOpacity(0.15),
-            AppColors.accent.withOpacity(0.1),
-          ],
-        ),
+        color: AppColors.primary.withOpacity(0.10),
         borderRadius: BorderRadius.circular(D.radiusSm),
         border: Border.all(color: AppColors.primary.withOpacity(0.25)),
       ),
@@ -733,7 +762,7 @@ class _AiBadge extends StatelessWidget {
           const SizedBox(width: D.sp4),
           Text(
             'AI',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
                 color: AppColors.primary,
                 fontSize: 11,
                 fontWeight: FontWeight.w600),

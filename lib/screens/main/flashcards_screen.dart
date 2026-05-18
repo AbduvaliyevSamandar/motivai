@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/flashcards_storage.dart';
@@ -73,14 +73,13 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            gradient:
-                LinearGradient(colors: AppColors.gradCosmic),
+            color: AppColors.primary,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.5),
-                blurRadius: 20,
-                offset: const Offset(0, 6),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -90,8 +89,6 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 18),
           SafeArea(
             child: Column(
               children: [
@@ -105,21 +102,15 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 4),
-                      ShaderMask(
-                        shaderCallback: (b) => LinearGradient(
-                          colors: AppColors.titleGradient,
-                        ).createShader(b),
-                        blendMode: BlendMode.srcIn,
-                        child: Text(
+                      Text(
                           'Flashcards',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: AppColors.txt,
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -167,35 +158,32 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: 64,
+              height: 64,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [
-                  AppColors.primary.withOpacity(0.25),
-                  AppColors.secondary.withOpacity(0.1),
-                ]),
+                color: AppColors.primary.withOpacity(0.10),
                 shape: BoxShape.circle,
               ),
               child: const Center(
-                child: Text('\u{1F4D2}', style: TextStyle(fontSize: 32)),
+                child: Text('\u{1F4D2}', style: TextStyle(fontSize: 28)),
               ),
             ),
             const SizedBox(height: 18),
             Text(
-              'Hali flashcards yo\'q',
-              style: GoogleFonts.poppins(
+              S.get('flashcards_empty'),
+              style: TextStyle(
                 color: AppColors.txt,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              'Yangi deck yarating — yodlash oson bo\'ladi',
+              S.get('deck_yarating'),
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.sub,
-                fontSize: 13,
+                fontSize: 12,
               ),
             ),
           ],
@@ -224,15 +212,15 @@ class _DeckCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: AppColors.surface,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: dueCards > 0
                     ? AppColors.accent.withOpacity(0.5)
@@ -242,8 +230,9 @@ class _DeckCard extends StatelessWidget {
               boxShadow: dueCards > 0
                   ? [
                       BoxShadow(
-                        color: AppColors.accent.withOpacity(0.18),
-                        blurRadius: 14,
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
                       ),
                     ]
                   : null,
@@ -254,8 +243,7 @@ class _DeckCard extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                        colors: AppColors.gradCosmic),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -276,7 +264,7 @@ class _DeckCard extends StatelessWidget {
                     children: [
                       Text(
                         deck.name,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
@@ -293,7 +281,7 @@ class _DeckCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             '$totalCards ta',
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               color: AppColors.sub,
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
@@ -306,13 +294,12 @@ class _DeckCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    colors: AppColors.gradFire),
+                                color: AppColors.accent,
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                '$dueCards ta takror',
-                                style: GoogleFonts.poppins(
+                                '$dueCards ${S.get('review_count')}',
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
@@ -367,7 +354,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(16)),
+            const BorderRadius.vertical(top: Radius.circular(10)),
       ),
       padding: EdgeInsets.only(
         left: 20,
@@ -388,8 +375,8 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
           ),
           const SizedBox(height: 18),
           Text(
-            'Yangi deck',
-            style: GoogleFonts.poppins(
+            S.get('deck_new'),
+            style: TextStyle(
               color: AppColors.txt,
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -399,8 +386,8 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
           const SizedBox(height: 16),
           GlassTextField(
             controller: _ctrl,
-            label: 'Deck nomi',
-            hint: 'Masalan: Ingliz tili so\'zlari',
+            label: S.get('deck_name'),
+            hint: S.tr('Masalan: Ingliz tili so\'zlari', 'Например: Английские слова', 'E.g. English words'),
             prefixIcon: LucideIcons.pencil,
           ),
           const SizedBox(height: 14),
@@ -418,11 +405,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    gradient: sel
-                        ? LinearGradient(
-                            colors: AppColors.gradCosmic)
-                        : null,
-                    color: sel ? null : AppColors.bg,
+                    color: sel ? AppColors.primary : AppColors.bg,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: sel
@@ -439,7 +422,7 @@ class _AddDeckSheetState extends State<_AddDeckSheet> {
           ),
           const SizedBox(height: 24),
           NebulaButton(
-            label: 'Yaratish',
+            label: S.tr('Yaratish', 'Создать', 'Create'),
             icon: LucideIcons.plus,
             onTap: () {
               final t = _ctrl.text.trim();
@@ -500,8 +483,8 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
     final due = await FlashcardsStorage.dueCards(widget.deck.id);
     if (due.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Takrorlash uchun karta yo\'q',
-            style: GoogleFonts.poppins()),
+        content: Text(S.get('flashcard_no_repeat'),
+            style: TextStyle()),
         backgroundColor: AppColors.info,
         behavior: SnackBarBehavior.floating,
       ));
@@ -533,14 +516,13 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
           width: 56,
           height: 56,
           decoration: BoxDecoration(
-            gradient:
-                LinearGradient(colors: AppColors.gradCosmic),
+            color: AppColors.primary,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: AppColors.primary.withOpacity(0.5),
-                blurRadius: 20,
-                offset: const Offset(0, 6),
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -550,7 +532,6 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
           SafeArea(
             child: Column(
               children: [
@@ -570,7 +551,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                       Expanded(
                         child: Text(
                           widget.deck.name,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.txt,
                             fontSize: 18,
                             fontWeight: FontWeight.w700,
@@ -588,8 +569,8 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                     child: NebulaButton(
                       label: due > 0
-                          ? "$due ta takrorlash"
-                          : 'Barchasi ko\'rib chiqilgan',
+                          ? "$due ${S.get('review_count')}"
+                          : S.tr('Barchasi ko\'rib chiqilgan', 'Все повторены', 'All reviewed'),
                       icon: LucideIcons.graduationCap,
                       disabled: due == 0,
                       onTap: _study,
@@ -607,8 +588,8 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                     style: TextStyle(fontSize: 32)),
                                 const SizedBox(height: 14),
                                 Text(
-                                  'Hali karta yo\'q',
-                                  style: GoogleFonts.poppins(
+                                  S.get('no_card_yet'),
+                                  style: TextStyle(
                                     color: AppColors.txt,
                                     fontSize: 18,
                                     fontWeight: FontWeight.w700,
@@ -616,9 +597,9 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  'Old-orqa tomon bilan karta qo\'shing',
+                                  S.get('card_add_help'),
                                   textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
+                                  style: TextStyle(
                                     color: AppColors.sub,
                                     fontSize: 13,
                                   ),
@@ -658,7 +639,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                         children: [
                                           Text(
                                             c.front,
-                                            style: GoogleFonts.poppins(
+                                            style: TextStyle(
                                               color: AppColors.txt,
                                               fontSize: 13,
                                               fontWeight:
@@ -671,7 +652,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                           const SizedBox(height: 4),
                                           Text(
                                             c.back,
-                                            style: GoogleFonts.poppins(
+                                            style: TextStyle(
                                               color: AppColors.sub,
                                               fontSize: 11,
                                             ),
@@ -696,8 +677,7 @@ class _DeckDetailScreenState extends State<DeckDetailScreen> {
                                         ),
                                         child: Text(
                                           '${c.reviews}x',
-                                          style: GoogleFonts
-                                                  .spaceGrotesk(
+                                          style: TextStyle(
                                               color: AppColors.info,
                                               fontSize: 10,
                                               fontWeight:
@@ -745,7 +725,7 @@ class _AddCardSheetState extends State<_AddCardSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(16)),
+            const BorderRadius.vertical(top: Radius.circular(10)),
       ),
       padding: EdgeInsets.only(
         left: 20,
@@ -766,8 +746,8 @@ class _AddCardSheetState extends State<_AddCardSheet> {
           ),
           const SizedBox(height: 18),
           Text(
-            'Yangi karta',
-            style: GoogleFonts.poppins(
+            S.get('card_new'),
+            style: TextStyle(
               color: AppColors.txt,
               fontSize: 18,
               fontWeight: FontWeight.w700,
@@ -777,20 +757,20 @@ class _AddCardSheetState extends State<_AddCardSheet> {
           const SizedBox(height: 16),
           GlassTextField(
             controller: _front,
-            label: 'Old tomon (savol)',
+            label: S.get('card_front_q'),
             prefixIcon: LucideIcons.helpCircle,
             maxLines: 2,
           ),
           const SizedBox(height: 12),
           GlassTextField(
             controller: _back,
-            label: 'Orqa tomon (javob)',
+            label: S.get('card_back_a'),
             prefixIcon: LucideIcons.lightbulb,
             maxLines: 3,
           ),
           const SizedBox(height: 24),
           NebulaButton(
-            label: "Qo'shish",
+            label: S.get('add_action'),
             icon: LucideIcons.plus,
             onTap: () {
               final f = _front.text.trim();
@@ -867,8 +847,8 @@ class _StudyScreenState extends State<StudyScreen>
       return Scaffold(
         backgroundColor: const Color(0xFF08091A),
         body: Center(
-          child: Text('Karta yo\'q',
-              style: GoogleFonts.poppins(color: Colors.white)),
+          child: Text(S.get('flashcard_no_card'),
+              style: TextStyle(color: Colors.white)),
         ),
       );
     }
@@ -878,7 +858,6 @@ class _StudyScreenState extends State<StudyScreen>
       backgroundColor: const Color(0xFF08091A),
       body: Stack(
         children: [
-          const AuroraBackground(),
           SafeArea(
             child: Column(
               children: [
@@ -894,7 +873,7 @@ class _StudyScreenState extends State<StudyScreen>
                       const Spacer(),
                       Text(
                         '${_idx + 1} / ${_queue.length}',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -935,19 +914,14 @@ class _StudyScreenState extends State<StudyScreen>
                               constraints: const BoxConstraints(
                                   minHeight: 280),
                               decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: isBack
-                                      ? AppColors.gradAurora
-                                      : AppColors.gradCosmic,
-                                ),
+                                color: AppColors.primary,
                                 borderRadius:
-                                    BorderRadius.circular(16),
+                                    BorderRadius.circular(10),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: AppColors.primary
-                                        .withOpacity(0.4),
-                                    blurRadius: 30,
-                                    spreadRadius: 2,
+                                    color: Colors.black.withOpacity(0.04),
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 1),
                                   ),
                                 ],
                               ),
@@ -963,7 +937,7 @@ class _StudyScreenState extends State<StudyScreen>
                                     children: [
                                       Text(
                                         isBack ? 'JAVOB' : 'SAVOL',
-                                        style: GoogleFonts.poppins(
+                                        style: TextStyle(
                                           color: Colors.white
                                               .withOpacity(0.6),
                                           fontSize: 10,
@@ -979,7 +953,7 @@ class _StudyScreenState extends State<StudyScreen>
                                             : card.front,
                                         textAlign: TextAlign.center,
                                         style:
-                                            GoogleFonts.poppins(
+                                            TextStyle(
                                           color: Colors.white,
                                           fontSize: 24,
                                           fontWeight: FontWeight.w700,
@@ -1003,13 +977,13 @@ class _StudyScreenState extends State<StudyScreen>
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                     child: Row(
                       children: [
-                        _rateBtn('Qaytadan', AppColors.danger, 0),
+                        _rateBtn(S.tr('Qaytadan', 'Снова', 'Again'), AppColors.danger, 0),
                         const SizedBox(width: 6),
-                        _rateBtn('Qiyin', AppColors.accent, 1),
+                        _rateBtn(S.get('hard'), AppColors.accent, 1),
                         const SizedBox(width: 6),
-                        _rateBtn('Yaxshi', AppColors.info, 2),
+                        _rateBtn(S.tr('Yaxshi', 'Хорошо', 'Good'), AppColors.info, 2),
                         const SizedBox(width: 6),
-                        _rateBtn('Oson', AppColors.success, 3),
+                        _rateBtn(S.get('easy'), AppColors.success, 3),
                       ],
                     ),
                   )
@@ -1017,9 +991,9 @@ class _StudyScreenState extends State<StudyScreen>
                   Padding(
                     padding: const EdgeInsets.fromLTRB(32, 0, 32, 24),
                     child: Text(
-                      'Javobni ko\'rish uchun kartaga bosing',
+                      S.get('flashcard_tap_for_back'),
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: Colors.white.withOpacity(0.7),
                         fontSize: 13,
                       ),
@@ -1051,7 +1025,7 @@ class _StudyScreenState extends State<StudyScreen>
             child: Center(
               child: Text(
                 label,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: color,
                   fontSize: 11,
                   fontWeight: FontWeight.w700,

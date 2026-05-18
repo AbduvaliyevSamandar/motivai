@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
@@ -146,8 +145,8 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         tomorrow.day == d.day;
     final hh = d.hour.toString().padLeft(2, '0');
     final mm = d.minute.toString().padLeft(2, '0');
-    if (sameDay) return 'Bugun, $hh:$mm';
-    if (isTomorrow) return 'Ertaga, $hh:$mm';
+    if (sameDay) return '${S.tr('Bugun', 'Сегодня', 'Today')}, $hh:$mm';
+    if (isTomorrow) return '${S.tr('Ertaga', 'Завтра', 'Tomorrow')}, $hh:$mm';
     return '${d.day}/${d.month}/${d.year}, $hh:$mm';
   }
 
@@ -160,7 +159,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(16)),
+            const BorderRadius.vertical(top: Radius.circular(10)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -189,14 +188,13 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: AppColors.gradCosmic),
+                      color: AppColors.primary,
                       borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color:
-                              AppColors.primary.withOpacity(0.4),
-                          blurRadius: 14,
+                          color: Colors.black.withOpacity(0.04),
+                          blurRadius: 4,
+                          offset: const Offset(0, 1),
                         ),
                       ],
                     ),
@@ -204,21 +202,15 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                         color: Colors.white, size: 22),
                   ),
                   const SizedBox(width: 12),
-                  ShaderMask(
-                    shaderCallback: (b) => LinearGradient(
-                      colors: AppColors.titleGradient,
-                    ).createShader(b),
-                    blendMode: BlendMode.srcIn,
-                    child: Text(
-                      _isEdit ? 'Vazifani tahrirlash' : S.get('add_task'),
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
+                  Text(
+                      _isEdit ? S.get('edit_task') : S.get('add_task'),
+                      style: TextStyle(
+                        color: AppColors.txt,
                         fontSize: 24,
                         fontWeight: FontWeight.w700,
                         letterSpacing: -0.5,
                       ),
                     ),
-                  ),
                 ],
               ),
               const SizedBox(height: 22),
@@ -249,20 +241,20 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               const SizedBox(height: 18),
 
               // ── SCHEDULE TIME ────────────────────────
-              _label('Vaqt'),
+              _label(S.tr('Vaqt', 'Время', 'Time')),
               const SizedBox(height: 6),
               _timePickerTile(),
 
               // ── REMINDER (only if scheduled) ─────────
               if (_scheduledAt != null) ...[
                 const SizedBox(height: 14),
-                _label('Eslatma'),
+                _label(S.tr('Eslatma', 'Напоминание', 'Reminder')),
                 const SizedBox(height: 6),
                 _reminderChips(),
               ],
 
               const SizedBox(height: 18),
-              _label('Kategoriya'),
+              _label(S.get('category')),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 8,
@@ -277,7 +269,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                 }).toList(),
               ),
               const SizedBox(height: 18),
-              _label('Qiyinlik'),
+              _label(S.tr('Qiyinlik', 'Сложность', 'Difficulty')),
               const SizedBox(height: 8),
               Row(
                 children: _difficulties.map((d) {
@@ -297,13 +289,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                           padding:
                               const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            gradient: active
-                                ? LinearGradient(colors: [
-                                    d.$2.withOpacity(0.25),
-                                    d.$2.withOpacity(0.08),
-                                  ])
-                                : null,
-                            color: active ? null : AppColors.bg,
+                            color: active ? d.$2.withOpacity(0.25) : AppColors.bg,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: active ? d.$2 : AppColors.border,
@@ -323,7 +309,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                               const SizedBox(height: 6),
                               Text(
                                 S.get(d.$1),
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: active ? d.$2 : AppColors.sub,
                                   fontSize: 11,
                                   fontWeight: active
@@ -351,7 +337,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
               ),
               const SizedBox(height: 24),
               NebulaButton(
-                label: _isEdit ? 'Saqlash' : S.get('add_task'),
+                label: _isEdit ? S.get('save') : S.get('add_task'),
                 icon: _isEdit ? LucideIcons.check : LucideIcons.plus,
                 loading: _loading,
                 onTap: _submit,
@@ -366,7 +352,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
 
   Widget _label(String text) => Text(
         text.toUpperCase(),
-        style: GoogleFonts.poppins(
+        style: TextStyle(
           color: AppColors.sub,
           fontSize: 11,
           fontWeight: FontWeight.w700,
@@ -414,9 +400,9 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
                     Expanded(
                       child: Text(
                         _scheduledAt == null
-                            ? 'Vaqt tanlash'
+                            ? S.tr('Vaqt tanlash', 'Выбрать время', 'Pick time')
                             : _formatDateTime(_scheduledAt!),
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: _scheduledAt != null
                               ? AppColors.txt
                               : AppColors.sub,
@@ -467,13 +453,13 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       runSpacing: 8,
       children: [
         NebulaChip(
-          label: 'Yo\'q',
+          label: S.get('yo_q'),
           emoji: '\u{1F515}',
           selected: _reminderMinutes == 0,
           onTap: () => setState(() => _reminderMinutes = 0),
         ),
         ..._reminderOptions.map((m) {
-          final label = m < 60 ? '$m min' : '${m ~/ 60} soat';
+          final label = m < 60 ? '$m ${S.tr('min', 'мин', 'min')}' : '${m ~/ 60} ${S.get('unit_hour')}';
           return NebulaChip(
             label: label,
             emoji: '\u{1F514}',
@@ -488,7 +474,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
   Future<void> _submit() async {
     final title = _titleCtrl.text.trim();
     if (title.isEmpty) {
-      _toast('Vazifa nomini kiriting', err: true);
+      _toast(S.get('enter_task_name'), err: true);
       return;
     }
     setState(() => _loading = true);
@@ -531,16 +517,16 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
           await context.read<TaskProvider>().loadAll();
           if (!mounted) return;
           Navigator.pop(context);
-          _toast('Yangilandi');
+          _toast(S.tr('Yangilandi', 'Обновлено', 'Updated'));
         } else {
           setState(() => _loading = false);
-          _toast(context.read<TaskProvider>().error ?? "Xatolik",
+          _toast(context.read<TaskProvider>().error ?? S.get('error'),
               err: true);
         }
       } catch (e) {
         if (!mounted) return;
         setState(() => _loading = false);
-        _toast('Xatolik: $e', err: true);
+        _toast('${S.get('error')}: $e', err: true);
       }
       return;
     }
@@ -565,7 +551,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
       if (!ok) {
         setState(() => _loading = false);
         _toast(
-          'Xatolik: ${context.read<TaskProvider>().error ?? "Server javob bermadi"}',
+          '${S.get('error')}: ${context.read<TaskProvider>().error ?? S.tr('Server javob bermadi', 'Сервер не отвечает', 'Server did not respond')}',
           err: true,
         );
         return;
@@ -584,11 +570,11 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
 
       if (!mounted) return;
       Navigator.pop(context);
-      _toast("Vazifa qo'shildi");
+      _toast(S.get('task_added'));
     } catch (e) {
       if (!mounted) return;
       setState(() => _loading = false);
-      _toast('Xatolik: ${e.toString()}', err: true);
+      _toast('${S.get('error')}: ${e.toString()}', err: true);
       return;
     }
     if (mounted) setState(() => _loading = false);
@@ -602,7 +588,7 @@ class _AddTaskSheetState extends State<_AddTaskSheet> {
         const SizedBox(width: 8),
         Expanded(
             child: Text(msg,
-                style: GoogleFonts.poppins(color: Colors.white))),
+                style: TextStyle(color: Colors.white))),
       ]),
       backgroundColor: err ? AppColors.danger : AppColors.success,
       behavior: SnackBarBehavior.floating,

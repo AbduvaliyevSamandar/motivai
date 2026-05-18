@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
@@ -43,13 +43,13 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         behavior: SnackBarBehavior.floating,
         backgroundColor: AppColors.danger,
-        content: Text('Avval "Do\'stlar" bo\'limida do\'st qo\'shing',
-            style: GoogleFonts.poppins()),
+        content: Text(S.get('challenge_no_friend'),
+            style: TextStyle()),
       ));
       return;
     }
     Friend? friend = _friends.first;
-    final titleCtrl = TextEditingController(text: '7 kunlik sprint');
+    final titleCtrl = TextEditingController(text: S.tr('7 kunlik sprint', '7-дневный спринт', '7-day sprint'));
     int goal = 3;
     int days = 7;
 
@@ -65,7 +65,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             decoration: BoxDecoration(
               color: AppColors.card,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  const BorderRadius.vertical(top: Radius.circular(10)),
               border: Border(
                 top:
                     BorderSide(color: AppColors.glassBorder, width: 1.5),
@@ -86,8 +86,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   ),
                   const SizedBox(height: 18),
                   Text(
-                    'Yangi chellenj',
-                    style: GoogleFonts.poppins(
+                    S.get('challenge_new'),
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -97,7 +97,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   const SizedBox(height: 16),
                   GlassTextField(
                     controller: titleCtrl,
-                    label: 'Sarlavha',
+                    label: S.tr('Sarlavha', 'Заголовок', 'Title'),
                     prefixIcon: Iconsax.cup,
                   ),
                   const SizedBox(height: 12),
@@ -123,7 +123,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                                             fontSize: 18)),
                                     const SizedBox(width: 10),
                                     Text(f.name,
-                                        style: GoogleFonts.poppins(
+                                        style: TextStyle(
                                           color: AppColors.txt,
                                           fontSize: 13,
                                         )),
@@ -142,7 +142,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                     children: [
                       Expanded(
                         child: _numField(
-                          label: 'Kun',
+                          label: S.get('day'),
                           value: days,
                           min: 3,
                           max: 30,
@@ -152,7 +152,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: _numField(
-                          label: 'Kuniga vazifa',
+                          label: S.get('goal_daily_task'),
                           value: goal,
                           min: 1,
                           max: 10,
@@ -163,7 +163,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   ),
                   const SizedBox(height: 18),
                   NebulaButton(
-                    label: 'Chellenj boshlash',
+                    label: S.get('challenge_start'),
                     icon: Iconsax.send_2,
                     onTap: () async {
                       if (friend == null) return;
@@ -211,10 +211,10 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(label,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: AppColors.sub, fontSize: 11)),
                 Text('$value',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
@@ -256,11 +256,11 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
-        title: Text('Bugungi ball',
-            style: GoogleFonts.poppins(
+        title: Text(S.get('challenge_today_score'),
+            style: TextStyle(
               color: AppColors.txt,
               fontWeight: FontWeight.w700,
             )),
@@ -268,8 +268,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '${c.friendName} ning bugun bajargan vazifalari sonini kiriting',
-              style: GoogleFonts.poppins(
+              S.get('friend_score_q').replaceAll('{name}', c.friendName),
+              style: TextStyle(
                   color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
@@ -277,7 +277,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             TextField(
               controller: ctrl,
               keyboardType: TextInputType.number,
-              style: GoogleFonts.poppins(color: AppColors.txt),
+              style: TextStyle(color: AppColors.txt),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: AppColors.bg,
@@ -301,8 +301,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('Bekor',
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+            child: Text(S.get('cancel'),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -317,8 +317,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8)),
             ),
-            child: Text('Saqlash',
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w700)),
+            child: Text(S.get('save'),
+                style: TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -336,19 +336,13 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
           icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
-        title: ShaderMask(
-          shaderCallback: (b) => LinearGradient(
-            colors: AppColors.titleGradient,
-          ).createShader(b),
-          blendMode: BlendMode.srcIn,
-          child: Text('Chellenjlar',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+        title: Text(S.get('challenges'),
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
-        ),
         actions: [
           IconButton(
             icon: Icon(LucideIcons.plus, color: AppColors.primary),
@@ -358,8 +352,6 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 24),
           SafeArea(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -383,24 +375,24 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('\u{1F3C6}', style: const TextStyle(fontSize: 32)),
+            Text('\u{1F3C6}', style: const TextStyle(fontSize: 28)),
             const SizedBox(height: 14),
-            Text('Chellenj yo\'q',
-                style: GoogleFonts.poppins(
+            Text(S.get('challenge_empty'),
+                style: TextStyle(
                   color: AppColors.txt,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 )),
             const SizedBox(height: 6),
             Text(
-              'Do\'stingiz bilan 7 kunlik turnir yarating',
+              S.get('challenge_empty_sub'),
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                  color: AppColors.sub, fontSize: 13),
+              style: TextStyle(
+                  color: AppColors.sub, fontSize: 12),
             ),
             const SizedBox(height: 20),
             NebulaButton(
-              label: 'Yangisini yaratish',
+              label: S.get('create_new'),
               icon: LucideIcons.plus,
               expand: false,
               onTap: _showCreateSheet,
@@ -419,11 +411,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          AppColors.primary.withOpacity(0.15),
-          AppColors.secondary.withOpacity(0.08),
-        ]),
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.primary.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.primary.withOpacity(0.3)),
       ),
       child: Column(
@@ -443,7 +432,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(c.title,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
@@ -451,8 +440,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                     )),
               ),
               if (c.isActive)
-                Text('${c.daysLeft} kun',
-                    style: GoogleFonts.poppins(
+                Text('${c.daysLeft} ${S.get("unit_day")}',
+                    style: TextStyle(
                       color: AppColors.accent,
                       fontSize: 11,
                       fontWeight: FontWeight.w700,
@@ -461,7 +450,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             )
               else
                 Text(winning ? 'G\'olib' : '2-o\'rin',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: winning
                           ? AppColors.accent
                           : AppColors.sub,
@@ -471,8 +460,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
             ],
           ),
           const SizedBox(height: 4),
-          Text('${c.goalTasksPerDay} vazifa/kun × ${c.days} kun',
-              style: GoogleFonts.poppins(
+          Text(S.get('challenge_recap').replaceAll('{a}', '${c.goalTasksPerDay}').replaceAll('{b}', '${c.days}'),
+              style: TextStyle(
                   color: AppColors.sub, fontSize: 11),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
@@ -490,8 +479,8 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
                   onPressed: () => _reportFriendScore(c),
                   icon: Icon(LucideIcons.pencil,
                       color: AppColors.accent, size: 16),
-                  label: Text('Do\'st ballini kiritish',
-                      style: GoogleFonts.poppins(
+                  label: Text(S.get('challenge_friend_score'),
+                      style: TextStyle(
                         color: AppColors.txt,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -529,7 +518,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         SizedBox(
           width: 70,
           child: Text(name,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 11,
                 fontWeight:
@@ -549,7 +538,7 @@ class _FriendChallengesScreenState extends State<FriendChallengesScreen> {
         ),
         const SizedBox(width: 8),
         Text('$value/$goal',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: color,
               fontSize: 11,
               fontWeight: FontWeight.w700,

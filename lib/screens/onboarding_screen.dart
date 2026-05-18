@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -31,26 +31,26 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   List<_OSlide> get _slides => [
         _OSlide(
           emoji: '\u{1F31F}',
-          title: 'MotivAI ga xush kelibsiz!',
-          body: 'Maqsadga har kuni bir qadam — AI bilan motivatsion reja.',
+          title: S.get('welcome_to_motivai'),
+          body: S.get('ai_step_motto'),
           gradient: AppColors.gradCosmic,
         ),
         _OSlide(
           emoji: '',
-          title: 'Vazifa qo\'shing',
-          body: 'Vaqti, qiyinligi va eslatma bilan. Bajarsa XP oling.',
+          title: S.get('tasks_add_first'),
+          body: S.tr('Vaqti, qiyinligi va eslatma bilan. Bajarsa XP oling.', 'С временем, сложностью и напоминанием. Получайте XP за выполнение.', 'With time, difficulty and reminder. Earn XP on completion.'),
           gradient: AppColors.gradGold,
         ),
         _OSlide(
           emoji: '\u{1F525}',
-          title: 'Streak saqlang',
-          body: 'Har kuni ish qiling — olov o\'chirmasin! Freeze kun ham bor.',
+          title: S.get('wrapped_streak'),
+          body: S.tr('Har kuni ish qiling — olov o\'chirmasin! Freeze kun ham bor.', 'Работайте каждый день — не дайте огню погаснуть! Есть и Freeze день.', 'Work every day — keep the fire alive! Freeze days available.'),
           gradient: AppColors.gradFire,
         ),
         _OSlide(
           emoji: '',
-          title: 'Reytingda yuqorilang',
-          body: 'Pomodoro, flashcards, yutuqlar — hamma sizni kuchli qiladi.',
+          title: S.get('goal_rating'),
+          body: S.tr('Pomodoro, flashcards, yutuqlar — hamma sizni kuchli qiladi.', 'Pomodoro, флешкарты, достижения — всё делает вас сильнее.', 'Pomodoro, flashcards, achievements — all make you stronger.'),
           gradient: AppColors.gradAurora,
         ),
       ];
@@ -79,8 +79,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       backgroundColor: const Color(0xFF08091A),
       body: Stack(
         children: [
-          const AuroraBackground(),
-          const ParticleField(count: 40),
           SafeArea(
             child: Column(
               children: [
@@ -113,8 +111,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         TextButton(
                           onPressed: _finish,
                           child: Text(
-                            "O'tkazib yuborish",
-                            style: GoogleFonts.poppins(
+                            S.get('skip_btn'),
+                            style: TextStyle(
                               color: Colors.white.withOpacity(0.7),
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
@@ -149,7 +147,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
                   child: NebulaButton(
-                    label: isLast ? 'Boshlash' : 'Keyingi',
+                    label: isLast ? S.tr('Boshlash', 'Начать', 'Start') : S.tr('Keyingi', 'Далее', 'Next'),
                     icon: isLast
                         ? Iconsax.send_2
                         : LucideIcons.arrowRight,
@@ -216,27 +214,22 @@ class _SlideView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
-          ShaderMask(
-            shaderCallback: (b) =>
-                LinearGradient(colors: slide.gradient).createShader(b),
-            blendMode: BlendMode.srcIn,
-            child: Text(
+          Text(
               slide.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.8,
                 height: 1.2,
               ),
             ),
-          ),
           const SizedBox(height: 16),
           Text(
             slide.body,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white.withOpacity(0.8),
               fontSize: 15,
               height: 1.6,
@@ -263,27 +256,21 @@ class _GoalPicker extends StatelessWidget {
           const SizedBox(height: 20),
           Text('\u{1F3AF}', style: const TextStyle(fontSize: 32)),
           const SizedBox(height: 14),
-          ShaderMask(
-            shaderCallback: (b) => LinearGradient(
-              colors: AppColors.gradCosmic,
-            ).createShader(b),
-            blendMode: BlendMode.srcIn,
-            child: Text(
-              'Asosiy maqsadingiz?',
+          Text(
+              S.get('primary_goal_q'),
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -0.8,
               ),
             ),
-          ),
           const SizedBox(height: 8),
           Text(
-            'Tanlang — biz sizga mos reja tuzamiz',
+            S.get('tap_we_plan'),
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white.withOpacity(0.7),
               fontSize: 13,
             ),
@@ -299,25 +286,19 @@ class _GoalPicker extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 8),
                   child: Material(
                     color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(10),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(10),
                       onTap: () => onSelect(o.id),
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 180),
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 12),
                         decoration: BoxDecoration(
-                          gradient: active
-                              ? LinearGradient(colors: [
-                                  Colors.white.withOpacity(0.18),
-                                  Colors.white.withOpacity(0.08),
-                                ])
-                              : null,
                           color: active
-                              ? null
+                              ? Colors.white.withOpacity(0.14)
                               : Colors.white.withOpacity(0.04),
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: active
                                 ? Colors.white.withOpacity(0.8)
@@ -347,13 +328,13 @@ class _GoalPicker extends StatelessWidget {
                                     CrossAxisAlignment.start,
                                 children: [
                                   Text(o.name,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 13,
                                         fontWeight: FontWeight.w700,
                                       )),
                                   Text(o.desc,
-                                      style: GoogleFonts.poppins(
+                                      style: TextStyle(
                                         color: Colors.white
                                             .withOpacity(0.65),
                                         fontSize: 11,

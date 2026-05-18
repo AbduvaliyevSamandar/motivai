@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
@@ -19,7 +19,16 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _visibleMonth = DateTime.now();
   DateTime _selected = DateTime.now();
 
-  static const _weekdayLabels = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
+  // NOT const — getter so labels stay in sync with the active language.
+  List<String> get _weekdayLabels => [
+        S.tr('Du', 'Пн', 'Mon'),
+        S.tr('Se', 'Вт', 'Tue'),
+        S.tr('Ch', 'Ср', 'Wed'),
+        S.tr('Pa', 'Чт', 'Thu'),
+        S.tr('Ju', 'Пт', 'Fri'),
+        S.tr('Sh', 'Сб', 'Sat'),
+        S.tr('Ya', 'Вс', 'Sun'),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +48,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 20),
           SafeArea(
             child: Column(
               children: [
@@ -76,21 +83,15 @@ class _CalendarScreenState extends State<CalendarScreen> {
             onPressed: () => Navigator.pop(context),
           ),
           const SizedBox(width: 4),
-          ShaderMask(
-            shaderCallback: (b) => LinearGradient(
-              colors: AppColors.titleGradient,
-            ).createShader(b),
-            blendMode: BlendMode.srcIn,
-            child: Text(
-              'Kalendar',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+          Text(
+              S.tr('Kalendar', 'Календарь', 'Calendar'),
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.5,
               ),
             ),
-          ),
           const Spacer(),
           Material(
             color: AppColors.surface,
@@ -112,8 +113,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   border: Border.all(color: AppColors.border),
                 ),
                 child: Text(
-                  'Bugun',
-                  style: GoogleFonts.poppins(
+                  S.tr('Bugun', 'Сегодня', 'Today'),
+                  style: TextStyle(
                     color: AppColors.primary,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
@@ -129,8 +130,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget _monthNav() {
     final monthNames = [
-      'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
-      'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+      S.tr('Yanvar', 'Январь', 'January'),
+      S.tr('Fevral', 'Февраль', 'February'),
+      S.tr('Mart', 'Март', 'March'),
+      S.tr('Aprel', 'Апрель', 'April'),
+      S.tr('May', 'Май', 'May'),
+      S.tr('Iyun', 'Июнь', 'June'),
+      S.tr('Iyul', 'Июль', 'July'),
+      S.tr('Avgust', 'Август', 'August'),
+      S.tr('Sentabr', 'Сентябрь', 'September'),
+      S.tr('Oktabr', 'Октябрь', 'October'),
+      S.tr('Noyabr', 'Ноябрь', 'November'),
+      S.tr('Dekabr', 'Декабрь', 'December'),
     ];
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 4, 24, 4),
@@ -149,7 +160,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             child: Center(
               child: Text(
                 '${monthNames[_visibleMonth.month - 1]} ${_visibleMonth.year}',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -205,7 +216,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   child: Center(
                     child: Text(
                       d,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: AppColors.sub,
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
@@ -285,10 +296,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 width: 72,
                 height: 72,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    AppColors.primary.withOpacity(0.2),
-                    AppColors.secondary.withOpacity(0.1),
-                  ]),
+                  color: AppColors.primary.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
                 child: const Center(
@@ -298,8 +306,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
               ),
               const SizedBox(height: 12),
               Text(
-                'Bu kunda vazifa yo\'q',
-                style: GoogleFonts.poppins(
+                S.get('no_task_today'),
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
@@ -360,7 +368,7 @@ class _CalendarCell extends StatelessWidget {
           children: [
             Text(
               '$day',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: isSelected
                     ? Colors.white
                     : (isToday ? AppColors.primary : AppColors.txt),
@@ -460,7 +468,7 @@ class _CalTaskItem extends StatelessWidget {
                         task.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -472,7 +480,7 @@ class _CalTaskItem extends StatelessWidget {
                         const SizedBox(height: 2),
                         Text(
                           task.timeLabel,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,

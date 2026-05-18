@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math' as math;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_data_sync.dart';
 import 'user_scope.dart';
 
 /// Local friends list (no backend yet) — each friend is remembered by name,
@@ -109,6 +110,43 @@ class FriendsStorage {
 
   static Future<void> _persist() async {
     final p = await SharedPreferences.getInstance();
+    await p.setString(_listKey,
+        jsonEncode(_cache.map((e) => e.toJson()).toList()));
+    UserDataSync.schedule();
+  }
+
+  /// Cross-device sync: dump friends list (with my invite code) as a
+  /// single map so the receiving device gets both lists in one shot.
+  static Future<dynamic> exportJson() async {
+    await _ensure();
+    return {
+      'friends': _cache.map((f) => f.toJson()).toList(),
+      'myCode': _myCode,
+    };
+  }
+
+  /// Cross-device sync: overwrite local friends list with server-side
+  /// data. Accepts both the new map shape and a legacy raw list shape.
+  static Future<void> importJson(dynamic json) async {
+    final p = await SharedPreferences.getInstance();
+    List rawList = const [];
+    String? myCode;
+    if (json is Map) {
+      rawList = (json['friends'] as List?) ?? const [];
+      myCode = (json['myCode'] as String?);
+    } else if (json is List) {
+      rawList = json;
+    }
+    _cache = rawList
+        .whereType<Map>()
+        .map((e) => Friend.fromJson(e.cast<String, dynamic>()))
+        .toList();
+    if (myCode != null && myCode.isNotEmpty) {
+      _myCode = myCode;
+      await p.setString(_myCodeKey, myCode);
+    }
+    _loaded = true;
+    _loadedFor = UserScope.userId;
     await p.setString(_listKey,
         jsonEncode(_cache.map((e) => e.toJson()).toList()));
   }

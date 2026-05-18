@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:provider/provider.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -18,6 +17,8 @@ import '../../widgets/morning_ritual_card.dart';
 import '../../widgets/offline_banner.dart';
 import '../../services/daily_challenge.dart';
 import '../../services/coins_storage.dart';
+import '../../services/activity_tracker.dart';
+import '../../services/smart_reminder.dart';
 import '../../widgets/coins_badge.dart';
 import '../widgets/task_card.dart';
 import '../widgets/completion_dialog.dart';
@@ -35,6 +36,15 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   bool _showCompleted = false;
   bool _mitMode = false; // Most Important Tasks - show top 3 only
+
+  @override
+  void initState() {
+    super.initState();
+    // Track app-open + reschedule tomorrow's smart nudge based on the
+    // updated activity histogram. Both calls are fire-and-forget.
+    ActivityTracker.log('open');
+    SmartReminder.refresh();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +66,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 26),
           RefreshIndicator(
             color: AppColors.primary,
             backgroundColor: AppColors.card,
@@ -133,7 +141,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     sliver: SliverToBoxAdapter(
                       child: _SectionBanner(
                         icon: Iconsax.send_2,
-                        title: 'Vazifalar',
+                        title: S.get('tasks_label'),
                         badge: '${tasks.completedToday}/${tasks.totalToday}',
                         gradient: AppColors.gradCosmic,
                       ),
@@ -231,8 +239,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                '"${task.title}" o\'chirildi',
-                style: GoogleFonts.poppins(
+                '"${task.title}" ${S.tr('o\'chirildi', 'удалена', 'deleted')}',
+                style: TextStyle(
                     color: Colors.white, fontWeight: FontWeight.w500),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -244,7 +252,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 5),
         action: SnackBarAction(
-          label: 'BEKOR QILISH',
+          label: S.get('cancel_caps'),
           textColor: Colors.white,
           onPressed: () async {
             HapticFeedback.lightImpact();
@@ -289,6 +297,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColors.primary,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primary.withOpacity(0.35),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: const Icon(
             LucideIcons.plus,
@@ -361,7 +376,7 @@ class _HeaderRow extends StatelessWidget {
             children: [
               Text(
                 greet,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
@@ -370,7 +385,7 @@ class _HeaderRow extends StatelessWidget {
               const SizedBox(height: 2),
               Text(
                 name.isEmpty ? 'User' : name,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
@@ -472,7 +487,7 @@ class _HeaderIconBtn extends StatelessWidget {
                   child: Center(
                     child: Text(
                       badge > 9 ? '9+' : '$badge',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: Colors.white,
                         fontSize: 9,
                         fontWeight: FontWeight.w700,
@@ -533,7 +548,7 @@ class _Avatar extends StatelessWidget {
   Widget _ini(String s) => Center(
         child: Text(
           s.toUpperCase(),
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.txt,
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -563,10 +578,6 @@ class _HeroXPRing extends StatelessWidget {
 
     return GlassCard(
       padding: const EdgeInsets.all(24),
-      glowColors: allDone
-          ? [AppColors.success, AppColors.accent]
-          : [AppColors.primary, AppColors.secondary],
-      glowIntensity: 0.4,
       child: Row(
         children: [
           XPRing(
@@ -574,12 +585,8 @@ class _HeroXPRing extends StatelessWidget {
             size: 140,
             strokeWidth: 10,
             gradientColors: allDone
-                ? [
-                    AppColors.success,
-                    AppColors.accent,
-                    AppColors.success,
-                  ]
-                : AppColors.gradCosmic,
+                ? [AppColors.success]
+                : [AppColors.primary],
             center: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -589,7 +596,7 @@ class _HeroXPRing extends StatelessWidget {
                   child: Text(
                     '$completedToday',
                     maxLines: 1,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
@@ -603,7 +610,7 @@ class _HeroXPRing extends StatelessWidget {
                   child: Text(
                     '/ $totalToday',
                     maxLines: 1,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.sub,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
@@ -623,7 +630,7 @@ class _HeroXPRing extends StatelessWidget {
                   S.get('today_goal').toUpperCase(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -637,7 +644,7 @@ class _HeroXPRing extends StatelessWidget {
                   child: Text(
                     '${(dailyProgress * 100).toInt()}%',
                     maxLines: 1,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: allDone
                           ? AppColors.success
                           : AppColors.txt,
@@ -655,7 +662,7 @@ class _HeroXPRing extends StatelessWidget {
                       : S.get('completed'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: allDone
                         ? AppColors.success
                         : AppColors.sub,
@@ -677,7 +684,7 @@ class _HeroXPRing extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           '$points XP',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.txt,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -695,7 +702,7 @@ class _HeroXPRing extends StatelessWidget {
                       ),
                       child: Text(
                         'Lvl $level',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.primary,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -747,7 +754,7 @@ class _QuickStats extends StatelessWidget {
             child: _StatChip(
               icon: Iconsax.flash_1,
               value: '$streak',
-              label: 'streak',
+              label: S.get('streak').toLowerCase(),
               gradient: AppColors.gradFire,
             ),
           ),
@@ -756,7 +763,7 @@ class _QuickStats extends StatelessWidget {
             child: _StatChip(
               icon: LucideIcons.checkCircle2,
               value: '$tasksDone',
-              label: 'bajarildi',
+              label: S.get('completed'),
               gradient: AppColors.gradSuccess,
             ),
           ),
@@ -812,7 +819,7 @@ class _StatChip extends StatelessWidget {
                   child: Text(
                     value,
                     maxLines: 1,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: AppColors.txt,
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
@@ -825,7 +832,7 @@ class _StatChip extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
@@ -946,17 +953,8 @@ class _StreakCustomState extends State<_StreakCustom>
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: AppColors.gradFire,
-                    ),
+                    color: AppColors.accent.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.accent
-                            .withOpacity(0.4 + 0.3 * _ctrl.value),
-                        blurRadius: 18,
-                      ),
-                    ],
                   ),
                   child: const Text('\u{1F525}',
                       style: TextStyle(fontSize: 18)),
@@ -979,7 +977,7 @@ class _StreakCustomState extends State<_StreakCustom>
                   const SizedBox(width: 2),
                   Text(
                     'best',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
                       color: AppColors.success,
@@ -994,29 +992,23 @@ class _StreakCustomState extends State<_StreakCustom>
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ShaderMask(
-              shaderCallback: (b) => LinearGradient(
-                colors: AppColors.gradFire,
-              ).createShader(b),
-              blendMode: BlendMode.srcIn,
-              child: Text(
-                '${widget.streak}',
-                style: GoogleFonts.poppins(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                  letterSpacing: -3,
-                  color: Colors.white,
-                ),
+            Text(
+              '${widget.streak}',
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.w700,
+                height: 1,
+                letterSpacing: -3,
+                color: AppColors.txt,
+              ),
               maxLines: 1, overflow: TextOverflow.ellipsis,
-            ),
             ),
             const SizedBox(width: 6),
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
                 S.get('day'),
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -1028,7 +1020,7 @@ class _StreakCustomState extends State<_StreakCustom>
         const SizedBox(height: 2),
         Text(
           S.get('streak').toUpperCase(),
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.sub,
             fontSize: 10,
             fontWeight: FontWeight.w600,
@@ -1063,22 +1055,15 @@ class _SectionBanner extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            gradient: LinearGradient(colors: gradient),
+            color: gradient.first,
             borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: gradient.first.withOpacity(0.4),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
           ),
           child: Icon(icon, color: Colors.white, size: 18),
         ),
         const SizedBox(width: 12),
         Text(
           title,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.txt,
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -1091,12 +1076,12 @@ class _SectionBanner extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
                 horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: gradient),
+              color: gradient.first,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
               badge!,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
@@ -1175,7 +1160,7 @@ class _LoadingBlock extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               S.get('loading'),
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.sub,
                 fontSize: 13,
               ),
@@ -1187,121 +1172,71 @@ class _LoadingBlock extends StatelessWidget {
   }
 }
 
-class _EmptyState extends StatefulWidget {
+class _EmptyState extends StatelessWidget {
   final bool completed;
   const _EmptyState({this.completed = false});
-  @override
-  State<_EmptyState> createState() => _EmptyStateState();
-}
-
-class _EmptyStateState extends State<_EmptyState>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2000),
-    )..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final completed = widget.completed;
-    final emoji = completed ? '\u{1F389}' : '\u{1F680}';
-    final title = completed ? 'Hali bajarilgan vazifa yo\'q' : S.get('no_tasks');
+    final emoji = completed ? '\u{1F389}' : '\u{1F31F}';
+    final title = completed ? S.get('no_done_yet') : S.get('no_tasks');
     final sub = completed
-        ? "Vazifalarni bajaring — bu yerda ko'rinadi"
+        ? S.tr("Vazifalarni bajaring — bu yerda ko'rinadi", 'Выполняйте задачи — они появятся здесь', 'Complete tasks — they appear here')
         : S.get('pull_refresh');
 
     return Padding(
-      padding: const EdgeInsets.all(D.sp16),
-      child: GlassCard(
-        padding: const EdgeInsets.symmetric(
-            vertical: D.sp48, horizontal: D.sp24),
-        child: Column(
-          children: [
-            AnimatedBuilder(
-              animation: _ctrl,
-              builder: (_, __) => Transform.translate(
-                offset: Offset(0, -10 * _ctrl.value),
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        AppColors.primary.withOpacity(0.25),
-                        AppColors.pink.withOpacity(0.18),
-                      ],
-                    ),
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary
-                            .withOpacity(0.3 * _ctrl.value),
-                        blurRadius: 30,
-                        spreadRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(emoji, style: const TextStyle(fontSize: 32)),
-                  ),
-                ),
-              ),
+      padding: const EdgeInsets.fromLTRB(D.sp16, 24, D.sp16, 16),
+      child: Column(
+        children: [
+          // Static, calm — no bounce animation. Smaller (64dp) so it
+          // doesn't dominate the screen like an "AI hero illustration".
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.08),
+              shape: BoxShape.circle,
             ),
-            const SizedBox(height: 20),
+            child: Center(
+              child: Text(emoji, style: const TextStyle(fontSize: 28)),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: TextStyle(
+              color: AppColors.txt,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              letterSpacing: -0.2,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            sub,
+            style: TextStyle(
+              color: AppColors.sub,
+              fontSize: 12,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          if (!completed) ...[
+            const SizedBox(height: 14),
             Text(
-              title,
-              style: GoogleFonts.poppins(
+              S.get('motto'),
+              style: TextStyle(
                 color: AppColors.txt,
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                letterSpacing: -0.3,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              sub,
-              style: GoogleFonts.poppins(
-                color: AppColors.sub,
-                fontSize: 13,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            if (!completed) ...[
-              const SizedBox(height: 20),
-              ShaderMask(
-                shaderCallback: (b) => LinearGradient(
-                  colors: AppColors.gradAurora,
-                ).createShader(b),
-                blendMode: BlendMode.srcIn,
-                child: Text(
-                  S.get('motto'),
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    fontStyle: FontStyle.italic,
-                  ),
-                  textAlign: TextAlign.center,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.italic,
                 ),
+                textAlign: TextAlign.center,
               ),
             ],
           ],
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -1323,19 +1258,23 @@ class _TaskToggle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Pill-style segmented control on a subtle track. Active segment gets
+    // the primary fill so the difference between Active vs Completed is
+    // unambiguous at a glance — this is what iOS / Apple Mail does.
     return Container(
-      height: 44,
+      height: 42,
+      padding: const EdgeInsets.all(3),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(12),
+        color: AppColors.bg,
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
       ),
       child: Row(
         children: [
-          _segment('Faol', activeCount, !showCompleted,
-              () => onChanged(false)),
-          _segment('Bajarilgan', doneCount, showCompleted,
-              () => onChanged(true)),
+          _segment(S.tr('Faol', 'Активные', 'Active'), activeCount,
+              !showCompleted, () => onChanged(false)),
+          _segment(S.tr('Bajarilgan', 'Выполненные', 'Completed'),
+              doneCount, showCompleted, () => onChanged(true)),
         ],
       ),
     );
@@ -1344,39 +1283,58 @@ class _TaskToggle extends StatelessWidget {
   Widget _segment(String label, int count, bool active, VoidCallback onTap) {
     return Expanded(
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           HapticFeedback.selectionClick();
           onTap();
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
+          duration: const Duration(milliseconds: 200),
           curve: Curves.easeOut,
-          margin: const EdgeInsets.all(3),
           decoration: BoxDecoration(
-            color: active ? AppColors.bg : Colors.transparent,
+            color: active ? AppColors.primary : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
+            boxShadow: active
+                ? [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.25),
+                      blurRadius: 6,
+                      offset: const Offset(0, 1),
+                    ),
+                  ]
+                : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 label,
-                style: GoogleFonts.poppins(
-                  color: active ? AppColors.txt : AppColors.sub,
+                style: TextStyle(
+                  color: active ? Colors.white : AppColors.sub,
                   fontSize: 13,
-                  fontWeight:
-                      active ? FontWeight.w600 : FontWeight.w500,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w600,
+                  letterSpacing: -0.2,
                 ),
               ),
               const SizedBox(width: 6),
-              Text(
-                '$count',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.poppins(
-                  color: active ? AppColors.sub : AppColors.hint,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 6, vertical: 1),
+                decoration: BoxDecoration(
+                  color: active
+                      ? Colors.white.withOpacity(0.20)
+                      : AppColors.surface,
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Text(
+                  '$count',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: active ? Colors.white : AppColors.hint,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ],
@@ -1405,13 +1363,9 @@ class _MitChip extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
               horizontal: 14, vertical: 10),
           decoration: BoxDecoration(
-            gradient: active
-                ? LinearGradient(colors: [
-                    AppColors.accent.withOpacity(0.35),
-                    AppColors.pink.withOpacity(0.18),
-                  ])
-                : null,
-            color: active ? null : AppColors.surface,
+            color: active
+                ? AppColors.accent.withOpacity(0.10)
+                : AppColors.surface,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: active
@@ -1439,9 +1393,9 @@ class _MitChip extends StatelessWidget {
                   children: [
                     Text(
                       active
-                          ? 'MIT rejim: eng muhim 3 vazifa'
+                          ? S.get('mit_3')
                           : 'MIT rejim — faqat 3 vazifaga fokuslaning',
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: AppColors.txt,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
@@ -1449,8 +1403,8 @@ class _MitChip extends StatelessWidget {
                     ),
                     if (!active)
                       Text(
-                        'Choice overload kamaytiradi',
-                        style: GoogleFonts.poppins(
+                        S.get('fewer_choices'),
+                        style: TextStyle(
                             color: AppColors.sub, fontSize: 10),
                       ),
                   ],

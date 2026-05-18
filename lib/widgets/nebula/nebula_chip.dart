@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 
 class NebulaChip extends StatelessWidget {
@@ -47,7 +46,7 @@ class NebulaChip extends StatelessWidget {
           color: selected
               ? null
               : AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: selected
                 ? Colors.transparent
@@ -57,9 +56,9 @@ class NebulaChip extends StatelessWidget {
           boxShadow: selected
               ? [
                   BoxShadow(
-                    color: grad.first.withOpacity(0.45),
-                    blurRadius: 14,
-                    offset: const Offset(0, 4),
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
                   ),
                 ]
               : null,
@@ -80,7 +79,7 @@ class NebulaChip extends StatelessWidget {
             ],
             Text(
               label,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontSize: 13,
                 fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                 color: selected ? Colors.white : AppColors.txt,

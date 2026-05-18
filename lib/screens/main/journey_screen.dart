@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../config/strings.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
@@ -69,26 +69,18 @@ class _JourneyScreenState extends State<JourneyScreen>
           icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
-        title: ShaderMask(
-          shaderCallback: (b) => LinearGradient(
-            colors: AppColors.titleGradient,
-          ).createShader(b),
-          blendMode: BlendMode.srcIn,
-          child: Text(
-            'Sayohat',
-            style: GoogleFonts.poppins(
-              color: Colors.white,
+        title: Text(
+            S.get('journey'),
+            style: TextStyle(
+              color: AppColors.txt,
               fontSize: 24,
               fontWeight: FontWeight.w700,
               letterSpacing: -0.3,
             ),
           ),
-        ),
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 30),
           SafeArea(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -132,19 +124,18 @@ class _JourneyScreenState extends State<JourneyScreen>
     final pct = (_productive / 30).clamp(0.0, 1.0);
     String stageName;
     if (_productive < 3) {
-      stageName = 'Urug\'';
+      stageName = S.tr('Urug\'', 'Семя', 'Seed');
     } else if (_productive < 7) {
-      stageName = 'Niholcha';
+      stageName = S.tr('Niholcha', 'Росток', 'Sprout');
     } else if (_productive < 14) {
-      stageName = 'Yosh daraxt';
+      stageName = S.tr('Yosh daraxt', 'Молодое дерево', 'Young tree');
     } else if (_productive < 21) {
-      stageName = 'Gullagan';
+      stageName = S.tr('Gullagan', 'Цветущее', 'Blooming');
     } else {
-      stageName = 'Mevali daraxt';
+      stageName = S.tr('Mevali daraxt', 'Плодоносное дерево', 'Fruitful tree');
     }
     return GlassCard(
       padding: const EdgeInsets.all(18),
-      glowColors: [AppColors.success, AppColors.primary],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -155,7 +146,7 @@ class _JourneyScreenState extends State<JourneyScreen>
               const SizedBox(width: 8),
               Text(
                 stageName,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -165,7 +156,7 @@ class _JourneyScreenState extends State<JourneyScreen>
               const Spacer(),
               Text(
                 '$_productive / 30',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
@@ -187,9 +178,9 @@ class _JourneyScreenState extends State<JourneyScreen>
           const SizedBox(height: 8),
           Text(
             _productive >= 30
-                ? 'Sayohat to\'ldi! Yangi urug\' tanlash vaqti.'
-                : 'Yana ${30 - _productive} kun ish qilib daraxtni gullattring.',
-            style: GoogleFonts.poppins(
+                ? S.tr('Sayohat to\'ldi! Yangi urug\' tanlash vaqti.', 'Путешествие завершено! Время выбрать новое семя.', 'Journey complete! Time to pick a new seed.')
+                : S.get('tree_flower').replaceAll('{n}', '${30 - _productive}'),
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 11,
             ),
@@ -205,16 +196,17 @@ class _JourneyScreenState extends State<JourneyScreen>
       children: [
         Expanded(
             child: _statBox(
-                '$_tasksTotal', 'Vazifa', LucideIcons.checkCircle2,
+                '$_tasksTotal', S.get('tasks_label'), LucideIcons.checkCircle2,
                 AppColors.primary)),
         const SizedBox(width: 10),
         Expanded(
             child: _statBox(
-                '${_focusTotal}m', 'Fokus', LucideIcons.timer,
+                '${_focusTotal}m', S.get('fokus_pomodoro'), LucideIcons.timer,
                 AppColors.secondary)),
         const SizedBox(width: 10),
         Expanded(
-            child: _statBox('$_productive', 'Faol kun',
+            child: _statBox('$_productive',
+                S.tr('Faol kun', 'Активных дней', 'Active days'),
                 Iconsax.flash_1, AppColors.accent)),
       ],
     );
@@ -233,13 +225,13 @@ class _JourneyScreenState extends State<JourneyScreen>
           Icon(i, color: c, size: 20),
           const SizedBox(height: 6),
           Text(v,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               )),
           Text(l,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.sub,
                 fontSize: 10,
               )),
@@ -253,14 +245,14 @@ class _JourneyScreenState extends State<JourneyScreen>
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Oxirgi 30 kun',
-              style: GoogleFonts.poppins(
+          Text(S.get('last_30_days'),
+              style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 13,
                   fontWeight: FontWeight.w700)),
@@ -294,20 +286,17 @@ class _JourneyScreenState extends State<JourneyScreen>
 
   Widget _lessonCard() {
     final messages = [
-      'Har kuni 1% ish — 1 yilda 37x o\'sish.',
-      'Streak — eng kuchli motivatsiya.',
-      'Kichik qadamlar katta daraxt yaratadi.',
-      'Har bargda — siz qilgan bir vazifa.',
+      S.tr('Har kuni 1% ish — 1 yilda 37x o\'sish.', '1% работы каждый день — 37x за год.', '1% a day — 37x in a year.'),
+      S.tr('Streak — eng kuchli motivatsiya.', 'Streak — самая сильная мотивация.', 'Streak — the strongest motivation.'),
+      S.tr('Kichik qadamlar katta daraxt yaratadi.', 'Маленькие шаги создают большое дерево.', 'Small steps grow a big tree.'),
+      S.get('every_leaf'),
     ];
     final msg = messages[DateTime.now().day % messages.length];
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          AppColors.primary.withOpacity(0.2),
-          AppColors.secondary.withOpacity(0.1),
-        ]),
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.primary.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.primary.withOpacity(0.35)),
       ),
       child: Row(
@@ -326,7 +315,7 @@ class _JourneyScreenState extends State<JourneyScreen>
           Expanded(
             child: Text(
               msg,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 13,
                 fontStyle: FontStyle.italic,

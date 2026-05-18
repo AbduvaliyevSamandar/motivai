@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_data_sync.dart';
 import 'user_scope.dart';
 
 class Flashcard {
@@ -146,10 +147,53 @@ class FlashcardsStorage {
     final p = await SharedPreferences.getInstance();
     await p.setString(_decksKey,
         jsonEncode(decks.map((d) => d.toJson()).toList()));
+    UserDataSync.schedule();
   }
 
   static Future<void> saveCards(List<Flashcard> cards) async {
     final p = await SharedPreferences.getInstance();
+    await p.setString(_cardsKey,
+        jsonEncode(cards.map((c) => c.toJson()).toList()));
+    UserDataSync.schedule();
+  }
+
+  /// Cross-device sync: dump decks + cards as a single combined map. We
+  /// nest cards inside the same blob key the sync layer asks for so the
+  /// flashcards entry in the global blob carries everything (decks +
+  /// the cards that belong to them).
+  static Future<dynamic> exportJson() async {
+    final decks = await loadDecks();
+    final cards = await loadCards();
+    return {
+      'decks': decks.map((d) => d.toJson()).toList(),
+      'cards': cards.map((c) => c.toJson()).toList(),
+    };
+  }
+
+  /// Cross-device sync: overwrite local decks and cards with server-
+  /// side data. Accepts both the new combined-map shape and the legacy
+  /// list shape (for backwards compatibility).
+  static Future<void> importJson(dynamic json) async {
+    final p = await SharedPreferences.getInstance();
+    List decksList = const [];
+    List cardsList = const [];
+    if (json is Map) {
+      decksList = (json['decks'] as List?) ?? const [];
+      cardsList = (json['cards'] as List?) ?? const [];
+    } else if (json is List) {
+      // Legacy: assume it was decks-only
+      decksList = json;
+    }
+    final decks = decksList
+        .whereType<Map>()
+        .map((e) => FlashDeck.fromJson(e.cast<String, dynamic>()))
+        .toList();
+    final cards = cardsList
+        .whereType<Map>()
+        .map((e) => Flashcard.fromJson(e.cast<String, dynamic>()))
+        .toList();
+    await p.setString(_decksKey,
+        jsonEncode(decks.map((d) => d.toJson()).toList()));
     await p.setString(_cardsKey,
         jsonEncode(cards.map((c) => c.toJson()).toList()));
   }

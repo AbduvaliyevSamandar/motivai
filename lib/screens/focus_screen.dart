@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import '../services/pomodoro.dart';
@@ -74,7 +74,7 @@ class _FocusScreenState extends State<FocusScreen> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(16)),
+              top: Radius.circular(10)),
         ),
         padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
         child: Column(
@@ -93,8 +93,8 @@ class _FocusScreenState extends State<FocusScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Fon ovozi',
-              style: GoogleFonts.poppins(
+              S.get('ambient_sound'),
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -102,8 +102,8 @@ class _FocusScreenState extends State<FocusScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              'Tez orada chalinadi (infratuzilma tayyor)',
-              style: GoogleFonts.poppins(
+              S.get('sound_soon'),
+              style: TextStyle(
                 color: AppColors.sub,
                 fontSize: 11,
               ),
@@ -120,13 +120,7 @@ class _FocusScreenState extends State<FocusScreen> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 12, vertical: 10),
                     decoration: BoxDecoration(
-                      gradient: sel
-                          ? LinearGradient(colors: [
-                              s.color.withOpacity(0.3),
-                              s.color.withOpacity(0.15),
-                            ])
-                          : null,
-                      color: sel ? null : AppColors.bg,
+                      color: sel ? s.color.withOpacity(0.3) : AppColors.bg,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: sel
@@ -142,7 +136,7 @@ class _FocusScreenState extends State<FocusScreen> {
                         const SizedBox(width: 6),
                         Text(
                           s.name,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: sel ? s.color : AppColors.txt,
                             fontSize: 11,
                             fontWeight: sel
@@ -197,28 +191,28 @@ class _FocusScreenState extends State<FocusScreen> {
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.card,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(10),
           side: BorderSide(color: AppColors.border),
         ),
         title: Text(
-          'Sessiyani to\'xtatilsinmi?',
-          style: GoogleFonts.poppins(
+          S.get('session_stop_q'),
+          style: TextStyle(
             color: AppColors.txt,
             fontWeight: FontWeight.w700,
             letterSpacing: -0.3,
           ),
         ),
         content: Text(
-          '${_session.totalFocusedMinutes} daqiqa fokuslangansiz. '
-          'Bu vaqt saqlanadi.',
-          style: GoogleFonts.poppins(color: AppColors.sub, fontSize: 13),
+          '${_session.totalFocusedMinutes} ${S.get('focused_min')}'
+          '${S.tr('Bu vaqt saqlanadi.', 'Это время сохранится.', 'This time will be saved.')}',
+          style: TextStyle(color: AppColors.sub, fontSize: 13),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: Text('Davom etish',
-                style: GoogleFonts.poppins(color: AppColors.sub)),
+            child: Text(S.get('continue_action'),
+                style: TextStyle(color: AppColors.sub)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(ctx, true),
@@ -228,7 +222,7 @@ class _FocusScreenState extends State<FocusScreen> {
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
-            child: Text("To'xtatish", style: GoogleFonts.poppins()),
+            child: Text(S.get('stop_btn'), style: TextStyle()),
           ),
         ],
       ),
@@ -254,8 +248,6 @@ class _FocusScreenState extends State<FocusScreen> {
         backgroundColor: const Color(0xFF08091A),
         body: Stack(
           children: [
-            const AuroraBackground(subtle: true),
-            const ParticleField(count: 24),
             SafeArea(
               child: Column(
                 children: [
@@ -309,7 +301,7 @@ class _FocusScreenState extends State<FocusScreen> {
                                   const SizedBox(width: 6),
                                   Text(
                                     _ambient.name,
-                                    style: GoogleFonts.poppins(
+                                    style: TextStyle(
                                       color: Colors.white
                                           .withOpacity(0.85),
                                       fontSize: 11,
@@ -339,7 +331,7 @@ class _FocusScreenState extends State<FocusScreen> {
                     child: Text(
                       widget.taskTitle,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: Colors.white.withOpacity(0.85),
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -367,7 +359,7 @@ class _FocusScreenState extends State<FocusScreen> {
                         children: [
                           Text(
                             _formatTime(_session.remaining),
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               color: Colors.white,
                               fontSize: 32,
                               fontWeight: FontWeight.w800,
@@ -377,8 +369,8 @@ class _FocusScreenState extends State<FocusScreen> {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            isFocus ? 'FOKUS' : 'DAM OLISH',
-                            style: GoogleFonts.poppins(
+                            isFocus ? S.tr('FOKUS', 'ФОКУС', 'FOCUS') : S.tr('DAM OLISH', 'ОТДЫХ', 'BREAK'),
+                            style: TextStyle(
                               color: Colors.white.withOpacity(0.7),
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
@@ -398,14 +390,14 @@ class _FocusScreenState extends State<FocusScreen> {
                     children: [
                       _StatPill(
                         icon: Icons.check_circle_outline_rounded,
-                        label: 'Tsikl',
+                        label: S.tr('Tsikl', 'Цикл', 'Cycle'),
                         value: '${_session.cycle}',
                       ),
                       const SizedBox(width: 10),
                       _StatPill(
                         icon: LucideIcons.timer,
-                        label: 'Fokus',
-                        value: '${_session.totalFocusedMinutes} min',
+                        label: S.tr('Fokus', 'Фокус', 'Focus'),
+                        value: '${_session.totalFocusedMinutes} ${S.tr('min', 'мин', 'min')}',
                       ),
                     ],
                   ),
@@ -420,7 +412,7 @@ class _FocusScreenState extends State<FocusScreen> {
                         Expanded(
                           child: _ControlBtn(
                             icon: LucideIcons.skipForward,
-                            label: "O'tkazib yuborish",
+                            label: S.get('skip_btn'),
                             onTap: () {
                               HapticFeedback.selectionClick();
                               _session.skip();
@@ -432,7 +424,7 @@ class _FocusScreenState extends State<FocusScreen> {
                           flex: 2,
                           child: NebulaButton(
                             label: _session.isPaused
-                                ? 'Davom etish'
+                                ? S.get('continue_action')
                                 : 'Pauza',
                             icon: _session.isPaused
                                 ? LucideIcons.play
@@ -480,12 +472,13 @@ class _PhaseBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: gradient),
-        borderRadius: BorderRadius.circular(16),
+        color: gradient.first,
+        borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: gradient.first.withOpacity(0.5),
-            blurRadius: 14,
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -496,7 +489,7 @@ class _PhaseBadge extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             '$label \u2022 #$cycle',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -535,7 +528,7 @@ class _StatPill extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white.withOpacity(0.7),
               fontSize: 11,
             ),
@@ -543,7 +536,7 @@ class _StatPill extends StatelessWidget {
           const SizedBox(width: 6),
           Text(
             value,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -570,15 +563,15 @@ class _ControlBtn extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(10),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         child: Container(
           height: 52,
           decoration: BoxDecoration(
             color: AppColors.surface,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             border: Border.all(color: AppColors.border),
           ),
           child: Row(
@@ -591,7 +584,7 @@ class _ControlBtn extends StatelessWidget {
                   label,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: Colors.white.withOpacity(0.85),
                     fontSize: 11,
                     fontWeight: FontWeight.w600,

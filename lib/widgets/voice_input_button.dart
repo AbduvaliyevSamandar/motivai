@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
+import '../../config/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
@@ -73,8 +73,8 @@ class _VoiceInputButtonState extends State<VoiceInputButton>
   Future<void> _toggle() async {
     if (!_available) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Ovozli kirish mavjud emas',
-            style: GoogleFonts.poppins()),
+        content: Text(S.get('voice_unavailable'),
+            style: TextStyle()),
         backgroundColor: AppColors.danger,
         behavior: SnackBarBehavior.floating,
       ));
@@ -127,15 +127,9 @@ class _VoiceInputButtonState extends State<VoiceInputButton>
           width: 44,
           height: 44,
           decoration: BoxDecoration(
-            gradient: _listening
-                ? LinearGradient(colors: [
-                    AppColors.danger,
-                    AppColors.pink,
-                  ])
-                : LinearGradient(colors: [
-                    AppColors.primary.withOpacity(0.35),
-                    AppColors.secondary.withOpacity(0.2),
-                  ]),
+            color: _listening
+                ? AppColors.danger
+                : AppColors.primary.withOpacity(0.20),
             shape: BoxShape.circle,
             border: Border.all(
               color: _listening
@@ -146,10 +140,9 @@ class _VoiceInputButtonState extends State<VoiceInputButton>
             boxShadow: _listening
                 ? [
                     BoxShadow(
-                      color: AppColors.danger.withOpacity(0.4 +
-                          (_level.clamp(0, 10) / 20)),
-                      blurRadius: 14 + _level.clamp(0, 10),
-                      spreadRadius: 1.5,
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
                     )
                   ]
                 : null,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -27,7 +26,7 @@ class SectionHeader extends StatelessWidget {
         children: [
           Text(
             title,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
               color: AppColors.txt,
@@ -42,7 +41,7 @@ class SectionHeader extends StatelessWidget {
                   if (actionText != null)
                     Text(
                       actionText!,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
                         color: AppColors.primary,

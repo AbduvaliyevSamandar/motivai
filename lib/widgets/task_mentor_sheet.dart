@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../config/colors.dart';
@@ -39,7 +39,7 @@ class TaskMentorSheet extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
+              const BorderRadius.vertical(top: Radius.circular(10)),
           border: Border(
             top: BorderSide(color: AppColors.glassBorder, width: 1.5),
           ),
@@ -64,8 +64,7 @@ class TaskMentorSheet extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: AppColors.gradCosmic),
+                      color: AppColors.primary,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Iconsax.brifecase_tick,
@@ -76,24 +75,18 @@ class TaskMentorSheet extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ShaderMask(
-                          shaderCallback: (b) => LinearGradient(
-                            colors: AppColors.titleGradient,
-                          ).createShader(b),
-                          blendMode: BlendMode.srcIn,
-                          child: Text(
-                            'AI mentor',
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
+                        Text(
+                            S.get('ai_mentor'),
+                            style: TextStyle(
+                              color: AppColors.txt,
                               fontSize: 18,
                               fontWeight: FontWeight.w800,
                               letterSpacing: -0.3,
                             ),
                           ),
-                        ),
                         Text(
                           plan.title,
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -115,10 +108,7 @@ class TaskMentorSheet extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        AppColors.primary.withOpacity(0.22),
-                        AppColors.secondary.withOpacity(0.1),
-                      ]),
+                      color: AppColors.primary.withOpacity(0.22),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                           color:
@@ -132,7 +122,7 @@ class TaskMentorSheet extends StatelessWidget {
                         Expanded(
                           child: Text(
                             plan.tldr,
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               color: AppColors.txt,
                               fontSize: 11,
                               height: 1.5,
@@ -149,8 +139,8 @@ class TaskMentorSheet extends StatelessWidget {
                           color: AppColors.accent, size: 16),
                       const SizedBox(width: 6),
                       Text(
-                        '${plan.totalMinutes} daqiqa • ${plan.steps.length} qadam',
-                        style: GoogleFonts.poppins(
+                        '${plan.totalMinutes} ${S.get("unit_minute")}',
+                        style: TextStyle(
                           color: AppColors.sub,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -180,7 +170,7 @@ class TaskMentorSheet extends StatelessWidget {
                         Expanded(
                           child: Text(
                             plan.closing,
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               color: AppColors.txt,
                               fontSize: 11,
                               height: 1.5,
@@ -193,7 +183,7 @@ class TaskMentorSheet extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   NebulaButton(
-                    label: 'Yaxshi, boshlayman',
+                    label: S.get('yes_let_us_start'),
                     icon: Iconsax.send_2,
                     onTap: () {
                       HapticFeedback.mediumImpact();
@@ -226,13 +216,12 @@ class TaskMentorSheet extends StatelessWidget {
             height: 32,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              gradient:
-                  LinearGradient(colors: AppColors.gradCosmic),
+              color: AppColors.primary,
               shape: BoxShape.circle,
             ),
             child: Text(
               '$index',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: Colors.white,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -250,7 +239,7 @@ class TaskMentorSheet extends StatelessWidget {
                     Expanded(
                       child: Text(
                         s.title,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -267,7 +256,7 @@ class TaskMentorSheet extends StatelessWidget {
                       ),
                       child: Text(
                         '${s.minutes}m',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.primary,
                           fontSize: 10,
                           fontWeight: FontWeight.w700,
@@ -280,7 +269,7 @@ class TaskMentorSheet extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   s.tip,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 11,
                     height: 1.5,

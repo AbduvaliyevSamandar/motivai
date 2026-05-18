@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 
 /// Premium frosted text field with animated focus border & glow
@@ -77,7 +76,7 @@ class _GlassTextFieldState extends State<GlassTextField>
         final v = _anim.value;
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             gradient: LinearGradient(
               colors: _focused
                   ? [
@@ -94,10 +93,9 @@ class _GlassTextFieldState extends State<GlassTextField>
             boxShadow: _focused
                 ? [
                     BoxShadow(
-                      color: AppColors.primary.withOpacity(0.3 * v),
-                      blurRadius: 20,
-                      spreadRadius: 0,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
                     ),
                   ]
                 : [],
@@ -128,7 +126,7 @@ class _GlassTextFieldState extends State<GlassTextField>
         enabled: widget.enabled,
         onChanged: widget.onChanged,
         textInputAction: widget.textInputAction,
-        style: GoogleFonts.poppins(
+        style: TextStyle(
           fontSize: 13,
           color: AppColors.txt,
         ),
@@ -147,16 +145,16 @@ class _GlassTextFieldState extends State<GlassTextField>
           focusedBorder: InputBorder.none,
           errorBorder: InputBorder.none,
           focusedErrorBorder: InputBorder.none,
-          labelStyle: GoogleFonts.poppins(
+          labelStyle: TextStyle(
             fontSize: 13,
             color: AppColors.sub,
             fontWeight: FontWeight.w500,
           ),
-          hintStyle: GoogleFonts.poppins(
+          hintStyle: TextStyle(
             fontSize: 13,
             color: AppColors.hint,
           ),
-          errorStyle: GoogleFonts.poppins(
+          errorStyle: TextStyle(
             fontSize: 11,
             color: AppColors.danger,
           ),

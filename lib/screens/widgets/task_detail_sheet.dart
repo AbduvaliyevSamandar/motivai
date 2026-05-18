@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
@@ -61,7 +61,7 @@ class _TaskDetailSheet extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.card,
         borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(16)),
+            const BorderRadius.vertical(top: Radius.circular(10)),
         border: Border(
           top: BorderSide(color: AppColors.glassBorder, width: 1.5),
         ),
@@ -95,12 +95,13 @@ class _TaskDetailSheet extends StatelessWidget {
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: _gradient),
-                    borderRadius: BorderRadius.circular(16),
+                    color: _gradient.first,
+                    borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: _accent.withOpacity(0.4),
-                        blurRadius: 14,
+                        color: Colors.black.withOpacity(0.04),
+                        blurRadius: 4,
+                        offset: const Offset(0, 1),
                       ),
                     ],
                   ),
@@ -116,7 +117,7 @@ class _TaskDetailSheet extends StatelessWidget {
                     children: [
                       Text(
                         task.category.toUpperCase(),
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: task.color,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -132,13 +133,14 @@ class _TaskDetailSheet extends StatelessWidget {
                             const SizedBox(width: 6),
                           ],
                           if (task.isOverdue)
-                            _miniBadge("O'tkazilgan",
+                            _miniBadge(S.tr("O'tkazilgan", 'Просрочено', 'Overdue'),
                                 AppColors.danger, LucideIcons.alertCircle)
                           else if (task.isUpcomingSoon)
-                            _miniBadge('Yaqinlashmoqda',
+                            _miniBadge(S.get('upcoming_label'),
                                 AppColors.accent, LucideIcons.bell)
                           else if (task.isCompleted)
-                            _miniBadge('Bajarilgan',
+                            _miniBadge(
+                                S.tr('Bajarilgan', 'Выполнено', 'Completed'),
                                 AppColors.success, LucideIcons.checkCircle2),
                         ],
                       ),
@@ -152,7 +154,7 @@ class _TaskDetailSheet extends StatelessWidget {
             // Title
             Text(
               task.title,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
@@ -166,7 +168,7 @@ class _TaskDetailSheet extends StatelessWidget {
               const SizedBox(height: 10),
               Text(
                 task.description,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 13,
                   height: 1.5,
@@ -200,7 +202,7 @@ class _TaskDetailSheet extends StatelessWidget {
                     Expanded(
                       child: Text(
                         task.planTitle!,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.sub,
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
@@ -218,7 +220,7 @@ class _TaskDetailSheet extends StatelessWidget {
             // Actions
             if (!task.isCompleted) ...[
               NebulaButton(
-                label: 'AI yordam',
+                label: S.get('ai_help'),
                 icon: Iconsax.brifecase_tick,
                 gradient: AppColors.gradCosmic,
                 onTap: () async {
@@ -234,7 +236,7 @@ class _TaskDetailSheet extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               NebulaButton(
-                label: 'Fokus (Pomodoro)',
+                label: S.get('fokus_pomodoro'),
                 icon: LucideIcons.timer,
                 glow: false,
                 onTap: () async {
@@ -248,7 +250,7 @@ class _TaskDetailSheet extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               NebulaButton(
-                label: 'Bajardim',
+                label: S.get('did_it'),
                 icon: LucideIcons.check,
                 gradient: AppColors.gradSuccess,
                 onTap: onComplete == null
@@ -265,7 +267,7 @@ class _TaskDetailSheet extends StatelessWidget {
                     Expanded(
                       child: _secondaryBtn(
                         icon: LucideIcons.pencil,
-                        label: 'Tahrirlash',
+                        label: S.get('edit_btn'),
                         color: AppColors.primary,
                         onTap: () {
                           Navigator.pop(context);
@@ -279,7 +281,7 @@ class _TaskDetailSheet extends StatelessWidget {
                     Expanded(
                       child: _secondaryBtn(
                         icon: LucideIcons.trash2,
-                        label: "O'chirish",
+                        label: S.get('delete'),
                         color: AppColors.danger,
                         onTap: () {
                           Navigator.pop(context);
@@ -294,10 +296,7 @@ class _TaskDetailSheet extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16, vertical: 14),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                    AppColors.success.withOpacity(0.22),
-                    AppColors.success.withOpacity(0.08),
-                  ]),
+                  color: AppColors.success.withOpacity(0.22),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
                       color: AppColors.success.withOpacity(0.45)),
@@ -309,8 +308,8 @@ class _TaskDetailSheet extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        'Bu vazifa bajarilgan',
-                        style: GoogleFonts.poppins(
+                        S.get('task_completed'),
+                        style: TextStyle(
                           color: AppColors.success,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
@@ -320,7 +319,7 @@ class _TaskDetailSheet extends StatelessWidget {
                     if (task.completedAt != null)
                       Text(
                         _relCompleted(task.completedAt!),
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.success,
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
@@ -353,7 +352,7 @@ class _TaskDetailSheet extends StatelessWidget {
           const SizedBox(width: 4),
           Text(
             text,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: color,
               fontSize: 10,
               fontWeight: FontWeight.w700,
@@ -377,14 +376,14 @@ class _TaskDetailSheet extends StatelessWidget {
         _detailRow(
           Icons.schedule_rounded,
           AppColors.info,
-          'Davomiyligi',
-          '${task.durationMinutes} daqiqa',
+          S.tr('Davomiyligi', 'Длительность', 'Duration'),
+          '${task.durationMinutes} ${S.get('unit_minute')}',
         ),
         const SizedBox(height: 10),
         _detailRow(
           _diffIcon(task.difficulty),
           _diffColor(task.difficulty),
-          'Qiyinligi',
+          S.tr('Qiyinligi', 'Сложность', 'Difficulty'),
           task.diffLabel,
         ),
         if (task.hasSchedule) ...[
@@ -392,7 +391,7 @@ class _TaskDetailSheet extends StatelessWidget {
           _detailRow(
             LucideIcons.calendar,
             AppColors.primary,
-            'Vaqt',
+            S.tr('Vaqt', 'Время', 'Time'),
             task.timeLabel,
           ),
           if (task.reminderMinutes > 0) ...[
@@ -400,8 +399,8 @@ class _TaskDetailSheet extends StatelessWidget {
             _detailRow(
               LucideIcons.bell,
               AppColors.pink,
-              'Eslatma',
-              '${task.reminderMinutes} daqiqa oldin',
+              S.tr('Eslatma', 'Напоминание', 'Reminder'),
+              '${task.reminderMinutes} ${S.get("min_before")}',
             ),
           ],
         ],
@@ -426,7 +425,7 @@ class _TaskDetailSheet extends StatelessWidget {
         Expanded(
           child: Text(
             label,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: AppColors.sub,
               fontSize: 13,
               fontWeight: FontWeight.w500,
@@ -435,7 +434,7 @@ class _TaskDetailSheet extends StatelessWidget {
         ),
         Text(
           value,
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             color: AppColors.txt,
             fontSize: 13,
             fontWeight: FontWeight.w700,
@@ -475,7 +474,7 @@ class _TaskDetailSheet extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: color,
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
@@ -506,10 +505,10 @@ class _TaskDetailSheet extends StatelessWidget {
 
   String _relCompleted(DateTime d) {
     final diff = DateTime.now().difference(d);
-    if (diff.inMinutes < 1) return 'hozir';
-    if (diff.inMinutes < 60) return '${diff.inMinutes} min oldin';
-    if (diff.inHours < 24) return '${diff.inHours} soat oldin';
-    return '${diff.inDays} kun oldin';
+    if (diff.inMinutes < 1) return S.tr('hozir', 'сейчас', 'now');
+    if (diff.inMinutes < 60) return '${diff.inMinutes} ${S.get("min_ago")}';
+    if (diff.inHours < 24) return '${diff.inHours} ${S.get("hour_ago")}';
+    return '${diff.inDays} ${S.get("day_ago")}';
   }
 }
 
@@ -588,8 +587,8 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                       color: AppColors.sub, size: 16),
                   const SizedBox(width: 8),
                   Text(
-                    'Izoh qo\'shish (reflection)',
-                    style: GoogleFonts.poppins(
+                    S.get('add_reflection'),
+                    style: TextStyle(
                       color: AppColors.sub,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
@@ -620,8 +619,8 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                     color: AppColors.accent, size: 14),
                 const SizedBox(width: 6),
                 Text(
-                  'IZOH',
-                  style: GoogleFonts.poppins(
+                  S.tr('IZOH', 'ЗАМЕТКА', 'NOTE'),
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
@@ -643,14 +642,14 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                 controller: _ctrl,
                 maxLines: 4,
                 autofocus: true,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 13,
                   height: 1.5,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Nima o\'rgandingiz? Qanday borish mumkin?',
-                  hintStyle: GoogleFonts.poppins(
+                  hintText: S.get('what_did_you_learn'),
+                  hintStyle: TextStyle(
                     color: AppColors.hint,
                     fontSize: 11,
                   ),
@@ -670,14 +669,14 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
                         _ctrl.text = _saved ?? '';
                       });
                     },
-                    child: Text('Bekor',
-                        style: GoogleFonts.poppins(
+                    child: Text(S.get('cancel'),
+                        style: TextStyle(
                             color: AppColors.sub, fontSize: 11)),
                   ),
                   TextButton(
                     onPressed: _save,
-                    child: Text('Saqlash',
-                        style: GoogleFonts.poppins(
+                    child: Text(S.get('save'),
+                        style: TextStyle(
                             color: AppColors.primary,
                             fontSize: 11,
                             fontWeight: FontWeight.w700)),
@@ -687,7 +686,7 @@ class _TaskNoteWidgetState extends State<_TaskNoteWidget> {
             ] else
               Text(
                 _saved ?? '',
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 13,
                   height: 1.5,

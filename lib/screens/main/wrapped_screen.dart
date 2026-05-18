@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
@@ -51,48 +51,48 @@ class _WrappedScreenState extends State<WrappedScreen> {
     final slides = [
       _Slide(
         emoji: '\u{1F389}',
-        title: 'Haftangiz xulosasi',
-        subtitle: 'Bu haftangiz qanday o\'tgani',
+        title: S.get('wrapped_title'),
+        subtitle: S.get('wrapped_subtitle'),
         highlight: '${now.subtract(const Duration(days: 6)).day} — ${now.day}',
         gradient: AppColors.gradCosmic,
       ),
       _Slide(
         emoji: '\u{2705}',
-        title: 'Bajarilgan vazifalar',
-        subtitle: 'Bu hafta sizning natijangiz',
+        title: S.get('wrapped_tasks_done'),
+        subtitle: S.get('wrapped_tasks_sub'),
         highlight: '$totalCompleted',
         bigLabel: totalCompleted == 1 ? 'ta' : 'ta',
         gradient: AppColors.gradSuccess,
       ),
       _Slide(
         emoji: '\u{2B50}',
-        title: 'XP to\'pladingiz',
-        subtitle: 'Harakatingizning muqobil qiymati',
+        title: S.get('wrapped_xp'),
+        subtitle: S.get('wrapped_xp_sub'),
         highlight: '+$totalXP',
         bigLabel: 'XP',
         gradient: AppColors.gradGold,
       ),
       _Slide(
         emoji: '\u{1F525}',
-        title: 'Streak',
-        subtitle: 'Ketma-ket faollik',
+        title: S.get('streak'),
+        subtitle: S.get('active_streak'),
         highlight: '${auth.streak}',
         bigLabel: 'kun',
         gradient: AppColors.gradFire,
       ),
       _Slide(
         emoji: _catEmoji(topCat),
-        title: 'Eng ko\'p kategoriya',
-        subtitle: 'Ustuvorlik bergan soha',
+        title: S.get('wrapped_top_cat'),
+        subtitle: S.get('preferred_field'),
         highlight: _catLabel(topCat),
         gradient: AppColors.gradAurora,
       ),
       _Slide(
         emoji: '\u{1F680}',
-        title: 'Davom eting!',
-        subtitle: 'Keyingi hafta yana balandroq',
+        title: S.get('wrapped_keep_going'),
+        subtitle: S.get('wrapped_next_higher'),
         highlight: 'Lvl ${auth.level}',
-        bigLabel: 'hozirgi daraja',
+        bigLabel: S.tr('hozirgi daraja', 'текущий уровень', 'current level'),
         gradient: AppColors.gradCosmic,
         isLast: true,
       ),
@@ -102,8 +102,6 @@ class _WrappedScreenState extends State<WrappedScreen> {
       backgroundColor: const Color(0xFF08091A),
       body: Stack(
         children: [
-          const AuroraBackground(),
-          const ParticleField(count: 40),
           SafeArea(
             child: Column(
               children: [
@@ -172,8 +170,8 @@ class _WrappedScreenState extends State<WrappedScreen> {
                               ),
                             ),
                             child: Text(
-                              'Oldingi',
-                              style: GoogleFonts.poppins(
+                              S.tr('Oldingi', 'Назад', 'Previous'),
+                              style: TextStyle(
                                 color: Colors.white.withOpacity(0.85),
                                 fontWeight: FontWeight.w600,
                               ),
@@ -185,8 +183,8 @@ class _WrappedScreenState extends State<WrappedScreen> {
                         flex: 2,
                         child: NebulaButton(
                           label: _slide == slides.length - 1
-                              ? 'Yopish'
-                              : 'Keyingi',
+                              ? S.tr('Yopish', 'Закрыть', 'Close')
+                              : S.tr('Keyingi', 'Далее', 'Next'),
                           icon: _slide == slides.length - 1
                               ? LucideIcons.check
                               : LucideIcons.arrowRight,
@@ -227,14 +225,14 @@ class _WrappedScreenState extends State<WrappedScreen> {
       '';
 
   String _catLabel(String c) => {
-        'study': "O'qish",
-        'exercise': 'Jismoniy',
-        'reading': 'Kitob',
-        'meditation': 'Meditatsiya',
-        'social': 'Ijtimoiy',
-        'creative': 'Ijodiy',
-        'productivity': 'Samaradorlik',
-        'challenge': 'Musobaqa',
+        'study': S.tr("O'qish", 'Учёба', 'Study'),
+        'exercise': S.tr('Jismoniy', 'Спорт', 'Exercise'),
+        'reading': S.tr('Kitob', 'Чтение', 'Reading'),
+        'meditation': S.tr('Meditatsiya', 'Медитация', 'Meditation'),
+        'social': S.tr('Ijtimoiy', 'Социальное', 'Social'),
+        'creative': S.tr('Ijodiy', 'Творчество', 'Creative'),
+        'productivity': S.tr('Samaradorlik', 'Продуктивность', 'Productivity'),
+        'challenge': S.tr('Musobaqa', 'Челлендж', 'Challenge'),
       }[c] ??
       c;
 }
@@ -288,7 +286,7 @@ class _SlideView extends StatelessWidget {
           Text(
             slide.subtitle.toUpperCase(),
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white.withOpacity(0.65),
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -299,7 +297,7 @@ class _SlideView extends StatelessWidget {
           Text(
             slide.title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 24,
               fontWeight: FontWeight.w700,
@@ -307,27 +305,22 @@ class _SlideView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 28),
-          ShaderMask(
-            shaderCallback: (b) =>
-                LinearGradient(colors: slide.gradient).createShader(b),
-            blendMode: BlendMode.srcIn,
-            child: Text(
+          Text(
               slide.highlight,
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: slide.highlight.length > 6 ? 52 : 84,
                 fontWeight: FontWeight.w800,
                 letterSpacing: -3,
                 height: 1,
               ),
             ),
-          ),
           if (slide.bigLabel != null) ...[
             const SizedBox(height: 8),
             Text(
               slide.bigLabel!,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
                 fontSize: 15,
                 fontWeight: FontWeight.w500,

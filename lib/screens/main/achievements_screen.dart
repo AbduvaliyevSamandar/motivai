@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
@@ -41,8 +41,6 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 22),
           SafeArea(
             child: Column(
               children: [
@@ -56,33 +54,26 @@ class _AchievementsScreenState extends State<AchievementsScreen> {
                         onPressed: () => Navigator.pop(context),
                       ),
                       const SizedBox(width: 4),
-                      ShaderMask(
-                        shaderCallback: (b) => LinearGradient(
-                          colors: AppColors.titleGradient,
-                        ).createShader(b),
-                        blendMode: BlendMode.srcIn,
-                        child: Text(
-                          'Yutuqlar',
-                          style: GoogleFonts.poppins(
-                            color: Colors.white,
+                      Text(
+                          S.get('achievements'),
+                          style: TextStyle(
+                            color: AppColors.txt,
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
                             letterSpacing: -0.5,
                           ),
                         ),
-                      ),
                       const Spacer(),
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 5),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: AppColors.gradCosmic),
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           '$unlockedCount / $total',
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: Colors.white,
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
@@ -142,14 +133,8 @@ class _AchCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          gradient: unlocked
-              ? LinearGradient(colors: [
-                  accent.withOpacity(0.25),
-                  accent.withOpacity(0.08),
-                ])
-              : null,
-          color: unlocked ? null : AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
+          color: unlocked ? accent.withOpacity(0.25) : AppColors.surface,
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color: unlocked
                 ? accent.withOpacity(0.5)
@@ -159,8 +144,9 @@ class _AchCard extends StatelessWidget {
           boxShadow: unlocked
               ? [
                   BoxShadow(
-                    color: accent.withOpacity(0.25),
-                    blurRadius: 14,
+                    color: Colors.black.withOpacity(0.04),
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
                   ),
                 ]
               : null,
@@ -198,7 +184,7 @@ class _AchCard extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: unlocked ? AppColors.txt : AppColors.sub,
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
@@ -215,7 +201,7 @@ class _AchCard extends StatelessWidget {
               ),
               child: Text(
                 def.rarity.toUpperCase(),
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: unlocked ? accent : AppColors.sub,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
@@ -244,17 +230,14 @@ class _AchDialog extends StatelessWidget {
         constraints: const BoxConstraints(maxWidth: 320),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            AppColors.card,
-            Color.lerp(AppColors.card, accent, 0.08)!,
-          ]),
-          borderRadius: BorderRadius.circular(16),
+          color: AppColors.card,
+          borderRadius: BorderRadius.circular(10),
           border: Border.all(color: accent.withOpacity(0.5), width: 1.5),
           boxShadow: [
             BoxShadow(
-              color: accent.withOpacity(0.35),
-              blurRadius: 30,
-              spreadRadius: 2,
+              color: Colors.black.withOpacity(0.04),
+              blurRadius: 4,
+              offset: const Offset(0, 1),
             ),
           ],
         ),
@@ -285,7 +268,7 @@ class _AchDialog extends StatelessWidget {
             Text(
               def.title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -296,7 +279,7 @@ class _AchDialog extends StatelessWidget {
             Text(
               def.description,
               textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.sub,
                 fontSize: 13,
                 height: 1.5,
@@ -315,7 +298,7 @@ class _AchDialog extends StatelessWidget {
                   ),
                   child: Text(
                     def.rarity.toUpperCase(),
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       color: accent,
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
@@ -339,7 +322,7 @@ class _AchDialog extends StatelessWidget {
                       const SizedBox(width: 2),
                       Text(
                         '+${def.bonusXP}',
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.accent,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -353,7 +336,7 @@ class _AchDialog extends StatelessWidget {
             ),
             const SizedBox(height: 18),
             NebulaButton(
-              label: unlocked ? 'Ajoyib!' : 'Qulflangan',
+              label: unlocked ? S.tr('Ajoyib!', 'Отлично!', 'Awesome!') : S.tr('Qulflangan', 'Заблокировано', 'Locked'),
               icon: unlocked
                   ? LucideIcons.check
                   : LucideIcons.lock,

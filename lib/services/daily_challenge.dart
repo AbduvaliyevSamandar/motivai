@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/strings.dart';
 import 'user_scope.dart';
 
 enum ChallengeType {
@@ -39,7 +40,8 @@ class DailyChallengeService {
     final key = int.parse(
       '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}',
     );
-    return _pool[key % _pool.length];
+    final pool = _pool;
+    return pool[key % pool.length];
   }
 
   static Future<bool> isCompletedToday() async {
@@ -87,69 +89,69 @@ class DailyChallengeService {
     return '${n.year}-${n.month.toString().padLeft(2, '0')}-${n.day.toString().padLeft(2, '0')}';
   }
 
-  static const _pool = <DailyChallenge>[
+  static List<DailyChallenge> get _pool => [
     DailyChallenge(
       type: ChallengeType.completeN,
       target: 3,
       bonusXP: 50,
-      title: '3 ta vazifa',
-      description: 'Bugun 3 ta vazifani bajaring',
+      title: S.tr('3 ta vazifa', '3 задачи', '3 tasks'),
+      description: S.tr('Bugun 3 ta vazifani bajaring', 'Выполните 3 задачи сегодня', 'Complete 3 tasks today'),
       emoji: '\u{1F3AF}',
     ),
     DailyChallenge(
       type: ChallengeType.completeN,
       target: 5,
       bonusXP: 100,
-      title: '5 ta vazifa',
-      description: 'Bugun 5 ta vazifa — kuchli kun!',
+      title: S.tr('5 ta vazifa', '5 задач', '5 tasks'),
+      description: S.tr('Bugun 5 ta vazifa — kuchli kun!', '5 задач сегодня — мощный день!', '5 tasks today — a strong day!'),
       emoji: '\u{1F525}',
     ),
     DailyChallenge(
       type: ChallengeType.focusNMin,
       target: 25,
       bonusXP: 75,
-      title: '25 daqiqa fokus',
-      description: "Bitta Pomodoro sessiyasi bajar",
+      title: S.tr('25 daqiqa fokus', '25 минут фокуса', '25 min focus'),
+      description: S.tr("Bitta Pomodoro sessiyasi bajar", 'Проведите одну сессию Pomodoro', 'Do one Pomodoro session'),
       emoji: '\u{1F9E0}',
     ),
     DailyChallenge(
       type: ChallengeType.focusNMin,
       target: 60,
       bonusXP: 150,
-      title: '1 soat fokus',
-      description: 'Ikki Pomodoro — tom ma\'noda',
+      title: S.tr('1 soat fokus', '1 час фокуса', '1 hour focus'),
+      description: S.tr('Ikki Pomodoro — tom ma\'noda', 'Две Pomodoro — буквально', 'Two Pomodoros — literally'),
       emoji: '\u{1F4AA}',
     ),
     DailyChallenge(
       type: ChallengeType.completeN,
       target: 2,
       bonusXP: 30,
-      title: '2 ta vazifa',
-      description: 'Past bo\'sag\'a — keling shirin start',
+      title: S.tr('2 ta vazifa', '2 задачи', '2 tasks'),
+      description: S.tr('Past bo\'sag\'a — keling shirin start', 'Низкий порог — мягкий старт', 'Low bar — a gentle start'),
       emoji: '\u{2728}',
     ),
     DailyChallenge(
       type: ChallengeType.streakKeep,
       target: 1,
       bonusXP: 40,
-      title: 'Streak saqlash',
-      description: 'Kamida 1 vazifa — streak uchun',
+      title: S.tr('Streak saqlash', 'Сохранить streak', 'Keep the streak'),
+      description: S.tr('Kamida 1 vazifa — streak uchun', 'Минимум 1 задача — для streak', 'At least 1 task — for the streak'),
       emoji: '\u{1F525}',
     ),
     DailyChallenge(
       type: ChallengeType.completeN,
       target: 4,
       bonusXP: 80,
-      title: '4 ta vazifa',
-      description: "To'rt burchakli kun",
+      title: S.tr('4 ta vazifa', '4 задачи', '4 tasks'),
+      description: S.tr("To'rt burchakli kun", 'Четырёхугольный день', 'A four-cornered day'),
       emoji: '\u{1F3C6}',
     ),
     DailyChallenge(
       type: ChallengeType.focusNMin,
       target: 45,
       bonusXP: 120,
-      title: '45 daqiqa fokus',
-      description: 'Chuqur ish — tanaffussiz',
+      title: S.tr('45 daqiqa fokus', '45 минут фокуса', '45 min focus'),
+      description: S.tr('Chuqur ish — tanaffussiz', 'Глубокая работа — без перерыва', 'Deep work — no breaks'),
       emoji: '\u{1F52C}',
     ),
   ];

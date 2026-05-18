@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../../config/strings.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../config/colors.dart';
 import '../../services/journey_storage.dart';
@@ -74,7 +74,15 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
     return (day: bestD, count: bestC);
   }
 
-  static const _dayNames = ['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'];
+  List<String> get _dayNames => [
+        S.tr('Du', 'Пн', 'Mon'),
+        S.tr('Se', 'Вт', 'Tue'),
+        S.tr('Ch', 'Ср', 'Wed'),
+        S.tr('Pa', 'Чт', 'Thu'),
+        S.tr('Ju', 'Пт', 'Fri'),
+        S.tr('Sh', 'Сб', 'Sat'),
+        S.tr('Ya', 'Вс', 'Sun'),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -87,24 +95,16 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
           icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
-        title: ShaderMask(
-          shaderCallback: (b) => LinearGradient(
-            colors: AppColors.titleGradient,
-          ).createShader(b),
-          blendMode: BlendMode.srcIn,
-          child: Text('Mahsuldorlik',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+        title: Text(S.tr('Mahsuldorlik', 'Продуктивность', 'Productivity'),
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
-        ),
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 22),
           SafeArea(
             child: _loading
                 ? const Center(child: CircularProgressIndicator())
@@ -138,7 +138,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
           child: _insightCard(
             icon: LucideIcons.clock,
             color: AppColors.primary,
-            label: 'Eng faol soat',
+            label: S.get('top_active_hour'),
             value: bestH.avg == 0 ? '—' : hourLabel,
           ),
         ),
@@ -147,7 +147,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
           child: _insightCard(
             icon: LucideIcons.calendar,
             color: AppColors.success,
-            label: 'Eng mahsuldor kun',
+            label: S.get('top_active_day'),
             value: bestD.count == 0 ? '—' : dayLabel,
           ),
         ),
@@ -174,10 +174,10 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
           Icon(icon, color: color, size: 20),
           const SizedBox(height: 8),
           Text(label,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                   color: AppColors.sub, fontSize: 10)),
           Text(value,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -193,7 +193,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.border),
       ),
       child: Column(
@@ -204,15 +204,15 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
               Icon(LucideIcons.grid,
                   color: AppColors.pink, size: 18),
               const SizedBox(width: 6),
-              Text('Soat × kun',
-                  style: GoogleFonts.poppins(
+              Text(S.get('hour_day'),
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                   )),
               const Spacer(),
-              Text('Oxirgi 8 hafta',
-                  style: GoogleFonts.poppins(
+              Text(S.get('last_8_weeks'),
+                  style: TextStyle(
                       color: AppColors.sub, fontSize: 10)),
             ],
           ),
@@ -232,7 +232,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
                         child: h % 3 == 0
                             ? Text(
                                 h.toString(),
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: AppColors.sub,
                                   fontSize: 10,
                                 ),
@@ -249,7 +249,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
                         width: 28,
                         child: Text(
                           _dayNames[d],
-                          style: GoogleFonts.poppins(
+                          style: TextStyle(
                             color: AppColors.sub,
                             fontSize: 10,
                             fontWeight: FontWeight.w600,
@@ -289,7 +289,7 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
     return Row(
       children: [
         Text('Kam',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
                 color: AppColors.sub, fontSize: 11)),
         const SizedBox(width: 8),
         for (final op in [0.15, 0.35, 0.55, 0.75, 0.95])
@@ -303,8 +303,8 @@ class _HeatmapScreenState extends State<HeatmapScreen> {
             ),
           ),
         const SizedBox(width: 8),
-        Text('Ko\'p',
-            style: GoogleFonts.poppins(
+        Text(S.get('ko_p'),
+            style: TextStyle(
                 color: AppColors.sub, fontSize: 11)),
       ],
     );

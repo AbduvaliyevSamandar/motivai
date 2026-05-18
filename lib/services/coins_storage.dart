@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_data_sync.dart';
 import 'user_scope.dart';
 
 /// In-app currency (coins) — earned from tasks / pomodoro / challenges.
@@ -15,6 +16,7 @@ class CoinsStorage {
     final p = await SharedPreferences.getInstance();
     final curr = p.getInt(_key) ?? 0;
     await p.setInt(_key, curr + amount);
+    UserDataSync.schedule();
   }
 
   /// Returns true if enough balance was available and deducted.
@@ -23,7 +25,20 @@ class CoinsStorage {
     final curr = p.getInt(_key) ?? 0;
     if (curr < amount) return false;
     await p.setInt(_key, curr - amount);
+    UserDataSync.schedule();
     return true;
+  }
+
+  /// Cross-device sync: dump current balance as JSON.
+  static Future<dynamic> exportJson() async {
+    return await balance();
+  }
+
+  /// Cross-device sync: overwrite local balance with server-side value.
+  static Future<void> importJson(dynamic json) async {
+    final v = (json as num?)?.toInt() ?? 0;
+    final p = await SharedPreferences.getInstance();
+    await p.setInt(_key, v);
   }
 
   /// Amount earned from completing a task, based on difficulty.

@@ -1,8 +1,11 @@
 import 'dart:async';
+import '../config/strings.dart';
 import 'package:flutter/material.dart';
 import '../services/api.dart';
+import '../services/activity_tracker.dart';
 import '../services/local_schedules.dart';
 import '../services/pinned_storage.dart';
+import '../services/smart_reminder.dart';
 import '../services/journey_storage.dart';
 import '../services/friend_challenge.dart';
 import '../services/home_widget_service.dart';
@@ -266,7 +269,7 @@ class TaskProvider extends ChangeNotifier {
       // Plan ID topish — taskga biriktirilgan
       final actualPlanId = planId ?? _findPlanId(taskId);
       if (actualPlanId == null) {
-        throw ApiError('Ushbu vazifa uchun plan topilmadi');
+        throw ApiError(S.get('no_plan_for_task'));
       }
 
       // Backend: POST /plans/{plan_id}/complete-task
@@ -277,6 +280,10 @@ class TaskProvider extends ChangeNotifier {
 
       final data = res['data'] as Map<String, dynamic>? ?? res;
       _markDone(taskId);
+      // Smart reminder: feed the histogram + reschedule tomorrow's nudge.
+      // Fire-and-forget so completion stays snappy.
+      ActivityTracker.log('done');
+      SmartReminder.refresh();
       _completing = false;
       notifyListeners();
       return data.cast<String, dynamic>();
@@ -314,9 +321,9 @@ class TaskProvider extends ChangeNotifier {
   void _pushWidget() {
     final next = _planTasks.firstWhere(
       (t) => !t.isCompleted,
-      orElse: () => const Task(
+      orElse: () => Task(
         id: '',
-        title: 'Hozircha rejalar yo\'q',
+        title: S.get('no_plans_yet'),
         description: '',
         category: '',
         difficulty: 'easy',
@@ -459,9 +466,11 @@ class TaskProvider extends ChangeNotifier {
   /// Does optimistic insert so all tasks appear instantly.
   Future<String?> addSuggestions({
     required List<TaskSuggestion> suggestions,
-    String planTitle = 'AI taklif etgan vazifalar',
-    String goal = 'AI tavsiyalarini bajarish',
+    String? planTitle,
+    String? goal,
   }) async {
+    planTitle ??= S.tr('AI taklif etgan vazifalar', 'Задачи от AI', 'AI-suggested tasks');
+    goal ??= S.tr('AI tavsiyalarini bajarish', 'Выполнить рекомендации AI', 'Complete AI suggestions');
     if (suggestions.isEmpty) return null;
     _error = null;
     try {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -59,8 +58,8 @@ class _EmptyStateState extends State<EmptyState>
               const SizedBox(height: D.sp16),
               Text(
                 widget.title,
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
+                style: TextStyle(
+                  fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: AppColors.txt,
                 ),
@@ -70,8 +69,8 @@ class _EmptyStateState extends State<EmptyState>
                 const SizedBox(height: D.sp8),
                 Text(
                   widget.subtitle!,
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
+                  style: TextStyle(
+                    fontSize: 12,
                     color: AppColors.sub,
                   ),
                   textAlign: TextAlign.center,
@@ -92,7 +91,7 @@ class _EmptyStateState extends State<EmptyState>
                   ),
                   child: Text(
                     widget.actionLabel!,
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
                     ),

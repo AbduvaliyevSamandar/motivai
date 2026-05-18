@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
-import '../../config/dimensions.dart';
 import '../../config/strings.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/task_provider.dart';
@@ -44,8 +42,6 @@ class _ProgState extends State<ProgressScreen> {
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 22),
           tasks.isLoading && ins == null
               ? Center(
                   child: CircularProgressIndicator(
@@ -69,21 +65,15 @@ class _ProgState extends State<ProgressScreen> {
                               const EdgeInsets.fromLTRB(20, 16, 20, 8),
                           child: Row(
                             children: [
-                              ShaderMask(
-                                shaderCallback: (b) => LinearGradient(
-                                  colors: AppColors.titleGradient,
-                                ).createShader(b),
-                                blendMode: BlendMode.srcIn,
-                                child: Text(
+                              Text(
                                   S.get('analytics'),
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
+                                  style: TextStyle(
+                                    color: AppColors.txt,
                                     fontSize: 24,
                                     fontWeight: FontWeight.w700,
                                     letterSpacing: -0.5,
                                   ),
                                 ),
-                              ),
                               const Spacer(),
                               Material(
                                 color: AppColors.surface,
@@ -244,8 +234,6 @@ class _LevelHero extends StatelessWidget {
         : 1.0;
 
     return GlassCard(
-      glowColors: [AppColors.primary, AppColors.secondary],
-      glowIntensity: 0.25,
       padding: const EdgeInsets.all(20),
       child: Row(
         children: [
@@ -253,7 +241,7 @@ class _LevelHero extends StatelessWidget {
             progress: progress,
             size: 110,
             strokeWidth: 8,
-            gradientColors: AppColors.gradCosmic,
+            gradientColors: [AppColors.primary],
             center: Text(
               auth.levelEmoji,
               style: const TextStyle(fontSize: 32),
@@ -266,8 +254,8 @@ class _LevelHero extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'DARAJA',
-                  style: GoogleFonts.poppins(
+                  S.tr('DARAJA', 'УРОВЕНЬ', 'LEVEL'),
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -284,7 +272,7 @@ class _LevelHero extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   '${S.get("next_level")}: $ptsNext XP',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
@@ -310,7 +298,11 @@ class _PeriodFilter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = ['Kunlik', 'Haftalik', 'Oylik'];
+    final items = [
+      S.tr('Kunlik', 'День', 'Daily'),
+      S.tr('Haftalik', 'Неделя', 'Weekly'),
+      S.tr('Oylik', 'Месяц', 'Monthly'),
+    ];
     return Row(
       children: List.generate(items.length, (i) {
         return Padding(
@@ -349,8 +341,6 @@ class _CosmicLineChart extends StatelessWidget {
 
     return GlassCard(
       padding: const EdgeInsets.all(18),
-      glowColors: [AppColors.primary, AppColors.secondary],
-      glowIntensity: 0.15,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -359,8 +349,7 @@ class _CosmicLineChart extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: AppColors.gradCosmic),
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
@@ -375,7 +364,7 @@ class _CosmicLineChart extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 S.get('weekly_points'),
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -397,7 +386,7 @@ class _CosmicLineChart extends StatelessWidget {
                     getTooltipItems: (spots) => spots.map((s) {
                       return LineTooltipItem(
                         '${s.y.toInt()} XP',
-                        GoogleFonts.poppins(
+                        TextStyle(
                           color: Colors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.w700,
@@ -430,7 +419,7 @@ class _CosmicLineChart extends StatelessWidget {
                           padding: const EdgeInsets.only(top: 6),
                           child: Text(
                             days[i],
-                            style: GoogleFonts.poppins(
+                            style: TextStyle(
                               color: AppColors.sub,
                               fontSize: 11,
                               fontWeight: FontWeight.w500,
@@ -447,7 +436,7 @@ class _CosmicLineChart extends StatelessWidget {
                       interval: chartMax / 4,
                       getTitlesWidget: (v, _) => Text(
                         v.toInt().toString(),
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.sub,
                           fontSize: 10,
                         ),
@@ -467,8 +456,7 @@ class _CosmicLineChart extends StatelessWidget {
                     ),
                     isCurved: true,
                     curveSmoothness: 0.35,
-                    gradient: LinearGradient(
-                        colors: AppColors.gradCosmic),
+                    color: AppColors.primary,
                     barWidth: 3.5,
                     isStrokeCapRound: true,
                     shadow: Shadow(
@@ -487,14 +475,7 @@ class _CosmicLineChart extends StatelessWidget {
                     ),
                     belowBarData: BarAreaData(
                       show: true,
-                      gradient: LinearGradient(
-                        colors: [
-                          AppColors.primary.withOpacity(0.35),
-                          AppColors.secondary.withOpacity(0.02),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
+                      color: AppColors.primary.withOpacity(0.35),
                     ),
                   ),
                 ],
@@ -543,8 +524,6 @@ class _HeatmapCard extends StatelessWidget {
 
     return GlassCard(
       padding: const EdgeInsets.all(18),
-      glowColors: [AppColors.secondary, AppColors.primary],
-      glowIntensity: 0.12,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -553,8 +532,7 @@ class _HeatmapCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: AppColors.gradCyan),
+                  color: AppColors.info,
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
@@ -568,8 +546,8 @@ class _HeatmapCard extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               Text(
-                'Faollik (35 kun)',
-                style: GoogleFonts.poppins(
+                S.get('activity_heatmap'),
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -619,8 +597,8 @@ class _HeatmapCard extends StatelessWidget {
           Row(
             children: [
               Text(
-                'Kam',
-                style: GoogleFonts.poppins(
+                S.tr('Kam', 'Мало', 'Less'),
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 11,
                 ),
@@ -633,10 +611,7 @@ class _HeatmapCard extends StatelessWidget {
                     width: 12,
                     height: 12,
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        AppColors.primary.withOpacity(0.1 + i * 0.18),
-                        AppColors.secondary.withOpacity(0.1 + i * 0.15),
-                      ]),
+                      color: AppColors.primary.withOpacity(0.1 + i * 0.18),
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -644,8 +619,8 @@ class _HeatmapCard extends StatelessWidget {
               }),
               const SizedBox(width: 6),
               Text(
-                "Ko'p",
-                style: GoogleFonts.poppins(
+                S.get('many'),
+                style: TextStyle(
                   color: AppColors.sub,
                   fontSize: 11,
                 ),
@@ -672,15 +647,12 @@ class _HeatCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final op = intensity == 0 ? 0.05 : (0.15 + intensity * 0.75);
     return Tooltip(
-      message: value > 0 ? '$value ta' : "Bo'sh",
+      message: value > 0 ? '$value ${S.get('remaining')}' : S.tr("Bo'sh", 'Пусто', 'Empty'),
       child: Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
-          gradient: LinearGradient(colors: [
-            AppColors.primary.withOpacity(op),
-            AppColors.secondary.withOpacity(op * 0.8),
-          ]),
+          color: AppColors.primary.withOpacity(op),
           borderRadius: BorderRadius.circular(8),
           boxShadow: intensity > 0.5
               ? [
@@ -709,15 +681,15 @@ class _PieCategoryCard extends StatefulWidget {
 class _PieCategoryCardState extends State<_PieCategoryCard> {
   int _touchedIndex = -1;
 
-  static const _labels = {
-    'study': ('', "O'qish"),
-    'exercise': ('\u{1F4AA}', 'Jismoniy'),
-    'reading': ('\u{1F4D6}', 'Kitob'),
-    'meditation': ('\u{1F9D8}', 'Meditatsiya'),
-    'social': ('\u{1F465}', 'Ijtimoiy'),
-    'creative': ('\u{1F3A8}', 'Ijodiy'),
-    'productivity': ('\u{26A1}', 'Samaradorlik'),
-    'challenge': ('\u{1F3C6}', 'Musobaqa'),
+  Map<String, (String, String)> get _labels => {
+    'study': ('', S.tr("O'qish", 'Учёба', 'Study')),
+    'exercise': ('\u{1F4AA}', S.tr('Jismoniy', 'Спорт', 'Exercise')),
+    'reading': ('\u{1F4D6}', S.tr('Kitob', 'Чтение', 'Reading')),
+    'meditation': ('\u{1F9D8}', S.tr('Meditatsiya', 'Медитация', 'Meditation')),
+    'social': ('\u{1F465}', S.tr('Ijtimoiy', 'Социальное', 'Social')),
+    'creative': ('\u{1F3A8}', S.tr('Ijodiy', 'Творчество', 'Creative')),
+    'productivity': ('\u{26A1}', S.tr('Samaradorlik', 'Продуктивность', 'Productivity')),
+    'challenge': ('\u{1F3C6}', S.tr('Musobaqa', 'Челлендж', 'Challenge')),
   };
 
   @override
@@ -734,8 +706,6 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
 
     return GlassCard(
       padding: const EdgeInsets.all(18),
-      glowColors: [AppColors.pink, AppColors.primary],
-      glowIntensity: 0.15,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -744,8 +714,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: AppColors.gradAccent),
+                  color: AppColors.accent,
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
@@ -760,7 +729,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
               const SizedBox(width: 12),
               Text(
                 S.get('cat_breakdown'),
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   color: AppColors.txt,
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
@@ -806,7 +775,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                           value: e.value.toDouble(),
                           title: '${(pct * 100).toInt()}%',
                           radius: isTouched ? 72 : 58,
-                          titleStyle: GoogleFonts.poppins(
+                          titleStyle: TextStyle(
                             fontSize: isTouched ? 14 : 12,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -858,7 +827,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                             Expanded(
                               child: Text(
                                 info?.$2 ?? e.key,
-                                style: GoogleFonts.poppins(
+                                style: TextStyle(
                                   color: AppColors.txt,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
@@ -868,7 +837,7 @@ class _PieCategoryCardState extends State<_PieCategoryCard> {
                             ),
                             Text(
                               '${e.value}',
-                              style: GoogleFonts.poppins(
+                              style: TextStyle(
                                 color: AppColors.sub,
                                 fontSize: 11,
                                 fontWeight: FontWeight.w700,

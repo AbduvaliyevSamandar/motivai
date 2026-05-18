@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 
 /// Primary call-to-action button. Solid brand color, tiny shadow,
@@ -95,7 +94,7 @@ class _NebulaButtonState extends State<NebulaButton>
                 ],
                 Text(
                   widget.label,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.white,

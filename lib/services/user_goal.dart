@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/strings.dart';
 import 'user_scope.dart';
 
 /// User's primary long-term goal, captured at onboarding. The Smart Plan
@@ -41,48 +42,61 @@ class UserGoal {
   }
 
   static List<({String id, String name, String emoji, String desc})>
-      options() => const [
+      options() => [
             (
               id: 'exam',
-              name: 'Imtihon tayyorgarligi',
+              name: S.tr('Imtihon tayyorgarligi', 'Подготовка к экзамену',
+                  'Exam preparation'),
               emoji: '\u{1F4DA}',
-              desc: 'Test, DSh, sertifikat'
+              desc: S.tr('Test, DSh, sertifikat', 'Тест, ЕГЭ, сертификат',
+                  'Test, exam, certificate'),
             ),
             (
               id: 'language',
-              name: 'Til o\'rganish',
+              name: S.tr('Til o\'rganish', 'Изучение языка',
+                  'Language learning'),
               emoji: '\u{1F310}',
-              desc: 'Ingliz, rus, arab, boshqa',
+              desc: S.tr('Ingliz, rus, arab, boshqa',
+                  'Английский, русский, арабский и др.',
+                  'English, Russian, Arabic, more'),
             ),
             (
               id: 'programming',
-              name: 'Dasturlash',
+              name: S.tr('Dasturlash', 'Программирование', 'Programming'),
               emoji: '\u{1F4BB}',
-              desc: 'Web, mobil, AI/ML',
+              desc: S.tr('Web, mobil, AI/ML', 'Web, mobile, AI/ML',
+                  'Web, mobile, AI/ML'),
             ),
             (
               id: 'habit',
-              name: 'Sog\'lom odatlar',
+              name: S.tr('Sog\'lom odatlar', 'Здоровые привычки',
+                  'Healthy habits'),
               emoji: '\u{1F4AA}',
-              desc: 'Sport, yoga, meditatsiya',
+              desc: S.tr('Sport, yoga, meditatsiya', 'Спорт, йога, медитация',
+                  'Sport, yoga, meditation'),
             ),
             (
               id: 'career',
-              name: 'Karyera rivoji',
+              name: S.tr('Karyera rivoji', 'Карьерный рост',
+                  'Career growth'),
               emoji: '\u{1F4BC}',
-              desc: 'Ish, biznes, rezume',
+              desc: S.tr('Ish, biznes, rezume', 'Работа, бизнес, резюме',
+                  'Work, business, resume'),
             ),
             (
               id: 'creative',
-              name: 'Ijodiy loyiha',
+              name: S.tr('Ijodiy loyiha', 'Творческий проект',
+                  'Creative project'),
               emoji: '\u{1F3A8}',
-              desc: 'Kitob, dizayn, video',
+              desc: S.tr('Kitob, dizayn, video', 'Книга, дизайн, видео',
+                  'Book, design, video'),
             ),
             (
               id: 'general',
-              name: 'Umumiy o\'sish',
+              name: S.tr('Umumiy o\'sish', 'Общий рост', 'General growth'),
               emoji: '\u{2B50}',
-              desc: 'Har xil yo\'nalish',
+              desc: S.tr('Har xil yo\'nalish', 'Разные направления',
+                  'Various directions'),
             ),
           ];
 }

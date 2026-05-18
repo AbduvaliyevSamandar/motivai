@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
 import '../../config/colors.dart';
@@ -99,21 +99,8 @@ class _CompletionDialogState extends State<CompletionDialog>
                 constraints: const BoxConstraints(maxWidth: 360),
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: levelUp
-                        ? [
-                            const Color(0xFF1A1340),
-                            const Color(0xFF2A1558),
-                          ]
-                        : [
-                            AppColors.card,
-                            Color.lerp(AppColors.card, AppColors.primary,
-                                0.08)!,
-                          ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
+                  color: AppColors.card,
+                  borderRadius: BorderRadius.circular(10),
                   border: Border.all(
                     color: levelUp
                         ? AppColors.accent.withOpacity(0.6)
@@ -122,12 +109,9 @@ class _CompletionDialogState extends State<CompletionDialog>
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: (levelUp
-                              ? AppColors.accent
-                              : AppColors.primary)
-                          .withOpacity(0.4),
-                      blurRadius: 40,
-                      spreadRadius: 4,
+                      color: Colors.black.withOpacity(0.04),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
                     ),
                   ],
                 ),
@@ -139,29 +123,21 @@ class _CompletionDialogState extends State<CompletionDialog>
                     const SizedBox(height: 14),
 
                     // Title
-                    ShaderMask(
-                      shaderCallback: (b) => LinearGradient(
-                        colors: levelUp
-                            ? AppColors.gradGold
-                            : AppColors.gradSuccess,
-                      ).createShader(b),
-                      blendMode: BlendMode.srcIn,
-                      child: Text(
-                        levelUp ? 'DARAJA O\'SDI!' : 'VAZIFA BAJARILDI!',
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
+                    Text(
+                        levelUp ? S.get('level_up') : S.get('task_done_caps'),
+                        style: TextStyle(
+                          color: AppColors.txt,
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
                           letterSpacing: 1,
                         ),
                       ),
-                    ),
                     const SizedBox(height: 8),
 
                     Text(
                       widget.taskTitle,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                         color: AppColors.txt.withOpacity(0.9),
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
@@ -176,11 +152,8 @@ class _CompletionDialogState extends State<CompletionDialog>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 14),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(colors: [
-                            AppColors.accent.withOpacity(0.25),
-                            AppColors.accent.withOpacity(0.1),
-                          ]),
-                          borderRadius: BorderRadius.circular(16),
+                          color: AppColors.accent.withOpacity(0.25),
+                          borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: AppColors.accent.withOpacity(0.45),
                           ),
@@ -208,14 +181,13 @@ class _CompletionDialogState extends State<CompletionDialog>
                         padding: const EdgeInsets.symmetric(
                             horizontal: 18, vertical: 10),
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: AppColors.gradCosmic),
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(12),
                           boxShadow: [
                             BoxShadow(
-                              color:
-                                  AppColors.primary.withOpacity(0.5),
-                              blurRadius: 14,
+                              color: Colors.black.withOpacity(0.04),
+                              blurRadius: 4,
+                              offset: const Offset(0, 1),
                             ),
                           ],
                         ),
@@ -226,8 +198,8 @@ class _CompletionDialogState extends State<CompletionDialog>
                                 color: Colors.white, size: 20),
                             const SizedBox(width: 8),
                             Text(
-                              'Daraja $newLevel',
-                              style: GoogleFonts.poppins(
+                              '${S.get("level")} $newLevel',
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.w700,
@@ -258,8 +230,8 @@ class _CompletionDialogState extends State<CompletionDialog>
                                 style: TextStyle(fontSize: 18)),
                             const SizedBox(width: 6),
                             Text(
-                              '$streak kunlik streak',
-                              style: GoogleFonts.poppins(
+                              '$streak ${S.get('day_streak')}',
+                              style: TextStyle(
                                 color: AppColors.accent,
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
@@ -274,8 +246,8 @@ class _CompletionDialogState extends State<CompletionDialog>
                     if (newBadges.isNotEmpty) ...[
                       const SizedBox(height: 14),
                       Text(
-                        'Yangi yutuqlar: ${newBadges.length}',
-                        style: GoogleFonts.poppins(
+                        S.get('new_achievements').replaceAll('{n}', '${newBadges.length}'),
+                        style: TextStyle(
                           color: AppColors.secondary,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
@@ -287,7 +259,7 @@ class _CompletionDialogState extends State<CompletionDialog>
                     const SizedBox(height: 22),
 
                     NebulaButton(
-                      label: "Davom etish",
+                      label: S.get('continue_btn'),
                       icon: LucideIcons.arrowRight,
                       onTap: () => Navigator.pop(context),
                     ),
@@ -337,22 +309,13 @@ class _PulseIconState extends State<_PulseIcon>
           width: 72,
           height: 72,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: widget.levelUp
-                  ? AppColors.gradGold
-                  : AppColors.gradSuccess,
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: widget.levelUp ? AppColors.accent : AppColors.success,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: (widget.levelUp
-                        ? AppColors.accent
-                        : AppColors.success)
-                    .withOpacity(0.55 + 0.2 * _ctrl.value),
-                blurRadius: 20 + 10 * _ctrl.value,
-                spreadRadius: 2 + _ctrl.value * 2,
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 4,
+                offset: const Offset(0, 1),
               ),
             ],
           ),

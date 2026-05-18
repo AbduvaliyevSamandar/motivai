@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import '../config/strings.dart';
 
 // ═══════════════════════════════════════════════════════
 //  TASK MODEL
@@ -71,15 +72,15 @@ class Task {
     final hh = s.hour.toString().padLeft(2, '0');
     final mm = s.minute.toString().padLeft(2, '0');
     if (sameDay) return '$hh:$mm';
-    if (isTomorrow) return 'Erta $hh:$mm';
+    if (isTomorrow) return '${S.tr('Erta', 'Завтра', 'Tomorrow')} $hh:$mm';
     return '${s.day}/${s.month} $hh:$mm';
   }
 
-  String get diffLabel => const {
-    'easy':   'Oson',
-    'medium': "O'rta",
-    'hard':   'Qiyin',
-    'expert': 'Expert',
+  String get diffLabel => {
+    'easy':   S.get('easy'),
+    'medium': S.get('medium'),
+    'hard':   S.get('hard'),
+    'expert': S.get('expert'),
   }[difficulty] ?? difficulty;
 
   String get diffEmoji => const {
@@ -296,16 +297,31 @@ class ChatMsg {
   final DateTime timestamp;
   final List<TaskSuggestion>? tasks;
   final bool     isError;
+  // True once the user has accepted the suggestions and added them to
+  // their task list. Persisted so reloading the chat doesn't re-show
+  // the selection panel for already-added suggestions.
+  final bool     tasksAdded;
 
   const ChatMsg({
     required this.id,        required this.role,
     required this.content,   required this.timestamp,
-    this.tasks, this.isError = false,
+    this.tasks, this.isError = false, this.tasksAdded = false,
   });
 
   bool get isUser      => role == 'user';
   bool get isAssistant => role == 'assistant';
-  bool get hasTasks    => tasks != null && tasks!.isNotEmpty;
+  bool get hasTasks    =>
+      !tasksAdded && tasks != null && tasks!.isNotEmpty;
+
+  ChatMsg copyWith({bool? tasksAdded}) => ChatMsg(
+    id: id,
+    role: role,
+    content: content,
+    timestamp: timestamp,
+    tasks: tasks,
+    isError: isError,
+    tasksAdded: tasksAdded ?? this.tasksAdded,
+  );
 
   factory ChatMsg.fromJson(Map<String, dynamic> j) => ChatMsg(
     id:        j['id']      ?? '',
@@ -318,6 +334,7 @@ class ChatMsg {
         ?.map((t) => TaskSuggestion.fromJson(t as Map<String, dynamic>))
         .toList(),
     isError: j['err'] ?? false,
+    tasksAdded: j['added'] ?? false,
   );
 
   Map<String, dynamic> toJson() => {
@@ -327,6 +344,7 @@ class ChatMsg {
     'ts':      timestamp.toIso8601String(),
     'tasks':   tasks?.map((t) => t.toJson()).toList(),
     'err':     isError,
+    'added':   tasksAdded,
   };
 }
 

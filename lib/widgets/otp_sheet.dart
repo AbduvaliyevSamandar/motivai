@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
 import 'nebula/nebula.dart';
@@ -15,14 +15,14 @@ Future<String?> showOtpSheet(
   BuildContext context, {
   required String email,
   Future<bool> Function()? onResend,
-  String title = 'Tasdiq kodini kiriting',
+  String? title,
   String purpose = 'register',
 }) {
   return showModalBottomSheet<String>(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (_) => _OtpSheet(email: email, title: title),
+    builder: (_) => _OtpSheet(email: email, title: title ?? S.get('enter_otp')),
   );
 }
 
@@ -47,7 +47,7 @@ class _OtpSheetState extends State<_OtpSheet> {
         decoration: BoxDecoration(
           color: AppColors.card,
           borderRadius:
-              const BorderRadius.vertical(top: Radius.circular(16)),
+              const BorderRadius.vertical(top: Radius.circular(10)),
           border: Border(
             top: BorderSide(color: AppColors.glassBorder, width: 1.5),
           ),
@@ -65,26 +65,20 @@ class _OtpSheetState extends State<_OtpSheet> {
               ),
             ),
             const SizedBox(height: 18),
-            ShaderMask(
-              shaderCallback: (b) => LinearGradient(
-                colors: AppColors.titleGradient,
-              ).createShader(b),
-              blendMode: BlendMode.srcIn,
-              child: Text(
+            Text(
                 widget.title,
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
+                style: TextStyle(
+                  color: AppColors.txt,
                   fontSize: 24,
                   fontWeight: FontWeight.w700,
                   letterSpacing: -0.3,
                 ),
                 textAlign: TextAlign.center,
               ),
-            ),
             const SizedBox(height: 6),
             Text(
-              '${widget.email} ga 6 xonali kod yuborildi',
-              style: GoogleFonts.poppins(
+              '${widget.email} ${S.tr("ga 6 xonali kod yuborildi", "— отправлен 6-значный код", "— 6-digit code sent")}',
+              style: TextStyle(
                   color: AppColors.sub, fontSize: 11),
               textAlign: TextAlign.center,
               maxLines: 1, overflow: TextOverflow.ellipsis,
@@ -97,7 +91,7 @@ class _OtpSheetState extends State<_OtpSheet> {
             ),
             const SizedBox(height: 20),
             NebulaButton(
-              label: 'Tasdiqlash',
+              label: S.tr('Tasdiqlash', 'Подтвердить', 'Confirm'),
               icon: LucideIcons.check,
               disabled: _code.length != 6,
               onTap: () {
@@ -107,8 +101,8 @@ class _OtpSheetState extends State<_OtpSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Kod kelmasa, oynani yopib qaytadan boshlang',
-              style: GoogleFonts.poppins(
+              S.get('code_resend_help'),
+              style: TextStyle(
                   color: AppColors.sub.withOpacity(0.7), fontSize: 11),
               textAlign: TextAlign.center,
             ),

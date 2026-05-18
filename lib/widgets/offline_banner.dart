@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../config/colors.dart';
+import '../config/strings.dart';
 import '../services/action_queue.dart';
 
 /// Thin status strip that appears when offline OR when pending actions
@@ -62,11 +62,11 @@ class OfflineBanner extends StatelessWidget {
                     Expanded(
                       child: Text(
                         danger
-                            ? 'Oflayn — amallar navbatga qo\'shiladi'
+                            ? S.tr('Oflayn — amallar navbatga qo\'shiladi', 'Офлайн — действия в очереди', 'Offline — actions queued')
                             : q.syncing
-                                ? 'Sinxronlanmoqda…'
-                                : '${q.pendingCount} ta amal navbatda — bosing',
-                        style: GoogleFonts.poppins(
+                                ? S.tr('Sinxronlanmoqda…', 'Синхронизация…', 'Syncing…')
+                                : S.tr('${q.pendingCount} ta amal navbatda — bosing', '${q.pendingCount} действий в очереди — нажмите', '${q.pendingCount} actions pending — tap'),
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 11,
                           fontWeight: FontWeight.w600,

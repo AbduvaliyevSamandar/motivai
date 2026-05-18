@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../config/colors.dart';
 
 /// Apple Fitness-style huge display number with gradient.
@@ -38,7 +37,7 @@ class BigNumber extends StatelessWidget {
             children: [
               TextSpan(
                 text: value,
-                style: GoogleFonts.poppins(
+                style: TextStyle(
                   fontSize: size,
                   fontWeight: FontWeight.w700,
                   height: 1.0,
@@ -52,7 +51,7 @@ class BigNumber extends StatelessWidget {
               if (unit != null)
                 TextSpan(
                   text: ' $unit',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontSize: size * 0.35,
                     fontWeight: FontWeight.w500,
                     color: AppColors.sub,
@@ -67,7 +66,7 @@ class BigNumber extends StatelessWidget {
           Text(
             label!.toUpperCase(),
             textAlign: align,
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
               color: AppColors.sub,

@@ -42,6 +42,9 @@ class K {
   static const progress    = '/progress';
   static const heatmap     = '/progress/heatmap';
 
+  // User-data sync (cross-device backup of local-only state).
+  static const userData    = '/users/me/data';
+
   // Storage
   static const tokenKey = 'motivai_auth_token';
   static const userKey  = 'motivai_user_cache';

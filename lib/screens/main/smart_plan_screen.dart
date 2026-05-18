@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import '../../config/strings.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:iconsax_flutter/iconsax_flutter.dart';
@@ -43,7 +43,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
     final suggestions = focusBlocks
         .map((b) => TaskSuggestion(
               title: '${b.emoji ?? '\u{2B50}'} ${b.title}',
-              description: 'Smart plan • ${b.minutes} daqiqa',
+              description: '${S.get("smart_plan")} • ${b.minutes} ${S.get("unit_minute")}',
               category: _area,
               difficulty: b.minutes >= 50 ? 'medium' : 'easy',
               durationMinutes: b.minutes,
@@ -52,16 +52,16 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
         .toList();
     await tasks.addSuggestions(
       suggestions: suggestions,
-      planTitle: 'Aqlli reja — ${_hours.round()} soat',
-      goal: '${_hours.round()} soatlik optimal vaqt bloki',
+      planTitle: '${S.get("smart_plan_subj")} - ${_hours.round()} ${S.get("unit_hour")}',
+      goal: S.tr('${_hours.round()} soatlik optimal vaqt bloki', 'Оптимальный блок на ${_hours.round()} ч.', 'Optimal ${_hours.round()}-hour time block'),
     );
     if (!mounted) return;
     Navigator.pop(context);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: AppColors.success,
       behavior: SnackBarBehavior.floating,
-      content: Text('${suggestions.length} vazifa qo\'shildi!',
-          style: GoogleFonts.poppins(),
+      content: Text(S.get('tasks_added_n').replaceAll('{n}', '${suggestions.length}'),
+          style: TextStyle(),
               maxLines: 1, overflow: TextOverflow.ellipsis,
             ),
     ));
@@ -78,24 +78,16 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           icon: Icon(LucideIcons.arrowLeft, color: AppColors.txt),
           onPressed: () => Navigator.pop(context),
         ),
-        title: ShaderMask(
-          shaderCallback: (b) => LinearGradient(
-            colors: AppColors.titleGradient,
-          ).createShader(b),
-          blendMode: BlendMode.srcIn,
-          child: Text('Aqlli reja',
-              style: GoogleFonts.poppins(
-                color: Colors.white,
+        title: Text(S.get('smart_plan_title'),
+              style: TextStyle(
+                color: AppColors.txt,
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
                 letterSpacing: -0.3,
               )),
-        ),
       ),
       body: Stack(
         children: [
-          const AuroraBackground(subtle: true),
-          const ParticleField(count: 24),
           SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(16, 60, 16, 40),
@@ -109,7 +101,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: AppColors.surface,
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: AppColors.border),
                       ),
                       child: Row(
@@ -119,8 +111,8 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Soat va yo\'nalishni belgilab, reja yarating. AI shu vaqtni optimal bloklarga bo\'ladi.',
-                              style: GoogleFonts.poppins(
+                              S.get('smart_plan_intro'),
+                              style: TextStyle(
                                 color: AppColors.sub,
                                 fontSize: 11,
                                 height: 1.5,
@@ -136,7 +128,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                     ..._plan!.blocks.map(_blockTile),
                     const SizedBox(height: 16),
                     NebulaButton(
-                      label: 'Vazifalarga qo\'shish',
+                      label: S.get('add_to_tasks'),
                       icon: LucideIcons.listPlus,
                       onTap: _addToTasks,
                     ),
@@ -154,18 +146,15 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          AppColors.primary.withOpacity(0.18),
-          AppColors.secondary.withOpacity(0.08),
-        ]),
-        borderRadius: BorderRadius.circular(16),
+        color: AppColors.primary.withOpacity(0.18),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(color: AppColors.primary.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Qancha vaqtingiz bor?',
-              style: GoogleFonts.poppins(
+          Text(S.get('smart_plan_hours_q'),
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -195,9 +184,9 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
               SizedBox(
                 width: 60,
                 child: Text(
-                  '${_hours.round()} soat',
+                  '${_hours.round()} ${S.get('unit_hour')}',
                   textAlign: TextAlign.right,
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     color: AppColors.txt,
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
@@ -208,8 +197,8 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
             ],
           ),
           const SizedBox(height: 12),
-          Text('Yo\'nalish:',
-              style: GoogleFonts.poppins(
+          Text(S.get('direction_label'),
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
@@ -230,13 +219,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 14, vertical: 10),
                   decoration: BoxDecoration(
-                    gradient: active
-                        ? LinearGradient(colors: [
-                            AppColors.primary.withOpacity(0.35),
-                            AppColors.secondary.withOpacity(0.2),
-                          ])
-                        : null,
-                    color: active ? null : AppColors.bg,
+                    color: active ? AppColors.primary.withOpacity(0.35) : AppColors.bg,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: active
@@ -253,7 +236,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
                       const SizedBox(width: 6),
                       Text(
                         a.name,
-                        style: GoogleFonts.poppins(
+                        style: TextStyle(
                           color: AppColors.txt,
                           fontSize: 11,
                           fontWeight: active
@@ -278,8 +261,8 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
               const SizedBox(width: 6),
               Expanded(
                 child: Text(
-                  'Pomodoro tanaffuslar',
-                  style: GoogleFonts.poppins(
+                  S.get('pomodoro_breaks'),
+                  style: TextStyle(
                     color: AppColors.sub,
                     fontSize: 11,
                   ),
@@ -289,7 +272,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           ),
           const SizedBox(height: 6),
           NebulaButton(
-            label: _plan == null ? 'Yaratish' : 'Qayta yaratish',
+            label: _plan == null ? S.tr('Yaratish', 'Создать', 'Create') : S.tr('Qayta yaratish', 'Пересоздать', 'Recreate'),
             icon: Iconsax.magicpen,
             onTap: _generate,
           ),
@@ -317,10 +300,10 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Jami',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: AppColors.sub, fontSize: 11)),
                 Text('$total min',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: AppColors.txt,
                         fontSize: 18,
                         fontWeight: FontWeight.w700),
@@ -343,10 +326,10 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Fokus',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: AppColors.sub, fontSize: 11)),
                 Text('$focus min',
-                    style: GoogleFonts.poppins(
+                    style: TextStyle(
                         color: AppColors.success,
                         fontSize: 18,
                         fontWeight: FontWeight.w700),
@@ -381,10 +364,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [
-                c.withOpacity(0.3),
-                c.withOpacity(0.1),
-              ]),
+              color: c.withOpacity(0.3),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
@@ -398,7 +378,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
           Expanded(
             child: Text(
               b.title,
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: AppColors.txt,
                 fontSize: 13,
                 fontWeight:
@@ -407,7 +387,7 @@ class _SmartPlanScreenState extends State<SmartPlanScreen> {
             ),
           ),
           Text('${b.minutes}m',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 color: c,
                 fontSize: 13,
                 fontWeight: FontWeight.w700,

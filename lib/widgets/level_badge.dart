@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import '../config/strings.dart';
 import '../config/colors.dart';
 import '../config/dimensions.dart';
 
@@ -22,11 +22,7 @@ class LevelBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: D.sp12, vertical: 6),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: AppColors.gradPrimary,
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: AppColors.primary,
         borderRadius: BorderRadius.circular(D.radiusXl),
         boxShadow: [
           BoxShadow(
@@ -42,8 +38,8 @@ class LevelBadge extends StatelessWidget {
           Text(_emoji, style: const TextStyle(fontSize: 13)),
           const SizedBox(width: D.sp4),
           Text(
-            'Daraja $level',
-            style: GoogleFonts.poppins(
+            '${S.get("level")} $level',
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
               color: Colors.white,

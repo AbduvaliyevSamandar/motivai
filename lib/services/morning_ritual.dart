@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../config/strings.dart';
 import 'user_scope.dart';
 
 /// Morning ritual — 3 quick prompts per day: mood, main goal, gratitude.
@@ -108,4 +109,23 @@ class MorningRitual {
     '\u{1F60A}', // 4 good
     '\u{1F929}', // 5 amazing
   ];
+
+  /// Localized prompt strings for the 3-step morning ritual.
+  static String get promptMood => S.tr(
+        '1. Kayfiyatingiz qanday?',
+        '1. Какое у вас настроение?',
+        '1. How is your mood?',
+      );
+
+  static String get promptGoal => S.tr(
+        '2. Bugungi asosiy maqsadingiz?',
+        '2. Какова ваша главная цель сегодня?',
+        '2. What is your main goal today?',
+      );
+
+  static String get promptGratitude => S.tr(
+        '3. Nima uchun minnatdorsiz?',
+        '3. За что вы благодарны?',
+        '3. What are you grateful for?',
+      );
 }

@@ -1,4 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'user_data_sync.dart';
 import 'user_scope.dart';
 
 /// Client-side streak protection ("freeze") — works around the fact that
@@ -18,6 +19,7 @@ class StreakStorage {
   static Future<void> setFreezes(int count) async {
     final p = await SharedPreferences.getInstance();
     await p.setInt(_countKey, count.clamp(0, _maxFreezes));
+    UserDataSync.schedule();
   }
 
   static int get maxFreezes => _maxFreezes;
@@ -38,6 +40,7 @@ class StreakStorage {
     }
     await p.setInt(_countKey, current + 1);
     await p.setString(_lastGrantKey, now.toIso8601String());
+    UserDataSync.schedule();
     return true;
   }
 
@@ -47,7 +50,40 @@ class StreakStorage {
     final current = p.getInt(_countKey) ?? 0;
     if (current <= 0) return false;
     await p.setInt(_countKey, current - 1);
+    UserDataSync.schedule();
     return true;
+  }
+
+  /// Cross-device sync: dump count + last-grant timestamp.
+  static Future<dynamic> exportJson() async {
+    final p = await SharedPreferences.getInstance();
+    return {
+      'count': p.getInt(_countKey) ?? 3,
+      'lastGrant': p.getString(_lastGrantKey),
+    };
+  }
+
+  /// Cross-device sync: overwrite local freeze state with server-side
+  /// data. Accepts both the map shape and a bare integer (legacy / the
+  /// blob spec's "streak_freeze: <int>" form).
+  static Future<void> importJson(dynamic json) async {
+    final p = await SharedPreferences.getInstance();
+    if (json is num) {
+      await p.setInt(_countKey, json.toInt().clamp(0, _maxFreezes));
+      return;
+    }
+    if (json is Map) {
+      final count = (json['count'] as num?)?.toInt();
+      if (count != null) {
+        await p.setInt(_countKey, count.clamp(0, _maxFreezes));
+      }
+      final last = json['lastGrant'];
+      if (last is String && last.isNotEmpty) {
+        await p.setString(_lastGrantKey, last);
+      } else if (last == null) {
+        await p.remove(_lastGrantKey);
+      }
+    }
   }
 
   static Future<Duration?> timeUntilNext() async {
