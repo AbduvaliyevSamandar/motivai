@@ -1,32 +1,28 @@
-FROM python:3.11-slim
+# Start from the official MongoDB image (Debian-based, mongod present)
+# and add Python on top. This is the most reliable way to get MongoDB
+# inside the same container without flaky apt key handling.
+FROM mongo:7.0
 
-# Install MongoDB Community Edition (embedded in the same container so
-# the backend has zero external DB dependencies — useful when no Atlas
-# is available).
+# Install Python 3.11 + pip via Debian repos (the base is Debian 12).
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-        curl gnupg ca-certificates \
- && curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc \
-        | gpg --dearmor -o /etc/apt/keyrings/mongodb-7.0.gpg \
- && echo "deb [signed-by=/etc/apt/keyrings/mongodb-7.0.gpg] \
-http://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" \
-        > /etc/apt/sources.list.d/mongodb-org-7.0.list \
- && apt-get update \
- && apt-get install -y --no-install-recommends mongodb-org-server \
+        python3 python3-pip python3-venv \
+        ca-certificates curl \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+# pydantic-core etc. install cleanly via pip on Debian 12 / Python 3.11.
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
 
+WORKDIR /app
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# MongoDB stores data in /data/db (ephemeral inside the container —
-# fine for demo / thesis-defence purposes; resets on every redeploy).
-RUN mkdir -p /data/db && chown -R nobody:nogroup /data/db
-
+# MongoDB stores data in /data/db (created by the base image).
 EXPOSE 8000
 
+# Override the base image's mongod entrypoint with our supervisor.
+ENTRYPOINT []
 CMD ["sh", "/app/start.sh"]
