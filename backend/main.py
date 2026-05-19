@@ -64,6 +64,36 @@ async def health():
 async def health_v1():
     return await health()
 
+
+@app.get("/ai-debug")
+async def ai_debug():
+    """Public debug endpoint — shows which AI providers are configured
+    and runs a 'ping' message through the fallback chain to identify
+    whichever one actually answers (or how each one fails)."""
+    from app.services.ai_providers import (
+        PROVIDER_ORDER, configured_providers, _PROVIDER_FN,
+    )
+    out = {
+        "configured": configured_providers(),
+        "all_in_order": list(PROVIDER_ORDER),
+        "env_present": {
+            "OPENAI_API_KEY": bool(os.getenv("OPENAI_API_KEY", "").strip()),
+            "GEMINI_API_KEY": bool(os.getenv("GEMINI_API_KEY", "").strip()),
+            "GROQ_API_KEY":   bool(os.getenv("GROQ_API_KEY", "").strip()),
+        },
+        "tests": {},
+    }
+    msgs = [{"role": "user", "content": "Reply with the single word PONG."}]
+    for name in out["configured"]:
+        try:
+            text = await _PROVIDER_FN[name](
+                messages=msgs, json_mode=False,
+                max_tokens=10, temperature=0.0)
+            out["tests"][name] = {"ok": True, "reply": (text or "")[:80]}
+        except Exception as e:
+            out["tests"][name] = {"ok": False, "error": str(e)[:300]}
+    return out
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=int(os.getenv("PORT", 8000)))
